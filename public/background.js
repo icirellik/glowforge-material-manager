@@ -15,7 +15,20 @@ function listener(details) {
 
   // let data = Base64.encode(JSON.stringify(materials));
 
-  return { redirectUrl: "data:application/json;charset=utf-8," + encodeURIComponent(JSON.parse(materials).replace(/Maple/g, 'Cat')) };
+  //https://stackoverflow.com/questions/45714237/chrome-webrequest-redirect-data-urls
+
+
+  var xhr = new XMLHttpRequest();
+  var data;
+  xhr.onreadystatechange = function () {
+    data = {
+      redirectUrl: "data:application/json;charset=utf-8," + JSON.stringify(JSON.parse(xhr.responseText))
+    };
+  };
+  xhr.open("GET", chrome.extension.getURL('/materials.json'), false);
+  xhr.send();
+
+  return data;
 }
 
 chrome.webRequest.onBeforeRequest.addListener(

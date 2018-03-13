@@ -15,7 +15,7 @@
   "background": {
     "scripts": [
       "background.js",
-      "materials.js"
+      "materials.json"
     ]
   },
   "version": "1.0"
