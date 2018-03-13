@@ -1,0 +1,22 @@
+{
+  "short_name": "Glowforge Materials",
+  "name": "Glowforge Material Editor",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_title": "Glowforge Material Editor"
+  },
+  "permissions": [
+    "tabs",
+    "webRequest",
+    "webRequestBlocking",
+    "*://app.glowforge.com/*"
+  ],
+  "background": {
+    "scripts": [
+      "background.js",
+      "materials.js"
+    ]
+  },
+  "version": "1.0"
+}
