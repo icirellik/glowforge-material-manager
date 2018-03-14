@@ -1,0 +1,6342 @@
+{
+  "description": "Cherry Veneer Settings",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 1626,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 2,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 51,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 51,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 51,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 51,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 80,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Maple Hardwood Settings, Basic",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 965,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 2433,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 40,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 3833,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Walnut Hardwood Settings",
+  "active_date": "2017-03-26T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 965,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 2433,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 40,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 3366,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Teal Acrylic",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Yellow Acrylic",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Thick Maple Plywood Settings",
+  "active_date": "2017-04-05T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Clear Acrylic",
+  "active_date": "2017-04-04T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 660,
+    "passes": null,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 16,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 31,
+      "speed": 3833,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 70,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Frosted Acrylic, Basic",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 732,
+    "passes": null,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 31,
+      "speed": 3833,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 70,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Walnut Plywood Settings",
+  "active_date": "2017-03-26T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 711,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 21,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 31,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 21,
+      "speed": 2433,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 21,
+      "speed": 2433,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Draftboard Settings",
+  "active_date": "2017-04-07T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 762,
+    "passes": null,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 6,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 3833,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 50,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Fluorescent Blue Acrylic, 1/8\"",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 31,
+      "speed": 3833,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 70,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Thick Draftboard Settings, Basic",
+  "active_date": "2017-06-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 345,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 21,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 60,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 3833,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 50,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": 2,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Deep 3D Engrave",
+        "dev_id": "deep-3d-engrave"
+      }
+    }
+  ]
+}
+{
+  "description": "Thick Walnut Plywood Settings, Basic",
+  "active_date": "2017-07-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": null,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    }
+  ]
+}
+{
+  "description": "Thick Natural Leather Settings",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 99,
+    "speed": 762,
+    "passes": null,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 2,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 51,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 70,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 51,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 70,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 80,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 40,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Purple Acrylic",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Black Acrylic",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 31,
+      "speed": 3833,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 70,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Fluorescent Green Acrylic, 1/8\"",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 31,
+      "speed": 3833,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 70,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Green Acrylic",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Natural Leather Settings",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 80,
+    "speed": 1524,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 2,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 51,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 70,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 51,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 70,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 80,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 40,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Cherry Hardwood Settings",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 965,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 51,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 21,
+      "speed": 2433,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 21,
+      "speed": 2433,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 2433,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 40,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 4767,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Cherry Plywood Settings",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 711,
+    "passes": null,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 21,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 21,
+      "speed": 2433,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 21,
+      "speed": 2433,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Basswood Hardwood, Basic",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 1074,
+    "passes": null,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 6,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1967,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 2433,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 40,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 3366,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Walnut Veneer Settings",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 1626,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 2,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 21,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 70,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 70,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 2433,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 70,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 70,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 2433,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 80,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    }
+  ]
+}
+{
+  "description": "Thick Cherry Plywood Settings",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": null,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 4000,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 30,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Fluorescent Pink Acrylic, 1/8\"",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 31,
+      "speed": 3833,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 70,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Blue Acrylic",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Thick Clear Acrylic Settings, Basic",
+  "active_date": "2017-04-05T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 330,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 16,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 31,
+      "speed": 3833,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 70,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 3833,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Photo (Expiring Soon)",
+        "dev_id": "Photo"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": 2,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Deep 3D Engrave",
+        "dev_id": "deep-3d-engrave"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Orange Acrylic",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Red Acrylic",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 584,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Maple Plywood Settings",
+  "active_date": "2017-03-23T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 636,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 21,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 26,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 60,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium White Acrylic Settings",
+  "active_date": "2017-04-14T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 762,
+    "passes": null,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 2900,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Poplar Hardwood Settings",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 977,
+    "passes": null,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 4,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 1966,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 40,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 5700,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Maple Veneer Settings, Basic",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 1626,
+    "passes": 1,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 2,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 41,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 80,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 70,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 80,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 70,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 80,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 4767,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 40,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    }
+  ]
+}
+{
+  "description": "Medium Red Oak Hardwood",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 100,
+    "speed": 889,
+    "passes": null,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 11,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 60,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 8500,
+      "passes": 1,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 100,
+      "speed": 3366,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 4,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "3D Engrave",
+        "dev_id": "3d-engrave-shallow"
+      }
+    }
+  ]
+}
+{
+  "description": "Thin Natural Leather Settings",
+  "active_date": "2017-04-06T00:00-07:00",
+  "environment": [
+    "staging",
+    "production"
+  ],
+  "tube_type": "basic",
+  "cut_setting": {
+    "power": 70,
+    "speed": 1524,
+    "passes": null,
+    "focal_offset": null
+  },
+  "score_settings": [
+    {
+      "power": 2,
+      "speed": 344,
+      "passes": null,
+      "focal_offset": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "High Quality",
+        "dev_id": "high-quality"
+      }
+    },
+    {
+      "power": 16,
+      "speed": 2050,
+      "passes": null,
+      "focal_offset": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft",
+        "dev_id": "draft"
+      }
+    }
+  ],
+  "vector_engrave_settings": [
+    {
+      "power": 51,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 7,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 70,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 5,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    }
+  ],
+  "bitmap_engrave_settings": [
+    {
+      "power": 51,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 7,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Graphic",
+        "dev_id": "draft-graphic-new"
+      }
+    },
+    {
+      "power": 70,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 5,
+      "render_method": null,
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": [
+        "default"
+      ],
+      "display_color_mask": null,
+      "outcome": {
+        "name": "SD Graphic",
+        "dev_id": "sd-graphic-new"
+      }
+    },
+    {
+      "power": 6,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Graphic",
+        "dev_id": "hd-graphic-new"
+      }
+    },
+    {
+      "power": 80,
+      "speed": 8500,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 8,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": null,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "Draft Photo",
+        "dev_id": "draft-photo-new"
+      }
+    },
+    {
+      "power": 11,
+      "speed": 1967,
+      "passes": null,
+      "focal_offset": null,
+      "scangap": 3,
+      "render_method": "FloydSteinbergDitherMethod",
+      "rescale_method": "LagrangeFilter",
+      "minimum_gray_percent": 40,
+      "maximum_gray_percent": null,
+      "horizontal_timing": null,
+      "uses": null,
+      "display_color_mask": null,
+      "outcome": {
+        "name": "HD Photo",
+        "dev_id": "hd-photo-new"
+      }
+    }
+  ]
+}

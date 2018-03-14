@@ -18,5 +18,23 @@
       "materials.json"
     ]
   },
+  "externally_connectable": {
+    "matches": [
+      "*://app.glowforge.com/*"
+    ]
+  },
+  "content_scripts": [
+    {
+    "matches": [
+      "*://app.glowforge.com/*"
+    ],
+    "js":  ["inject.js" ],
+    "run_at": "document_end",
+    "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    "content.js"
+  ],
   "version": "1.0"
 }

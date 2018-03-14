@@ -1,6 +1,59 @@
+/* global chrome:true */
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import material from './suppliedMaterials.json';
+
+// Tests the roundtrip time of sendRequest().
+function testRequest() {
+  console.log("resultsRequest", "running...");
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    var tab = tabs[0];
+    chrome.tabs.sendRequest(tab.id, {counter: 1}, function handler(response) {
+      if (response.counter < 1000) {
+        chrome.tabs.sendRequest(tab.id, {counter: response.counter}, handler);
+      } else {
+        console.log("resultsRequest",  response.counter + "usec");
+      }
+    });
+  });
+}
+// Tests the roundtrip time of Port.postMessage() after opening a channel.
+function testConnect() {
+  console.log("resultsConnect", "running...");
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    var port = chrome.tabs.connect(tabs[0].id);
+    port.postMessage({counter: 1});
+    port.onMessage.addListener(function getResp(response) {
+      if (response.counter < 1000) {
+        port.postMessage({counter: response.counter});
+      } else {
+        console.log("resultsConnect",  response.counter + "usec");
+      }
+    });
+  });
+}
+
+function addMaterial() {
+  console.log('Adding material.')
+  chrome.tabs.query({
+    active: true,
+    currentWindow: true
+  }, function(tabs) {
+    var tab = tabs[0];
+    chrome.tabs.sendRequest(tab.id, {
+      counter: 1,
+      material
+    }, function handler(response) {
+      if (response.counter < 1000) {
+        chrome.tabs.sendRequest(tab.id, {counter: response.counter}, handler);
+      } else {
+        console.log("added material",  response.counter + "usec");
+      }
+    });
+  });
+
+}
 
 class App extends Component {
   render() {
@@ -13,6 +66,7 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
+        <button onClick={() => addMaterial()}>add</button>
       </div>
     );
   }
