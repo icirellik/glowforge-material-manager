@@ -14,8 +14,7 @@
   ],
   "background": {
     "scripts": [
-      "background.js",
-      "materials.json"
+      "background.js"
     ]
   },
   "externally_connectable": {

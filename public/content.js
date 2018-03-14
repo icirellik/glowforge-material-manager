@@ -1,4 +1,5 @@
-function onAccessApproved(response) {
+function onResponse(response) {
+  console.log(response)
   if (response.material) {
     window.store.dispatch({
       type: "ADD_MATERIAL",
@@ -9,6 +10,13 @@ function onAccessApproved(response) {
 
 chrome.runtime.sendMessage(
   "mncodmmfhiaolnkmjdjdemghkbcbiing",
-  { greeting: "yes" },
-  onAccessApproved
+  {  },
+  onResponse
 );
+
+/**
+ * Request the materials created by the user in the extension.
+ */
+setInterval(function() {
+
+}, 3000);
