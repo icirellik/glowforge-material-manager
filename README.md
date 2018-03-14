@@ -21,3 +21,8 @@ jq '.[].settings[] | select(.tube_type | contains("pro"))' materials.json > pro.
 Clear all of the stored materials. Run this in the background file.
 
 chrome.storage.sync.clear()
+
+ # Branding Guidelines
+
+ Logos and branding are supplied by the team at Glowforge more information can
+ be found in this [discussion](https://community.glowforge.com/t/lets-talk-about-glowforge-logo-and-brand-guidelines/6576).
