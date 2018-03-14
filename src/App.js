@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import material from './suppliedMaterials.json';
 
 // Tests the roundtrip time of sendRequest().
 function testRequest() {
@@ -34,27 +33,6 @@ function testConnect() {
   });
 }
 
-function addMaterial() {
-  console.log('Adding material.')
-  chrome.tabs.query({
-    active: true,
-    currentWindow: true
-  }, function(tabs) {
-    var tab = tabs[0];
-    chrome.tabs.sendRequest(tab.id, {
-      counter: 1,
-      material
-    }, function handler(response) {
-      if (response.counter < 1000) {
-        chrome.tabs.sendRequest(tab.id, {counter: response.counter}, handler);
-      } else {
-        console.log("added material",  response.counter + "usec");
-      }
-    });
-  });
-
-}
-
 class App extends Component {
   render() {
     return (
@@ -66,7 +44,7 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-        <button onClick={() => addMaterial()}>add</button>
+        <button>add</button>
       </div>
     );
   }

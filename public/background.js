@@ -1,7 +1,7 @@
 chrome.runtime.onMessageExternal.addListener(
   function(request, sender, sendResponse) {
-    var xhr = new XMLHttpRequest();
-    var material;
+    let material;
+    let xhr = new XMLHttpRequest();
     xhr.open("GET", chrome.extension.getURL('/material.json'), false);
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
@@ -16,7 +16,6 @@ chrome.runtime.onMessageExternal.addListener(
     console.log(material)
 
     sendResponse({
-      counter: request.counter + 1,
       material: material
     });
   }
