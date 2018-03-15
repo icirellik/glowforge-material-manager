@@ -1,6 +1,14 @@
+const extensionId = 'mncodmmfhiaolnkmjdjdemghkbcbiing';
+
 function onResponse(response) {
+  console.log('Checking for materials');
   console.log(response)
-  if (response.material) {
+  if (response.materials) {
+    window.store.dispatch({
+      type: "ADD_MATERIALS",
+      materials: response.materials
+    });
+  } else if (response.material) {
     window.store.dispatch({
       type: "ADD_MATERIAL",
       material: response.material
@@ -8,15 +16,13 @@ function onResponse(response) {
   }
 }
 
-chrome.runtime.sendMessage(
-  "mncodmmfhiaolnkmjdjdemghkbcbiing",
-  {  },
-  onResponse
-);
-
 /**
  * Request the materials created by the user in the extension.
  */
-setInterval(function() {
-
+setInterval(() => {
+  chrome.runtime.sendMessage(
+    extensionId,
+    {  },
+    onResponse
+  );
 }, 3000);

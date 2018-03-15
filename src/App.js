@@ -3,51 +3,106 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-// Tests the roundtrip time of sendRequest().
-function testRequest() {
-  console.log("resultsRequest", "running...");
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    var tab = tabs[0];
-    chrome.tabs.sendRequest(tab.id, {counter: 1}, function handler(response) {
-      if (response.counter < 1000) {
-        chrome.tabs.sendRequest(tab.id, {counter: response.counter}, handler);
-      } else {
-        console.log("resultsRequest",  response.counter + "usec");
-      }
-    });
-  });
-}
-// Tests the roundtrip time of Port.postMessage() after opening a channel.
-function testConnect() {
-  console.log("resultsConnect", "running...");
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    var port = chrome.tabs.connect(tabs[0].id);
-    port.postMessage({counter: 1});
-    port.onMessage.addListener(function getResp(response) {
-      if (response.counter < 1000) {
-        port.postMessage({counter: response.counter});
-      } else {
-        console.log("resultsConnect",  response.counter + "usec");
-      }
-    });
-  });
-}
-
 class App extends Component {
+  props = {
+    name: '',
+    thickName: '',
+    thickness: 0,
+    power: 0,
+    speed: 0,
+    passes: 1,
+    focalOffset: null
+  }
   render() {
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">Glowforge Materials</h1>
         </header>
         <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
+          Add your own custom material settings here.
         </p>
-        <button>add</button>
+        <label>Name</label>
+        <input type="text" value={this.props.name} />
+        <label>Thickness Name</label>
+        <input type="text" value={this.props.thickName} />
+        <label>Thickness (mm)</label>
+        <input type="text" value={this.props.thickness} />
+
+        <label>Power</label>
+        <input type="text" value={this.props.power} />
+        <label>Speed</label>
+        <input type="text" value={this.props.speed} />
+        <label>Passes</label>
+        <input type="text" value={this.props.passes} />
+        <label>Focal Offset</label>
+        <input type="text" value={this.props.focalOffset} />
+
+        <button onClick={() => storeMaterial(this.props)}>Save</button>
       </div>
     );
   }
+}
+
+function storeMaterial(props) {
+
+}
+
+function createMaterial(props) {
+  let material = {
+    id: `${props.thickName.toLowerCase().replace(/[ ]/g, '-')}-${props.name.toLowerCase().replace(/[ ]/g, '-')}`,
+    title: `${props.thickName} ${props.name}`,
+    sku: '',
+    nominal_thickness: props.thickness,
+    thickness_name: props.thickName,
+    variety: {
+      name: `${props.thickName.toLowerCase().replace(/[ ]/g, '-')}-${props.name.toLowerCase().replace(/[ ]/g, '-')}`,
+      common_name: `${props.thickName} ${props.name}`,
+      type_name: props.name,
+      thumbnails: [
+        "//images.ctfassets.net/ljtyf78xujn2/LPH1C4ibUkQimYKuA6iAq/c5abd83cffd111e8366daa2c137e6f19/Leather-1.png"
+      ],
+      display_options: null
+    },
+    settings: [
+      createSettings('basic'),
+      createSettings('pro')
+    ]
+  };
+
+  return material;
+}
+
+function createSettings(props, tubeType) {
+  let settings = {
+    description: `${props.thickName} ${props.name} SEttings`,
+    active_date: "2017-04-06T00:00-07:00",
+    environment: [
+      "production"
+    ],
+    tube_type: tubeType,
+    cut_settings: createCutSettings(props),
+    score_settings: [
+
+    ],
+    vector_engrave_settings: [
+
+    ],
+    bitmap_engrave_settings: [
+
+    ]
+  }
+  return settings;
+}
+
+function createCutSettings(props) {
+  return {
+    power: props.power,
+    speed: props.speed,
+    passes: props.passes,
+    focal_offset: props.focalOffset
+  };
 }
 
 export default App;

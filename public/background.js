@@ -1,6 +1,36 @@
+let materials;
+
+function refreshMaterials() {
+  chrome.storage.sync.get(null, result => {
+    console.log('Refreshing materials.');
+    console.log(result);
+    if (result && result.materials) {
+      materials = result.materials;
+    }
+  });
+}
+
 chrome.runtime.onMessageExternal.addListener(
   function(request, sender, sendResponse) {
-    let material;
+    sendResponse({
+      materials: materials
+    });
+
+    // Refresh incase anything new was added in the app.
+    refreshMaterials();
+  }
+);
+
+chrome.storage.sync.get(null, result => {
+
+  console.log('Verifying Storage');
+  console.log(result);
+
+  if (result && result.materials) {
+    materials = result.materials;
+  } else {
+    console.log('Initalizing storage.');
+
     let xhr = new XMLHttpRequest();
     xhr.open("GET", chrome.extension.getURL('/material.json'), false);
     xhr.onreadystatechange = function () {
@@ -12,11 +42,14 @@ chrome.runtime.onMessageExternal.addListener(
     };
     xhr.send(null);
 
-    console.log("Updating custom materials.");
-    console.log(material)
+    chrome.storage.sync.set({
+      'materials': [ material ]
+    }, function() {
+      console.log('Value is set to ');
+      console.log(material)
 
-    sendResponse({
-      material: material
     });
+    return;
   }
-);
+  console.log('Storage is initialized ' + result.materials);
+});
