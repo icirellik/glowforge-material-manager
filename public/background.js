@@ -45,7 +45,7 @@ chrome.storage.sync.get(null, result => {
     chrome.storage.sync.set({
       'materials': [ material ]
     }, function() {
-      console.log('Value is set to ');
+      console.log('Value is set to:');
       console.log(material)
 
     });
