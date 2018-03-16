@@ -86,7 +86,8 @@ function createSettings(props, tubeType) {
     tube_type: tubeType,
     cut_setting: createCutSettings(props),
     score_settings: [
-      createScoreSettings(props)
+      createScoreSettings('High Quality', props),
+      createScoreSettings('Shallow', props)
     ],
     vector_engrave_settings: [
 
@@ -113,7 +114,7 @@ function createCutSettings(props) {
 /**
  * Creates a new set of score settings.
  */
-function createScoreSettings(props) {
+function createScoreSettings(name, props) {
   return {
     power: props.score.power,
     speed: props.score.speed,
@@ -124,8 +125,8 @@ function createScoreSettings(props) {
     ],
     display_color_mask: null,
     outcome: {
-      name: "High Quality",
-      dev_id: "high-quality"
+      name: name,
+      dev_id: name.toLowerCase().replace(/[ ]/g, '-')
     }
   };
 }
