@@ -1,4 +1,13 @@
 /* global chrome:true */
+
+async function reload() {
+  return new Promise(resolve => {
+    chrome.tabs.reload(null, { bypassCache: true }, () => {
+      resolve();
+    });
+  })
+}
+
 /**
  * Stores a new material.
  */
@@ -20,9 +29,13 @@ async function removeMaterial(materialId) {
   const materials = await getStoredMaterials();
   const newMaterials = await setStoredMaterials(materials.filter(material => material.id !== materialId));
   console.log(`Material removed ${materialId}`);
+  await reload();
   return newMaterials;
 }
 
+/**
+ * Promisify getting materials.
+ */
 async function getStoredMaterials() {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get(null, result => {
@@ -35,6 +48,9 @@ async function getStoredMaterials() {
   });
 }
 
+/**
+ * Promisify storage.
+ */
 async function setStoredMaterials(materials) {
   return new Promise(resolve => {
     chrome.storage.local.set({

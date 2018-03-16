@@ -3,6 +3,16 @@
 Browser extension that allows users to save and modify their own materials for
 user in the Glowforge web interface.
 
+#### Managing Materials
+
+When adding a new material it should show up in the Glowforge UI after a few
+seconds.
+
+When removing a material the Glowforge UI will be refreshed, this is currently
+the only way that a material can be removed.
+
+# Developer Stuff
+
 Set a material.
 
 ```sh
