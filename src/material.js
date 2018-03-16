@@ -3,15 +3,14 @@
  * Stores a new material.
  */
 function storeMaterial(props) {
-  const newMaterial = createMaterial(props);
+  let newMaterial;
   chrome.storage.local.get(null, result => {
     console.log('Refreshing materials.');
     console.log(result);
     if (result && result.materials) {
-      const materials = result.materials;
-
+      newMaterial = createMaterial(props, result.materials.length);
       chrome.storage.local.set({
-        'materials': [ ...materials, newMaterial ]
+        'materials': [ ...result.materials, newMaterial ]
       }, function() {
         console.log('New material added:');
         console.log(newMaterial)
@@ -26,9 +25,9 @@ function storeMaterial(props) {
 /**
  * Creates a brand new custom material.
  */
-function createMaterial(props) {
+function createMaterial(props, id) {
   let material = {
-    id: `${props.thickName.toLowerCase().replace(/[ ]/g, '-')}-${props.name.toLowerCase().replace(/[ ]/g, '-')}`,
+    id: `Custom:${id}`,
     title: `${props.thickName} ${props.name}`,
     sku: '',
     nominal_thickness: props.thickness,

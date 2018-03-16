@@ -76,7 +76,7 @@ class App extends Component {
           <input
             type="text"
             value={this.state.cut.power}
-            onChange={(event) => this.setState({cut: { power: event.target.value}})}
+            onChange={(event) => this.setState({cut: { ...this.state.cut, power: event.target.value}})}
           />
         </div>
         <div className="App-field">
@@ -84,7 +84,7 @@ class App extends Component {
           <input
             type="text"
             value={this.state.cut.speed}
-            onChange={(event) => this.setState({cut: { speed: event.target.value}})}
+            onChange={(event) => this.setState({cut: { ...this.state.cut, speed: event.target.value}})}
           />
         </div>
         <div className="App-field">
@@ -92,7 +92,7 @@ class App extends Component {
           <input
             type="text"
             value={this.state.cut.passes}
-            onChange={(event) => this.setState({cut: {passes: event.target.value}})}
+            onChange={(event) => this.setState({cut: { ...this.state.cut, passes: event.target.value}})}
           />
         </div>
         <div className="App-field">
@@ -100,7 +100,7 @@ class App extends Component {
           <input
             type="text"
             value={this.state.cut.focalOffset}
-            onChange={(event) => this.setState({cut: {focalOffset: event.target.value}})}
+            onChange={(event) => this.setState({cut: { ...this.state.cut, focalOffset: event.target.value}})}
           />
         </div>
 
@@ -109,7 +109,7 @@ class App extends Component {
           <input
             type="text"
             value={this.state.score.power}
-            onChange={(event) => this.setState({score: {power: event.target.value}})}
+            onChange={(event) => this.setState({score: { ...this.state.score, power: event.target.value}})}
           />
         </div>
         <div className="App-field">
@@ -117,7 +117,7 @@ class App extends Component {
           <input
             type="text"
             value={this.state.score.speed}
-            onChange={(event) => this.setState({score: {speed: event.target.value}})}
+            onChange={(event) => this.setState({score: { ...this.state.score, speed: event.target.value}})}
           />
         </div>
         <div className="App-field">
@@ -125,7 +125,7 @@ class App extends Component {
           <input
             type="text"
             value={this.state.score.passes}
-            onChange={(event) => this.setState({score: {passes: event.target.value}})}
+            onChange={(event) => this.setState({score: { ...this.state.score, passes: event.target.value}})}
           />
         </div>
         <div className="App-field">
@@ -133,7 +133,7 @@ class App extends Component {
           <input
             type="text"
             value={this.state.score.focalOffset}
-            onChange={(event) => this.setState({score: {focalOffset: event.target.value}})}
+            onChange={(event) => this.setState({score: { ...this.state.score, focalOffset: event.target.value}})}
           />
         </div>
 

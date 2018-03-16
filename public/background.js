@@ -22,32 +22,17 @@ chrome.runtime.onMessageExternal.addListener(
 );
 
 chrome.storage.local.get(null, result => {
-
   console.log('Verifying Storage');
   console.log(result);
-
   if (result && result.materials) {
     materials = result.materials;
   } else {
     console.log('Initalizing storage.');
-
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", chrome.extension.getURL('/material.json'), false);
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          material = JSON.parse(xhr.responseText);
-        }
-      }
-    };
-    xhr.send(null);
-
     chrome.storage.local.set({
-      'materials': [ material ]
+      'materials': [ ]
     }, function() {
       console.log('Value is set to:');
       console.log(material)
-
     });
     return;
   }
