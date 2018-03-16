@@ -1,4 +1,5 @@
 .App {
+  width: 450px;
   text-align: center;
 }
 
@@ -6,12 +7,13 @@
   height: 43px;
   float: left;
   width: 50px;
+  margin-left: 50px;
 }
 
 .App-header {
   background-color: #222;
   height: 60px;
-  width: 250px;
+  width: 450px;
   padding: 20px;
   color: white;
 }
@@ -20,7 +22,9 @@
   font-size: 1.5em;
   height: 43px;
   margin: 0;
+  margin-left: 15px;
   padding-top: 12px;
+  float: left;
 }
 
 .App-intro {
@@ -33,10 +37,18 @@
 
 .App-field label {
   display: inline-block;
-  width: 110px;
+  width: 200px;
 }
 
 .App-field input {
   display: inline-block;
   width: 150px;
+}
+
+.App-buttons {
+
+}
+
+.App-materials {
+
 }

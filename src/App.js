@@ -147,9 +147,11 @@ class App extends Component {
           />
         </div>
 
-        <button onClick={() => this.addMaterial()}>Save</button>
+        <div className="App-buttons">
+          <button onClick={() => this.addMaterial()}>Save</button>
+        </div>
 
-        <div>
+        <div className="App-materials">
           <Materials materials={this.state.materials} removeMaterial={this.remove.bind(this)} />
         </div>
       </div>
