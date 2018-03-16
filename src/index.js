@@ -5,7 +5,7 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
-chrome.storage.sync.get(null, result => {
+chrome.storage.local.get(null, result => {
   console.log('Refreshing materials.');
   console.log(result);
   let materials;

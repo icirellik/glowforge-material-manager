@@ -1,7 +1,7 @@
 let materials;
 
 function refreshMaterials() {
-  chrome.storage.sync.get(null, result => {
+  chrome.storage.local.get(null, result => {
     console.log('Refreshing materials.');
     console.log(result);
     if (result && result.materials) {
@@ -21,7 +21,7 @@ chrome.runtime.onMessageExternal.addListener(
   }
 );
 
-chrome.storage.sync.get(null, result => {
+chrome.storage.local.get(null, result => {
 
   console.log('Verifying Storage');
   console.log(result);
@@ -42,7 +42,7 @@ chrome.storage.sync.get(null, result => {
     };
     xhr.send(null);
 
-    chrome.storage.sync.set({
+    chrome.storage.local.set({
       'materials': [ material ]
     }, function() {
       console.log('Value is set to:');
