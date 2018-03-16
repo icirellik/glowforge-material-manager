@@ -56,7 +56,7 @@ function createMaterial(props) {
  */
 function createSettings(props, tubeType) {
   let settings = {
-    description: `${props.thickName} ${props.name} SEttings`,
+    description: `${props.thickName} ${props.name} Settings`,
     active_date: "2017-04-06T00:00-07:00",
     environment: [
       "production"

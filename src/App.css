@@ -30,3 +30,13 @@
 .App-field {
   display: inline-block;
 }
+
+.App-field label {
+  display: inline-block;
+  width: 110px;
+}
+
+.App-field input {
+  display: inline-block;
+  width: 150px;
+}
