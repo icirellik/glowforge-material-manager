@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import Materials from './Materials';
 import logo from './logo.svg';
-import storeMaterial from './material';
+import { storeMaterial, removeMaterial } from './material';
 import './App.css';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.setState({ materials: props.materials });
   }
   state = {
     name: '',
@@ -28,10 +27,21 @@ class App extends Component {
     materials: []
   };
 
-  addMaterial() {
-    const newMaterial = storeMaterial(this.state);
+  componentDidMount() {
+    console.log(this.props.materials)
+    this.setState({ materials: this.props.materials });
+  }
+
+  async addMaterial() {
+    const newMaterial = await storeMaterial(this.state);
     this.setState({
       materials: [...this.state.materials, newMaterial]
+    });
+  }
+
+  async remove(materialId) {
+    this.setState({
+      materials: await removeMaterial(materialId)
     });
   }
 
@@ -140,7 +150,7 @@ class App extends Component {
         <button onClick={() => this.addMaterial()}>Save</button>
 
         <div>
-          <Materials materials={this.props.materials} />
+          <Materials materials={this.state.materials} removeMaterial={this.remove.bind(this)} />
         </div>
       </div>
     );

@@ -2,24 +2,47 @@
 /**
  * Stores a new material.
  */
-function storeMaterial(props) {
-  let newMaterial;
-  chrome.storage.local.get(null, result => {
-    console.log('Refreshing materials.');
-    console.log(result);
-    if (result && result.materials) {
-      newMaterial = createMaterial(props, result.materials.length);
-      chrome.storage.local.set({
-        'materials': [ ...result.materials, newMaterial ]
-      }, function() {
-        console.log('New material added:');
-        console.log(newMaterial)
-      });
-    } else {
-      console.log('Things ain\'t right');
-    }
-  });
+async function storeMaterial(props) {
+  console.log('Refreshing materials.');
+  const materials = await getStoredMaterials();
+  const newMaterial = createMaterial(props, materials.length);
+  await setStoredMaterials([ ...materials, newMaterial ]);
+  console.log('New material added:');
+  console.log(newMaterial)
   return newMaterial;
+}
+
+/**
+ * Removes a material.
+ */
+async function removeMaterial(materialId) {
+  console.log(`Removing material ${materialId}`);
+  const materials = await getStoredMaterials();
+  const newMaterials = await setStoredMaterials(materials.filter(material => material.id !== materialId));
+  console.log(`Material removed ${materialId}`);
+  return newMaterials;
+}
+
+async function getStoredMaterials() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get(null, result => {
+      if (result && result.materials) {
+        resolve(result.materials);
+      } else {
+        reject('Things ain\' right.');
+      }
+    });
+  });
+}
+
+async function setStoredMaterials(materials) {
+  return new Promise(resolve => {
+    chrome.storage.local.set({
+      'materials': materials
+    }, function() {
+      resolve(materials);
+    });
+  });
 }
 
 /**
@@ -107,4 +130,4 @@ function createScoreSettings(props) {
   };
 }
 
-export default storeMaterial;
+export { storeMaterial, removeMaterial };

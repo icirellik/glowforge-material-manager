@@ -17,4 +17,4 @@ chrome.storage.local.get(null, result => {
   ReactDOM.render(<App materials={materials}/>, document.getElementById('root'));
 });
 
-registerServiceWorker();
+// registerServiceWorker();
