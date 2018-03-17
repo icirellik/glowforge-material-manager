@@ -52,3 +52,7 @@
 .App-materials {
 
 }
+
+.App-error {
+  color: red;
+}

@@ -1,7 +1,11 @@
 import React from 'react';
 import Materials from './Materials';
 import logo from './logo.svg';
-import { storeMaterial, removeMaterial } from './lib/material';
+import {
+  createMaterial,
+  storeMaterial,
+  removeMaterial,
+} from './lib/material';
 import './App.css';
 
 const STATE_DISPLAY = 'DISPLAY';
@@ -14,6 +18,7 @@ class App extends React.Component {
   }
   state = {
     action: STATE_DISPLAY,
+    errorMessage: '',
     name: '',
     thickName: '',
     thickness: 0,
@@ -52,7 +57,21 @@ class App extends React.Component {
   }
 
   async addMaterial() {
-    const newMaterial = await storeMaterial(this.state);
+    // Prevent duplicates.
+    const newMaterial = createMaterial(this.state, this.state.materials.length);
+    const duplicate = this.state.materials.find(material => {
+      return material.id === newMaterial.id || material.title === newMaterial.title;
+    });
+
+    if (duplicate) {
+      this.setState({
+        errorMessage: 'A material with the same name already exists.',
+      });
+      return;
+    }
+
+    // Create and store.
+    await storeMaterial(newMaterial);
     this.setState({
       action: STATE_DISPLAY,
       materials: [...this.state.materials, newMaterial]
@@ -77,6 +96,7 @@ class App extends React.Component {
           <h1 className="App-title">Glowforge Materials</h1>
           <button onClick={() => { this.setState({ action: STATE_ADD })}}>➕</button>
         </header>
+        <DisplayError message={this.state.errorMessage} />
         <AddMaterial
           addMaterial={() => this.addMaterial()}
           merge={(key, value) => this.mergeState(key, value)}
@@ -96,6 +116,16 @@ class App extends React.Component {
           />
         </div>
       </div>
+    );
+  }
+}
+
+class DisplayError extends React.Component {
+  render() {
+    return (
+      <p className="App-error">
+        {this.props.message}
+      </p>
     );
   }
 }

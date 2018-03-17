@@ -3,14 +3,13 @@ import { getStoredMaterials, setStoredMaterials, reload } from './chromeWrappers
 /**
  * Stores a new material.
  */
-async function storeMaterial(props) {
-  console.log('Refreshing materials.');
+async function storeMaterial(material) {
+  console.log('Storing materials.');
   const materials = await getStoredMaterials();
-  const newMaterial = createMaterial(props, materials.length);
-  await setStoredMaterials([ ...materials, newMaterial ]);
+  await setStoredMaterials([ ...materials, material ]);
   console.log('New material added:');
-  console.log(newMaterial)
-  return newMaterial;
+  console.log(material)
+  return material;
 }
 
 /**
@@ -57,18 +56,18 @@ function createMaterial(params, id) {
 /**
  * Creates the settings for a given tube type.
  */
-function createSettings(props, tubeType) {
+function createSettings(params, tubeType) {
   let settings = {
-    description: `${props.thickName} ${props.name} Settings`,
+    description: `${params.thickName} ${params.name} Settings`,
     active_date: "2017-04-06T00:00-07:00",
     environment: [
       "production"
     ],
     tube_type: tubeType,
-    cut_setting: createCutSettings(props),
+    cut_setting: createCutSettings(params),
     score_settings: [
-      createScoreSettings('High Quality', props),
-      createScoreSettings('Shallow', props)
+      createScoreSettings('High Quality', params),
+      createScoreSettings('Shallow', params)
     ],
     vector_engrave_settings: [
 
@@ -83,24 +82,24 @@ function createSettings(props, tubeType) {
 /**
  * Creates a new set of cut settings.
  */
-function createCutSettings(props) {
+function createCutSettings(params) {
   return {
-    power: props.cut.power,
-    speed: props.cut.speed,
-    passes: props.cut.passes,
-    focal_offset: props.cut.focalOffset
+    power: params.cut.power,
+    speed: params.cut.speed,
+    passes: params.cut.passes,
+    focal_offset: params.cut.focalOffset
   };
 }
 
 /**
  * Creates a new set of score settings.
  */
-function createScoreSettings(name, props) {
+function createScoreSettings(name, params) {
   return {
-    power: props.score.power,
-    speed: props.score.speed,
-    passes: props.score.passes,
-    focal_offset: props.score.focalOffset,
+    power: params.score.power,
+    speed: params.score.speed,
+    passes: params.score.passes,
+    focal_offset: params.score.focalOffset,
     uses: [
       "default"
     ],
@@ -112,4 +111,8 @@ function createScoreSettings(name, props) {
   };
 }
 
-export { storeMaterial, removeMaterial };
+export {
+  createMaterial,
+  storeMaterial,
+  removeMaterial,
+};
