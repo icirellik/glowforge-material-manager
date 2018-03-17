@@ -1,15 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {
+  IconEdit,
+  IconMinus,
+} from './Icons';
 import './Material.css';
 
 class Material extends React.Component {
   render() {
-    const { material } = this.props
+    const {
+      editMaterial,
+      material,
+      removeMaterial,
+    } = this.props
     return (
-      <div>
-        <div>{material.title}</div>
-        <button onClick={() => this.props.removeMaterial(material.id)}>remove</button>
-        <button onClick={() => this.props.editMaterial(material.id)}>edit</button>
+      <div className="Material-root">
+        <span className="Material-name">{material.title}</span>
+        <IconMinus click={() => this.props.removeMaterial(material.id)} />
+        <IconEdit click={() => this.props.editMaterial(material.id)} />
       </div>
     );
   }

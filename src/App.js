@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Materials from './Materials';
 import logo from './logo.svg';
 import {
@@ -6,6 +7,7 @@ import {
   storeMaterial,
   removeMaterial,
 } from './lib/material';
+import { IconPlus } from './Icons';
 import './App.css';
 
 const STATE_DISPLAY = 'DISPLAY';
@@ -13,9 +15,6 @@ const STATE_ADD = 'ADD';
 const STATE_EDIT = 'EDIT';
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   state = {
     action: STATE_DISPLAY,
     errorMessage: '',
@@ -64,9 +63,7 @@ class App extends React.Component {
     });
 
     if (duplicate) {
-      this.setState({
-        errorMessage: 'A material with the same name already exists.',
-      });
+      this.mergeState('errorMessage', 'A material with the same name already exists.');
       return;
     }
 
@@ -88,32 +85,67 @@ class App extends React.Component {
     });
   }
 
+  modeAdd() {
+    this.mergeState('action', STATE_ADD);
+  }
+
+  modeEdit() {
+    this.mergeState('action', STATE_EDIT);
+  }
+
   render() {
+    if (!this.props.connected) {
+      return (
+        <div className="App">
+          <header className="App-header">
+            <img src={logo} className="App-logo" alt="logo" />
+            <h1 className="App-title">Glowforge Material Manager</h1>
+          </header>
+          <p className="App-intro">
+            Please login to the glowforge ui to use this tool.
+          </p>
+        </div>
+      );
+    }
+
     return (
-      <div>
+      <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Glowforge Materials</h1>
-          <button onClick={() => { this.setState({ action: STATE_ADD })}}>➕</button>
+          <h1 className="App-title">Glowforge Material Manager</h1>
         </header>
         <DisplayError message={this.state.errorMessage} />
-        <AddMaterial
-          addMaterial={() => this.addMaterial()}
-          merge={(key, value) => this.mergeState(key, value)}
-          mergeObject={(key, value) => this.mergeObjectState(key, value)}
-          {...this.state}
-        />
-        <EditMaterial
-          editMaterial={() => this.editMaterial()}
-          merge={(key, value) => this.mergeState(key, value)}
-          mergeObject={(key, value) => this.mergeObjectState(key, value)}
-          {...this.state}
-        />
-        <div className="App-materials">
-          <Materials
-            materials={this.state.materials}
-            removeMaterial={this.remove.bind(this)}
-          />
+        <div className="App-grid">
+          <div className="col-materials">
+            <div className="App-materials">
+              <Materials
+                materials={this.state.materials}
+                removeMaterial={this.remove.bind(this)}
+              />
+            </div>
+          </div>
+          <div className="col-contents">
+            <div className="App-intro">
+              <p style={{float: 'left', width: '250px'}}>
+                Add your own custom material settings here.
+              </p>
+              <div style={{float: 'right', margin: '14px 14px 14px 0'}}>
+                <IconPlus click={() => { this.modeAdd(); }} />
+              </div>
+            </div>
+            <AddMaterial
+              addMaterial={() => this.addMaterial()}
+              merge={(key, value) => this.mergeState(key, value)}
+              mergeObject={(key, value) => this.mergeObjectState(key, value)}
+              {...this.state}
+            />
+            <EditMaterial
+              editMaterial={() => this.editMaterial()}
+              merge={(key, value) => this.mergeState(key, value)}
+              mergeObject={(key, value) => this.mergeObjectState(key, value)}
+              {...this.state}
+            />
+          </div>
         </div>
       </div>
     );
@@ -138,9 +170,6 @@ class AddMaterial extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="App-intro">
-          Add your own custom material settings here.
-        </p>
         <div className="App-field">
           <label>Name</label>
           <input
@@ -167,7 +196,10 @@ class AddMaterial extends React.Component {
         </div>
 
         <div className="App-field">
-          <label>Cut Power</label>
+          <p>Cut Settings</p>
+        </div>
+        <div className="App-field">
+          <label>Power</label>
           <input
             type="number"
             value={this.props.cut.power}
@@ -175,7 +207,7 @@ class AddMaterial extends React.Component {
           />
         </div>
         <div className="App-field">
-          <label>Cut Speed</label>
+          <label>Speed</label>
           <input
             type="number"
             value={this.props.cut.speed}
@@ -183,7 +215,7 @@ class AddMaterial extends React.Component {
           />
         </div>
         <div className="App-field">
-          <label>Cut Passes</label>
+          <label>Passes</label>
           <input
             type="number"
             value={this.props.cut.passes}
@@ -191,7 +223,7 @@ class AddMaterial extends React.Component {
           />
         </div>
         <div className="App-field">
-          <label>Cut Focal Offset</label>
+          <label>Focal Offset</label>
           <input
             type="text"
             value={this.props.cut.focalOffset}
@@ -200,7 +232,10 @@ class AddMaterial extends React.Component {
         </div>
 
         <div className="App-field">
-          <label>Score Power</label>
+          <p>Score Settings</p>
+        </div>
+        <div className="App-field">
+          <label>Power</label>
           <input
             type="number"
             value={this.props.score.power}
@@ -208,7 +243,7 @@ class AddMaterial extends React.Component {
           />
         </div>
         <div className="App-field">
-          <label>Score Speed</label>
+          <label>Speed</label>
           <input
             type="number"
             value={this.props.score.speed}
@@ -216,7 +251,7 @@ class AddMaterial extends React.Component {
           />
         </div>
         <div className="App-field">
-          <label>Score Passes</label>
+          <label>Passes</label>
           <input
             type="number"
             value={this.props.score.passes}
@@ -224,7 +259,7 @@ class AddMaterial extends React.Component {
           />
         </div>
         <div className="App-field">
-          <label>Score Focal Offset</label>
+          <label>Focal Offset</label>
           <input
             type="text"
             value={this.props.score.focalOffset}
@@ -248,10 +283,6 @@ class EditMaterial extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="App-intro">
-          Edit your own custom material settings here.
-        </p>
-
         <div className="App-field">
           <label>Name</label>
           <input
@@ -350,5 +381,10 @@ class EditMaterial extends React.Component {
     );
   }
 }
+
+App.propTypes = {
+  connected: PropTypes.bool.isRequired,
+  materials: PropTypes.array.isRequired,
+};
 
 export default App;
