@@ -13,13 +13,11 @@ chrome.tabs.query({
   chrome.storage.local.get(null, result => {
     console.log('Refreshing materials.');
     console.log(result);
-    let materials;
-    if (result && result.materials) {
-      materials = result.materials;
-    } else {
-      materials = [];
-    }
-    ReactDOM.render(<App connected={glowforgeConnected} materials={materials}/>, document.getElementById('root'));
+    ReactDOM.render(<App
+      connected={glowforgeConnected}
+      materials={result.materials}
+      rawMaterials={result.rawMaterials}
+    />, document.getElementById('root'));
   });
 });
 

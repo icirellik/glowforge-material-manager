@@ -1,27 +1,28 @@
-import { getStoredMaterials, setStoredMaterials, reload } from './chromeWrappers';
+import {
+  getMaterials,
+  storeMaterials,
+  storeRawMaterials,
+  getRawMaterials
+} from './chromeWrappers';
 
-/**
- * Stores a new material.
- */
-async function storeMaterial(material) {
-  console.log('Storing materials.');
-  const materials = await getStoredMaterials();
-  await setStoredMaterials([ ...materials, material ]);
-  console.log('New material added:');
-  console.log(material)
-  return material;
-}
-
-/**
- * Removes a material.
- */
 async function removeMaterial(materialId) {
   console.log(`Removing material ${materialId}`);
-  const materials = await getStoredMaterials();
-  const newMaterials = await setStoredMaterials(materials.filter(material => material.id !== materialId));
+  const materials = await getMaterials();
+  const newMaterials = await storeMaterials(
+    materials.filter(material => material.id !== materialId)
+  );
   console.log(`Material removed ${materialId}`);
-  await reload();
   return newMaterials;
+}
+
+async function removeRawMaterial(thickName, name) {
+  console.log(`Removing raw material ${thickName} ${name}`);
+  const rawMaterials = await getRawMaterials();
+  const newRawMaterials = await storeRawMaterials(
+    rawMaterials.filter(material => material.thickName + material.name !== thickName + name )
+  );
+  console.log(`Raw material removed ${thickName} ${name}`);
+  return newRawMaterials;
 }
 
 /**
@@ -113,6 +114,6 @@ function createScoreSettings(name, params) {
 
 export {
   createMaterial,
-  storeMaterial,
   removeMaterial,
+  removeRawMaterial,
 };

@@ -29,10 +29,10 @@ chrome.storage.local.get(null, result => {
   } else {
     console.log('Initalizing storage.');
     chrome.storage.local.set({
-      'materials': [ ]
+      'materials': [],
+      'rawMaterials': []
     }, function() {
-      console.log('Value is set to:');
-      console.log(material)
+      console.log('Storage is initialized.');
     });
     return;
   }

@@ -1,9 +1,6 @@
 /* global chrome:true */
 
-/**
- * Promisify getting materials.
- */
-async function getStoredMaterials() {
+async function getMaterials() {
   return new Promise(resolve => {
     chrome.storage.local.get(null, result => {
       if (result && result.materials) {
@@ -15,10 +12,19 @@ async function getStoredMaterials() {
   });
 }
 
-/**
- * Promisify storage.
- */
-async function setStoredMaterials(materials) {
+async function getRawMaterials() {
+  return new Promise(resolve => {
+    chrome.storage.local.get(null, result => {
+      if (result && result.rawMaterials) {
+        resolve(result.rawMaterials);
+      } else {
+        resolve([])
+      }
+    });
+  });
+}
+
+async function storeMaterials(materials) {
   return new Promise(resolve => {
     chrome.storage.local.set({
       'materials': materials
@@ -28,9 +34,17 @@ async function setStoredMaterials(materials) {
   });
 }
 
-/**
- * Reloads the main page.
- */
+async function storeRawMaterials(rawMaterials) {
+  return new Promise(resolve => {
+    chrome.storage.local.set({
+      'rawMaterials': rawMaterials
+    }, function() {
+      resolve(rawMaterials);
+    });
+  });
+}
+
+
 async function reload() {
   return new Promise(resolve => {
     chrome.tabs.reload(null, { bypassCache: true }, () => {
@@ -40,7 +54,9 @@ async function reload() {
 }
 
 export {
-  getStoredMaterials,
-  setStoredMaterials,
+  getMaterials,
+  getRawMaterials,
+  storeMaterials,
+  storeRawMaterials,
   reload,
 }

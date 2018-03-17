@@ -5,13 +5,27 @@ import Material from './Material';
 class Materials extends React.Component {
   render() {
     const { materials } = this.props
+
+    if (materials.length === 0) {
+      return (
+        <div>
+          <h3>Custom Materials</h3>
+          <p>No custom materials.</p>
+        </div>
+      );
+    }
+
     return (
       <div>
         <h3>Custom Materials</h3>
       {
         materials.map(material => {
           return (
-            <Material material={material} removeMaterial={this.props.removeMaterial} />
+            <Material
+              material={material}
+              editMaterial={this.props.editMaterial}
+              removeMaterial={this.props.removeMaterial}
+            />
           );
         })
       }
