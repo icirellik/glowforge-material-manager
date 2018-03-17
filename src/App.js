@@ -15,10 +15,12 @@ import {
   storeRawMaterials,
   reload
 } from './lib/chromeWrappers';
+import Message from './Message';
 
 const STATE_DISPLAY = 'DISPLAY';
 const STATE_ADD = 'ADD';
 const STATE_EDIT = 'EDIT';
+const STATE_SELECTED = 'SELECTED';
 
 const EMPTY_MATERIAL = {
   name: '',
@@ -28,22 +30,22 @@ const EMPTY_MATERIAL = {
     power: 0,
     speed: 0,
     passes: 1,
-    focalOffset: null
+    focalOffset: null,
   },
   score: {
     power: 0,
     speed: 0,
     passes: 1,
-    focalOffset: null
-  }
+    focalOffset: null,
+  },
 };
 
 class App extends React.Component {
   state = {
     action: STATE_DISPLAY,
-    errorMessage: '',
+    message: '',
     material: {
-      ...EMPTY_MATERIAL
+      ...EMPTY_MATERIAL,
     },
     materials: [],
     rawMaterials: [],
@@ -62,8 +64,8 @@ class App extends React.Component {
     this.setState({
       material: {
         ...this.state.material,
-        [key]: value
-      }
+        [key]: value,
+      },
     });
     console.log(this.state.material);
   }
@@ -73,8 +75,10 @@ class App extends React.Component {
     this.setState({
       material: {
         ...this.state.material,
-        [key]: { ...this.state.material[key], ...value }
-      }
+        [key]: {
+          ...this.state.material[key], ...value,
+        },
+      },
     });
     console.log(this.state.material);
   }
@@ -88,7 +92,7 @@ class App extends React.Component {
 
     if (duplicate) {
       this.setState({
-        errorMessage: 'A material with the same name already exists.',
+        message: 'A material with the same name already exists.',
       });
       return;
     }
@@ -103,7 +107,7 @@ class App extends React.Component {
       action: STATE_DISPLAY,
       materials: newMaterials,
       rawMaterials: newRawMaterials,
-      errorMessage: '',
+      message: '',
       material: { ...EMPTY_MATERIAL },
     });
   }
@@ -116,7 +120,7 @@ class App extends React.Component {
 
     if (duplicates.length !== 1) {
       this.setState({
-        errorMessage: 'Could not update material.',
+        message: 'Could not update material.',
       });
       return;
     }
@@ -142,7 +146,7 @@ class App extends React.Component {
       action: STATE_DISPLAY,
       materials: newMaterials,
       rawMaterials: newRawMaterials,
-      errorMessage: '',
+      message: '',
       material: { ...EMPTY_MATERIAL },
     });
   }
@@ -161,18 +165,17 @@ class App extends React.Component {
 
   modeAdd() {
     this.setState({
-      action: STATE_ADD
+      action: STATE_ADD,
+      material: {
+        ...EMPTY_MATERIAL,
+      },
     });
   }
 
   modeEdit(title) {
-    console.log(this.state.rawMaterials)
     const material = this.state.rawMaterials.find(material => {
       return `${material.thickName} ${material.name}` === title;
     });
-
-    console.log(material)
-
     this.setState({
       action: STATE_EDIT,
       material: {
@@ -186,7 +189,20 @@ class App extends React.Component {
       action: STATE_DISPLAY,
       material: {
         ...EMPTY_MATERIAL,
-      }
+      },
+      message: '',
+    });
+  }
+
+  modeSelect(title) {
+    const material = this.state.rawMaterials.find(material => {
+      return `${material.thickName} ${material.name}` === title;
+    });
+    this.setState({
+      action: STATE_SELECTED,
+      material: {
+        ...material,
+      },
     });
   }
 
@@ -211,13 +227,14 @@ class App extends React.Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Glowforge Material Manager</h1>
         </header>
-        <DisplayError message={this.state.errorMessage} />
+        <Message message={this.state.message} />
         <div className="App-grid">
           <div className="col-materials">
             <div className="App-materials">
               <Materials
                 materials={this.state.materials}
                 editMaterial={this.modeEdit.bind(this)}
+                selectMaterial={this.modeSelect.bind(this)}
                 removeMaterial={this.remove.bind(this)}
               />
             </div>
@@ -231,6 +248,11 @@ class App extends React.Component {
                 <IconPlus click={() => { this.modeAdd(); }} />
               </div>
             </div>
+            <ShowMaterial
+              action={this.state.action}
+              material={this.state.material}
+              cancelMaterial={this.modeCancel.bind(this)}
+            />
             <EditMaterial
               addMaterial={this.addMaterial.bind(this)}
               editMaterial={this.editMaterial.bind(this)}
@@ -247,12 +269,67 @@ class App extends React.Component {
   }
 }
 
-class DisplayError extends React.Component {
+class ShowMaterial extends React.Component {
   render() {
+
+    const {
+      action,
+      material,
+    } = this.props;
+
+    if (action !== STATE_SELECTED) {
+      return null;
+    }
+
     return (
-      <p className="App-error">
-        {this.props.message}
-      </p>
+      <React.Fragment>
+        <div className="App-field">
+          {`Name: ${material.name}`}
+        </div>
+        <div className="App-field">
+          {`Thickness Name ${material.thickName}`}
+        </div>
+        <div className="App-field">
+          {`Thickness (mm) ${material.thickness}`}
+        </div>
+
+        <div className="App-field">
+          <p>Cut Settings</p>
+        </div>
+        <div className="App-field">
+          {`Power ${material.cut.power}`}
+        </div>
+        <div className="App-field">
+          {`Speed ${material.cut.speed}`}
+        </div>
+        <div className="App-field">
+          {`Passes ${material.cut.passes}`}
+        </div>
+        <div className="App-field">
+          {`Focal Offset ${material.cut.focalOffset}`}
+        </div>
+
+        <div className="App-field">
+          <p>Score Settings</p>
+        </div>
+        <div className="App-field">
+          {`Power ${material.score.power}`}
+        </div>
+        <div className="App-field">
+          {`Speed ${material.score.speed}`}
+        </div>
+        <div className="App-field">
+          {`Passes ${material.score.passes}`}
+        </div>
+        <div className="App-field">
+          {`Focal Offset ${material.score.focalOffset}`}
+        </div>
+
+        <MaterialButtonBar
+          action={this.props.action}
+          cancelMaterial={this.props.cancelMaterial}
+        />
+      </React.Fragment>
     );
   }
 }
@@ -265,7 +342,7 @@ class EditMaterial extends React.Component {
       material,
     } = this.props;
 
-    if (action === STATE_DISPLAY) {
+    if (action !== STATE_ADD && action !== STATE_EDIT) {
       return null;
     }
 
@@ -399,6 +476,12 @@ class MaterialButtonBar extends React.Component {
             <button onClick={this.props.cancelMaterial}>Cancel</button>
           </div>
         );
+      case STATE_SELECTED:
+      return (
+        <div className="App-buttons">
+          <button onClick={this.props.cancelMaterial}>Cancel</button>
+        </div>
+      );
       default:
         return null;
     }

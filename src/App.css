@@ -1,6 +1,5 @@
 .App {
-  /* width: 450px; */
-  /* text-align: center; */
+  height: 600px;
 }
 
 .App-logo {
@@ -35,11 +34,18 @@
 }
 
 .App-intro {
+  display: block;
   font-size: 14px;
 }
 
+.App-intro::after {
+  display: block;
+  content: "";
+  clear: both;
+}
+
 .App-field {
-  display: inline-block;
+  display: block;
 }
 
 .App-field label {
@@ -52,8 +58,8 @@
   width: 150px;
 }
 
-.App-buttons {
-
+.App-field p {
+  font-weight: 600;
 }
 
 .App-materials {
@@ -64,10 +70,6 @@
   display: inline-block;
   height: 18px;
   width: 18px;
-}
-
-.App-error {
-  color: red;
 }
 
 .App-grid {

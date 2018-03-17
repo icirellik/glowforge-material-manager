@@ -15,7 +15,7 @@ class Material extends React.Component {
     } = this.props
     return (
       <div className="Material-root">
-        <span className="Material-name">{material.title}</span>
+        <span onClick={() => this.props.selectMaterial(material.title)} className="Material-name">{material.title}</span>
         <IconMinus click={() => this.props.removeMaterial(material.id)} />
         <IconEdit click={() => this.props.editMaterial(material.title)} />
       </div>
@@ -28,7 +28,8 @@ Material.propTypes = {
     title: PropTypes.string.isRequired
   }).isRequired,
   editMaterial: PropTypes.func.isRequired,
-  removeMaterial: PropTypes.func.isRequired
+  removeMaterial: PropTypes.func.isRequired,
+  selectMaterial: PropTypes.func.isRequired,
 }
 
 export default Material;

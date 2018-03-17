@@ -25,6 +25,7 @@ class Materials extends React.Component {
               material={material}
               editMaterial={this.props.editMaterial}
               removeMaterial={this.props.removeMaterial}
+              selectMaterial={this.props.selectMaterial}
             />
           );
         })
@@ -39,7 +40,8 @@ Materials.propTypes = {
     title: PropTypes.string.isRequired
   })).isRequired,
   editMaterial: PropTypes.func.isRequired,
-  removeMaterial: PropTypes.func.isRequired
+  removeMaterial: PropTypes.func.isRequired,
+  selectMaterial: PropTypes.func.isRequired,
 }
 
 export default Materials;
