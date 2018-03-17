@@ -1,14 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Materials from './Materials';
 import logo from './logo.svg';
-import { storeMaterial, removeMaterial } from './material';
+import { storeMaterial, removeMaterial } from './lib/material';
 import './App.css';
 
-class App extends Component {
+const STATE_DISPLAY = 'DISPLAY';
+const STATE_ADD = 'ADD';
+const STATE_EDIT = 'EDIT';
+
+class App extends React.Component {
   constructor(props) {
     super(props);
   }
   state = {
+    action: STATE_DISPLAY,
     name: '',
     thickName: '',
     thickness: 0,
@@ -32,11 +37,30 @@ class App extends Component {
     this.setState({ materials: this.props.materials });
   }
 
+  mergeState(key, value) {
+    console.log(`${key} ${value}`)
+    this.setState({
+      [key]: value
+    });
+    console.log(this.state)
+  }
+
+  mergeObjectState(key, value) {
+    this.setState({
+      [key]: { ...this.state[key], ...value }
+    });
+  }
+
   async addMaterial() {
     const newMaterial = await storeMaterial(this.state);
     this.setState({
+      action: STATE_DISPLAY,
       materials: [...this.state.materials, newMaterial]
     });
+  }
+
+  async editMaterial(materialId) {
+
   }
 
   async remove(materialId) {
@@ -47,114 +71,252 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div>
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Glowforge Materials</h1>
+          <button onClick={() => { this.setState({ action: STATE_ADD })}}>➕</button>
         </header>
+        <AddMaterial
+          addMaterial={() => this.addMaterial()}
+          merge={(key, value) => this.mergeState(key, value)}
+          mergeObject={(key, value) => this.mergeObjectState(key, value)}
+          {...this.state}
+        />
+        <EditMaterial
+          editMaterial={() => this.editMaterial()}
+          merge={(key, value) => this.mergeState(key, value)}
+          mergeObject={(key, value) => this.mergeObjectState(key, value)}
+          {...this.state}
+        />
+        <div className="App-materials">
+          <Materials
+            materials={this.state.materials}
+            removeMaterial={this.remove.bind(this)}
+          />
+        </div>
+      </div>
+    );
+  }
+}
+
+class AddMaterial extends React.Component {
+  render() {
+    if (this.props.action !== STATE_ADD) {
+      return null;
+    }
+
+    return (
+      <React.Fragment>
         <p className="App-intro">
           Add your own custom material settings here.
         </p>
-
         <div className="App-field">
           <label>Name</label>
           <input
             type="text"
-            value={this.state.name}
-            onChange={(event) => this.setState({name: event.target.value})}
+            value={this.props.name}
+            onChange={(event) => this.props.merge('name', event.target.value)}
           />
         </div>
         <div className="App-field">
           <label>Thickness Name</label>
           <input
             type="text"
-            value={this.state.thickName}
-            onChange={(event) => this.setState({thickName: event.target.value})}
+            value={this.props.thickName}
+            onChange={(event) => this.props.merge('thickName', event.target.value)}
           />
         </div>
         <div className="App-field">
           <label>Thickness (mm)</label>
           <input
-            type="text"
-            value={this.state.thickness}
-            onChange={(event) => this.setState({thickness: event.target.value})}
+            type="number"
+            value={this.props.thickness}
+            onChange={(event) => this.props.merge('thickness', event.target.value)}
           />
         </div>
 
         <div className="App-field">
           <label>Cut Power</label>
           <input
-            type="text"
-            value={this.state.cut.power}
-            onChange={(event) => this.setState({cut: { ...this.state.cut, power: event.target.value}})}
+            type="number"
+            value={this.props.cut.power}
+            onChange={(event) => this.props.mergeObject('cut', { power: event.target.value})}
           />
         </div>
         <div className="App-field">
           <label>Cut Speed</label>
           <input
-            type="text"
-            value={this.state.cut.speed}
-            onChange={(event) => this.setState({cut: { ...this.state.cut, speed: event.target.value}})}
+            type="number"
+            value={this.props.cut.speed}
+            onChange={(event) => this.props.mergeObject('cut', { speed: event.target.value})}
           />
         </div>
         <div className="App-field">
           <label>Cut Passes</label>
           <input
-            type="text"
-            value={this.state.cut.passes}
-            onChange={(event) => this.setState({cut: { ...this.state.cut, passes: event.target.value}})}
+            type="number"
+            value={this.props.cut.passes}
+            onChange={(event) => this.props.mergeObject('cut', { passes: event.target.value})}
           />
         </div>
         <div className="App-field">
           <label>Cut Focal Offset</label>
           <input
             type="text"
-            value={this.state.cut.focalOffset}
-            onChange={(event) => this.setState({cut: { ...this.state.cut, focalOffset: event.target.value}})}
+            value={this.props.cut.focalOffset}
+            onChange={(event) => this.props.mergeObject('cut', { focalOffset: event.target.value})}
           />
         </div>
 
         <div className="App-field">
           <label>Score Power</label>
           <input
-            type="text"
-            value={this.state.score.power}
-            onChange={(event) => this.setState({score: { ...this.state.score, power: event.target.value}})}
+            type="number"
+            value={this.props.score.power}
+            onChange={(event) => this.props.mergeObject('score', { power: event.target.value})}
           />
         </div>
         <div className="App-field">
           <label>Score Speed</label>
           <input
-            type="text"
-            value={this.state.score.speed}
-            onChange={(event) => this.setState({score: { ...this.state.score, speed: event.target.value}})}
+            type="number"
+            value={this.props.score.speed}
+            onChange={(event) => this.props.mergeObject('score', { speed: event.target.value})}
           />
         </div>
         <div className="App-field">
           <label>Score Passes</label>
           <input
-            type="text"
-            value={this.state.score.passes}
-            onChange={(event) => this.setState({score: { ...this.state.score, passes: event.target.value}})}
+            type="number"
+            value={this.props.score.passes}
+            onChange={(event) => this.props.mergeObject('score', { passes: event.target.value})}
           />
         </div>
         <div className="App-field">
           <label>Score Focal Offset</label>
           <input
             type="text"
-            value={this.state.score.focalOffset}
-            onChange={(event) => this.setState({score: { ...this.state.score, focalOffset: event.target.value}})}
+            value={this.props.score.focalOffset}
+            onChange={(event) => this.props.mergeObject('score', { focalOffset: event.target.value})}
           />
         </div>
 
         <div className="App-buttons">
-          <button onClick={() => this.addMaterial()}>Save</button>
+          <button onClick={() => this.props.addMaterial()}>Save</button>
+        </div>
+      </React.Fragment>
+    );
+  }
+}
+
+class EditMaterial extends React.Component {
+  render() {
+    if (this.props.action !== STATE_EDIT) {
+      return null;
+    }
+
+    return (
+      <React.Fragment>
+        <p className="App-intro">
+          Edit your own custom material settings here.
+        </p>
+
+        <div className="App-field">
+          <label>Name</label>
+          <input
+            type="text"
+            value={this.props.name}
+            onChange={(event) => this.props.merge('name', event.target.value)}
+          />
+        </div>
+        <div className="App-field">
+          <label>Thickness Name</label>
+          <input
+            type="text"
+            value={this.props.thickName}
+            onChange={(event) => this.props.merge('thickName', event.target.value)}
+          />
+        </div>
+        <div className="App-field">
+          <label>Thickness (mm)</label>
+          <input
+            type="number"
+            value={this.props.thickness}
+            onChange={(event) => this.props.merge('thickness', event.target.value)}
+          />
         </div>
 
-        <div className="App-materials">
-          <Materials materials={this.state.materials} removeMaterial={this.remove.bind(this)} />
+        <div className="App-field">
+          <label>Cut Power</label>
+          <input
+            type="number"
+            value={this.props.cut.power}
+            onChange={(event) => this.props.mergeObject('cut', { power: event.target.value})}
+          />
         </div>
-      </div>
+        <div className="App-field">
+          <label>Cut Speed</label>
+          <input
+            type="number"
+            value={this.props.cut.speed}
+            onChange={(event) => this.props.mergeObject('cut', { speed: event.target.value})}
+          />
+        </div>
+        <div className="App-field">
+          <label>Cut Passes</label>
+          <input
+            type="number"
+            value={this.props.cut.passes}
+            onChange={(event) => this.props.mergeObject('cut', { passes: event.target.value})}
+          />
+        </div>
+        <div className="App-field">
+          <label>Cut Focal Offset</label>
+          <input
+            type="text"
+            value={this.props.cut.focalOffset}
+            onChange={(event) => this.props.mergeObject('cut', { focalOffset: event.target.value})}
+          />
+        </div>
+
+        <div className="App-field">
+          <label>Score Power</label>
+          <input
+            type="number"
+            value={this.props.score.power}
+            onChange={(event) => this.props.mergeObject('score', { power: event.target.value})}
+          />
+        </div>
+        <div className="App-field">
+          <label>Score Speed</label>
+          <input
+            type="number"
+            value={this.props.score.speed}
+            onChange={(event) => this.props.mergeObject('score', { speed: event.target.value})}
+          />
+        </div>
+        <div className="App-field">
+          <label>Score Passes</label>
+          <input
+            type="number"
+            value={this.props.score.passes}
+            onChange={(event) => this.props.mergeObject('score', { passes: event.target.value})}
+          />
+        </div>
+        <div className="App-field">
+          <label>Score Focal Offset</label>
+          <input
+            type="text"
+            value={this.props.score.focalOffset}
+            onChange={(event) => this.props.mergeObject('score', { focalOffset: event.target.value})}
+          />
+        </div>
+
+        <div className="App-buttons">
+          <button onClick={() => this.updateMaterial()}>Update</button>
+        </div>
+      </React.Fragment>
     );
   }
 }

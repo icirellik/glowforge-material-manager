@@ -1,12 +1,4 @@
-/* global chrome:true */
-
-async function reload() {
-  return new Promise(resolve => {
-    chrome.tabs.reload(null, { bypassCache: true }, () => {
-      resolve();
-    });
-  })
-}
+import { getStoredMaterials, setStoredMaterials, reload } from './chromeWrappers';
 
 /**
  * Stores a new material.
@@ -34,55 +26,28 @@ async function removeMaterial(materialId) {
 }
 
 /**
- * Promisify getting materials.
- */
-async function getStoredMaterials() {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get(null, result => {
-      if (result && result.materials) {
-        resolve(result.materials);
-      } else {
-        reject('Things ain\' right.');
-      }
-    });
-  });
-}
-
-/**
- * Promisify storage.
- */
-async function setStoredMaterials(materials) {
-  return new Promise(resolve => {
-    chrome.storage.local.set({
-      'materials': materials
-    }, function() {
-      resolve(materials);
-    });
-  });
-}
-
-/**
  * Creates a brand new custom material.
  */
-function createMaterial(props, id) {
+function createMaterial(params, id) {
+  console.log(params)
   let material = {
     id: `Custom:${id}`,
-    title: `${props.thickName} ${props.name}`,
+    title: `${params.thickName} ${params.name}`,
     sku: '',
-    nominal_thickness: props.thickness,
-    thickness_name: props.thickName,
+    nominal_thickness: params.thickness,
+    thickness_name: params.thickName,
     variety: {
-      name: `${props.thickName.toLowerCase().replace(/[ ]/g, '-')}-${props.name.toLowerCase().replace(/[ ]/g, '-')}`,
-      common_name: `${props.thickName} ${props.name}`,
-      type_name: props.name,
+      name: `${params.thickName.toLowerCase().replace(/[ ]/g, '-')}-${params.name.toLowerCase().replace(/[ ]/g, '-')}`,
+      common_name: `${params.thickName} ${params.name}`,
+      type_name: params.name,
       thumbnails: [
         "//images.ctfassets.net/ljtyf78xujn2/LPH1C4ibUkQimYKuA6iAq/c5abd83cffd111e8366daa2c137e6f19/Leather-1.png"
       ],
       display_options: null
     },
     settings: [
-      createSettings(props, 'basic'),
-      createSettings(props, 'pro')
+      createSettings(params, 'basic'),
+      createSettings(params, 'pro')
     ]
   };
 
