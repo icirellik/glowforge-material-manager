@@ -17,11 +17,14 @@ import {
 } from './lib/chromeWrappers';
 import Message from './Message';
 
+// Different application states
 const STATE_DISPLAY = 'DISPLAY';
 const STATE_ADD = 'ADD';
 const STATE_EDIT = 'EDIT';
 const STATE_SELECTED = 'SELECTED';
 
+// What a raw empty material looks like, this form is smaller and easier to work
+// with then the generated material for the Glowforge UI.
 const EMPTY_MATERIAL = {
   name: '',
   thickName: '',
@@ -52,7 +55,6 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props.materials)
     this.setState({
       materials: this.props.materials,
       rawMaterials: this.props.rawMaterials,
@@ -60,18 +62,15 @@ class App extends React.Component {
   }
 
   mergeState(key, value) {
-    console.log(`${key} ${value}`);
     this.setState({
       material: {
         ...this.state.material,
         [key]: value,
       },
     });
-    console.log(this.state.material);
   }
 
   mergeObjectState(key, value) {
-    console.log(`${key} ${value}`);
     this.setState({
       material: {
         ...this.state.material,
@@ -80,11 +79,9 @@ class App extends React.Component {
         },
       },
     });
-    console.log(this.state.material);
   }
 
   async addMaterial() {
-
     const newMaterial = createMaterial(this.state.material, this.state.materials.length);
     const duplicate = this.state.materials.find(material => {
       return material.id === newMaterial.id || material.title === newMaterial.title;
@@ -151,11 +148,9 @@ class App extends React.Component {
     });
   }
 
-  async remove(materialId) {
-    const materials = await removeMaterial(materialId);
-    const rawMaterials = await removeRawMaterial(
-      this.state.material.thickName, this.state.material.name
-    );
+  async remove(id, title) {
+    const materials = await removeMaterial(id);
+    const rawMaterials = await removeRawMaterial(title);
     this.setState({
       materials,
       rawMaterials,
@@ -383,7 +378,7 @@ class EditMaterial extends React.Component {
           <input
             type="number"
             value={material.cut.power}
-            onChange={(event) => this.props.mergeObject('cut', { power: event.target.value})}
+            onChange={(event) => this.props.mergeObject('cut', { power: Number.parseInt(event.target.value, 10)})}
           />
         </div>
         <div className="App-field">
@@ -391,7 +386,7 @@ class EditMaterial extends React.Component {
           <input
             type="number"
             value={material.cut.speed}
-            onChange={(event) => this.props.mergeObject('cut', { speed: event.target.value})}
+            onChange={(event) => this.props.mergeObject('cut', { speed: Number.parseInt(event.target.value, 10)})}
           />
         </div>
         <div className="App-field">
@@ -399,7 +394,7 @@ class EditMaterial extends React.Component {
           <input
             type="number"
             value={material.cut.passes}
-            onChange={(event) => this.props.mergeObject('cut', { passes: event.target.value})}
+            onChange={(event) => this.props.mergeObject('cut', { passes: Number.parseInt(event.target.value, 10)})}
           />
         </div>
         <div className="App-field">
@@ -407,7 +402,7 @@ class EditMaterial extends React.Component {
           <input
             type="text"
             value={material.cut.focalOffset}
-            onChange={(event) => this.props.mergeObject('cut', { focalOffset: event.target.value})}
+            onChange={(event) => this.props.mergeObject('cut', { focalOffset: Number.parseInt(event.target.value, 10)})}
           />
         </div>
 
@@ -419,7 +414,7 @@ class EditMaterial extends React.Component {
           <input
             type="number"
             value={material.score.power}
-            onChange={(event) => this.props.mergeObject('score', { power: event.target.value})}
+            onChange={(event) => this.props.mergeObject('score', { power: Number.parseInt(event.target.value, 10)})}
           />
         </div>
         <div className="App-field">
@@ -427,7 +422,7 @@ class EditMaterial extends React.Component {
           <input
             type="number"
             value={material.score.speed}
-            onChange={(event) => this.props.mergeObject('score', { speed: event.target.value})}
+            onChange={(event) => this.props.mergeObject('score', { speed: Number.parseInt(event.target.value, 10)})}
           />
         </div>
         <div className="App-field">
@@ -435,7 +430,7 @@ class EditMaterial extends React.Component {
           <input
             type="number"
             value={material.score.passes}
-            onChange={(event) => this.props.mergeObject('score', { passes: event.target.value})}
+            onChange={(event) => this.props.mergeObject('score', { passes: Number.parseInt(event.target.value, 10)})}
           />
         </div>
         <div className="App-field">
@@ -443,7 +438,7 @@ class EditMaterial extends React.Component {
           <input
             type="text"
             value={material.score.focalOffset}
-            onChange={(event) => this.props.mergeObject('score', { focalOffset: event.target.value})}
+            onChange={(event) => this.props.mergeObject('score', { focalOffset: Number.parseInt(event.target.value, 10)})}
           />
         </div>
 

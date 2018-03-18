@@ -16,7 +16,7 @@ class Material extends React.Component {
     return (
       <div className="Material-root">
         <span onClick={() => this.props.selectMaterial(material.title)} className="Material-name">{material.title}</span>
-        <IconMinus click={() => this.props.removeMaterial(material.id)} />
+        <IconMinus click={() => this.props.removeMaterial(material.id, material.title)} />
         <IconEdit click={() => this.props.editMaterial(material.title)} />
       </div>
     );

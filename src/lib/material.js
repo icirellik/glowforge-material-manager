@@ -14,12 +14,13 @@ async function removeMaterial(materialId) {
   return newMaterials;
 }
 
-async function removeRawMaterial(thickName, name) {
+async function removeRawMaterial(title) {
+  console.log(title)
   const rawMaterials = await getRawMaterials();
   const newRawMaterials = await storeRawMaterials(
-    rawMaterials.filter(material => material.thickName + material.name !== thickName + name)
+    rawMaterials.filter(material => `${material.thickName} ${material.name}` !== title)
   );
-  console.log(`Raw material removed ${thickName} ${name}`);
+  console.log(`Raw material removed ${title}`);
   return newRawMaterials;
 }
 

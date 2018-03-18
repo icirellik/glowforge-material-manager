@@ -4,6 +4,10 @@ const extensionId = 'mncodmmfhiaolnkmjdjdemghkbcbiing';
  * Leverage the redux actions to inject custom materials.
  */
 function onResponse(response) {
+  if (!response) {
+    return;
+  }
+
   if (response.materials) {
     window.store.dispatch({
       type: "ADD_MATERIALS",
