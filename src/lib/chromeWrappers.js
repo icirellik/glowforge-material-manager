@@ -27,7 +27,8 @@ async function getRawMaterials() {
 async function storeMaterials(materials) {
   return new Promise(resolve => {
     chrome.storage.local.set({
-      'materials': materials
+      'materials': materials,
+      'shouldUpdate': true,
     }, function() {
       resolve(materials);
     });
@@ -37,7 +38,8 @@ async function storeMaterials(materials) {
 async function storeRawMaterials(rawMaterials) {
   return new Promise(resolve => {
     chrome.storage.local.set({
-      'rawMaterials': rawMaterials
+      'rawMaterials': rawMaterials,
+      'shouldUpdate': true,
     }, function() {
       resolve(rawMaterials);
     });

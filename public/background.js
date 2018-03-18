@@ -1,40 +1,46 @@
-let materials;
+/**
+ * Browser background task to syncronize the GFUI with the custom materials.
+ */
 
-function refreshMaterials() {
+function refreshMaterials(callback) {
   chrome.storage.local.get(null, result => {
-    console.log('Refreshing materials.');
-    console.log(result);
-    if (result && result.materials) {
-      materials = result.materials;
+    if (result && result.materials && result.shouldUpdate) {
+      if (callback) {
+        callback({
+          materials: result.materials
+        });
+        chrome.storage.local.set({
+          'shouldUpdate': false,
+        });
+        console.log('Refreshed materials: ' + result.materials.length);
+      }
     }
   });
 }
 
 chrome.runtime.onMessageExternal.addListener(
   function(request, sender, sendResponse) {
-    sendResponse({
-      materials: materials
-    });
-
-    // Refresh incase anything new was added in the app.
-    refreshMaterials();
+    refreshMaterials(sendResponse);
+    return true;
   }
 );
 
 chrome.storage.local.get(null, result => {
-  console.log('Verifying Storage');
-  console.log(result);
   if (result && result.materials) {
-    materials = result.materials;
+    // Set a one time load refresh.
+    chrome.storage.local.set({
+      'shouldUpdate': true,
+    });
+    console.log('Storage already initialized.');
   } else {
     console.log('Initalizing storage.');
     chrome.storage.local.set({
       'materials': [],
-      'rawMaterials': []
+      'rawMaterials': [],
+      'shouldUpdate': false,
     }, function() {
       console.log('Storage is initialized.');
     });
-    return;
   }
-  console.log('Storage is initialized ' + result.materials);
+  console.log('Storage loaded.');
 });

@@ -1,8 +1,9 @@
 const extensionId = 'mncodmmfhiaolnkmjdjdemghkbcbiing';
 
+/**
+ * Leverage the redux actions to inject custom materials.
+ */
 function onResponse(response) {
-  console.log('Checking for materials');
-  console.log(response)
   if (response.materials) {
     window.store.dispatch({
       type: "ADD_MATERIALS",
@@ -25,4 +26,4 @@ setInterval(() => {
     {  },
     onResponse
   );
-}, 3000);
+}, 5000);

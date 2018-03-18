@@ -6,7 +6,6 @@ import {
 } from './chromeWrappers';
 
 async function removeMaterial(materialId) {
-  console.log(`Removing material ${materialId}`);
   const materials = await getMaterials();
   const newMaterials = await storeMaterials(
     materials.filter(material => material.id !== materialId)
@@ -16,20 +15,18 @@ async function removeMaterial(materialId) {
 }
 
 async function removeRawMaterial(thickName, name) {
-  console.log(`Removing raw material ${thickName} ${name}`);
   const rawMaterials = await getRawMaterials();
   const newRawMaterials = await storeRawMaterials(
-    rawMaterials.filter(material => material.thickName + material.name !== thickName + name )
+    rawMaterials.filter(material => material.thickName + material.name !== thickName + name)
   );
   console.log(`Raw material removed ${thickName} ${name}`);
   return newRawMaterials;
 }
 
 /**
- * Creates a brand new custom material.
+ * Creates a new custom material.
  */
 function createMaterial(params, id) {
-  console.log(params)
   let material = {
     id: `Custom:${id}`,
     title: `${params.thickName} ${params.name}`,
