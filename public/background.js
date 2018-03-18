@@ -14,6 +14,10 @@ function refreshMaterials(callback) {
         });
         console.log('Refreshed materials: ' + result.materials.length);
       }
+    } else if (result && result.shouldUpdate) {
+      chrome.storage.local.set({
+        'shouldUpdate': false,
+      });
     }
   });
 }

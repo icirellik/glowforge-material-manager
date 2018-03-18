@@ -24,6 +24,19 @@ async function getRawMaterials() {
   });
 }
 
+async function getShouldUpdate() {
+  return new Promise(resolve => {
+    chrome.storage.local.get(null, result => {
+      if (result && result.shouldUpdate) {
+        resolve(result.shouldUpdate);
+      } else {
+        resolve(false)
+      }
+    });
+  });
+}
+
+
 async function storeMaterials(materials) {
   return new Promise(resolve => {
     chrome.storage.local.set({
@@ -58,6 +71,7 @@ async function reload() {
 export {
   getMaterials,
   getRawMaterials,
+  getShouldUpdate,
   storeMaterials,
   storeRawMaterials,
   reload,

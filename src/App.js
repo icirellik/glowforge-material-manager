@@ -8,9 +8,10 @@ import {
   removeMaterial,
   removeRawMaterial,
 } from './lib/material';
-import { IconPlus } from './Icons';
+import { IconPlus, IconCircle } from './Icons';
 import './App.css';
 import {
+  getShouldUpdate,
   storeMaterials,
   storeRawMaterials,
   reload
@@ -52,6 +53,7 @@ class App extends React.Component {
     },
     materials: [],
     rawMaterials: [],
+    synchronized: true,
   };
 
   componentDidMount() {
@@ -59,6 +61,15 @@ class App extends React.Component {
       materials: this.props.materials,
       rawMaterials: this.props.rawMaterials,
     });
+
+    setInterval(async () => {
+      const shouldUpdate = await getShouldUpdate();
+      if (this.state.synchronized == shouldUpdate) {
+        this.setState({
+          synchronized: !shouldUpdate,
+        });
+      }
+    }, 5000);
   }
 
   mergeState(key, value) {
@@ -106,6 +117,7 @@ class App extends React.Component {
       rawMaterials: newRawMaterials,
       message: '',
       material: { ...EMPTY_MATERIAL },
+      synchronized: false,
     });
   }
 
@@ -145,6 +157,7 @@ class App extends React.Component {
       rawMaterials: newRawMaterials,
       message: '',
       material: { ...EMPTY_MATERIAL },
+      synchronized: false,
     });
   }
 
@@ -154,6 +167,7 @@ class App extends React.Component {
     this.setState({
       materials,
       rawMaterials,
+      synchronized: false,
     });
     await reload();
   }
@@ -221,6 +235,7 @@ class App extends React.Component {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Glowforge Material Manager</h1>
+          <State synchronized={this.state.synchronized} />
         </header>
         <Message message={this.state.message} />
         <div className="App-grid">
@@ -259,6 +274,16 @@ class App extends React.Component {
             />
           </div>
         </div>
+      </div>
+    );
+  }
+}
+
+class State extends React.Component {
+  render() {
+    return (
+      <div className={(this.props.synchronized) ? 'Status Status-green' : 'Status Status-red'}>
+        <IconCircle />
       </div>
     );
   }
