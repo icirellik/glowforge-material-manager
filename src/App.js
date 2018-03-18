@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MaterialEditor from './MaterialEditor';
-import Materials from './Materials';
+import MaterialList from './MaterialList';
 import MaterialViewer from './MaterialViewer';
 import Message from './Message';
 import SyncStatus from './SyncStatus';
@@ -31,10 +31,10 @@ import {
 const EMPTY_MATERIAL = {
   name: '',
   thickName: '',
-  thickness: 0,
+  thickness: null,
   cut: {
-    power: 0,
-    speed: 0,
+    power: 99,
+    speed: 100,
     passes: 1,
     focalOffset: null,
   },
@@ -43,8 +43,8 @@ const EMPTY_MATERIAL = {
 
 const EMPTY_SCORE = {
   name: '',
-  power: 0,
-  speed: 0,
+  power: 99,
+  speed: 100,
   passes: 1,
   focalOffset: null,
 };
@@ -277,7 +277,7 @@ class App extends React.Component {
         <div className="App-grid">
           <div className="col-materials">
             <div className="App-materials">
-              <Materials
+              <MaterialList
                 materials={this.state.materials}
                 editMaterial={this.modeEdit.bind(this)}
                 selectMaterial={this.modeSelect.bind(this)}

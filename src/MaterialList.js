@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Material from './Material';
 
-class Materials extends React.Component {
+class MaterialList extends React.Component {
   render() {
     const { materials } = this.props
 
@@ -10,7 +10,7 @@ class Materials extends React.Component {
       return (
         <div>
           <h3>Custom Materials</h3>
-          <p>No custom materials.</p>
+          <p>Materials you create appear here.</p>
         </div>
       );
     }
@@ -35,7 +35,7 @@ class Materials extends React.Component {
   }
 }
 
-Materials.propTypes = {
+MaterialList.propTypes = {
   materials: PropTypes.arrayOf(PropTypes.shape({
     title: PropTypes.string.isRequired
   })).isRequired,
@@ -44,4 +44,4 @@ Materials.propTypes = {
   selectMaterial: PropTypes.func.isRequired,
 }
 
-export default Materials;
+export default MaterialList;
