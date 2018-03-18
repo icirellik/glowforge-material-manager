@@ -1,3 +1,5 @@
+/* global chrome:true */
+
 import {
   getMaterials,
   storeMaterials,
@@ -39,7 +41,7 @@ function createMaterial(params, id) {
       common_name: `${params.thickName} ${params.name}`,
       type_name: params.name,
       thumbnails: [
-        "//images.ctfassets.net/ljtyf78xujn2/LPH1C4ibUkQimYKuA6iAq/c5abd83cffd111e8366daa2c137e6f19/Leather-1.png"
+        chrome.extension.getURL('custom-material.png'),
       ],
       display_options: null
     },

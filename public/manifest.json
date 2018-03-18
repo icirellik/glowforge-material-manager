@@ -39,7 +39,8 @@
     }
   ],
   "web_accessible_resources": [
-    "content.js"
+    "content.js",
+    "custom-material.png"
   ],
   "version": "0.0.1"
 }

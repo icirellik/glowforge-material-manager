@@ -64,6 +64,7 @@
 
 .App-materials {
   border-right: #efefef 1px solid;
+  margin-right: 10px;
 }
 
 .App-materials .icon{
