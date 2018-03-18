@@ -3,6 +3,16 @@
 Browser extension that allows users to save and modify their own materials for
 use in the Glowforge web interface.
 
+This project is not affiliated nor endorsed by Glowforge, Inc.
+
+**USE AT YOUR OWN RISK!**
+
+Please install from the chrome webstore unless you area developer and wish to
+make changes to the source. If that is the case be sure to correctly set
+extesion id for your browser in the `content.js` script.
+
+[Install Extension](https://chrome.google.com/webstore/detail/glowforge-material-manage/adabmafjmdcjnihkmggljljeopjfghii)
+
 #### Managing Materials
 
 When adding a new material it will show up in the Glowforge UI after a few
@@ -12,13 +22,52 @@ fully synchronized with the Glowforge UI. It typically takes less than 15
 seconds for the UI and extension to synchronize.
 
 When removing a material the Glowforge UI will be refreshed, this is currently
-the only way that a material can be removed.
+the only way that a material can be removed from the UI aside from unistallation
+of the extension.
 
-Creating a material
+**Adding a Custom Material**
+
+When making a custom material you must specify a name for the thickness name,
+thickness in millimeters, and a name for the material. The thickness name should
+be an adjective such as thin, thick, medium, or anything that can be used to
+describe these settings in relation to the material itself. The material name
+should be a short description of the material that is being created. The
+thickness should be the thickness of the material that is being created.
+
+Each material requires cut settings. These setting include power, speed, passes,
+and focal offset. Focal offset is optional and when empty the Glowforge UI will
+assign a default.
+
+Optional score settings can be added. The Glowforge UI allows for multiple named
+score settings so you will find an additional name field along with the same
+power, speed, passes, and focal offset fields that are available for cuts.
+
+**Viewing a Custom Material**
+
+To view the settings for an existing materials, click on its name and the
+details will appear on the right.
+
+**Editing a Custom Material**
+
+Click the edit icon to the right of the custom material to open the material
+for editing and click update to save the changes.
+
+**Removing a Custom Material**
+
+Click the `minus` icon to the right of the custom material. Be careful there is
+currently no undo or confirmation prompt, the material will be removed
+immediately.
 
 Setting explanations:
 
 **Power**
+
+When choosing a power be aware that 100 enables the Full Power toggle in the
+Glowforge UI. To select a precision power choose the value that you want to use
+and enter that value minus 1 in the Material Manager.
+
+If you wish to set the precision power to 100, set the value as 99.
+If you wish to set the precision power to 50, set the value to 49.
 
 **Speed**
 
@@ -32,17 +81,21 @@ to 1, 2, and 3 passes only. Be careful not to set the passes to high.
 
 **Focal Offset**
 
-
+This value is optional and the Glowforge UI will select a default if left blank.
 
 This tool does not allow editing of the Proofgrade settings, it would not be
 difficult to add this feature it just wansn't my main priority.
 
+To verify the settings that you entered are correct in the Glowforge UI. First,
+select the custom material in the Glowforge UI, choose the Proofgrade option you
+want such as cut, and then select the manual version. The setting presented
+should align with those set in the extension.
+
 Features to be added:
 
-* Multple Named Scores
 * Vector Engrave Settings
 * Bitmap Engrave Settings
-* Basic CSV export.
+* CSV export
 
 # Development
 
