@@ -25,15 +25,21 @@ class MaterialButtonBar extends React.Component {
           </div>
         );
       case STATE_SELECTED:
-      return (
-        <div className="App-buttons">
-          <button onClick={this.props.cancelMaterial}>Cancel</button>
-        </div>
-      );
+        return (
+          <div className="App-buttons">
+            <button onClick={this.props.cancelMaterial}>Cancel</button>
+          </div>
+        );
+      case STATE_DISPLAY:
+        return null;
       default:
         return null;
     }
   }
+}
+
+MaterialButtonBar.propTypes = {
+  action: PropTypes.string.isRequired,
 }
 
 export default MaterialButtonBar;

@@ -1,32 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import MaterialEditor from './MaterialEditor';
 import Materials from './Materials';
-import logo from './logo.svg';
+import MaterialViewer from './MaterialViewer';
+import Message from './Message';
+import SyncStatus from './SyncStatus';
 import {
   createMaterial,
   removeMaterial,
   removeRawMaterial,
 } from './lib/material';
 import { IconPlus } from './Icons';
-import './App.css';
 import {
   getShouldUpdate,
   storeMaterials,
   storeRawMaterials,
   reload
 } from './lib/chromeWrappers';
-import Cut from './Cut';
-import MaterialButtonBar from './MaterialButtonBar';
-import MaterialViewer from './MaterialViewer';
-import Message from './Message';
-import Score from './Score';
-import SyncStatus from './SyncStatus';
 import {
   STATE_ADD,
   STATE_DISPLAY,
   STATE_EDIT,
   STATE_SELECTED,
  } from './state';
+ import './App.css';
+ import logo from './logo.svg';
 
 // What a raw empty material looks like, this form is smaller and easier to work
 // with then the generated material for the Glowforge UI.
@@ -316,81 +314,6 @@ class App extends React.Component {
           </div>
         </div>
       </div>
-    );
-  }
-}
-
-class MaterialEditor extends React.Component {
-  render() {
-
-    const {
-      action,
-      material,
-    } = this.props;
-
-    if (action !== STATE_ADD && action !== STATE_EDIT) {
-      return null;
-    }
-
-    return (
-      <React.Fragment>
-        <div className="App-field">
-          <label>Name</label>
-          <input
-            disabled={action === STATE_EDIT}
-            type="text"
-            value={material.name}
-            onChange={(event) => this.props.merge('name', event.target.value)}
-          />
-        </div>
-        <div className="App-field">
-          <label>Thickness Name</label>
-          <input
-            disabled={action === STATE_EDIT}
-            type="text"
-            value={material.thickName}
-            onChange={(event) => this.props.merge('thickName', event.target.value)}
-          />
-        </div>
-        <div className="App-field">
-          <label>Thickness (mm)</label>
-          <input
-            type="number"
-            value={material.thickness}
-            onChange={(event) => this.props.merge('thickness', event.target.value)}
-          />
-        </div>
-
-        <div className="App-sectionHeader">
-          <p>Cut Settings</p>
-        </div>
-        <Cut cut={material.cut} updateCut={this.props.updateCut} />
-
-        <div className="App-sectionHeader">
-          <p>Score Settings</p>
-          <div>
-            <IconPlus click={this.props.addScore} />
-          </div>
-        </div>
-        {
-          material.scores.map((score, index) => {
-            return (
-              <Score
-                id={index}
-                score={score}
-                updateScore={this.props.updateScore}
-              />
-            );
-          })
-        }
-        <MaterialButtonBar
-          action={this.props.action}
-          addMaterial={this.props.addMaterial}
-          cancelMaterial={this.props.cancelMaterial}
-          editMaterial={this.props.editMaterial}
-          material={this.props.material}
-        />
-      </React.Fragment>
     );
   }
 }

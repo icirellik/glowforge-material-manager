@@ -18,10 +18,10 @@ class MaterialViewer extends React.Component {
     return (
       <React.Fragment>
         <div className="App-field">
-          {`Name: ${material.name}`}
+          {`Thickness Name ${material.thickName}`}
         </div>
         <div className="App-field">
-          {`Thickness Name ${material.thickName}`}
+          {`Material Name: ${material.name}`}
         </div>
         <div className="App-field">
           {`Thickness (mm) ${material.thickness}`}
@@ -77,6 +77,12 @@ class MaterialViewer extends React.Component {
       </React.Fragment>
     );
   }
+}
+
+MaterialViewer.propTypes = {
+  action: PropTypes.string.isRequired,
+  cancelMaterial: PropTypes.func.isRequired,
+  material: PropTypes.object.isRequired,
 }
 
 export default MaterialViewer;

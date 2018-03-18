@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { IconCircle } from './Icons';
+import './SyncStatus.css';
 
 class SyncStatus extends React.Component {
   render() {
