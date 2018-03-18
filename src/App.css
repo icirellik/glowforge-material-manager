@@ -96,9 +96,38 @@
 }
 
 .Status-green .icon {
-  color: palegreen;
+  color: rgb(55, 253, 55);
 }
 
 .Status-red .icon {
-  color: yellow;
+  color: rgb(250, 250, 114);
+}
+
+.App-sectionHeader {
+  display: block;
+  font-size: 14px;
+}
+
+.App-sectionHeader::after {
+  display: block;
+  content: "";
+  clear: both;
+}
+
+.App-sectionHeader p {
+  font-weight: 600;
+  float: left;
+  width: 250px;
+}
+
+.App-sectionHeader div {
+  float: right;
+  margin: 14px 14px 14px 0;
+}
+
+.App-sectionHeader .icon {
+  color: #666;
+  display: inline-block;
+  height: 18px;
+  width: 18px;
 }

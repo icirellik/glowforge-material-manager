@@ -63,17 +63,16 @@ function createSettings(params, tubeType) {
       "production"
     ],
     tube_type: tubeType,
-    cut_setting: createCutSettings(params),
-    score_settings: [
-      createScoreSettings('High Quality', params),
-      createScoreSettings('Shallow', params)
-    ],
+    cut_setting: createCutSettings(params.cut),
+    score_settings: params.scores.map(score => {
+      return createScoreSettings(score);
+    }),
     vector_engrave_settings: [
 
     ],
     bitmap_engrave_settings: [
 
-    ]
+    ],
   }
   return settings;
 }
@@ -81,32 +80,32 @@ function createSettings(params, tubeType) {
 /**
  * Creates a new set of cut settings.
  */
-function createCutSettings(params) {
+function createCutSettings(cut) {
   return {
-    power: params.cut.power,
-    speed: params.cut.speed,
-    passes: params.cut.passes,
-    focal_offset: params.cut.focalOffset
+    power: cut.power,
+    speed: cut.speed,
+    passes: cut.passes,
+    focal_offset: cut.focalOffset,
   };
 }
 
 /**
  * Creates a new set of score settings.
  */
-function createScoreSettings(name, params) {
+function createScoreSettings(score) {
   return {
-    power: params.score.power,
-    speed: params.score.speed,
-    passes: params.score.passes,
-    focal_offset: params.score.focalOffset,
+    power: score.power,
+    speed: score.speed,
+    passes: score.passes,
+    focal_offset: score.focalOffset,
     uses: [
-      "default"
+      "default",
     ],
     display_color_mask: null,
     outcome: {
-      name: name,
-      dev_id: name.toLowerCase().replace(/[ ]/g, '-')
-    }
+      name: score.name,
+      dev_id: score.name.toLowerCase().replace(/[ ]/g, '-'),
+    },
   };
 }
 

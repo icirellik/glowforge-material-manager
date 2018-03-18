@@ -8,7 +8,7 @@ import {
   removeMaterial,
   removeRawMaterial,
 } from './lib/material';
-import { IconPlus, IconCircle } from './Icons';
+import { IconPlus } from './Icons';
 import './App.css';
 import {
   getShouldUpdate,
@@ -16,13 +16,18 @@ import {
   storeRawMaterials,
   reload
 } from './lib/chromeWrappers';
+import Cut from './Cut';
+import MaterialButtonBar from './MaterialButtonBar';
+import MaterialViewer from './MaterialViewer';
 import Message from './Message';
-
-// Different application states
-const STATE_DISPLAY = 'DISPLAY';
-const STATE_ADD = 'ADD';
-const STATE_EDIT = 'EDIT';
-const STATE_SELECTED = 'SELECTED';
+import Score from './Score';
+import SyncStatus from './SyncStatus';
+import {
+  STATE_ADD,
+  STATE_DISPLAY,
+  STATE_EDIT,
+  STATE_SELECTED,
+ } from './state';
 
 // What a raw empty material looks like, this form is smaller and easier to work
 // with then the generated material for the Glowforge UI.
@@ -36,12 +41,15 @@ const EMPTY_MATERIAL = {
     passes: 1,
     focalOffset: null,
   },
-  score: {
-    power: 0,
-    speed: 0,
-    passes: 1,
-    focalOffset: null,
-  },
+  scores: [],
+};
+
+const EMPTY_SCORE = {
+  name: '',
+  power: 0,
+  speed: 0,
+  passes: 1,
+  focalOffset: null,
 };
 
 class App extends React.Component {
@@ -89,6 +97,37 @@ class App extends React.Component {
           ...this.state.material[key], ...value,
         },
       },
+    });
+  }
+
+  updateCut(cut) {
+    this.setState({
+      material: {
+        ...this.state.material,
+        cut,
+      },
+    });
+  }
+
+  addScore() {
+    this.setState({
+      material: {
+        ...this.state.material,
+        scores: [ ...this.state.material.scores, EMPTY_SCORE ],
+      },
+    });
+  }
+
+  updateScore(index, score) {
+    console.log(`${index}`)
+    console.log(`${score}`)
+    const scores = this.state.material.scores;
+    scores[index] = score;
+    this.setState({
+      material: {
+        ...this.state.material,
+        scores: [...scores],
+      }
     });
   }
 
@@ -235,7 +274,7 @@ class App extends React.Component {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Glowforge Material Manager</h1>
-          <State synchronized={this.state.synchronized} />
+          <SyncStatus synchronized={this.state.synchronized} />
         </header>
         <Message message={this.state.message} />
         <div className="App-grid">
@@ -258,12 +297,12 @@ class App extends React.Component {
                 <IconPlus click={() => { this.modeAdd(); }} />
               </div>
             </div>
-            <ShowMaterial
+            <MaterialViewer
               action={this.state.action}
               material={this.state.material}
               cancelMaterial={this.modeCancel.bind(this)}
             />
-            <EditMaterial
+            <MaterialEditor
               addMaterial={this.addMaterial.bind(this)}
               editMaterial={this.editMaterial.bind(this)}
               cancelMaterial={this.modeCancel.bind(this)}
@@ -271,6 +310,9 @@ class App extends React.Component {
               mergeObject={(key, value) => this.mergeObjectState(key, value)}
               action={this.state.action}
               material={this.state.material}
+              addScore={this.addScore.bind(this)}
+              updateCut={this.updateCut.bind(this)}
+              updateScore={this.updateScore.bind(this)}
             />
           </div>
         </div>
@@ -279,82 +321,7 @@ class App extends React.Component {
   }
 }
 
-class State extends React.Component {
-  render() {
-    return (
-      <div className={(this.props.synchronized) ? 'Status Status-green' : 'Status Status-red'}>
-        <IconCircle />
-      </div>
-    );
-  }
-}
-
-class ShowMaterial extends React.Component {
-  render() {
-
-    const {
-      action,
-      material,
-    } = this.props;
-
-    if (action !== STATE_SELECTED) {
-      return null;
-    }
-
-    return (
-      <React.Fragment>
-        <div className="App-field">
-          {`Name: ${material.name}`}
-        </div>
-        <div className="App-field">
-          {`Thickness Name ${material.thickName}`}
-        </div>
-        <div className="App-field">
-          {`Thickness (mm) ${material.thickness}`}
-        </div>
-
-        <div className="App-field">
-          <p>Cut Settings</p>
-        </div>
-        <div className="App-field">
-          {`Power ${material.cut.power}`}
-        </div>
-        <div className="App-field">
-          {`Speed ${material.cut.speed}`}
-        </div>
-        <div className="App-field">
-          {`Passes ${material.cut.passes}`}
-        </div>
-        <div className="App-field">
-          {`Focal Offset ${material.cut.focalOffset}`}
-        </div>
-
-        <div className="App-field">
-          <p>Score Settings</p>
-        </div>
-        <div className="App-field">
-          {`Power ${material.score.power}`}
-        </div>
-        <div className="App-field">
-          {`Speed ${material.score.speed}`}
-        </div>
-        <div className="App-field">
-          {`Passes ${material.score.passes}`}
-        </div>
-        <div className="App-field">
-          {`Focal Offset ${material.score.focalOffset}`}
-        </div>
-
-        <MaterialButtonBar
-          action={this.props.action}
-          cancelMaterial={this.props.cancelMaterial}
-        />
-      </React.Fragment>
-    );
-  }
-}
-
-class EditMaterial extends React.Component {
+class MaterialEditor extends React.Component {
   render() {
 
     const {
@@ -395,78 +362,28 @@ class EditMaterial extends React.Component {
           />
         </div>
 
-        <div className="App-field">
+        <div className="App-sectionHeader">
           <p>Cut Settings</p>
         </div>
-        <div className="App-field">
-          <label>Power</label>
-          <input
-            type="number"
-            value={material.cut.power}
-            onChange={(event) => this.props.mergeObject('cut', { power: Number.parseInt(event.target.value, 10)})}
-          />
-        </div>
-        <div className="App-field">
-          <label>Speed</label>
-          <input
-            type="number"
-            value={material.cut.speed}
-            onChange={(event) => this.props.mergeObject('cut', { speed: Number.parseInt(event.target.value, 10)})}
-          />
-        </div>
-        <div className="App-field">
-          <label>Passes</label>
-          <input
-            type="number"
-            value={material.cut.passes}
-            onChange={(event) => this.props.mergeObject('cut', { passes: Number.parseInt(event.target.value, 10)})}
-          />
-        </div>
-        <div className="App-field">
-          <label>Focal Offset</label>
-          <input
-            type="text"
-            value={material.cut.focalOffset}
-            onChange={(event) => this.props.mergeObject('cut', { focalOffset: Number.parseInt(event.target.value, 10)})}
-          />
-        </div>
+        <Cut cut={material.cut} updateCut={this.props.updateCut} />
 
-        <div className="App-field">
+        <div className="App-sectionHeader">
           <p>Score Settings</p>
+          <div>
+            <IconPlus click={this.props.addScore} />
+          </div>
         </div>
-        <div className="App-field">
-          <label>Power</label>
-          <input
-            type="number"
-            value={material.score.power}
-            onChange={(event) => this.props.mergeObject('score', { power: Number.parseInt(event.target.value, 10)})}
-          />
-        </div>
-        <div className="App-field">
-          <label>Speed</label>
-          <input
-            type="number"
-            value={material.score.speed}
-            onChange={(event) => this.props.mergeObject('score', { speed: Number.parseInt(event.target.value, 10)})}
-          />
-        </div>
-        <div className="App-field">
-          <label>Passes</label>
-          <input
-            type="number"
-            value={material.score.passes}
-            onChange={(event) => this.props.mergeObject('score', { passes: Number.parseInt(event.target.value, 10)})}
-          />
-        </div>
-        <div className="App-field">
-          <label>Focal Offset</label>
-          <input
-            type="text"
-            value={material.score.focalOffset}
-            onChange={(event) => this.props.mergeObject('score', { focalOffset: Number.parseInt(event.target.value, 10)})}
-          />
-        </div>
-
+        {
+          material.scores.map((score, index) => {
+            return (
+              <Score
+                id={index}
+                score={score}
+                updateScore={this.props.updateScore}
+              />
+            );
+          })
+        }
         <MaterialButtonBar
           action={this.props.action}
           addMaterial={this.props.addMaterial}
@@ -476,35 +393,6 @@ class EditMaterial extends React.Component {
         />
       </React.Fragment>
     );
-  }
-}
-
-class MaterialButtonBar extends React.Component {
-  render() {
-    switch (this.props.action) {
-      case STATE_ADD:
-        return (
-          <div className="App-buttons">
-            <button onClick={this.props.addMaterial}>Create</button>
-            <button onClick={this.props.cancelMaterial}>Cancel</button>
-          </div>
-        );
-      case STATE_EDIT:
-        return (
-          <div className="App-buttons">
-            <button onClick={() => this.props.editMaterial(this.props.material.thickName, this.props.material.name)}>Update</button>
-            <button onClick={this.props.cancelMaterial}>Cancel</button>
-          </div>
-        );
-      case STATE_SELECTED:
-      return (
-        <div className="App-buttons">
-          <button onClick={this.props.cancelMaterial}>Cancel</button>
-        </div>
-      );
-      default:
-        return null;
-    }
   }
 }
 

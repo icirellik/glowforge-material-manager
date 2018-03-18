@@ -6,7 +6,9 @@ use in the Glowforge web interface.
 #### Managing Materials
 
 When adding a new material it should show up in the Glowforge UI after a few
-seconds.
+seconds. There is an syncronization indicator in the title that will be green if
+the Glowforge UI is fully synchronized. It will otherwise be yellow. If the
+indicator is yellow just wait a few seconds and it will turn green.
 
 When removing a material the Glowforge UI will be refreshed, this is currently
 the only way that a material can be removed.
