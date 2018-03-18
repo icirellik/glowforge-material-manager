@@ -4,7 +4,6 @@ import Materials from './Materials';
 import logo from './logo.svg';
 import {
   createMaterial,
-  storeMaterial,
   removeMaterial,
   removeRawMaterial,
 } from './lib/material';
@@ -72,7 +71,7 @@ class App extends React.Component {
 
     setInterval(async () => {
       const shouldUpdate = await getShouldUpdate();
-      if (this.state.synchronized == shouldUpdate) {
+      if (this.state.synchronized === shouldUpdate) {
         this.setState({
           synchronized: !shouldUpdate,
         });

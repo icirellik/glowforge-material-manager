@@ -1,4 +1,8 @@
+// Develop
 const extensionId = 'mncodmmfhiaolnkmjdjdemghkbcbiing';
+
+// Webstore
+// const extensionId = 'adabmafjmdcjnihkmggljljeopjfghii';
 
 /**
  * Leverage the redux actions to inject custom materials.
