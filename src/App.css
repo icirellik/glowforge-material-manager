@@ -18,7 +18,7 @@
 }
 
 .App-intro .icon {
-  color: #666;
+  color: #001f23;
   display: inline-block;
   height: 25px;
   width: 25px;
@@ -87,22 +87,6 @@
   width: 150px;
 }
 
-.Status {
-  display: inline-block;
-  padding-top: 15px;
-  margin-left: 15px;
-  width: 12px;
-  height: 12px;
-}
-
-.Status-green .icon {
-  color: rgb(55, 253, 55);
-}
-
-.Status-red .icon {
-  color: rgb(250, 250, 114);
-}
-
 .App-sectionHeader {
   display: block;
   font-size: 14px;
@@ -126,7 +110,7 @@
 }
 
 .App-sectionHeader .icon {
-  color: #666;
+  color: #001f23;
   display: inline-block;
   height: 18px;
   width: 18px;

@@ -1,0 +1,20 @@
+.Status {
+  display: inline-block;
+  padding-top: 15px;
+  margin-left: 15px;
+  width: 12px;
+  height: 12px;
+}
+
+.Status .icon {
+  width: 12px;
+  height: 12px;
+}
+
+.Status-green .icon {
+  color: rgb(55, 253, 55);
+}
+
+.Status-red .icon {
+  color: rgb(250, 250, 114);
+}

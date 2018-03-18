@@ -1,25 +1,41 @@
-# Glowforge Material Manager
+# Glowforge Material Manager [![Build Status](https://travis-ci.org/icirellik/glowforge-material-manager.svg?branch=master)](https://travis-ci.org/icirellik/glowforge-material-manager)
 
 Browser extension that allows users to save and modify their own materials for
 use in the Glowforge web interface.
 
 #### Managing Materials
 
-When adding a new material it should show up in the Glowforge UI after a few
-seconds. There is an syncronization indicator in the title that will be green if
-the Glowforge UI is fully synchronized. It will otherwise be yellow. If the
-indicator is yellow just wait a few seconds and it will turn green.
+When adding a new material it will show up in the Glowforge UI after a few
+seconds. There is a syncronization indicator in the title that will be yellow
+after creating or editing any materials and will turn turn green once it has
+fully synchronized with the Glowforge UI. It typically takes less than 15
+seconds for the UI and extension to synchronize.
 
 When removing a material the Glowforge UI will be refreshed, this is currently
 the only way that a material can be removed.
 
+Creating a material
+
 Setting explanations:
 
-Power
-Speed
-Passes: Can be set to any value that you wish, the Glowforge UI restricts this
+**Power**
+
+**Speed**
+
+The minimum speed that the Glowforge UI will allow is 100, if a value lower
+than that is set in the Material Manager it will be overridden in the UI.
+
+**Passes**
+
+Can be set to any value that you wish, the Glowforge UI restricts this
 to 1, 2, and 3 passes only. Be careful not to set the passes to high.
-Focal Offset
+
+**Focal Offset**
+
+
+
+This tool does not allow editing of the Proofgrade settings, it would not be
+difficult to add this feature it just wansn't my main priority.
 
 Features to be added:
 
