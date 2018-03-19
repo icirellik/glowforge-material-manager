@@ -14,7 +14,6 @@ class MaterialList extends React.Component {
         </div>
       );
     }
-
     return (
       <div>
         <h3>Custom Materials</h3>
@@ -22,8 +21,8 @@ class MaterialList extends React.Component {
         materials.map(material => {
           return (
             <Material
-              material={material}
               editMaterial={this.props.editMaterial}
+              material={material}
               removeMaterial={this.props.removeMaterial}
               selectMaterial={this.props.selectMaterial}
             />

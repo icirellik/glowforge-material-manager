@@ -52,29 +52,28 @@ const EMPTY_SCORE = {
   focalOffset: null,
 };
 
-// const EMPTY_VECTOR_ENGRAVE = {
-//   name: '',
-//   power: 99,
-//   speed: 100,
-//   passes: 1,
-//   focal_offset: null,
-//   scangap: null,
-//   uses: null,
-// };
+const EMPTY_VECTOR_ENGRAVE = {
+  name: '',
+  power: 99,
+  speed: 100,
+  passes: 1,
+  focalOffset: null,
+  scanGap: null,
+};
 
-// const EMPTY_BITMAP_ENGRAVE = {
-//   name: '',
-//   power: 99,
-//   speed: 100,
-//   passes: 1,
-//   focal_offset: null,
-//   scangap: null,
-//   render_method: null,
-//   rescale_method: "LagrangeFilter",
-//   minimum_gray_percent: null,
-//   maximum_gray_percent: null,
-//   horizontal_timing: null,
-// };
+const EMPTY_BITMAP_ENGRAVE = {
+  name: '',
+  power: 99,
+  speed: 100,
+  passes: 1,
+  focalOffset: null,
+  scanGap: null,
+  renderMethod: null,
+  rescaleMethod: "LagrangeFilter",
+  minimumGrayPercent: null,
+  maximumGrayPercent: null,
+  horizontaTiming: null,
+};
 
 class App extends React.Component {
   state = {
@@ -143,14 +142,52 @@ class App extends React.Component {
   }
 
   updateScore(index, score) {
-    console.log(`${index}`)
-    console.log(`${score}`)
     const scores = this.state.material.scores;
     scores[index] = score;
     this.setState({
       material: {
         ...this.state.material,
         scores: [...scores],
+      }
+    });
+  }
+
+  addVectorEngrave() {
+    this.setState({
+      material: {
+        ...this.state.material,
+        vectors: [ ...this.state.material.vectors, EMPTY_VECTOR_ENGRAVE ],
+      },
+    });
+  }
+
+  updateVectorEngrave(index, vector) {
+    const vectors = this.state.material.vectors;
+    vectors[index] = vector;
+    this.setState({
+      material: {
+        ...this.state.material,
+        vectors: [...vectors],
+      }
+    });
+  }
+
+  addBitmapEngrave() {
+    this.setState({
+      material: {
+        ...this.state.material,
+        bitmaps: [ ...this.state.material.bitmaps, EMPTY_BITMAP_ENGRAVE ],
+      },
+    });
+  }
+
+  updateBitmapEngrave(index, bitmap) {
+    const bitmaps = this.state.material.bitmaps;
+    bitmaps[index] = bitmap;
+    this.setState({
+      material: {
+        ...this.state.material,
+        bitmaps: [...bitmaps],
       }
     });
   }
@@ -344,9 +381,13 @@ class App extends React.Component {
               mergeObject={(key, value) => this.mergeObjectState(key, value)}
               action={this.state.action}
               material={this.state.material}
+              addBitmapEngrave={this.addBitmapEngrave.bind(this)}
               addScore={this.addScore.bind(this)}
+              addVectorEngrave={this.addVectorEngrave.bind(this)}
+              updateBitmapEngrave={this.updateBitmapEngrave.bind(this)}
               updateCut={this.updateCut.bind(this)}
               updateScore={this.updateScore.bind(this)}
+              updateVectorEngrave={this.updateVectorEngrave.bind(this)}
             />
           </div>
         </div>
