@@ -69,12 +69,12 @@ function createSettings(params, tubeType) {
     score_settings: params.scores.map(score => {
       return createScoreSettings(score);
     }),
-    vector_engrave_settings: [
-
-    ],
-    bitmap_engrave_settings: [
-
-    ],
+    vector_engrave_settings: params.vectors.map(vector => {
+      return createVectorEngraveSettings(vector);
+    }),
+    bitmap_engrave_settings: params.bitmaps.map(bitmap => {
+      return createBitmapEngraveSettings(bitmap);
+    }),
   }
   return settings;
 }
@@ -100,13 +100,54 @@ function createScoreSettings(score) {
     speed: score.speed,
     passes: score.passes,
     focal_offset: score.focalOffset,
-    uses: [
-      "default",
-    ],
+    uses: null,
     display_color_mask: null,
     outcome: {
       name: score.name,
       dev_id: score.name.toLowerCase().replace(/[ ]/g, '-'),
+    },
+  };
+}
+
+/**
+ * Creates a new set of vector engrave settings.
+ */
+function createVectorEngraveSettings(vectorEngrave) {
+  return {
+    power: vectorEngrave.power,
+    speed: vectorEngrave.speed,
+    passes: vectorEngrave.passes,
+    focal_offset: vectorEngrave.focalOffset,
+    scangap: vectorEngrave.scanGap,
+    uses: null,
+    display_color_mask: null,
+    outcome: {
+      name: vectorEngrave.name,
+      dev_id: vectorEngrave.name.toLowerCase().replace(/[ ]/g, '-'),
+    },
+  };
+}
+
+/**
+ * Creates a new set of bitmap engrave settings.
+ */
+function createBitmapEngraveSettings(bitmapEngrave) {
+  return {
+    power: bitmapEngrave.power,
+    speed: bitmapEngrave.speed,
+    passes: bitmapEngrave.passes,
+    focal_offset: bitmapEngrave.focalOffset,
+    scangap: bitmapEngrave.scanGap,
+    render_method: null,
+    rescale_method: "LagrangeFilter",
+    minimum_gray_percent: null,
+    maximum_gray_percent: null,
+    horizontal_timing: null,
+    uses: null,
+    display_color_mask: null,
+    outcome: {
+      name: bitmapEngrave.name,
+      dev_id: bitmapEngrave.name.toLowerCase().replace(/[ ]/g, '-'),
     },
   };
 }

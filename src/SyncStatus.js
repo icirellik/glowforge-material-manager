@@ -7,7 +7,7 @@ class SyncStatus extends React.Component {
   render() {
     return (
       <div className={(this.props.synchronized) ? 'Status Status-green' : 'Status Status-red'}>
-        <IconCircle />
+        <IconCircle click={this.props.forceSync} />
       </div>
     );
   }
@@ -15,6 +15,7 @@ class SyncStatus extends React.Component {
 
 SyncStatus.propTypes = {
   synchronized: PropTypes.bool.isRequired,
+  forceSync: PropTypes.func.isRequired
 }
 
 export default SyncStatus;
