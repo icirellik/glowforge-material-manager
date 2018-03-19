@@ -62,8 +62,68 @@ class MaterialViewer extends React.Component {
                 <div className="App-field">
                   {`Passes ${score.passes}`}
                 </div>
-                <div className="App-field">
+                <div className="App-field" styles={{marginBottom: '10px'}}>
                   {`Focal Offset ${score.focalOffset}`}
+                </div>
+              </React.Fragment>
+            );
+          })
+        }
+
+        <div className="App-field">
+          <p>Vector Engrave Settings</p>
+        </div>
+        {
+          material.vectors.map(vector => {
+            return (
+              <React.Fragment>
+                <div className="App-field">
+                  {`Name ${vector.name}`}
+                </div>
+                <div className="App-field">
+                  {`Power ${vector.power}`}
+                </div>
+                <div className="App-field">
+                  {`Speed ${vector.speed}`}
+                </div>
+                <div className="App-field">
+                  {`Passes ${vector.passes}`}
+                </div>
+                <div className="App-field">
+                  {`Focal Offset ${vector.focalOffset}`}
+                </div>
+                <div className="App-field" styles={{marginBottom: '10px'}}>
+                  {`Scan Gap ${vector.scanGap}`}
+                </div>
+              </React.Fragment>
+            );
+          })
+        }
+
+        <div className="App-field">
+          <p>Bitmap Engrave Settings</p>
+        </div>
+        {
+          material.bitmaps.map(bitmap => {
+            return (
+              <React.Fragment>
+                <div className="App-field">
+                  {`Name ${bitmap.name}`}
+                </div>
+                <div className="App-field">
+                  {`Power ${bitmap.power}`}
+                </div>
+                <div className="App-field">
+                  {`Speed ${bitmap.speed}`}
+                </div>
+                <div className="App-field">
+                  {`Passes ${bitmap.passes}`}
+                </div>
+                <div className="App-field">
+                  {`Focal Offset ${bitmap.focalOffset}`}
+                </div>
+                <div className="App-field" styles={{marginBottom: '10px'}}>
+                  {`Scan Gap ${bitmap.scanGap}`}
                 </div>
               </React.Fragment>
             );

@@ -1,7 +1,9 @@
 import React from 'react';
-import Score from './Score';
+import BitmapEngrave from './BitmapEngrave';
 import Cut from './Cut';
 import MaterialButtonBar from './MaterialButtonBar';
+import Score from './Score';
+import VectorEngrave from './VectorEngrave';
 import {
   IconPlus,
 } from './Icons';
@@ -69,6 +71,42 @@ class MaterialEditor extends React.Component {
                 id={index}
                 score={score}
                 updateScore={this.props.updateScore}
+              />
+            );
+          })
+        }
+
+        <div className="App-sectionHeader">
+          <p>Vector Engrave Settings</p>
+          <div>
+            <IconPlus click={this.props.addVectorEngrave} />
+          </div>
+        </div>
+        {
+          material.vectors.map((vector, index) => {
+            return (
+              <VectorEngrave
+                id={index}
+                vector={vector}
+                updateVectorEngrave={this.props.updateVectorEngrave}
+              />
+            );
+          })
+        }
+
+        <div className="App-sectionHeader">
+          <p>Bitmap Engrave Settings</p>
+          <div>
+            <IconPlus click={this.props.addBitmapEngrave} />
+          </div>
+        </div>
+        {
+          material.bitmaps.map((bitmap, index) => {
+            return (
+              <BitmapEngrave
+                id={index}
+                bitmap={bitmap}
+                updateBitmapEngrave={this.props.updateBitmapEngrave}
               />
             );
           })
