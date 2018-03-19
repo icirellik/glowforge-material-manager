@@ -12,6 +12,7 @@ import {
 } from './lib/material';
 import { IconPlus } from './Icons';
 import {
+  forceSync,
   getShouldUpdate,
   storeMaterials,
   storeRawMaterials,
@@ -39,6 +40,8 @@ const EMPTY_MATERIAL = {
     focalOffset: null,
   },
   scores: [],
+  vectors: [],
+  bitmaps: [],
 };
 
 const EMPTY_SCORE = {
@@ -48,6 +51,30 @@ const EMPTY_SCORE = {
   passes: 1,
   focalOffset: null,
 };
+
+// const EMPTY_VECTOR_ENGRAVE = {
+//   name: '',
+//   power: 99,
+//   speed: 100,
+//   passes: 1,
+//   focal_offset: null,
+//   scangap: null,
+//   uses: null,
+// };
+
+// const EMPTY_BITMAP_ENGRAVE = {
+//   name: '',
+//   power: 99,
+//   speed: 100,
+//   passes: 1,
+//   focal_offset: null,
+//   scangap: null,
+//   render_method: null,
+//   rescale_method: "LagrangeFilter",
+//   minimum_gray_percent: null,
+//   maximum_gray_percent: null,
+//   horizontal_timing: null,
+// };
 
 class App extends React.Component {
   state = {
@@ -208,6 +235,13 @@ class App extends React.Component {
     await reload();
   }
 
+  async forceSyncronize() {
+    await forceSync();
+    this.setState({
+      synchronized: false,
+    });
+  }
+
   modeAdd() {
     this.setState({
       action: STATE_ADD,
@@ -271,7 +305,10 @@ class App extends React.Component {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Glowforge Material Manager</h1>
-          <SyncStatus synchronized={this.state.synchronized} />
+          <SyncStatus
+            synchronized={this.state.synchronized}
+            forceSync={this.forceSyncronize.bind(this)}
+          />
         </header>
         <Message message={this.state.message} />
         <div className="App-grid">
