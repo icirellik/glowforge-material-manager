@@ -1,5 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {
+  toDisplayCutSpeed,
+  toDisplayPower,
+  toRealCutSpeed,
+  toRealPower,
+} from './lib/glowforgeUnits';
 
 class Score extends React.Component {
   render() {
@@ -13,18 +19,7 @@ class Score extends React.Component {
             value={score.name}
             onChange={(event) => this.props.updateScore(id, {
               ...score,
-              name: event.target.value
-            })}
-          />
-        </div>
-        <div className="App-field">
-          <label>Power</label>
-          <input
-            type="number"
-            value={score.power}
-            onChange={(event) => this.props.updateScore(id, {
-              ...score,
-              power: Number.parseInt(event.target.value, 10)
+              name: event.target.value,
             })}
           />
         </div>
@@ -32,10 +27,25 @@ class Score extends React.Component {
           <label>Speed</label>
           <input
             type="number"
-            value={score.speed}
+            value={toDisplayCutSpeed(score.speed)}
+            min="100"
+            max="500"
             onChange={(event) => this.props.updateScore(id, {
               ...score,
-              speed: Number.parseInt(event.target.value, 10)
+              speed: toRealCutSpeed(Number.parseInt(event.target.value, 10)),
+            })}
+          />
+        </div>
+        <div className="App-field">
+          <label>Power ({`${toDisplayPower(score.power)}`})</label>
+          <input
+            type="number"
+            value={toDisplayPower(score.power, false)}
+            min="0"
+            max="101"
+            onChange={(event) => this.props.updateScore(id, {
+              ...score,
+              power: toRealPower(Number.parseInt(event.target.value, 10)),
             })}
           />
         </div>
@@ -46,7 +56,7 @@ class Score extends React.Component {
             value={score.passes}
             onChange={(event) => this.props.updateScore(id, {
               ...score,
-              passes: Number.parseInt(event.target.value, 10)
+              passes: Number.parseInt(event.target.value, 10),
             })}
           />
         </div>
@@ -57,7 +67,7 @@ class Score extends React.Component {
             value={score.focalOffset}
             onChange={(event) => this.props.updateScore(id, {
               ...score,
-              focalOffset: Number.parseInt(event.target.value, 10)
+              focalOffset: Number.parseInt(event.target.value, 10),
             })}
           />
         </div>

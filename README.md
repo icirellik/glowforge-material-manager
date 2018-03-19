@@ -143,6 +143,68 @@ you just want to quickly force a reset.
 chrome.storage.local.clear()
 ```
 
+Speed settings:
+
+The min and max cut and score speeds are defined as 100/4000.
+The min and max engrave speeds are defined as 100/8500.
+
+The maximum speed as defined by constant `a.a` is 8500.
+The constant `s` is defined as 100.
+The constant `o` is defined as 1000.
+
+Assumptions:
+
+maxVRSpeed is the maximun speed for vertical ramping.
+
+maxVRSpeed for cuts and scores is 500.
+maxVRSpeed for engraves is 1000.
+
+```javascript
+const maxMotorSpeed = 8500;
+const minUISpeed = 100;
+const maxUISpeed = 1000;
+
+function getMaxVRSpeed(minSpeed, maxSpeed) {
+    const speedDifference = maxSpeed - minSpeed;
+    const uiSpeedRange = maxUISpeed - minUISpeed
+    const vrSpeed = speedDifference / maxMotorSpeed * uiSpeedRange + minUISpeed;
+    return 100 * Math.round(vrSpeed / 100)
+}
+function calculateDisplaySpeed(displaySpeed, minSpeed, maxSpeed) {
+    const maxVRSpeed = getMaxVRSpeed(minSpeed, maxSpeed) - minUISpeed;
+    const speed = (displaySpeed - minSpeed) / (maxSpeed - minSpeed) * maxVRSpeed + minUISpeed;
+    return Math.round(speed)
+}
+function getRealSpeed(displaySpeed, minSpeed, maxSpeed) {
+    return (displaySpeed - minSpeed) / (getMaxVRSpeed(minSpeed, maxSpeed) - minUISpeed) * (maxSpeed - minSpeed) + minSpeed
+}
+
+// Cuts and Scores
+console.log(getRealSpeed(100, 100, 4000));
+console.log(getRealSpeed(200, 100, 4000));
+console.log(getRealSpeed(300, 100, 4000));
+console.log(getRealSpeed(400, 100, 4000));
+console.log(getRealSpeed(500, 100, 4000));
+
+console.log(calculateDisplaySpeed(100, 100, 4000));
+console.log(calculateDisplaySpeed(200, 100, 4000));
+console.log(calculateDisplaySpeed(300, 100, 4000));
+console.log(calculateDisplaySpeed(400, 100, 4000));
+console.log(calculateDisplaySpeed(500, 100, 4000));
+
+// Engraves
+console.log(getRealSpeed(100, 100, 8500));
+console.log(getRealSpeed(200, 100, 8500));
+console.log(getRealSpeed(300, 100, 8500));
+console.log(getRealSpeed(400, 100, 8500));
+console.log(getRealSpeed(500, 100, 8500));
+console.log(getRealSpeed(600, 100, 8500));
+console.log(getRealSpeed(700, 100, 8500));
+console.log(getRealSpeed(800, 100, 8500));
+console.log(getRealSpeed(900, 100, 8500));
+console.log(getRealSpeed(1000, 100, 8500));
+```
+
 ## Data
 
 The data folder contains an up-to-date list of materials that Glowforge has

@@ -124,6 +124,8 @@ class App extends React.Component {
   }
 
   updateCut(cut) {
+    console.log(`Cut`);
+    console.log(cut);
     this.setState({
       material: {
         ...this.state.material,
@@ -142,6 +144,8 @@ class App extends React.Component {
   }
 
   updateScore(index, score) {
+    console.log(`Score ${index}`);
+    console.log(score);
     const scores = this.state.material.scores;
     scores[index] = score;
     this.setState({
@@ -162,6 +166,8 @@ class App extends React.Component {
   }
 
   updateVectorEngrave(index, vector) {
+    console.log(`Vector ${index}`);
+    console.log(vector);
     const vectors = this.state.material.vectors;
     vectors[index] = vector;
     this.setState({
@@ -182,6 +188,8 @@ class App extends React.Component {
   }
 
   updateBitmapEngrave(index, bitmap) {
+    console.log(`Bitmap ${index}`);
+    console.log(bitmap);
     const bitmaps = this.state.material.bitmaps;
     bitmaps[index] = bitmap;
     this.setState({
