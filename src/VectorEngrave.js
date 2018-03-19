@@ -1,5 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {
+  toDisplayEngraveSpeed,
+  toDisplayPower,
+  toRealEngraveSpeed,
+  toRealPower,
+} from './lib/glowforgeUnits';
+
 
 class VectorEngrave extends React.Component {
   render() {
@@ -18,24 +25,28 @@ class VectorEngrave extends React.Component {
           />
         </div>
         <div className="App-field">
-          <label>Power</label>
+          <label>Speed</label>
           <input
             type="number"
-            value={vector.power}
+            value={toDisplayEngraveSpeed(vector.speed)}
+            min="100"
+            max="1000"
             onChange={(event) => this.props.updateVectorEngrave(id, {
               ...vector,
-              power: Number.parseInt(event.target.value, 10)
+              speed: toRealEngraveSpeed(Number.parseInt(event.target.value, 10)),
             })}
           />
         </div>
         <div className="App-field">
-          <label>Speed</label>
+        <label>Power ({`${toDisplayPower(vector.power)}`})</label>
           <input
             type="number"
-            value={vector.speed}
+            value={toDisplayPower(vector.power, false)}
+            min="0"
+            max="101"
             onChange={(event) => this.props.updateVectorEngrave(id, {
               ...vector,
-              speed: Number.parseInt(event.target.value, 10)
+              power: toRealPower(Number.parseInt(event.target.value, 10)),
             })}
           />
         </div>
@@ -46,7 +57,7 @@ class VectorEngrave extends React.Component {
             value={vector.passes}
             onChange={(event) => this.props.updateVectorEngrave(id, {
               ...vector,
-              passes: Number.parseInt(event.target.value, 10)
+              passes: Number.parseInt(event.target.value, 10),
             })}
           />
         </div>
@@ -57,7 +68,7 @@ class VectorEngrave extends React.Component {
             value={vector.focalOffset}
             onChange={(event) => this.props.updateVectorEngrave(id, {
               ...vector,
-              focalOffset: Number.parseInt(event.target.value, 10)
+              focalOffset: Number.parseInt(event.target.value, 10),
             })}
           />
         </div>
@@ -68,7 +79,7 @@ class VectorEngrave extends React.Component {
             value={vector.scanGap}
             onChange={(event) => this.props.updateVectorEngrave(id, {
               ...vector,
-              scanGap: Number.parseInt(event.target.value, 10)
+              scanGap: Number.parseInt(event.target.value, 10),
             })}
           />
         </div>

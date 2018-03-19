@@ -1,5 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {
+  toDisplayCutSpeed,
+  toDisplayPower,
+  toRealCutSpeed,
+  toRealPower,
+} from './lib/glowforgeUnits';
+
 
 class Cut extends React.Component {
   render() {
@@ -7,24 +14,28 @@ class Cut extends React.Component {
     return (
       <React.Fragment>
         <div className="App-field">
-          <label>Power</label>
+          <label>Speed</label>
           <input
             type="number"
-            value={cut.power}
+            value={toDisplayCutSpeed(cut.speed)}
+            min="100"
+            max="500"
             onChange={(event) => this.props.updateCut({
               ...cut,
-              power: Number.parseInt(event.target.value, 10)
+              speed: toRealCutSpeed(Number.parseInt(event.target.value, 10)),
             })}
           />
         </div>
         <div className="App-field">
-          <label>Speed</label>
+        <label>Power ({`${toDisplayPower(cut.power)}`})</label>
           <input
             type="number"
-            value={cut.speed}
+            value={toDisplayPower(cut.power, false)}
+            min="0"
+            max="101"
             onChange={(event) => this.props.updateCut({
               ...cut,
-              speed: Number.parseInt(event.target.value, 10)
+              power: toRealPower(Number.parseInt(event.target.value, 10)),
             })}
           />
         </div>
@@ -35,7 +46,7 @@ class Cut extends React.Component {
             value={cut.passes}
             onChange={(event) => this.props.updateCut({
               ...cut,
-              passes: Number.parseInt(event.target.value, 10)
+              passes: Number.parseInt(event.target.value, 10),
             })}
           />
         </div>
@@ -46,7 +57,7 @@ class Cut extends React.Component {
             value={cut.focalOffset}
             onChange={(event) => this.props.updateCut({
               ...cut,
-              focalOffset: Number.parseInt(event.target.value, 10)
+              focalOffset: Number.parseInt(event.target.value, 10),
             })}
           />
         </div>

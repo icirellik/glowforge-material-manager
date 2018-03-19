@@ -1,5 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {
+  toDisplayEngraveSpeed,
+  toDisplayPower,
+  toRealEngraveSpeed,
+  toRealPower,
+} from './lib/glowforgeUnits';
 
 class BitmapEngrave extends React.Component {
   render() {
@@ -13,18 +19,7 @@ class BitmapEngrave extends React.Component {
             value={bitmap.name}
             onChange={(event) => this.props.updateBitmapEngrave(id, {
               ...bitmap,
-              name: event.target.value
-            })}
-          />
-        </div>
-        <div className="App-field">
-          <label>Power</label>
-          <input
-            type="number"
-            value={bitmap.power}
-            onChange={(event) => this.props.updateBitmapEngrave(id, {
-              ...bitmap,
-              power: Number.parseInt(event.target.value, 10)
+              name: event.target.value,
             })}
           />
         </div>
@@ -32,10 +27,25 @@ class BitmapEngrave extends React.Component {
           <label>Speed</label>
           <input
             type="number"
-            value={bitmap.speed}
+            value={toDisplayEngraveSpeed(bitmap.speed)}
+            min="100"
+            max="1000"
             onChange={(event) => this.props.updateBitmapEngrave(id, {
               ...bitmap,
-              speed: Number.parseInt(event.target.value, 10)
+              speed: toRealEngraveSpeed(Number.parseInt(event.target.value, 10)),
+            })}
+          />
+        </div>
+        <div className="App-field">
+        <label>Power ({`${toDisplayPower(bitmap.power)}`})</label>
+          <input
+            type="number"
+            value={toDisplayPower(bitmap.power, false)}
+            min="0"
+            max="101"
+            onChange={(event) => this.props.updateBitmapEngrave(id, {
+              ...bitmap,
+              power: toRealPower(Number.parseInt(event.target.value, 10)),
             })}
           />
         </div>
@@ -46,7 +56,7 @@ class BitmapEngrave extends React.Component {
             value={bitmap.passes}
             onChange={(event) => this.props.updateBitmapEngrave(id, {
               ...bitmap,
-              passes: Number.parseInt(event.target.value, 10)
+              passes: Number.parseInt(event.target.value, 10),
             })}
           />
         </div>
@@ -57,7 +67,7 @@ class BitmapEngrave extends React.Component {
             value={bitmap.focalOffset}
             onChange={(event) => this.props.updateBitmapEngrave(id, {
               ...bitmap,
-              focalOffset: Number.parseInt(event.target.value, 10)
+              focalOffset: Number.parseInt(event.target.value, 10),
             })}
           />
         </div>
@@ -68,7 +78,7 @@ class BitmapEngrave extends React.Component {
             value={bitmap.scanGap}
             onChange={(event) => this.props.updateBitmapEngrave(id, {
               ...bitmap,
-              scanGap: Number.parseInt(event.target.value, 10)
+              scanGap: Number.parseInt(event.target.value, 10),
             })}
           />
         </div>
