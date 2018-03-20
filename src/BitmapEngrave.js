@@ -64,7 +64,7 @@ class BitmapEngrave extends React.Component {
           />
         </div>
         <div className="App-field">
-          <label>Focal Offset</label>
+          <label>Focal Offset (mm)</label>
           <input
             type="number"
             value={bitmap.focalOffset}

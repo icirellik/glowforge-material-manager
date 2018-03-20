@@ -64,7 +64,7 @@ class Score extends React.Component {
           />
         </div>
         <div className="App-field" style={{marginBottom: '10px'}}>
-          <label>Focal Offset</label>
+          <label>Focal Offset (mm)</label>
           <input
             type="number"
             value={score.focalOffset}
