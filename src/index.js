@@ -11,12 +11,12 @@ chrome.tabs.query({
 }, (tabs) => {
   const glowforgeConnected = tabs[0].url.indexOf('app.glowforge.com') !== -1;
   chrome.storage.local.get(null, result => {
-    console.log('Refreshing materials.');
-    console.log(result);
     ReactDOM.render(<App
       connected={glowforgeConnected}
       materials={result.materials}
       rawMaterials={result.rawMaterials}
+      shouldUpdate={result.shouldUpdate}
+      tempMaterial={result.tempMaterial}
     />, document.getElementById('root'));
   });
 });

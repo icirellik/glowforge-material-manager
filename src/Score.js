@@ -24,6 +24,7 @@ class Score extends React.Component {
               ...score,
               name: event.target.value,
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -37,6 +38,7 @@ class Score extends React.Component {
               ...score,
               speed: toRealCutSpeed(Number.parseInt(event.target.value, 10)),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -50,6 +52,7 @@ class Score extends React.Component {
               ...score,
               power: toRealPower(Number.parseInt(event.target.value, 10)),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -61,6 +64,7 @@ class Score extends React.Component {
               ...score,
               passes: Number.parseInt(event.target.value, 10),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field" style={{marginBottom: '10px'}}>
@@ -72,6 +76,7 @@ class Score extends React.Component {
               ...score,
               focalOffset: precisionRound(Number.parseFloat(event.target.value, 10), 3),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
       </React.Fragment>
@@ -88,6 +93,7 @@ Score.propTypes = {
     power: PropTypes.number.isRequired,
     speed: PropTypes.number.isRequired,
   }).isRequired,
+  storeLocalMaterial: PropTypes.func.isRequired,
   updateScore: PropTypes.func.isRequired,
 }
 

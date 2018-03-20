@@ -97,6 +97,15 @@ Features to be added:
 * Bitmap Engrave Settings
 * CSV export
 
+# Force Update
+
+The extension will update automatically. However, it can take several hours for
+that to happen on its own. To force a plugin to update:
+
+* browse to chrome://extensions
+* toggle 'Developer mode'
+* click the 'Update extensions now' button
+
 # Development
 
 This chrome extension is a basic React application with no frills. The project
@@ -203,6 +212,70 @@ console.log(getRealSpeed(700, 100, 8500));
 console.log(getRealSpeed(800, 100, 8500));
 console.log(getRealSpeed(900, 100, 8500));
 console.log(getRealSpeed(1000, 100, 8500));
+```
+
+Scan Gap Settings:
+
+```javascript
+const MILLIMETERS_IN_INCH = 25.4;
+const STEP_SIZE = .01875;
+const STANDARD_SCAN_GAP_INCHES = STEP_SIZE / MILLIMETERS_IN_INCH;
+
+function roundToNearest5(linesPerInch) {
+  return 5 * Math.round(linesPerInch / 5)
+}
+
+function getDisplayLinesPerInch(scanGap) {
+  return roundToNearest5(1 / (scanGap * STANDARD_SCAN_GAP_INCHES))
+}
+
+function getExactLinesPerInch(scanGap) {
+  return Math.round(1 / (scanGap * STANDARD_SCAN_GAP_INCHES))
+}
+
+function getSteps(linesPerInch) {
+  return Math.round(1 / linesPerInch / STANDARD_SCAN_GAP_INCHES)
+}
+
+console.log(getExactLinesPerInch(1));
+console.log(getExactLinesPerInch(2));
+console.log(getExactLinesPerInch(3));
+console.log(getExactLinesPerInch(4));
+console.log(getExactLinesPerInch(5));
+console.log(getExactLinesPerInch(6));
+console.log(getExactLinesPerInch(7));
+console.log(getExactLinesPerInch(8));
+console.log(getExactLinesPerInch(9));
+console.log(getExactLinesPerInch(10));
+console.log(getExactLinesPerInch(11));
+console.log(getExactLinesPerInch(12));
+console.log(getExactLinesPerInch(13));
+console.log(getExactLinesPerInch(14));
+console.log(getExactLinesPerInch(15));
+console.log(getExactLinesPerInch(16));
+console.log(getExactLinesPerInch(17));
+console.log(getExactLinesPerInch(18));
+console.log(getExactLinesPerInch(19));
+
+console.log(getDisplayLinesPerInch(1));
+console.log(getDisplayLinesPerInch(2));
+console.log(getDisplayLinesPerInch(3));
+console.log(getDisplayLinesPerInch(4));
+console.log(getDisplayLinesPerInch(5));
+console.log(getDisplayLinesPerInch(6));
+console.log(getDisplayLinesPerInch(7));
+console.log(getDisplayLinesPerInch(8));
+console.log(getDisplayLinesPerInch(9));
+console.log(getDisplayLinesPerInch(10));
+console.log(getDisplayLinesPerInch(11));
+console.log(getDisplayLinesPerInch(12));
+console.log(getDisplayLinesPerInch(13));
+console.log(getDisplayLinesPerInch(14));
+console.log(getDisplayLinesPerInch(15));
+console.log(getDisplayLinesPerInch(16));
+console.log(getDisplayLinesPerInch(17));
+console.log(getDisplayLinesPerInch(18));
+console.log(getDisplayLinesPerInch(19));
 ```
 
 ## Data

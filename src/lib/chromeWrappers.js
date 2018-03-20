@@ -24,6 +24,18 @@ async function getRawMaterials() {
   });
 }
 
+async function getTempMaterial() {
+  return new Promise(resolve => {
+    chrome.storage.local.get(null, result => {
+      if (result && result.tempMaterial) {
+        resolve(result.tempMaterial);
+      } else {
+        resolve({});
+      }
+    });
+  });
+}
+
 async function getShouldUpdate() {
   return new Promise(resolve => {
     chrome.storage.local.get(null, result => {
@@ -57,6 +69,26 @@ async function storeRawMaterials(rawMaterials) {
   });
 }
 
+async function storeTempMaterial(material) {
+  return new Promise(resolve => {
+    chrome.storage.local.set({
+      'tempMaterial': material,
+    }, () => {
+      resolve(material);
+    });
+  });
+}
+
+async function clearTempMaterial() {
+  return new Promise(resolve => {
+    chrome.storage.local.set({
+      'tempMaterial': null,
+    }, () => {
+      resolve(true);
+    });
+  });
+}
+
 async function forceSync() {
   return new Promise(resolve => {
     chrome.storage.local.set({
@@ -67,21 +99,38 @@ async function forceSync() {
   });
 }
 
+async function inGlowforgeTab() {
+  return new Promise(resolve => {
+    chrome.tabs.query({
+      'active': true,
+      'lastFocusedWindow': true
+    }, (tabs) => {
+      resolve(tabs[0].url.indexOf('app.glowforge.com') !== -1);
+    });
+  });
+}
 
 async function reload() {
-  return new Promise(resolve => {
-    chrome.tabs.reload(null, { bypassCache: true }, () => {
+  return new Promise(async resolve => {
+    if (await inGlowforgeTab()) {
+      chrome.tabs.reload(null, { bypassCache: true }, () => {
+        resolve();
+      });
+    } else {
       resolve();
-    });
-  })
+    }
+  });
 }
 
 export {
+  clearTempMaterial,
   forceSync,
   getMaterials,
   getRawMaterials,
   getShouldUpdate,
+  getTempMaterial,
   reload,
   storeMaterials,
   storeRawMaterials,
+  storeTempMaterial,
 }
