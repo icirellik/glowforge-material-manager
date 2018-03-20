@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  precisionRound,
+} from './lib/utils';
+import {
   toDisplayEngraveSpeed,
   toDisplayPower,
   toRealEngraveSpeed,
@@ -67,7 +70,7 @@ class BitmapEngrave extends React.Component {
             value={bitmap.focalOffset}
             onChange={(event) => this.props.updateBitmapEngrave(id, {
               ...bitmap,
-              focalOffset: Number.parseInt(event.target.value, 10),
+              focalOffset: precisionRound(Number.parseFloat(event.target.value, 10), 3),
             })}
           />
         </div>

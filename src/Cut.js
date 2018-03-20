@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  precisionRound,
+} from './lib/utils';
+import {
   toDisplayCutSpeed,
   toDisplayPower,
   toRealCutSpeed,
@@ -53,11 +56,11 @@ class Cut extends React.Component {
         <div className="App-field">
           <label>Focal Offset</label>
           <input
-            type="text"
+            type="number"
             value={cut.focalOffset}
             onChange={(event) => this.props.updateCut({
               ...cut,
-              focalOffset: Number.parseInt(event.target.value, 10),
+              focalOffset: precisionRound(Number.parseFloat(event.target.value, 10), 3),
             })}
           />
         </div>
