@@ -6,27 +6,28 @@ import {
   STATE_EDIT,
   STATE_SELECTED,
  } from './state';
+ import './MaterialButtonBar.css';
 
 class MaterialButtonBar extends React.Component {
   render() {
     switch (this.props.action) {
       case STATE_ADD:
         return (
-          <div className="App-buttons">
+          <div className="Material-buttons">
             <button onClick={this.props.addMaterial}>Create</button>
             <button onClick={this.props.cancelMaterial}>Cancel</button>
           </div>
         );
       case STATE_EDIT:
         return (
-          <div className="App-buttons">
+          <div className="Material-buttons">
             <button onClick={() => this.props.editMaterial(this.props.material.thickName, this.props.material.name)}>Update</button>
             <button onClick={this.props.cancelMaterial}>Cancel</button>
           </div>
         );
       case STATE_SELECTED:
         return (
-          <div className="App-buttons">
+          <div className="Material-buttons">
             <button onClick={this.props.cancelMaterial}>Cancel</button>
           </div>
         );

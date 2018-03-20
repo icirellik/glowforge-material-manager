@@ -7,6 +7,9 @@ import {
   toDisplayEngraveSpeed,
   toDisplayPower,
 } from './lib/glowforgeUnits';
+import {
+  precisionRound,
+} from './lib/utils';
 
 class MaterialViewer extends React.Component {
   render() {
@@ -36,10 +39,10 @@ class MaterialViewer extends React.Component {
           <p>Cut Settings</p>
         </div>
         <div className="App-field">
-          {`Speed ${toDisplayCutSpeed(material.cut.speed)} (${material.cut.speed})`}
+          {`Speed ${toDisplayCutSpeed(material.cut.speed)} (${precisionRound(material.cut.speed, 2)})`}
         </div>
         <div className="App-field">
-          {`Power ${toDisplayPower(material.cut.power)} (${material.cut.power})`}
+          {`Power ${toDisplayPower(material.cut.power)} (${precisionRound(material.cut.power, 2)})`}
         </div>
         <div className="App-field">
           {`Passes ${material.cut.passes}`}
@@ -59,10 +62,10 @@ class MaterialViewer extends React.Component {
                   {`Name ${score.name}`}
                 </div>
                 <div className="App-field">
-                {`Speed ${toDisplayCutSpeed(score.speed)} (${score.speed})`}
+                {`Speed ${toDisplayCutSpeed(score.speed)} (${precisionRound(score.speed, 2)})`}
                 </div>
                 <div className="App-field">
-                  {`Power ${toDisplayPower(score.power)} (${score.power})`}
+                  {`Power ${toDisplayPower(score.power)} (${precisionRound(score.power, 2)})`}
                 </div>
                 <div className="App-field">
                   {`Passes ${score.passes}`}
@@ -86,10 +89,10 @@ class MaterialViewer extends React.Component {
                   {`Name ${vector.name}`}
                 </div>
                 <div className="App-field">
-                  {`Speed ${toDisplayEngraveSpeed(vector.speed)} (${vector.speed})`}
+                  {`Speed ${toDisplayEngraveSpeed(vector.speed)} (${precisionRound(vector.speed, 2)})`}
                 </div>
                 <div className="App-field">
-                {`Power ${toDisplayPower(vector.power)} (${vector.power})`}
+                {`Power ${toDisplayPower(vector.power)} (${precisionRound(vector.power, 2)})`}
                 </div>
                 <div className="App-field">
                   {`Passes ${vector.passes}`}
@@ -116,10 +119,10 @@ class MaterialViewer extends React.Component {
                   {`Name ${bitmap.name}`}
                 </div>
                 <div className="App-field">
-                  {`Speed ${toDisplayEngraveSpeed(bitmap.speed)} (${bitmap.speed})`}
+                  {`Speed ${toDisplayEngraveSpeed(bitmap.speed)} (${precisionRound(bitmap.speed, 2)})`}
                 </div>
                 <div className="App-field">
-                {`Power ${toDisplayPower(bitmap.power)} (${bitmap.power})`}
+                {`Power ${toDisplayPower(bitmap.power)} (${precisionRound(bitmap.power, 2)})`}
                 </div>
                 <div className="App-field">
                   {`Passes ${bitmap.passes}`}
