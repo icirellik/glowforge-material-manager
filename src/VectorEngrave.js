@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  precisionRound,
+} from './lib/utils';
+import {
   toDisplayEngraveSpeed,
   toDisplayPower,
   toRealEngraveSpeed,
@@ -62,13 +65,13 @@ class VectorEngrave extends React.Component {
           />
         </div>
         <div className="App-field">
-          <label>Focal Offset</label>
+          <label>Focal Offset (mm)</label>
           <input
             type="number"
             value={vector.focalOffset}
             onChange={(event) => this.props.updateVectorEngrave(id, {
               ...vector,
-              focalOffset: Number.parseInt(event.target.value, 10),
+              focalOffset: precisionRound(Number.parseFloat(event.target.value, 10), 3),
             })}
           />
         </div>

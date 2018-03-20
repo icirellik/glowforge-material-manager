@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  precisionRound,
+} from './lib/utils';
+import {
   toDisplayCutSpeed,
   toDisplayPower,
   toRealCutSpeed,
@@ -67,7 +70,7 @@ class Score extends React.Component {
             value={score.focalOffset}
             onChange={(event) => this.props.updateScore(id, {
               ...score,
-              focalOffset: Number.parseInt(event.target.value, 10),
+              focalOffset: precisionRound(Number.parseFloat(event.target.value, 10), 3),
             })}
           />
         </div>
