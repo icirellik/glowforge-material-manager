@@ -30,8 +30,21 @@ function onResponse(response) {
  */
 setInterval(() => {
   chrome.runtime.sendMessage(
-    extensionId,
-    {  },
+    extensionId, {
+      materialCheck: true,
+    },
     onResponse
   );
 }, 5000);
+
+/**
+ * Set a one-time refresh on content injection. New tabs, refreshes.
+ */
+setTimeout(() => {
+  chrome.runtime.sendMessage(
+    extensionId, {
+      forceRefresh: true,
+    },
+    () => {}
+  );
+})
