@@ -22,16 +22,33 @@ function refreshMaterials(callback) {
   });
 }
 
+/**
+ * Forces the should update flag to be true, creates a one time refresh.
+ */
+function forceRefresh() {
+  // Set a one time refresh on content injection. New tabs, refreshes.
+  chrome.storage.local.set({
+    'shouldUpdate': true,
+  });
+}
+
+/**
+ * Handle messaging with the Glowforge UI.
+ */
 chrome.runtime.onMessageExternal.addListener(
   function(request, sender, sendResponse) {
-    refreshMaterials(sendResponse);
-    return true;
+    if (request.materialCheck) {
+      refreshMaterials(sendResponse);
+      return true;
+    } else if (request.forceRefresh) {
+      forceRefresh();
+    }
   }
 );
 
 chrome.storage.local.get(null, result => {
   if (result && result.materials) {
-    // Set a one time load refresh.
+    // Set a one time load refresh on browser restart.
     chrome.storage.local.set({
       'shouldUpdate': true,
     });
