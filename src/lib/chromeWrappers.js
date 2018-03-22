@@ -1,6 +1,24 @@
 /* global chrome:true */
 
-async function getMaterials() {
+export async function clearTempMaterial() {
+  return new Promise(resolve => {
+    chrome.storage.local.set({
+      'tempMaterial': null,
+    }, () => {
+      resolve(true);
+    });
+  });
+}
+
+export async function getBytesInUse() {
+  return new Promise(resolve => {
+    chrome.storage.sync.getBytesInUse(null, bytesInUse => {
+      resolve(bytesInUse);
+    });
+  });
+}
+
+export async function getMaterials() {
   return new Promise(resolve => {
     chrome.storage.local.get(null, result => {
       if (result && result.materials) {
@@ -12,7 +30,7 @@ async function getMaterials() {
   });
 }
 
-async function getRawMaterials() {
+export async function getRawMaterials() {
   return new Promise(resolve => {
     chrome.storage.local.get(null, result => {
       if (result && result.rawMaterials) {
@@ -24,7 +42,19 @@ async function getRawMaterials() {
   });
 }
 
-async function getTempMaterial() {
+export async function getSynchronizedMaterials() {
+  return new Promise(resolve => {
+    chrome.storage.sync.get(null, result => {
+      if (result) {
+        resolve(result);
+      } else {
+        resolve([]);
+      }
+    });
+  });
+}
+
+export async function getTempMaterial() {
   return new Promise(resolve => {
     chrome.storage.local.get(null, result => {
       if (result && result.tempMaterial) {
@@ -36,7 +66,7 @@ async function getTempMaterial() {
   });
 }
 
-async function getShouldUpdate() {
+export async function getShouldUpdate() {
   return new Promise(resolve => {
     chrome.storage.local.get(null, result => {
       if (result && result.shouldUpdate) {
@@ -47,7 +77,16 @@ async function getShouldUpdate() {
     });
   });
 }
-async function storeMaterials(materials) {
+
+export async function removeSynchronizedMaterial(materialHash) {
+  return new Promise(resolve => {
+    chrome.storage.sync.remove(materialHash, () => {
+      resolve(materialHash);
+    });
+  });
+}
+
+export async function storeMaterials(materials) {
   return new Promise(resolve => {
     chrome.storage.local.set({
       'materials': materials,
@@ -58,7 +97,7 @@ async function storeMaterials(materials) {
   });
 }
 
-async function storeRawMaterials(rawMaterials) {
+export async function storeRawMaterials(rawMaterials) {
   return new Promise(resolve => {
     chrome.storage.local.set({
       'rawMaterials': rawMaterials,
@@ -69,7 +108,20 @@ async function storeRawMaterials(rawMaterials) {
   });
 }
 
-async function storeTempMaterial(material) {
+export async function storeSynchronizedMaterial(hash, material) {
+  return new Promise(resolve => {
+    chrome.storage.sync.set({
+      [hash]: material,
+    }, () => {
+      chrome.storage.sync.getBytesInUse(null, bytesInUse => {
+        console.log(`cloud bytes in use ${bytesInUse}`);
+        resolve(hash);
+      });
+    });
+  });
+}
+
+export async function storeTempMaterial(material) {
   return new Promise(resolve => {
     chrome.storage.local.set({
       'tempMaterial': material,
@@ -79,17 +131,7 @@ async function storeTempMaterial(material) {
   });
 }
 
-async function clearTempMaterial() {
-  return new Promise(resolve => {
-    chrome.storage.local.set({
-      'tempMaterial': null,
-    }, () => {
-      resolve(true);
-    });
-  });
-}
-
-async function forceSync() {
+export async function forceSync() {
   return new Promise(resolve => {
     chrome.storage.local.set({
       'shouldUpdate': true,
@@ -99,7 +141,7 @@ async function forceSync() {
   });
 }
 
-async function inGlowforgeTab() {
+export async function inGlowforgeTab() {
   return new Promise(resolve => {
     chrome.tabs.query({
       'active': true,
@@ -110,7 +152,7 @@ async function inGlowforgeTab() {
   });
 }
 
-async function reload() {
+export async function reload() {
   return new Promise(async resolve => {
     if (await inGlowforgeTab()) {
       chrome.tabs.reload(null, { bypassCache: true }, () => {
@@ -120,17 +162,4 @@ async function reload() {
       resolve();
     }
   });
-}
-
-export {
-  clearTempMaterial,
-  forceSync,
-  getMaterials,
-  getRawMaterials,
-  getShouldUpdate,
-  getTempMaterial,
-  reload,
-  storeMaterials,
-  storeRawMaterials,
-  storeTempMaterial,
 }

@@ -17,6 +17,12 @@
   color: white;
 }
 
+.App-header span {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
 .App-intro .icon {
   color: #001f23;
   display: inline-block;

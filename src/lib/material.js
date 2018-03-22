@@ -2,12 +2,21 @@
 
 import {
   getMaterials,
+  getRawMaterials,
+  getSynchronizedMaterials,
+  removeSynchronizedMaterial,
   storeMaterials,
   storeRawMaterials,
-  getRawMaterials
+  storeSynchronizedMaterial,
 } from './chromeWrappers';
+import {
+  compress,
+  decompress,
+  hashRawMaterial,
+  hashTitle,
+} from './utils';
 
-async function removeMaterial(materialId) {
+export async function removeMaterial(materialId) {
   const materials = await getMaterials();
   const newMaterials = await storeMaterials(
     materials.filter(material => material.id !== materialId)
@@ -16,8 +25,16 @@ async function removeMaterial(materialId) {
   return newMaterials;
 }
 
-async function removeRawMaterial(title) {
-  console.log(title)
+export async function removeMaterialTitle(title) {
+  const materials = await getMaterials();
+  const newMaterials = await storeMaterials(
+    materials.filter(material => material.title !== title)
+  );
+  console.log(`Material removed ${title}`);
+  return newMaterials;
+}
+
+export async function removeRawMaterial(title) {
   const rawMaterials = await getRawMaterials();
   const newRawMaterials = await storeRawMaterials(
     rawMaterials.filter(material => `${material.thickName} ${material.name}` !== title)
@@ -26,10 +43,122 @@ async function removeRawMaterial(title) {
   return newRawMaterials;
 }
 
+export async function sendCloudMaterial(rawMaterial) {
+  const hash = await hashTitle(rawMaterial);
+  const compressed = compress(toTinyMaterial(rawMaterial));
+
+  // Sync , check hashes for changes.
+  await storeSynchronizedMaterial(hash, compressed);
+}
+
+export async function removeCloudMaterial(rawMaterial) {
+  const hash = await hashTitle(rawMaterial);
+  return await removeSynchronizedMaterial(hash);
+}
+
+export async function fullSynchronizedMaterials(remove=false) {
+  console.log(`Synchronizing Full ${remove}`);
+  const synchronizedMaterials = await getSynchronizedMaterials();
+  const rawMaterials = await getRawMaterials();
+
+  console.log(synchronizedMaterials);
+  const currentTitleHashes = [];
+  const currentDataHashes = [];
+  const rawMaterialTitleMap = {};
+  const rawMaterialDataMap = {};
+  for (let i = 0; i < rawMaterials.length; i++) {
+    const material = rawMaterials[i];
+    const titleHash = await hashTitle(material);
+    const dataHash = await hashRawMaterial(material);
+    currentTitleHashes.push(titleHash);
+    currentDataHashes.push(dataHash);
+    rawMaterialTitleMap[titleHash] = material;
+    rawMaterialDataMap[dataHash] = material;
+  }
+  console.log('Current:');
+  console.log(currentTitleHashes);
+  console.log(currentDataHashes);
+  console.log(rawMaterialTitleMap);
+  console.log(rawMaterialDataMap);
+
+  const removeableHashes = currentTitleHashes.filter(hash => {
+    return !synchronizedMaterials.hasOwnProperty(hash);
+  });
+  console.log('Removeable:');
+  console.log(removeableHashes);
+
+  const newHashes = Object.keys(synchronizedMaterials).filter(hash => {
+    return currentTitleHashes.indexOf(hash) === -1;
+  });
+  console.log('Added:');
+  console.log(newHashes);
+
+  const updatedHashes = currentTitleHashes.filter(hash => {
+    return synchronizedMaterials.hasOwnProperty(hash);
+  });
+  console.log('Existing:');
+  console.log(updatedHashes);
+
+  // Remove old.
+  if (remove) {
+    const removable = removeableHashes.map(hash => {
+      return rawMaterialTitleMap[hash];
+    });
+    console.log(removable)
+    for (let i = 0; i < removable.length; i++) {
+      const material = await removable[i];
+      const title = `${material.thickName} ${material.name}`;
+      console.log(`Will remove ${title}`);
+      await removeMaterialTitle(title);
+      await removeRawMaterial(title);
+    }
+  }
+
+  // Create new.
+  for (let i = 0; i < newHashes.length; i++) {
+    const hash = newHashes[i];
+    const binaryData = synchronizedMaterials[hash];
+    const json = toFullMaterial(decompress(binaryData));
+    console.log(`Adding ${json.thickName} ${json.name}`);
+
+    const full = await getMaterials();
+    const raw = await getRawMaterials();
+    const newMaterial = createMaterial(json, raw.length);
+
+    await storeMaterials([...full, newMaterial]);
+    await storeRawMaterials([...raw, json]);
+  }
+
+  // Update existing.
+  for (let i = 0; i < updatedHashes; i++) {
+    const hash = updatedHashes[i];
+    const binaryData = synchronizedMaterials[hash];
+    const json = toFullMaterial(decompress(binaryData));
+    const dataHash = hashRawMaterial(json);
+
+    if (!rawMaterialDataMap.hasOwnProperty(dataHash)) {
+      // Remove
+      const title = `${json.thickName} ${json.name}`;
+      await removeMaterialTitle(title);
+      await removeRawMaterial(title);
+
+      // Replace
+      const full = await getMaterials();
+      const raw = await getRawMaterials();
+      const newMaterial = createMaterial(json, raw.length);
+
+      await storeMaterials([...full, newMaterial]);
+      await storeRawMaterials([...raw, json]);
+    }
+
+  }
+  console.log('Synchronized');
+}
+
 /**
  * Creates a new custom material.
  */
-function createMaterial(params, id) {
+export function createMaterial(params, id) {
   let material = {
     id: `Custom:${id}`,
     title: `${params.thickName} ${params.name}`,
@@ -152,8 +281,110 @@ function createBitmapEngraveSettings(bitmapEngrave) {
   };
 }
 
-export {
-  createMaterial,
-  removeMaterial,
-  removeRawMaterial,
-};
+export function toTinyMaterial(fullMaterial) {
+  return {
+    n: fullMaterial.name,
+    t: fullMaterial.thickName,
+    d: fullMaterial.thickness,
+    c: {
+      p: fullMaterial.cut.power,
+      s: fullMaterial.cut.speed,
+      a: fullMaterial.cut.passes,
+      f: fullMaterial.cut.focalOffset,
+    },
+    s: fullMaterial.scores.map(score => toTinyScore(score)),
+    v: fullMaterial.vectors.map(vector => toTinyVectorEngrave(vector)),
+    b: fullMaterial.bitmaps.map(bitmap => toTinyBitmmapEngrave(bitmap)),
+  };
+}
+
+export function toFullMaterial(tinyMaterial) {
+  return {
+    name: tinyMaterial.n,
+    thickName: tinyMaterial.t,
+    thickness: tinyMaterial.d,
+    cut: {
+      power: tinyMaterial.c.p,
+      speed: tinyMaterial.c.s,
+      passes: tinyMaterial.c.a,
+      focalOffset: tinyMaterial.c.f,
+    },
+    scores: tinyMaterial.s.map(score => toFullScore(score)),
+    vectors: tinyMaterial.v.map(vector => toFullVectorEngrave(vector)),
+    bitmaps: tinyMaterial.b.map(bitmap => toFullBitmapEngrave(bitmap)),
+  };
+}
+
+function toTinyScore(score) {
+  return {
+    n: score.name,
+    p: score.power,
+    s: score.speed,
+    a: score.passes,
+    f: score.focalOffset,
+  };
+}
+
+function toFullScore(score) {
+  return {
+    name: score.n,
+    power: score.p,
+    speed: score.s,
+    passes: score.a,
+    focalOffset: score.f,
+  };
+}
+
+function toTinyVectorEngrave(vectorEngrave) {
+  return {
+    n: vectorEngrave.name,
+    p: vectorEngrave.power,
+    s: vectorEngrave.speed,
+    a: vectorEngrave.passes,
+    f: vectorEngrave.focalOffset,
+    g: vectorEngrave.scanGap,
+  };
+}
+
+function toFullVectorEngrave(vectorEngrave) {
+  return {
+    name: vectorEngrave.n,
+    power: vectorEngrave.p,
+    speed: vectorEngrave.s,
+    passes: vectorEngrave.a,
+    focalOffset: vectorEngrave.f,
+    scanGap: vectorEngrave.g,
+  };
+}
+
+function toTinyBitmmapEngrave(bitmapEngrave) {
+  return {
+    n: bitmapEngrave.name,
+    p: bitmapEngrave.power,
+    s: bitmapEngrave.speed,
+    a: bitmapEngrave.passes,
+    f: bitmapEngrave.focalOffset,
+    g: bitmapEngrave.scanGap,
+    rm: bitmapEngrave.renderMethod,
+    re: bitmapEngrave.rescaleMethod,
+    ip: bitmapEngrave.minimumGrayPercent,
+    ap: bitmapEngrave.maximumGrayPercent,
+    t: bitmapEngrave.horizontaTiming,
+  };
+}
+
+function toFullBitmapEngrave(bitmapEngrave) {
+  return {
+    name: bitmapEngrave.n,
+    power: bitmapEngrave.p,
+    speed: bitmapEngrave.s,
+    passes: bitmapEngrave.a,
+    focalOffset: bitmapEngrave.f,
+    scanGap: bitmapEngrave.g,
+    renderMethod: bitmapEngrave.rm,
+    rescaleMethod: bitmapEngrave.re,
+    minimumGrayPercent: bitmapEngrave.ip,
+    maximumGrayPercent: bitmapEngrave.ap,
+    horizontaTiming: bitmapEngrave.t,
+  };
+}
