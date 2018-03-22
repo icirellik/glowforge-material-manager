@@ -25,6 +25,7 @@ class VectorEngrave extends React.Component {
               ...vector,
               name: event.target.value
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -38,6 +39,7 @@ class VectorEngrave extends React.Component {
               ...vector,
               speed: toRealEngraveSpeed(Number.parseInt(event.target.value, 10)),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -51,6 +53,7 @@ class VectorEngrave extends React.Component {
               ...vector,
               power: toRealPower(Number.parseInt(event.target.value, 10)),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -62,6 +65,7 @@ class VectorEngrave extends React.Component {
               ...vector,
               passes: Number.parseInt(event.target.value, 10),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -73,6 +77,7 @@ class VectorEngrave extends React.Component {
               ...vector,
               focalOffset: precisionRound(Number.parseFloat(event.target.value, 10), 3),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field" style={{marginBottom: '10px'}}>
@@ -84,6 +89,7 @@ class VectorEngrave extends React.Component {
               ...vector,
               scanGap: Number.parseInt(event.target.value, 10),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
       </React.Fragment>
@@ -101,6 +107,7 @@ VectorEngrave.propTypes = {
     scanGap: PropTypes.number.isRequired,
     speed: PropTypes.number.isRequired,
   }).isRequired,
+  storeLocalMaterial: PropTypes.func.isRequired,
   updateVectorEngrave: PropTypes.func.isRequired,
 }
 

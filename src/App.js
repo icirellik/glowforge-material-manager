@@ -12,11 +12,12 @@ import {
 } from './lib/material';
 import { IconPlus } from './Icons';
 import {
+  clearTempMaterial,
   forceSync,
   getShouldUpdate,
+  reload,
   storeMaterials,
   storeRawMaterials,
-  reload
 } from './lib/chromeWrappers';
 import {
   STATE_ADD,
@@ -24,61 +25,20 @@ import {
   STATE_EDIT,
   STATE_SELECTED,
  } from './state';
+ import {
+  EMPTY_BITMAP_ENGRAVE,
+  EMPTY_MATERIAL,
+  EMPTY_SCORE,
+  EMPTY_VECTOR_ENGRAVE,
+ } from './lib/constants';
  import './App.css';
  import logo from './logo.svg';
-
-// What a raw empty material looks like, this form is smaller and easier to work
-// with then the generated material for the Glowforge UI.
-const EMPTY_MATERIAL = {
-  name: '',
-  thickName: '',
-  thickness: null,
-  cut: {
-    power: 99,
-    speed: 100,
-    passes: 1,
-    focalOffset: null,
-  },
-  scores: [],
-  vectors: [],
-  bitmaps: [],
-};
-
-const EMPTY_SCORE = {
-  name: '',
-  power: 99,
-  speed: 100,
-  passes: 1,
-  focalOffset: null,
-};
-
-const EMPTY_VECTOR_ENGRAVE = {
-  name: '',
-  power: 99,
-  speed: 100,
-  passes: 1,
-  focalOffset: null,
-  scanGap: null,
-};
-
-const EMPTY_BITMAP_ENGRAVE = {
-  name: '',
-  power: 99,
-  speed: 100,
-  passes: 1,
-  focalOffset: null,
-  scanGap: null,
-  renderMethod: null,
-  rescaleMethod: "LagrangeFilter",
-  minimumGrayPercent: null,
-  maximumGrayPercent: null,
-  horizontaTiming: null,
-};
 
 class App extends React.Component {
   state = {
     action: STATE_DISPLAY,
     message: '',
+    messageColor: null,
     material: {
       ...EMPTY_MATERIAL,
     },
@@ -88,9 +48,20 @@ class App extends React.Component {
   };
 
   componentDidMount() {
+
+    const additionalState = {};
+    if (this.props.tempMaterial) {
+      additionalState.action = STATE_ADD;
+      additionalState.material = this.props.tempMaterial;
+      additionalState.message = 'Custom material settings recovered from a previous session.';
+      additionalState.messageColor = null;
+    }
+
     this.setState({
       materials: this.props.materials,
       rawMaterials: this.props.rawMaterials,
+      synchronized: !this.props.shouldUpdate,
+      ...additionalState,
     });
 
     setInterval(async () => {
@@ -209,6 +180,7 @@ class App extends React.Component {
     if (duplicate) {
       this.setState({
         message: 'A material with the same name already exists.',
+        messageColor: '#CC3A4B',
       });
       return;
     }
@@ -218,12 +190,14 @@ class App extends React.Component {
     const newRawMaterials = [...this.state.rawMaterials, this.state.material];
     await storeMaterials(newMaterials)
     await storeRawMaterials(newRawMaterials);
+    await clearTempMaterial();
 
     this.setState({
       action: STATE_DISPLAY,
       materials: newMaterials,
       rawMaterials: newRawMaterials,
       message: '',
+      messageColor: null,
       material: { ...EMPTY_MATERIAL },
       synchronized: false,
     });
@@ -238,6 +212,7 @@ class App extends React.Component {
     if (duplicates.length !== 1) {
       this.setState({
         message: 'Could not update material.',
+        messageColor: '#CC3A4B',
       });
       return;
     }
@@ -258,6 +233,7 @@ class App extends React.Component {
 
     await storeMaterials(newMaterials)
     await storeRawMaterials(newRawMaterials);
+    await clearTempMaterial();
 
     this.setState({
       action: STATE_DISPLAY,
@@ -296,6 +272,18 @@ class App extends React.Component {
     });
   }
 
+  async modeCancel() {
+    await clearTempMaterial();
+    this.setState({
+      action: STATE_DISPLAY,
+      material: {
+        ...EMPTY_MATERIAL,
+      },
+      message: '',
+      messageColor: null,
+    });
+  }
+
   modeEdit(title) {
     const material = this.state.rawMaterials.find(material => {
       return `${material.thickName} ${material.name}` === title;
@@ -305,16 +293,6 @@ class App extends React.Component {
       material: {
         ...material,
       },
-    });
-  }
-
-  modeCancel() {
-    this.setState({
-      action: STATE_DISPLAY,
-      material: {
-        ...EMPTY_MATERIAL,
-      },
-      message: '',
     });
   }
 
@@ -331,31 +309,18 @@ class App extends React.Component {
   }
 
   render() {
-    if (!this.props.connected) {
-      return (
-        <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <h1 className="App-title">Glowforge Material Manager</h1>
-          </header>
-          <p className="App-intro">
-            Please login to the glowforge ui to use this tool.
-          </p>
-        </div>
-      );
-    }
-
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Glowforge Material Manager</h1>
           <SyncStatus
-            synchronized={this.state.synchronized}
+            connected={this.props.connected}
             forceSync={this.forceSyncronize.bind(this)}
+            synchronized={this.state.synchronized}
           />
         </header>
-        <Message message={this.state.message} />
+        <Message message={this.state.message} color={this.state.messageColor} />
         <div className="App-grid">
           <div className="col-materials">
             <div className="App-materials">
@@ -373,25 +338,25 @@ class App extends React.Component {
                 Add your own custom material settings here.
               </p>
               <div style={{float: 'right', margin: '14px 14px 14px 0'}}>
-                <IconPlus click={() => { this.modeAdd(); }} />
+                <IconPlus click={this.modeAdd.bind(this)} />
               </div>
             </div>
             <MaterialViewer
               action={this.state.action}
-              material={this.state.material}
               cancelMaterial={this.modeCancel.bind(this)}
+              material={this.state.material}
             />
             <MaterialEditor
-              addMaterial={this.addMaterial.bind(this)}
-              editMaterial={this.editMaterial.bind(this)}
-              cancelMaterial={this.modeCancel.bind(this)}
-              merge={(key, value) => this.mergeState(key, value)}
-              mergeObject={(key, value) => this.mergeObjectState(key, value)}
               action={this.state.action}
-              material={this.state.material}
               addBitmapEngrave={this.addBitmapEngrave.bind(this)}
+              addMaterial={this.addMaterial.bind(this)}
               addScore={this.addScore.bind(this)}
               addVectorEngrave={this.addVectorEngrave.bind(this)}
+              cancelMaterial={this.modeCancel.bind(this)}
+              editMaterial={this.editMaterial.bind(this)}
+              material={this.state.material}
+              merge={(key, value) => this.mergeState(key, value)}
+              mergeObject={(key, value) => this.mergeObjectState(key, value)}
               updateBitmapEngrave={this.updateBitmapEngrave.bind(this)}
               updateCut={this.updateCut.bind(this)}
               updateScore={this.updateScore.bind(this)}

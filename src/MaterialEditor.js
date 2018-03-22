@@ -5,6 +5,9 @@ import MaterialButtonBar from './MaterialButtonBar';
 import Score from './Score';
 import VectorEngrave from './VectorEngrave';
 import {
+  storeTempMaterial,
+} from './lib/chromeWrappers';
+import {
   IconPlus,
 } from './Icons';
 import {
@@ -13,6 +16,13 @@ import {
 } from './state';
 
 class MaterialEditor extends React.Component {
+
+  storeLocalMaterial() {
+    if (this.props.action === STATE_ADD) {
+      storeTempMaterial(this.props.material);
+    }
+  }
+
   render() {
 
     const {
@@ -33,6 +43,7 @@ class MaterialEditor extends React.Component {
             type="text"
             value={material.thickName}
             onChange={(event) => this.props.merge('thickName', event.target.value)}
+            onBlur={() => this.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -42,6 +53,7 @@ class MaterialEditor extends React.Component {
             type="text"
             value={material.name}
             onChange={(event) => this.props.merge('name', event.target.value)}
+            onBlur={() => this.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -50,13 +62,18 @@ class MaterialEditor extends React.Component {
             type="number"
             value={material.thickness}
             onChange={(event) => this.props.merge('thickness', event.target.value)}
+            onBlur={() => this.storeLocalMaterial()}
           />
         </div>
 
         <div className="App-sectionHeader">
           <p>Cut Settings</p>
         </div>
-        <Cut cut={material.cut} updateCut={this.props.updateCut} />
+        <Cut
+          cut={material.cut}
+          storeLocalMaterial={this.storeLocalMaterial.bind(this)}
+          updateCut={this.props.updateCut}
+        />
 
         <div className="App-sectionHeader">
           <p>Score Settings</p>
@@ -70,6 +87,7 @@ class MaterialEditor extends React.Component {
               <Score
                 id={index}
                 score={score}
+                storeLocalMaterial={this.storeLocalMaterial.bind(this)}
                 updateScore={this.props.updateScore}
               />
             );
@@ -87,8 +105,9 @@ class MaterialEditor extends React.Component {
             return (
               <VectorEngrave
                 id={index}
-                vector={vector}
+                storeLocalMaterial={this.storeLocalMaterial.bind(this)}
                 updateVectorEngrave={this.props.updateVectorEngrave}
+                vector={vector}
               />
             );
           })
@@ -104,8 +123,9 @@ class MaterialEditor extends React.Component {
           material.bitmaps.map((bitmap, index) => {
             return (
               <BitmapEngrave
-                id={index}
                 bitmap={bitmap}
+                id={index}
+                storeLocalMaterial={this.storeLocalMaterial.bind(this)}
                 updateBitmapEngrave={this.props.updateBitmapEngrave}
               />
             );

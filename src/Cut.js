@@ -27,6 +27,7 @@ class Cut extends React.Component {
               ...cut,
               speed: toRealCutSpeed(Number.parseInt(event.target.value, 10)),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -40,6 +41,7 @@ class Cut extends React.Component {
               ...cut,
               power: toRealPower(Number.parseInt(event.target.value, 10)),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -51,6 +53,7 @@ class Cut extends React.Component {
               ...cut,
               passes: Number.parseInt(event.target.value, 10),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -62,6 +65,7 @@ class Cut extends React.Component {
               ...cut,
               focalOffset: precisionRound(Number.parseFloat(event.target.value, 10), 3),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
       </React.Fragment>
@@ -76,6 +80,7 @@ Cut.propTypes = {
     power: PropTypes.number.isRequired,
     speed: PropTypes.number.isRequired,
   }).isRequired,
+  storeLocalMaterial: PropTypes.func.isRequired,
   updateCut: PropTypes.func.isRequired,
 }
 

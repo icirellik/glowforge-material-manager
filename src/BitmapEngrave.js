@@ -24,6 +24,7 @@ class BitmapEngrave extends React.Component {
               ...bitmap,
               name: event.target.value,
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -37,6 +38,7 @@ class BitmapEngrave extends React.Component {
               ...bitmap,
               speed: toRealEngraveSpeed(Number.parseInt(event.target.value, 10)),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -50,6 +52,7 @@ class BitmapEngrave extends React.Component {
               ...bitmap,
               power: toRealPower(Number.parseInt(event.target.value, 10)),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -61,6 +64,7 @@ class BitmapEngrave extends React.Component {
               ...bitmap,
               passes: Number.parseInt(event.target.value, 10),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
@@ -72,6 +76,7 @@ class BitmapEngrave extends React.Component {
               ...bitmap,
               focalOffset: precisionRound(Number.parseFloat(event.target.value, 10), 3),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field" style={{marginBottom: '10px'}}>
@@ -83,6 +88,7 @@ class BitmapEngrave extends React.Component {
               ...bitmap,
               scanGap: Number.parseInt(event.target.value, 10),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
       </React.Fragment>
@@ -100,6 +106,7 @@ BitmapEngrave.propTypes = {
     scanGap: PropTypes.number.isRequired,
     speed: PropTypes.number.isRequired,
   }).isRequired,
+  storeLocalMaterial: PropTypes.func.isRequired,
   updateBitmapEngrave: PropTypes.func.isRequired,
 }
 
