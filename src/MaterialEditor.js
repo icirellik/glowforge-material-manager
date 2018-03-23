@@ -42,7 +42,9 @@ class MaterialEditor extends React.Component {
             disabled={action === STATE_EDIT}
             type="text"
             value={material.thickName}
-            onChange={(event) => this.props.merge('thickName', event.target.value)}
+            onChange={(event) => {
+              this.props.updateMaterial('thickName', event.target.value);
+            }}
             onBlur={() => this.storeLocalMaterial()}
           />
         </div>
@@ -52,7 +54,9 @@ class MaterialEditor extends React.Component {
             disabled={action === STATE_EDIT}
             type="text"
             value={material.name}
-            onChange={(event) => this.props.merge('name', event.target.value)}
+            onChange={(event) => {
+              this.props.updateMaterial('name', event.target.value);
+            }}
             onBlur={() => this.storeLocalMaterial()}
           />
         </div>
@@ -61,11 +65,12 @@ class MaterialEditor extends React.Component {
           <input
             type="number"
             value={material.thickness}
-            onChange={(event) => this.props.merge('thickness', event.target.value)}
+            onChange={(event) => {
+              this.props.updateMaterial('thickness', event.target.value);
+            }}
             onBlur={() => this.storeLocalMaterial()}
           />
         </div>
-
         <div className="App-sectionHeader">
           <p>Cut Settings</p>
         </div>
@@ -74,7 +79,6 @@ class MaterialEditor extends React.Component {
           storeLocalMaterial={this.storeLocalMaterial.bind(this)}
           updateCut={this.props.updateCut}
         />
-
         <div className="App-sectionHeader">
           <p>Score Settings</p>
           <div>
@@ -93,7 +97,6 @@ class MaterialEditor extends React.Component {
             );
           })
         }
-
         <div className="App-sectionHeader">
           <p>Vector Engrave Settings</p>
           <div>
@@ -112,7 +115,6 @@ class MaterialEditor extends React.Component {
             );
           })
         }
-
         <div className="App-sectionHeader">
           <p>Bitmap Engrave Settings</p>
           <div>
@@ -136,7 +138,7 @@ class MaterialEditor extends React.Component {
           addMaterial={this.props.addMaterial}
           cancelMaterial={this.props.cancelMaterial}
           editMaterial={this.props.editMaterial}
-          material={this.props.material}
+          title={`${this.props.material.thickName} ${this.props.material.name}`}
         />
       </React.Fragment>
     );

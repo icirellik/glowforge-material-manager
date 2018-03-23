@@ -21,7 +21,7 @@ class MaterialButtonBar extends React.Component {
       case STATE_EDIT:
         return (
           <div className="Material-buttons">
-            <button onClick={() => this.props.editMaterial(this.props.material.thickName, this.props.material.name)}>Update</button>
+            <button onClick={() => this.props.editMaterial(this.props.title)}>Update</button>
             <button onClick={this.props.cancelMaterial}>Cancel</button>
           </div>
         );
@@ -41,6 +41,10 @@ class MaterialButtonBar extends React.Component {
 
 MaterialButtonBar.propTypes = {
   action: PropTypes.string.isRequired,
+  addMaterial: PropTypes.func.isRequired,
+  cancelMaterial: PropTypes.func.isRequired,
+  editMaterial: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
 }
 
 export default MaterialButtonBar;

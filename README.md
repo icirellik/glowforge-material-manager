@@ -58,43 +58,82 @@ Click the `minus` icon to the right of the custom material. Be careful there is
 currently no undo or confirmation prompt, the material will be removed
 immediately.
 
-Setting explanations:
-
-**Power**
-
-When choosing a power be aware that 100 enables the Full Power toggle in the
-Glowforge UI. To select a precision power choose the value that you want to use
-and enter that value minus 1 in the Material Manager.
-
-If you wish to set the precision power to 100, set the value as 99.
-If you wish to set the precision power to 50, set the value to 49.
-
-**Speed**
-
-The minimum speed that the Glowforge UI will allow is 100, if a value lower
-than that is set in the Material Manager it will be overridden in the UI.
-
-**Passes**
-
-Can be set to any value that you wish, the Glowforge UI restricts this
-to 1, 2, and 3 passes only. Be careful not to set the passes to high.
-
-**Focal Offset**
-
-This value is optional and the Glowforge UI will select a default if left blank.
-
-This tool does not allow editing of the Proofgrade settings, it would not be
-difficult to add this feature it just wansn't my main priority.
-
 To verify the settings that you entered are correct in the Glowforge UI. First,
 select the custom material in the Glowforge UI, choose the Proofgrade option you
 want such as cut, and then select the manual version. The setting presented
 should align with those set in the extension.
 
+## Settings explained
+
+**Power**
+
+The power settings in the extension have been designed to align with the
+precision power in the Glowforge UI. The valid range is 0-100 and that will
+appear the same in the UI.
+
+To toggle the Full Power setting in the Glowforge UI set the power to 101. To
+help understand when Full Power will be enabled the Glowforge UI value will be
+displayed in the label to the left of the Power field.
+
+**Speed**
+
+There are two different speed ranges, one for cuts/score and another for
+vector/bitmap engraves. The values that are set for speed in the Material
+Manager will match those that are displayed in the Glowforge UI.
+
+When choosing a speed for cuts/scores the valid range is 100-500.
+
+When selecting a speed for engraves the valid range is 100-1000.
+
+Please take note when selecting a speed that the Glowforge UI will display and
+"Unexpected Error has Occurred" message when trying to print with a speed that
+is outside of the valid ranges.
+
+**Passes**
+
+Can be set to any positive integer value, the Glowforge UI restricts this to 1,
+2, and 3 passes only. Be careful not to set the passes to high.
+
+**Focal Offset**
+
+This value is optional and the Glowforge UI will select a default if left blank.
+
+** Scan Gap / LPI
+
+What is scan gap? Well as you know, when the laser is in engrave mode it moves
+(or scans) back and forth horizontally. The literature will refer to this as the
+X axis. The scan gap is the space between these horizontal lines. It is often
+described as the distance the laser moves on the Y axis.
+
+In summary the smaller the scan gap the closer together engrave lines will be
+and the longer it will take to engrave.
+
+For for informaton on Scan Gap please read the follow [guide](http://craftykitsurou.com/misadventures-in-laser-cutting-scan-gap/)
+
+Below is achart with some scan gap settings for the Glowforge:
+
+| Scan Gap Settings | Glowforge UI LPI |
+|------------------------|----------------------|
+| 1 | 1355 |
+| 2  | 675 |
+| 3 | 450 |
+| 4 | 340 |
+| 5 | 270 |
+| 6 | 225 |
+| 7 | 195 |
+| 8 | 170 |
+| 9 | 150 |
+| 10 | 135 |
+| 12 | 115
+| 18 | 75 |
+
+## Proofgrade Materials
+
+This tool does not allow editing of the Proofgrade settings, it would not be
+difficult to add this feature it just wansn't my main priority.
+
 Features to be added:
 
-* Vector Engrave Settings
-* Bitmap Engrave Settings
 * CSV export
 
 # Force Update
@@ -247,15 +286,6 @@ console.log(getExactLinesPerInch(7));
 console.log(getExactLinesPerInch(8));
 console.log(getExactLinesPerInch(9));
 console.log(getExactLinesPerInch(10));
-console.log(getExactLinesPerInch(11));
-console.log(getExactLinesPerInch(12));
-console.log(getExactLinesPerInch(13));
-console.log(getExactLinesPerInch(14));
-console.log(getExactLinesPerInch(15));
-console.log(getExactLinesPerInch(16));
-console.log(getExactLinesPerInch(17));
-console.log(getExactLinesPerInch(18));
-console.log(getExactLinesPerInch(19));
 
 console.log(getDisplayLinesPerInch(1));
 console.log(getDisplayLinesPerInch(2));
@@ -267,15 +297,6 @@ console.log(getDisplayLinesPerInch(7));
 console.log(getDisplayLinesPerInch(8));
 console.log(getDisplayLinesPerInch(9));
 console.log(getDisplayLinesPerInch(10));
-console.log(getDisplayLinesPerInch(11));
-console.log(getDisplayLinesPerInch(12));
-console.log(getDisplayLinesPerInch(13));
-console.log(getDisplayLinesPerInch(14));
-console.log(getDisplayLinesPerInch(15));
-console.log(getDisplayLinesPerInch(16));
-console.log(getDisplayLinesPerInch(17));
-console.log(getDisplayLinesPerInch(18));
-console.log(getDisplayLinesPerInch(19));
 ```
 
 ## Data

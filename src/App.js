@@ -7,13 +7,16 @@ import Message from './Message';
 import SyncStatus from './SyncStatus';
 import {
   createMaterial,
+  removeCloudMaterial,
   removeMaterial,
   removeRawMaterial,
+  sendCloudMaterial,
 } from './lib/material';
 import { IconPlus } from './Icons';
 import {
   clearTempMaterial,
   forceSync,
+  getBytesInUse,
   getShouldUpdate,
   reload,
   storeMaterials,
@@ -37,6 +40,7 @@ import {
 class App extends React.Component {
   state = {
     action: STATE_DISPLAY,
+    cloudStorageBytesUsed: 0,
     message: '',
     messageColor: null,
     material: {
@@ -48,16 +52,16 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-
     const additionalState = {};
     if (this.props.tempMaterial) {
       additionalState.action = STATE_ADD;
       additionalState.material = this.props.tempMaterial;
-      additionalState.message = 'Custom material settings recovered from a previous session.';
+      additionalState.message = 'Custom material settings have been resotred from a previous session.';
       additionalState.messageColor = null;
     }
 
     this.setState({
+      cloudStorageBytesUsed: this.props.cloudStorageBytesUsed,
       materials: this.props.materials,
       rawMaterials: this.props.rawMaterials,
       synchronized: !this.props.shouldUpdate,
@@ -65,16 +69,22 @@ class App extends React.Component {
     });
 
     setInterval(async () => {
+      const cloudStorageBytesUsed = await getBytesInUse();
       const shouldUpdate = await getShouldUpdate();
       if (this.state.synchronized === shouldUpdate) {
         this.setState({
+          cloudStorageBytesUsed,
           synchronized: !shouldUpdate,
+        });
+      } else {
+        this.setState({
+          cloudStorageBytesUsed,
         });
       }
     }, 5000);
   }
 
-  mergeState(key, value) {
+  updateMaterial(key, value) {
     this.setState({
       material: {
         ...this.state.material,
@@ -83,20 +93,7 @@ class App extends React.Component {
     });
   }
 
-  mergeObjectState(key, value) {
-    this.setState({
-      material: {
-        ...this.state.material,
-        [key]: {
-          ...this.state.material[key], ...value,
-        },
-      },
-    });
-  }
-
   updateCut(cut) {
-    console.log(`Cut`);
-    console.log(cut);
     this.setState({
       material: {
         ...this.state.material,
@@ -115,8 +112,6 @@ class App extends React.Component {
   }
 
   updateScore(index, score) {
-    console.log(`Score ${index}`);
-    console.log(score);
     const scores = this.state.material.scores;
     scores[index] = score;
     this.setState({
@@ -137,8 +132,6 @@ class App extends React.Component {
   }
 
   updateVectorEngrave(index, vector) {
-    console.log(`Vector ${index}`);
-    console.log(vector);
     const vectors = this.state.material.vectors;
     vectors[index] = vector;
     this.setState({
@@ -159,8 +152,6 @@ class App extends React.Component {
   }
 
   updateBitmapEngrave(index, bitmap) {
-    console.log(`Bitmap ${index}`);
-    console.log(bitmap);
     const bitmaps = this.state.material.bitmaps;
     bitmaps[index] = bitmap;
     this.setState({
@@ -192,26 +183,29 @@ class App extends React.Component {
     await storeRawMaterials(newRawMaterials);
     await clearTempMaterial();
 
+    // Send materials to the cloud
+    await sendCloudMaterial(this.state.material);
+
     this.setState({
       action: STATE_DISPLAY,
+      material: { ...EMPTY_MATERIAL },
       materials: newMaterials,
-      rawMaterials: newRawMaterials,
       message: '',
       messageColor: null,
-      material: { ...EMPTY_MATERIAL },
+      rawMaterials: newRawMaterials,
       synchronized: false,
     });
   }
 
-  async editMaterial(thickName, name) {
+  async editMaterial(title) {
 
     const duplicates = this.state.materials.filter(material => {
-      return material.title === `${thickName} ${name}`;
+      return material.title === `${title}`;
     });
 
     if (duplicates.length !== 1) {
       this.setState({
-        message: 'Could not update material.',
+        message: 'Could not update. A material with the same name already exists.',
         messageColor: '#CC3A4B',
       });
       return;
@@ -223,29 +217,39 @@ class App extends React.Component {
 
     // Store
     const newMaterials = this.state.materials.filter(material => {
-      return material.title !== `${thickName} ${name}`;
+      return material.title !== `${title}`;
     });
     newMaterials.push(newMaterial)
     const newRawMaterials = this.state.rawMaterials.filter(material => {
-      return `${material.thickName} ${material.name}` !== `${thickName} ${name}`;
+      return `${material.thickName} ${material.name}` !== `${title}`;
     });
     newRawMaterials.push(this.state.material);
 
     await storeMaterials(newMaterials)
     await storeRawMaterials(newRawMaterials);
-    await clearTempMaterial();
+
+    // Send updated materials to the cloud
+    await removeCloudMaterial(this.state.materials.find(material => {
+      return material.title === `${title}`;
+    }));
+    await sendCloudMaterial(this.state.material);
 
     this.setState({
       action: STATE_DISPLAY,
-      materials: newMaterials,
-      rawMaterials: newRawMaterials,
-      message: '',
       material: { ...EMPTY_MATERIAL },
+      materials: newMaterials,
+      message: '',
+      messageColor: null,
+      rawMaterials: newRawMaterials,
       synchronized: false,
     });
   }
 
   async remove(id, title) {
+    console.log(title)
+    await removeCloudMaterial(this.state.rawMaterials.find(material => {
+      return `${material.thickName} ${material.name}` === `${title}`;
+    }));
     const materials = await removeMaterial(id);
     const rawMaterials = await removeRawMaterial(title);
     this.setState({
@@ -263,7 +267,12 @@ class App extends React.Component {
     });
   }
 
-  modeAdd() {
+  /**
+   * Switches to `add material` mode and resets the current material state to
+   * a blank material.
+   */
+  async modeAdd() {
+    await clearTempMaterial();
     this.setState({
       action: STATE_ADD,
       material: {
@@ -272,6 +281,10 @@ class App extends React.Component {
     });
   }
 
+  /**
+   * Cancels the current input mode, resetting the materiall state and clearing
+   * any system messages.
+   */
   async modeCancel() {
     await clearTempMaterial();
     this.setState({
@@ -284,7 +297,14 @@ class App extends React.Component {
     });
   }
 
-  modeEdit(title) {
+  /**
+   * Switches to `edit material` mode and opens up an existing material for
+   * alterations.
+   *
+   * @param {string} title The material tile.
+   */
+  async modeEdit(title) {
+    await clearTempMaterial();
     const material = this.state.rawMaterials.find(material => {
       return `${material.thickName} ${material.name}` === title;
     });
@@ -296,7 +316,14 @@ class App extends React.Component {
     });
   }
 
-  modeSelect(title) {
+  /**
+   * Switches to `selected mode` opens up a material for viewing its current
+   * settings.
+   *
+   * @param {string} title The material title.
+   */
+  async modeSelect(title) {
+    await clearTempMaterial();
     const material = this.state.rawMaterials.find(material => {
       return `${material.thickName} ${material.name}` === title;
     });
@@ -319,16 +346,17 @@ class App extends React.Component {
             forceSync={this.forceSyncronize.bind(this)}
             synchronized={this.state.synchronized}
           />
+          <span>{`Cloud Storage Used ${this.state.cloudStorageBytesUsed} / 102,400`}</span>
         </header>
         <Message message={this.state.message} color={this.state.messageColor} />
         <div className="App-grid">
           <div className="col-materials">
             <div className="App-materials">
               <MaterialList
-                materials={this.state.materials}
                 editMaterial={this.modeEdit.bind(this)}
-                selectMaterial={this.modeSelect.bind(this)}
+                materials={this.state.materials}
                 removeMaterial={this.remove.bind(this)}
+                selectMaterial={this.modeSelect.bind(this)}
               />
             </div>
           </div>
@@ -355,10 +383,9 @@ class App extends React.Component {
               cancelMaterial={this.modeCancel.bind(this)}
               editMaterial={this.editMaterial.bind(this)}
               material={this.state.material}
-              merge={(key, value) => this.mergeState(key, value)}
-              mergeObject={(key, value) => this.mergeObjectState(key, value)}
               updateBitmapEngrave={this.updateBitmapEngrave.bind(this)}
               updateCut={this.updateCut.bind(this)}
+              updateMaterial={this.updateMaterial.bind(this)}
               updateScore={this.updateScore.bind(this)}
               updateVectorEngrave={this.updateVectorEngrave.bind(this)}
             />
@@ -371,7 +398,9 @@ class App extends React.Component {
 
 App.propTypes = {
   connected: PropTypes.bool.isRequired,
+  cloudStorageBytesUsed: PropTypes.number.isRequired,
   materials: PropTypes.array.isRequired,
+  tempMaterial: PropTypes.object,
 };
 
 export default App;
