@@ -164,6 +164,15 @@ This project relies on the fact that the Glowforge UI is a React/Redux
 application and makes use of the actions that are available to inject custom
 materials that may be used.
 
+** Releasing **
+
+Create the package
+
+```sh
+yarn build
+zip -r glowforge-material-manager-0.0.0.zip build/.
+```
+
 Set a material.
 
 ```node

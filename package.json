@@ -1,6 +1,6 @@
 {
   "name": "glowforge-material-editor",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "private": true,
   "dependencies": {
     "pako": "^1.0.6",
@@ -12,6 +12,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "release-test": "yarn build && mkdir -p releases && cd build && sed -i 's/Glowforge Material Manager/Glowforge Material Manager Test/g' manifest.json && sed -i \"s/const extensionId = 'mncodmmfhiaolnkmjdjdemghkbcbiing'/\\\/\\\/ const extensionId = 'mncodmmfhiaolnkmjdjdemghkbcbiing'/g\" content.js && sed -i \"s/\\\/\\\/ const extensionId = 'oehpknagabkobfeijndckpapicmfoknn'/const extensionId = 'oehpknagabkobfeijndckpapicmfoknn'/g\" content.js && zip -r glowforge-material-manager-test.zip . && mv -f *.zip ../releases && cd ..",
+    "release": "yarn build && mkdir -p releases && cd build && sed -i \"s/const extensionId = 'mncodmmfhiaolnkmjdjdemghkbcbiing'/\\\/\\\/ const extensionId = 'mncodmmfhiaolnkmjdjdemghkbcbiing'/g\" content.js && sed -i \"s/\\\/\\\/ const extensionId = 'adabmafjmdcjnihkmggljljeopjfghii'/const extensionId = 'adabmafjmdcjnihkmggljljeopjfghii'/g\" content.js && zip -r glowforge-material-manager.zip . && mv -f *.zip ../releases && cd .."
   }
 }
