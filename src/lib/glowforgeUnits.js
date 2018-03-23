@@ -16,7 +16,7 @@ function getMaxVRSpeed(minSpeed, maxSpeed) {
 /**
  * Converts a Glowforge internal speed to the GFUI Speed.
  */
-function toDisplaySpeed(rawSpeed, minSpeed, maxSpeed) {
+export function toDisplaySpeed(rawSpeed, minSpeed, maxSpeed) {
   const maxVRSpeed = getMaxVRSpeed(minSpeed, maxSpeed) - minUISpeed;
   const speed = (rawSpeed - minSpeed) / (maxSpeed - minSpeed) * maxVRSpeed + minUISpeed;
   return Math.round(speed)
@@ -25,42 +25,33 @@ function toDisplaySpeed(rawSpeed, minSpeed, maxSpeed) {
 /**
  * Converts a Glowforge UI speed to a Glowforge internal speed.
  */
-function toRealSpeed(displaySpeed, minSpeed, maxSpeed) {
+export function toRealSpeed(displaySpeed, minSpeed, maxSpeed) {
   return (displaySpeed - minSpeed) / (getMaxVRSpeed(minSpeed, maxSpeed) - minUISpeed) * (maxSpeed - minSpeed) + minSpeed
 }
 
-function toDisplayEngraveSpeed(rawSpeed) {
+export function toDisplayEngraveSpeed(rawSpeed) {
   return toDisplaySpeed(rawSpeed, 100, 8500);
 }
 
-function toDisplayCutSpeed(rawSpeed) {
+export function toDisplayCutSpeed(rawSpeed) {
   return toDisplaySpeed(rawSpeed, 100, 4000);
 }
 
-function toRealEngraveSpeed(displaySpeed) {
+export function toRealEngraveSpeed(displaySpeed) {
   return toRealSpeed(displaySpeed, 100, 8500);
 }
 
-function toRealCutSpeed(displaySpeed) {
+export function toRealCutSpeed(displaySpeed) {
   return toRealSpeed(displaySpeed, 100, 4000);
 }
 
-function toDisplayPower(power, text=true) {
+export function toDisplayPower(power, text=true) {
   if (text) {
     return (power === 100) ? 'Max' : power + 1;
   }
   return power + 1;
 }
 
-function toRealPower(displayPower) {
+export function toRealPower(displayPower) {
   return displayPower - 1;
-}
-
-export {
-  toDisplayCutSpeed,
-  toDisplayEngraveSpeed,
-  toDisplayPower,
-  toRealCutSpeed,
-  toRealEngraveSpeed,
-  toRealPower,
 }
