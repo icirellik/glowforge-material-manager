@@ -130,11 +130,12 @@ export async function fullSynchronizedMaterials(remove=false) {
   }
 
   // Update existing.
-  for (let i = 0; i < updatedHashes; i++) {
+  for (let i = 0; i < updatedHashes.length; i++) {
     const hash = updatedHashes[i];
     const binaryData = synchronizedMaterials[hash];
     const json = toFullMaterial(decompress(binaryData));
-    const dataHash = hashRawMaterial(json);
+    const dataHash = await hashRawMaterial(json);
+    console.log(`Updating ${hash} -> ${dataHash}`);
 
     if (!rawMaterialDataMap.hasOwnProperty(dataHash)) {
       // Remove

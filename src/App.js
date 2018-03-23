@@ -56,7 +56,7 @@ class App extends React.Component {
     if (this.props.tempMaterial) {
       additionalState.action = STATE_ADD;
       additionalState.material = this.props.tempMaterial;
-      additionalState.message = 'Custom material settings have been resotred from a previous session.';
+      additionalState.message = 'Material settings were automatically restored from a previous session.';
       additionalState.messageColor = null;
     }
 
