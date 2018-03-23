@@ -1,7 +1,10 @@
 // Develop
 const extensionId = 'mncodmmfhiaolnkmjdjdemghkbcbiing';
 
-// Webstore
+// Webstore Test
+// const extensionId = 'oehpknagabkobfeijndckpapicmfoknn';
+
+// Webstore Prod
 // const extensionId = 'adabmafjmdcjnihkmggljljeopjfghii';
 
 /**
