@@ -5,6 +5,7 @@ import {
 } from './lib/utils';
 import {
   toDisplayEngraveSpeed,
+  toDisplayLinesPerInch,
   toDisplayPower,
   toRealEngraveSpeed,
   toRealPower,
@@ -81,7 +82,7 @@ class VectorEngrave extends React.Component {
           />
         </div>
         <div className="App-field" style={{marginBottom: '10px'}}>
-          <label>Scan Gap</label>
+          <label>Scan Gap (LPI {`${toDisplayLinesPerInch(vector.scanGap)}`})</label>
           <input
             type="number"
             value={vector.scanGap}
