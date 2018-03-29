@@ -1,5 +1,10 @@
 # Changelog
 
+## Release 0.3.0
+
+* Verify settings at startup against sync settings.
+* Display LPI settings.
+
 ## Release 0.2.0
 
 * Enable the material manager to work on all tabs.

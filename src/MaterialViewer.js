@@ -5,7 +5,9 @@ import { STATE_SELECTED } from './state';
 import {
   toDisplayCutSpeed,
   toDisplayEngraveSpeed,
+  toDisplayLinesPerInch,
   toDisplayPower,
+
 } from './lib/glowforgeUnits';
 import {
   precisionRound,
@@ -101,7 +103,7 @@ class MaterialViewer extends React.Component {
                   {`Focal Offset ${vector.focalOffset}`}
                 </div>
                 <div className="App-field" styles={{marginBottom: '10px'}}>
-                  {`Scan Gap ${vector.scanGap}`}
+                  {`Scan Gap ${vector.scanGap}, LPI ${toDisplayLinesPerInch(vector.scanGap)}`}
                 </div>
               </React.Fragment>
             );
@@ -131,7 +133,7 @@ class MaterialViewer extends React.Component {
                   {`Focal Offset ${bitmap.focalOffset}`}
                 </div>
                 <div className="App-field" styles={{marginBottom: '10px'}}>
-                  {`Scan Gap ${bitmap.scanGap}`}
+                  {`Scan Gap ${bitmap.scanGap}, LPI ${toDisplayLinesPerInch(bitmap.scanGap)}`}
                 </div>
               </React.Fragment>
             );
