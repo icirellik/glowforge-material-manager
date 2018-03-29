@@ -13,7 +13,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "release-test": "yarn build && mkdir -p releases && cd build && sed -i 's/Glowforge Material Manager/Glowforge Material Manager Test/g' manifest.json && sed -i \"s/const extensionId = 'mncodmmfhiaolnkmjdjdemghkbcbiing'/\\\/\\\/ const extensionId = 'mncodmmfhiaolnkmjdjdemghkbcbiing'/g\" content.js && sed -i \"s/\\\/\\\/ const extensionId = 'oehpknagabkobfeijndckpapicmfoknn'/const extensionId = 'oehpknagabkobfeijndckpapicmfoknn'/g\" content.js && zip -r glowforge-material-manager-test.zip . && mv -f *.zip ../releases && cd ..",
-    "release": "yarn build && mkdir -p releases && cd build && sed -i \"s/const extensionId = 'mncodmmfhiaolnkmjdjdemghkbcbiing'/\\\/\\\/ const extensionId = 'mncodmmfhiaolnkmjdjdemghkbcbiing'/g\" content.js && sed -i \"s/\\\/\\\/ const extensionId = 'adabmafjmdcjnihkmggljljeopjfghii'/const extensionId = 'adabmafjmdcjnihkmggljljeopjfghii'/g\" content.js && zip -r glowforge-material-manager.zip . && mv -f *.zip ../releases && cd .."
+    "release-test": "yarn build && mkdir -p releases && cd build && sed -i 's/Glowforge Material Manager/Glowforge Material Manager Test/g' manifest.json && zip -r glowforge-material-manager-test.zip . && mv -f *.zip ../releases && cd ..",
+    "release": "yarn build && mkdir -p releases && cd build && zip -r glowforge-material-manager.zip . && mv -f *.zip ../releases && cd .."
   }
 }

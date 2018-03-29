@@ -1,18 +1,17 @@
-// Develop
-// afnbdebmdlcboemglocadnfefkmcobfn
-// mncodmmfhiaolnkmjdjdemghkbcbiing
-const extensionId = 'afnbdebmdlcboemglocadnfefkmcobfn';
-
-// Webstore Test
+// Develop:
+// Automatically set using your the runtime.
+//
+// Webstore Test:
 // const extensionId = 'oehpknagabkobfeijndckpapicmfoknn';
-
-// Webstore Prod
+//
+// Webstore Prod:
 // const extensionId = 'adabmafjmdcjnihkmggljljeopjfghii';
+const extensionId = window.extensionId;
 
 /**
  * Leverage the redux actions to inject custom materials.
  */
-function onResponse(response) {
+function handleMaterialCheck(response) {
   if (!response) {
     return;
   }
@@ -31,6 +30,24 @@ function onResponse(response) {
 }
 
 /**
+ * Additional tasks to execute after the first refresh.
+ */
+function handleForceRefresh(response) {
+  if (!response) {
+    return;
+  }
+}
+
+/**
+ * Checks and displays any runtime errors.
+ */
+function lastRuntimeError() {
+  if (chrome.runtime.lastError) {
+    console.log(chrome.runtime.lastError);
+  }
+}
+
+/**
  * Request the materials created by the user in the extension.
  */
 setInterval(() => {
@@ -38,18 +55,20 @@ setInterval(() => {
     extensionId, {
       materialCheck: true,
     },
-    onResponse
+    handleMaterialCheck,
   );
+  lastRuntimeError();
 }, 5000);
 
 /**
  * Set a one-time refresh on content injection. New tabs, refreshes.
  */
-setTimeout(() => {
+setImmediate(() => {
   chrome.runtime.sendMessage(
     extensionId, {
       forceRefresh: true,
     },
-    () => {}
+    handleForceRefresh,
   );
-})
+  lastRuntimeError();
+});
