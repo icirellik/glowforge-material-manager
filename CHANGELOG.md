@@ -2,8 +2,14 @@
 
 ## Release 0.3.0
 
+** User Features **
+
 * Verify settings at startup against sync settings.
 * Display LPI settings.
+
+** Developer Features **
+
+* Automatically set the extension id.
 
 ## Release 0.2.0
 
