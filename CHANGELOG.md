@@ -7,6 +7,7 @@
 * Verify settings at startup against sync settings.
 * Display LPI settings.
 * Ability to clone existing materials.
+- Fix macOS High Sierra display issues.
 
 ** Developer Features **
 
