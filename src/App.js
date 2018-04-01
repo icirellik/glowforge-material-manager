@@ -162,6 +162,13 @@ class App extends React.Component {
     });
   }
 
+  displayError(message) {
+    this.setState({
+      message,
+      messageColor: '#CC3A4B',
+    });
+  }
+
   async addMaterial() {
     const newMaterial = createMaterial(this.state.material, this.state.materials.length);
     const duplicate = this.state.materials.find(material => {
@@ -169,10 +176,7 @@ class App extends React.Component {
     });
 
     if (duplicate) {
-      this.setState({
-        message: 'A material with the same name already exists.',
-        messageColor: '#CC3A4B',
-      });
+      this.displayError('A material with the same name already exists.');
       return;
     }
 
@@ -197,17 +201,37 @@ class App extends React.Component {
     });
   }
 
-  async editMaterial(title) {
+  async copyMaterial(title) {
 
+    const duplicates = this.state.materials.filter(material => {
+      return material.title === title;
+    });
+
+    if (duplicates.length < 1) {
+      this.displayError('Could not clone. There should be one original material.');
+      return;
+    }
+
+    const material = this.state.rawMaterials.find(rawMaterial => {
+      return `${rawMaterial.thickName} ${rawMaterial.name}` === title;
+    });
+
+    this.setState({
+      action: STATE_ADD,
+      material: {
+        ...material,
+        name: `${material.name} (${duplicates.length})`,
+      },
+    });
+  }
+
+  async editMaterial(title) {
     const duplicates = this.state.materials.filter(material => {
       return material.title === `${title}`;
     });
 
     if (duplicates.length !== 1) {
-      this.setState({
-        message: 'Could not update. A material with the same name already exists.',
-        messageColor: '#CC3A4B',
-      });
+      this.displayError('Could not update. A material with the same name already exists.');
       return;
     }
 
@@ -246,7 +270,6 @@ class App extends React.Component {
   }
 
   async remove(id, title) {
-    console.log(title)
     await removeCloudMaterial(this.state.rawMaterials.find(material => {
       return `${material.thickName} ${material.name}` === `${title}`;
     }));
@@ -267,18 +290,24 @@ class App extends React.Component {
     });
   }
 
+  async changeMode(mode, material=EMPTY_MATERIAL) {
+    await clearTempMaterial();
+    this.setState({
+      action: mode,
+      material: {
+        ...material,
+      },
+      message: '',
+      messageColor: null,
+    });
+  }
+
   /**
    * Switches to `add material` mode and resets the current material state to
    * a blank material.
    */
   async modeAdd() {
-    await clearTempMaterial();
-    this.setState({
-      action: STATE_ADD,
-      material: {
-        ...EMPTY_MATERIAL,
-      },
-    });
+    await this.changeMode(STATE_ADD);
   }
 
   /**
@@ -286,15 +315,7 @@ class App extends React.Component {
    * any system messages.
    */
   async modeCancel() {
-    await clearTempMaterial();
-    this.setState({
-      action: STATE_DISPLAY,
-      material: {
-        ...EMPTY_MATERIAL,
-      },
-      message: '',
-      messageColor: null,
-    });
+    await this.changeMode(STATE_DISPLAY);
   }
 
   /**
@@ -304,16 +325,10 @@ class App extends React.Component {
    * @param {string} title The material tile.
    */
   async modeEdit(title) {
-    await clearTempMaterial();
     const material = this.state.rawMaterials.find(material => {
       return `${material.thickName} ${material.name}` === title;
     });
-    this.setState({
-      action: STATE_EDIT,
-      material: {
-        ...material,
-      },
-    });
+    await this.changeMode(STATE_EDIT, material);
   }
 
   /**
@@ -323,16 +338,10 @@ class App extends React.Component {
    * @param {string} title The material title.
    */
   async modeSelect(title) {
-    await clearTempMaterial();
     const material = this.state.rawMaterials.find(material => {
       return `${material.thickName} ${material.name}` === title;
     });
-    this.setState({
-      action: STATE_SELECTED,
-      material: {
-        ...material,
-      },
-    });
+    await this.changeMode(STATE_SELECTED, material);
   }
 
   render() {
@@ -353,6 +362,7 @@ class App extends React.Component {
           <div className="col-materials">
             <div className="App-materials">
               <MaterialList
+                cloneMaterial={this.copyMaterial.bind(this)}
                 editMaterial={this.modeEdit.bind(this)}
                 materials={this.state.materials}
                 removeMaterial={this.remove.bind(this)}
