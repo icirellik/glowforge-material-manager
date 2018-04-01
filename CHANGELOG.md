@@ -6,6 +6,7 @@
 
 * Verify settings at startup against sync settings.
 * Display LPI settings.
+* Ability to clone existing materials.
 
 ** Developer Features **
 

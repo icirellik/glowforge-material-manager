@@ -21,6 +21,7 @@ class MaterialList extends React.Component {
         materials.map(material => {
           return (
             <Material
+              cloneMaterial={this.props.cloneMaterial}
               editMaterial={this.props.editMaterial}
               material={material}
               removeMaterial={this.props.removeMaterial}
@@ -38,6 +39,7 @@ MaterialList.propTypes = {
   materials: PropTypes.arrayOf(PropTypes.shape({
     title: PropTypes.string.isRequired
   })).isRequired,
+  cloneMaterial: PropTypes.func.isRequired,
   editMaterial: PropTypes.func.isRequired,
   removeMaterial: PropTypes.func.isRequired,
   selectMaterial: PropTypes.func.isRequired,
