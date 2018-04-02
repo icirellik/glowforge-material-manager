@@ -30,6 +30,14 @@ export async function getMaterials() {
   });
 }
 
+export async function getPlatform() {
+  return new Promise(resolve => {
+    chrome.runtime.getPlatformInfo(info => {
+      resolve(info.os);
+    });
+  });
+}
+
 export async function getRawMaterials() {
   return new Promise(resolve => {
     chrome.storage.local.get(null, result => {

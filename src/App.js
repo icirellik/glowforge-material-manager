@@ -27,15 +27,15 @@ import {
   STATE_DISPLAY,
   STATE_EDIT,
   STATE_SELECTED,
- } from './state';
- import {
+} from './state';
+import {
   EMPTY_BITMAP_ENGRAVE,
   EMPTY_MATERIAL,
   EMPTY_SCORE,
   EMPTY_VECTOR_ENGRAVE,
- } from './lib/constants';
- import './App.css';
- import logo from './logo.svg';
+} from './lib/constants';
+import './App.css';
+import logo from './logo.svg';
 
 class App extends React.Component {
   state = {
@@ -358,7 +358,7 @@ class App extends React.Component {
           <span>{`Cloud Storage Used ${this.state.cloudStorageBytesUsed} / 102,400`}</span>
         </header>
         <Message message={this.state.message} color={this.state.messageColor} />
-        <div className="App-grid">
+        <div className={`App-grid ${(this.props.platform === 'mac') ? 'osx' : ''}`}>
           <div className="col-materials">
             <div className="App-materials">
               <MaterialList
@@ -407,9 +407,10 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-  connected: PropTypes.bool.isRequired,
   cloudStorageBytesUsed: PropTypes.number.isRequired,
+  connected: PropTypes.bool.isRequired,
   materials: PropTypes.array.isRequired,
+  platform: PropTypes.string.isRequired,
   tempMaterial: PropTypes.object,
 };
 
