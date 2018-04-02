@@ -14,6 +14,7 @@ import {
   STATE_ADD,
   STATE_EDIT,
 } from './state';
+import './MaterialEditor.css';
 
 class MaterialEditor extends React.Component {
 
@@ -24,7 +25,6 @@ class MaterialEditor extends React.Component {
   }
 
   render() {
-
     const {
       action,
       material,
@@ -71,7 +71,7 @@ class MaterialEditor extends React.Component {
             onBlur={() => this.storeLocalMaterial()}
           />
         </div>
-        <div className="App-sectionHeader">
+        <div className="MaterialEditor-sectionHeader">
           <p>Cut Settings</p>
         </div>
         <Cut
@@ -79,7 +79,7 @@ class MaterialEditor extends React.Component {
           storeLocalMaterial={this.storeLocalMaterial.bind(this)}
           updateCut={this.props.updateCut}
         />
-        <div className="App-sectionHeader">
+        <div className="MaterialEditor-sectionHeader">
           <p>Score Settings</p>
           <div>
             <IconPlus click={this.props.addScore} />
@@ -97,7 +97,7 @@ class MaterialEditor extends React.Component {
             );
           })
         }
-        <div className="App-sectionHeader">
+        <div className="MaterialEditor-sectionHeader">
           <p>Vector Engrave Settings</p>
           <div>
             <IconPlus click={this.props.addVectorEngrave} />
@@ -115,7 +115,7 @@ class MaterialEditor extends React.Component {
             );
           })
         }
-        <div className="App-sectionHeader">
+        <div className="MaterialEditor-sectionHeader">
           <p>Bitmap Engrave Settings</p>
           <div>
             <IconPlus click={this.props.addBitmapEngrave} />

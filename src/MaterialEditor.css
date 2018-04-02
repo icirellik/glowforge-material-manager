@@ -1,0 +1,28 @@
+.MaterialEditor-sectionHeader {
+  display: block;
+  font-size: 14px;
+}
+
+.MaterialEditor-sectionHeader::after {
+  display: block;
+  content: "";
+  clear: both;
+}
+
+.MaterialEditor-sectionHeader p {
+  font-weight: 600;
+  float: left;
+  width: 250px;
+}
+
+.MaterialEditor-sectionHeader div {
+  float: right;
+  margin: 14px 14px 14px 0;
+}
+
+.MaterialEditor-sectionHeader .icon {
+  color: #001f23;
+  display: inline-block;
+  height: 18px;
+  width: 18px;
+}

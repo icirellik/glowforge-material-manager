@@ -3,24 +3,24 @@
 }
 
 .App-logo {
-  height: 43px;
   float: left;
-  width: 50px;
+  height: 43px;
   margin-left: 50px;
+  width: 50px;
 }
 
 .App-header {
   background-color: #001f23;
-  height: 60px;
-  width: 450px;
-  padding: 20px;
   color: white;
+  height: 60px;
+  padding: 20px;
+  width: 450px;
 }
 
 .App-header span {
   display: inline-block;
-  width: 100%;
   text-align: center;
+  width: 100%;
 }
 
 .App-intro .icon {
@@ -81,9 +81,13 @@
 
 .App-grid {
   display: flex;
-  min-height: 500px;
-  padding: 0 10px;
   justify-content: space-between;
+  padding: 0 10px;
+}
+
+.App-grid.osx {
+  height: 500px;
+  overflow: scroll;
 }
 
 .App-grid .col-contents{
@@ -92,33 +96,4 @@
 
 .App-grid .col-materials{
   width: 150px;
-}
-
-.App-sectionHeader {
-  display: block;
-  font-size: 14px;
-}
-
-.App-sectionHeader::after {
-  display: block;
-  content: "";
-  clear: both;
-}
-
-.App-sectionHeader p {
-  font-weight: 600;
-  float: left;
-  width: 250px;
-}
-
-.App-sectionHeader div {
-  float: right;
-  margin: 14px 14px 14px 0;
-}
-
-.App-sectionHeader .icon {
-  color: #001f23;
-  display: inline-block;
-  height: 18px;
-  width: 18px;
 }
