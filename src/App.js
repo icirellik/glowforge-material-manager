@@ -276,6 +276,10 @@ class App extends React.Component {
     const materials = await removeMaterial(id);
     const rawMaterials = await removeRawMaterial(title);
     this.setState({
+      action: STATE_DISPLAY,
+      material: {
+        ...EMPTY_MATERIAL,
+      },
       materials,
       rawMaterials,
       synchronized: false,
