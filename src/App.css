@@ -23,6 +23,10 @@
   width: 100%;
 }
 
+.App-intro p {
+  margin: 15px 0;
+}
+
 .App-intro .icon {
   color: #001f23;
   display: inline-block;
