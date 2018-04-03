@@ -6,7 +6,7 @@ export const IconEdit = (props) => {
     <button
       className="icon"
       onClick={(props.click) ? props.click : () => {}}
-      title="edit"
+      title="Edit"
     >
       <i className="icon">
         <svg className="svg-icon" viewBox="0 0 20 20">
@@ -22,7 +22,7 @@ export const IconMinus = (props) => {
     <button
       className="icon"
       onClick={(props.click) ? props.click : () => {}}
-      title="remove"
+      title="Remove"
     >
       <i className="icon">
         <svg className="svg-icon" viewBox="0 0 20 20">
@@ -38,7 +38,7 @@ export const IconPlus = (props) => {
     <button
       className="icon"
       onClick={(props.click) ? props.click : () => {}}
-      title="add"
+      title="New"
     >
       <i className="icon">
         <svg className="svg-icon" viewBox="0 0 20 20">
@@ -54,7 +54,7 @@ export const IconCircle = (props) => {
     <button
       className="icon"
       onClick={(props.click) ? props.click : () => {}}
-      title="status"
+      title="Status"
     >
       <i className="icon">
         <svg className="svg-icon" viewBox="0 0 20 20">
@@ -70,7 +70,7 @@ export const IconCopy = (props) => {
     <button
       className="icon"
       onClick={(props.click) ? props.click : () => {}}
-      title="copy"
+      title="Copy"
     >
       <i className="icon">
         <svg class="svg-icon" viewBox="0 0 20 20">
@@ -86,7 +86,7 @@ export const IconMenu = (props) => {
     <button
       className="icon"
       onClick={(props.click) ? props.click : () => {}}
-      title="menu"
+      title="Menu"
     >
       <i className="icon">
         <svg class="svg-icon" viewBox="0 0 20 20">
@@ -102,7 +102,7 @@ export const IconTrashCan = (props) => {
     <button
       className="icon"
       onClick={(props.click) ? props.click : () => {}}
-      title="trash"
+      title="Trash"
     >
       <i className="icon">
         <svg class="svg-icon" viewBox="0 0 20 20">
@@ -118,7 +118,7 @@ export const IconOpen = (props) => {
     <button
       className="icon"
       onClick={(props.click) ? props.click : () => {}}
-      title="open"
+      title="Open"
     >
       <i className="icon">
         <svg class="svg-icon" viewBox="0 0 20 20">

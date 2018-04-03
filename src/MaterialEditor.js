@@ -71,7 +71,7 @@ class MaterialEditor extends React.Component {
             onBlur={() => this.storeLocalMaterial()}
           />
         </div>
-        <div className="MaterialEditor-sectionHeader">
+        <div className="MaterialEditor-section">
           <p>Cut Settings</p>
         </div>
         <Cut
@@ -79,11 +79,8 @@ class MaterialEditor extends React.Component {
           storeLocalMaterial={this.storeLocalMaterial.bind(this)}
           updateCut={this.props.updateCut}
         />
-        <div className="MaterialEditor-sectionHeader">
+        <div className="MaterialEditor-section">
           <p>Score Settings</p>
-          <div>
-            <IconPlus click={this.props.addScore} />
-          </div>
         </div>
         {
           material.scores.map((score, index) => {
@@ -97,11 +94,11 @@ class MaterialEditor extends React.Component {
             );
           })
         }
-        <div className="MaterialEditor-sectionHeader">
+        <div className="MaterialEditor-buttonBar">
+          <IconPlus click={this.props.addScore} />
+        </div>
+        <div className="MaterialEditor-section">
           <p>Vector Engrave Settings</p>
-          <div>
-            <IconPlus click={this.props.addVectorEngrave} />
-          </div>
         </div>
         {
           material.vectors.map((vector, index) => {
@@ -115,11 +112,11 @@ class MaterialEditor extends React.Component {
             );
           })
         }
-        <div className="MaterialEditor-sectionHeader">
+        <div className="MaterialEditor-buttonBar">
+          <IconPlus click={this.props.addVectorEngrave} />
+        </div>
+        <div className="MaterialEditor-section">
           <p>Bitmap Engrave Settings</p>
-          <div>
-            <IconPlus click={this.props.addBitmapEngrave} />
-          </div>
         </div>
         {
           material.bitmaps.map((bitmap, index) => {
@@ -133,6 +130,9 @@ class MaterialEditor extends React.Component {
             );
           })
         }
+        <div className="MaterialEditor-buttonBar">
+          <IconPlus click={this.props.addBitmapEngrave} />
+        </div>
         <MaterialButtonBar
           action={this.props.action}
           addMaterial={this.props.addMaterial}

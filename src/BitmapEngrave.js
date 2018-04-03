@@ -80,7 +80,7 @@ class BitmapEngrave extends React.Component {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field" style={{marginBottom: '10px'}}>
+        <div className="App-field">
           <label>Scan Gap (LPI {`${toDisplayLinesPerInch(bitmap.scanGap)}`})</label>
           <input
             type="number"
