@@ -1,9 +1,8 @@
-/* global chrome:true */
-
 import {
   getMaterials,
   getRawMaterials,
   getSynchronizedMaterials,
+  getUrl,
   removeSynchronizedMaterial,
   storeMaterials,
   storeRawMaterials,
@@ -15,6 +14,12 @@ import {
   hashRawMaterial,
   hashTitle,
 } from './utils';
+export async function getNextMaterialId() {
+  const materials = await getMaterials();
+  return materials.map(material => material.id.split(':')[1]).reduce((prev, cur) => {
+    return parseInt((prev > cur) ? prev : cur, 10);
+  }, -1) + 1;
+}
 
 export async function removeMaterial(materialId) {
   const materials = await getMaterials();
@@ -75,6 +80,7 @@ export async function fullSynchronizedMaterials(remove=false) {
     rawMaterialTitleMap[titleHash] = material;
     rawMaterialDataMap[dataHash] = material;
   }
+
   console.log('Current:');
   console.log(currentTitleHashes);
   console.log(currentDataHashes);
@@ -123,7 +129,8 @@ export async function fullSynchronizedMaterials(remove=false) {
 
     const full = await getMaterials();
     const raw = await getRawMaterials();
-    const newMaterial = createMaterial(json, raw.length);
+    const nextId = await getNextMaterialId();
+    const newMaterial = await createMaterial(json, nextId);
 
     await storeMaterials([...full, newMaterial]);
     await storeRawMaterials([...raw, json]);
@@ -146,12 +153,12 @@ export async function fullSynchronizedMaterials(remove=false) {
       // Replace
       const full = await getMaterials();
       const raw = await getRawMaterials();
-      const newMaterial = createMaterial(json, raw.length);
+      const nextId = await getNextMaterialId();
+      const newMaterial = await createMaterial(json, nextId);
 
       await storeMaterials([...full, newMaterial]);
       await storeRawMaterials([...raw, json]);
     }
-
   }
   console.log('Synchronized');
 }
@@ -171,7 +178,7 @@ export function createMaterial(params, id) {
       common_name: `${params.thickName} ${params.name}`,
       type_name: params.name,
       thumbnails: [
-        chrome.extension.getURL('custom-material.png'),
+        getUrl('custom-material.png'),
       ],
       display_options: null
     },
@@ -192,7 +199,7 @@ function createSettings(params, tubeType) {
     description: `${params.thickName} ${params.name} Settings`,
     active_date: "2017-04-06T00:00-07:00",
     environment: [
-      "production"
+      'production'
     ],
     tube_type: tubeType,
     cut_setting: createCutSettings(params.cut),

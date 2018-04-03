@@ -2,7 +2,6 @@ import {
   getMaterials,
 } from './chromeWrappers';
 
-
 const dataCallback = jest.fn();
 
 global.chrome = {
@@ -15,7 +14,7 @@ global.chrome = {
   },
 };
 
-test('fshould fetch materials', async () => {
+it('should fetch materials', async () => {
   const resp = {
     materials: []
   };

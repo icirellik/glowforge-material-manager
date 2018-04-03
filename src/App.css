@@ -87,7 +87,7 @@
 
 .App-grid.osx {
   height: 500px;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .App-grid .col-contents{

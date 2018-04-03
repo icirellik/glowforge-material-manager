@@ -7,6 +7,7 @@ import Message from './Message';
 import SyncStatus from './SyncStatus';
 import {
   createMaterial,
+  getNextMaterialId,
   removeCloudMaterial,
   removeMaterial,
   removeRawMaterial,
@@ -170,7 +171,8 @@ class App extends React.Component {
   }
 
   async addMaterial() {
-    const newMaterial = createMaterial(this.state.material, this.state.materials.length);
+    const nextId = await getNextMaterialId();
+    const newMaterial = createMaterial(this.state.material,nextId);
     const duplicate = this.state.materials.find(material => {
       return material.id === newMaterial.id || material.title === newMaterial.title;
     });
@@ -201,6 +203,11 @@ class App extends React.Component {
     });
   }
 
+  /**
+   * Copies an existing material and appends a '(1)' to its name.
+   *
+   * @param {string} title
+   */
   async copyMaterial(title) {
 
     const duplicates = this.state.materials.filter(material => {
@@ -208,7 +215,7 @@ class App extends React.Component {
     });
 
     if (duplicates.length < 1) {
-      this.displayError('Could not clone. There should be one original material.');
+      this.displayError('Could not clone the source material was removed.');
       return;
     }
 
@@ -235,7 +242,7 @@ class App extends React.Component {
       return;
     }
 
-    // Update
+    // Update material using the same id.
     const materialId = duplicates[0].id.split(':')[1];
     const newMaterial = createMaterial(this.state.material, materialId)
 
