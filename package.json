@@ -1,6 +1,6 @@
 {
   "name": "glowforge-material-editor",
-  "version": "0.2.4",
+  "version": "0.2.7",
   "private": true,
   "dependencies": {
     "pako": "^1.0.6",

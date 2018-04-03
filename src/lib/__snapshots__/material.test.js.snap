@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`creates a custom material 1`] = `
+Object {
+  "id": "Custom:4",
+  "nominal_thickness": null,
+  "settings": Array [
+    Object {
+      "active_date": "2017-04-06T00:00-07:00",
+      "bitmap_engrave_settings": Array [],
+      "cut_setting": Object {
+        "focal_offset": null,
+        "passes": 1,
+        "power": 99,
+        "speed": 100,
+      },
+      "description": "  Settings",
+      "environment": Array [
+        "production",
+      ],
+      "score_settings": Array [],
+      "tube_type": "basic",
+      "vector_engrave_settings": Array [],
+    },
+    Object {
+      "active_date": "2017-04-06T00:00-07:00",
+      "bitmap_engrave_settings": Array [],
+      "cut_setting": Object {
+        "focal_offset": null,
+        "passes": 1,
+        "power": 99,
+        "speed": 100,
+      },
+      "description": "  Settings",
+      "environment": Array [
+        "production",
+      ],
+      "score_settings": Array [],
+      "tube_type": "pro",
+      "vector_engrave_settings": Array [],
+    },
+  ],
+  "sku": "",
+  "thickness_name": "",
+  "title": " ",
+  "variety": Object {
+    "common_name": " ",
+    "display_options": null,
+    "name": "-",
+    "thumbnails": Array [
+      "image.png",
+    ],
+    "type_name": "",
+  },
+}
+`;

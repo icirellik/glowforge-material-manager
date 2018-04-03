@@ -86,6 +86,10 @@ export async function getShouldUpdate() {
   });
 }
 
+export function getUrl(itemName) {
+  return chrome.extension.getURL(itemName);
+}
+
 export async function removeSynchronizedMaterial(materialHash) {
   return new Promise(resolve => {
     chrome.storage.sync.remove(materialHash, () => {
