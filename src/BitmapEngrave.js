@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  asFloat,
+  asInteger,
   precisionRound,
 } from './lib/utils';
 import {
@@ -12,11 +14,15 @@ import {
 } from './lib/glowforgeUnits';
 
 class BitmapEngrave extends React.Component {
+  state = {
+    maxPower: (this.props.bitmap.power === 100),
+  }
+
   render() {
     const { id, bitmap } = this.props;
     return (
       <React.Fragment>
-        <div className="App-field">
+        <div className="App-field" style={(id !== 0) ? { marginTop: '20px' } : null}>
           <label>Name</label>
           <input
             type="text"
@@ -37,22 +43,42 @@ class BitmapEngrave extends React.Component {
             max="1000"
             onChange={(event) => this.props.updateBitmapEngrave(id, {
               ...bitmap,
-              speed: toRealEngraveSpeed(Number.parseInt(event.target.value, 10)),
+              speed: toRealEngraveSpeed(asInteger(event.target.value)),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
-        <label>Power ({`${toDisplayPower(bitmap.power)}`})</label>
+          <label>Power</label>
           <input
             type="number"
+            disabled={this.state.maxPower}
             value={toDisplayPower(bitmap.power, false)}
             min="0"
-            max="101"
+            max="100"
             onChange={(event) => this.props.updateBitmapEngrave(id, {
               ...bitmap,
-              power: toRealPower(Number.parseInt(event.target.value, 10)),
+              power: toRealPower(asInteger(event.target.value)),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
+          />
+        </div>
+        <div>
+          <label>Max Power</label>
+          <input
+            type="checkbox"
+            value={this.state.maxPower}
+            checked={this.state.maxPower}
+            onChange={(event) => {
+              const nextMaxPower = !this.state.maxPower;
+              this.props.updateBitmapEngrave(id, {
+                ...bitmap,
+                power: (nextMaxPower) ? 100 : 99,
+              });
+              this.setState({
+                maxPower: nextMaxPower,
+              });
+            }}
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
@@ -63,7 +89,7 @@ class BitmapEngrave extends React.Component {
             value={bitmap.passes}
             onChange={(event) => this.props.updateBitmapEngrave(id, {
               ...bitmap,
-              passes: Number.parseInt(event.target.value, 10),
+              passes: asInteger(event.target.value),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
           />
@@ -75,7 +101,7 @@ class BitmapEngrave extends React.Component {
             value={bitmap.focalOffset}
             onChange={(event) => this.props.updateBitmapEngrave(id, {
               ...bitmap,
-              focalOffset: precisionRound(Number.parseFloat(event.target.value, 10), 3),
+              focalOffset: precisionRound(asFloat(event.target.value), 3),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
           />
@@ -87,7 +113,7 @@ class BitmapEngrave extends React.Component {
             value={bitmap.scanGap}
             onChange={(event) => this.props.updateBitmapEngrave(id, {
               ...bitmap,
-              scanGap: Number.parseInt(event.target.value, 10),
+              scanGap: asInteger(event.target.value),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
           />
