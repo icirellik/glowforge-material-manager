@@ -4,9 +4,30 @@ import {
   toTinyMaterial,
 } from './material';
 
+/**
+ * A helper function that rounds to the nearest 5.
+ * @param {*} number
+ */
+export function roundToNearest5(number) {
+  return 5 * Math.round(number / 5)
+}
+
+/**
+ * A helper function to assist with rounding to a specific precision.
+ * @param {*} number
+ * @param {*} precision
+ */
 export function precisionRound(number, precision) {
-  var factor = Math.pow(10, precision);
+  const factor = Math.pow(10, precision);
   return Math.round(number * factor) / factor;
+}
+
+export function asInteger(number) {
+  return Number.parseInt(number, 10);
+}
+
+export function asFloat(number) {
+  return Number.parseFloat(number, 10);
 }
 
 export function compress(json) {

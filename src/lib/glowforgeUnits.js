@@ -1,3 +1,7 @@
+import {
+  roundToNearest5,
+} from './utils';
+
 const MAX_MOTOR_SPEED = 8500;
 const MIN_UI_SPEED = 100;
 const MAX_UI_SPEED = 1000;
@@ -6,13 +10,8 @@ const MILLIMETERS_IN_INCH = 25.4;
 const STEP_SIZE = .01875;
 const STANDARD_SCAN_GAP_INCHES = STEP_SIZE / MILLIMETERS_IN_INCH;
 
-/**
- * A helper function that rounds to the nearest 5.
- * @param {*} number
- */
-function roundToNearest5(number) {
-  return 5 * Math.round(number / 5)
-}
+const MAX_POWER = 100;
+const MIN_POWER = 1;
 
 /**
  * Best guess is that this is the maximum vertical rampup speed. It makes sense
@@ -60,15 +59,12 @@ export function toRealCutSpeed(displaySpeed) {
 }
 
 // Power conversion settings.
-export function toDisplayPower(power, text=true) {
-  if (text) {
-    return (power === 100) ? 'Max' : power + 1;
-  }
-  return power + 1;
+export function toDisplayPower(power) {
+  return Math.round(power / (MAX_POWER - MIN_POWER) * MAX_POWER);
 }
 
 export function toRealPower(displayPower) {
-  return displayPower - 1;
+  return displayPower / MAX_POWER * (MAX_POWER - 1);
 }
 
 // Lines per inch.

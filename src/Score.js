@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  asFloat,
+  asInteger,
   precisionRound,
 } from './lib/utils';
 import {
@@ -11,11 +13,24 @@ import {
 } from './lib/glowforgeUnits';
 
 class Score extends React.Component {
+  constructor(props) {
+    super(props);
+    if (props.score.power === 100) {
+      this.setState({
+        maxPower: true,
+      });
+    }
+  }
+
+  state = {
+    maxPower: false,
+  }
+
   render() {
     const { id, score } = this.props;
     return (
       <React.Fragment>
-        <div className="App-field">
+        <div className="App-field" style={(id !== 0) ? { marginTop: '20px' } : null}>
           <label>Name</label>
           <input
             type="text"
@@ -36,22 +51,41 @@ class Score extends React.Component {
             max="500"
             onChange={(event) => this.props.updateScore(id, {
               ...score,
-              speed: toRealCutSpeed(Number.parseInt(event.target.value, 10)),
+              speed: toRealCutSpeed(asInteger(event.target.value)),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
-          <label>Power ({`${toDisplayPower(score.power)}`})</label>
+          <label>Power</label>
           <input
             type="number"
+            disabled={this.state.maxPower}
             value={toDisplayPower(score.power, false)}
             min="0"
-            max="101"
+            max="100"
             onChange={(event) => this.props.updateScore(id, {
               ...score,
-              power: toRealPower(Number.parseInt(event.target.value, 10)),
+              power: toRealPower(asInteger(event.target.value)),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
+          />
+        </div>
+        <div>
+          <label>Max Power</label>
+          <input
+            type="checkbox"
+            value={this.state.maxPower}
+            onChange={(event) => {
+              const nextMaxPower = !this.state.maxPower;
+              this.props.updateScore(id, {
+                ...score,
+                power: (nextMaxPower) ? 100 : 99,
+              });
+              this.setState({
+                maxPower: nextMaxPower,
+              });
+            }}
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
@@ -62,7 +96,7 @@ class Score extends React.Component {
             value={score.passes}
             onChange={(event) => this.props.updateScore(id, {
               ...score,
-              passes: Number.parseInt(event.target.value, 10),
+              passes: asInteger(event.target.value),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
           />
@@ -74,7 +108,7 @@ class Score extends React.Component {
             value={score.focalOffset}
             onChange={(event) => this.props.updateScore(id, {
               ...score,
-              focalOffset: precisionRound(Number.parseFloat(event.target.value, 10), 3),
+              focalOffset: precisionRound(asFloat(event.target.value), 3),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
           />

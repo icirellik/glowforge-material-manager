@@ -13,6 +13,10 @@ import {
   precisionRound,
 } from './lib/utils';
 
+function toDisplayPowerWords(power) {
+  return (power === 100) ? 'Max' : toDisplayPower(power);
+}
+
 class MaterialViewer extends React.Component {
   render() {
 
@@ -44,7 +48,7 @@ class MaterialViewer extends React.Component {
           {`Speed ${toDisplayCutSpeed(material.cut.speed)} (${precisionRound(material.cut.speed, 2)})`}
         </div>
         <div className="App-field">
-          {`Power ${toDisplayPower(material.cut.power)} (${precisionRound(material.cut.power, 2)})`}
+          {`Power ${toDisplayPowerWords(material.cut.power)} (${precisionRound(material.cut.power, 2)})`}
         </div>
         <div className="App-field">
           {`Passes ${material.cut.passes}`}
@@ -57,44 +61,46 @@ class MaterialViewer extends React.Component {
           <p>Score Settings</p>
         </div>
         {
-          material.scores.map(score => {
+          (material.scores.length > 0) ?
+          material.scores.map((score, index) => {
             return (
               <React.Fragment>
-                <div className="App-field">
+                <div className="App-field" style={(index !== 0) ? { marginTop: '10px' } : null}>
                   {`Name ${score.name}`}
                 </div>
                 <div className="App-field">
                 {`Speed ${toDisplayCutSpeed(score.speed)} (${precisionRound(score.speed, 2)})`}
                 </div>
                 <div className="App-field">
-                  {`Power ${toDisplayPower(score.power)} (${precisionRound(score.power, 2)})`}
+                  {`Power ${toDisplayPowerWords(score.power)} (${precisionRound(score.power, 2)})`}
                 </div>
                 <div className="App-field">
                   {`Passes ${score.passes}`}
                 </div>
-                <div className="App-field" styles={{marginBottom: '10px'}}>
+                <div className="App-field" style={{marginBottom: '10px'}}>
                   {`Focal Offset ${score.focalOffset}`}
                 </div>
               </React.Fragment>
             );
-          })
+          }) : 'None'
         }
 
         <div className="App-field">
           <p>Vector Engrave Settings</p>
         </div>
         {
-          material.vectors.map(vector => {
+          (material.vectors.length > 0) ?
+          material.vectors.map((vector, index) => {
             return (
               <React.Fragment>
-                <div className="App-field">
+                <div className="App-field" style={(index !== 0) ? { marginTop: '10px' } : null}>
                   {`Name ${vector.name}`}
                 </div>
                 <div className="App-field">
                   {`Speed ${toDisplayEngraveSpeed(vector.speed)} (${precisionRound(vector.speed, 2)})`}
                 </div>
                 <div className="App-field">
-                {`Power ${toDisplayPower(vector.power)} (${precisionRound(vector.power, 2)})`}
+                {`Power ${toDisplayPowerWords(vector.power)} (${precisionRound(vector.power, 2)})`}
                 </div>
                 <div className="App-field">
                   {`Passes ${vector.passes}`}
@@ -102,29 +108,30 @@ class MaterialViewer extends React.Component {
                 <div className="App-field">
                   {`Focal Offset ${vector.focalOffset}`}
                 </div>
-                <div className="App-field" styles={{marginBottom: '10px'}}>
+                <div className="App-field" style={{marginBottom: '10px'}}>
                   {`Scan Gap ${vector.scanGap}, LPI ${toDisplayLinesPerInch(vector.scanGap)}`}
                 </div>
               </React.Fragment>
             );
-          })
+          }) : 'None'
         }
 
         <div className="App-field">
           <p>Bitmap Engrave Settings</p>
         </div>
         {
-          material.bitmaps.map(bitmap => {
+          (material.bitmaps.length > 0) ?
+          material.bitmaps.map((bitmap, index) => {
             return (
               <React.Fragment>
-                <div className="App-field">
+                <div className="App-field" style={(index !== 0) ? { marginTop: '10px' } : null}>
                   {`Name ${bitmap.name}`}
                 </div>
                 <div className="App-field">
                   {`Speed ${toDisplayEngraveSpeed(bitmap.speed)} (${precisionRound(bitmap.speed, 2)})`}
                 </div>
                 <div className="App-field">
-                {`Power ${toDisplayPower(bitmap.power)} (${precisionRound(bitmap.power, 2)})`}
+                {`Power ${toDisplayPowerWords(bitmap.power)} (${precisionRound(bitmap.power, 2)})`}
                 </div>
                 <div className="App-field">
                   {`Passes ${bitmap.passes}`}
@@ -132,12 +139,12 @@ class MaterialViewer extends React.Component {
                 <div className="App-field">
                   {`Focal Offset ${bitmap.focalOffset}`}
                 </div>
-                <div className="App-field" styles={{marginBottom: '10px'}}>
+                <div className="App-field" style={{marginBottom: '10px'}}>
                   {`Scan Gap ${bitmap.scanGap}, LPI ${toDisplayLinesPerInch(bitmap.scanGap)}`}
                 </div>
               </React.Fragment>
             );
-          })
+          }) : 'None'
         }
 
         <MaterialButtonBar

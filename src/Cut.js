@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  asFloat,
+  asInteger,
   precisionRound,
 } from './lib/utils';
 import {
@@ -10,8 +12,11 @@ import {
   toRealPower,
 } from './lib/glowforgeUnits';
 
-
 class Cut extends React.Component {
+  state = {
+    maxPower: (this.props.cut.power === 100),
+  }
+
   render() {
     const { cut } = this.props;
     return (
@@ -25,22 +30,42 @@ class Cut extends React.Component {
             max="500"
             onChange={(event) => this.props.updateCut({
               ...cut,
-              speed: toRealCutSpeed(Number.parseInt(event.target.value, 10)),
+              speed: toRealCutSpeed(asInteger(event.target.value)),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
-        <label>Power ({`${toDisplayPower(cut.power)}`})</label>
+          <label>Power</label>
           <input
             type="number"
+            disabled={this.state.maxPower}
             value={toDisplayPower(cut.power, false)}
             min="0"
-            max="101"
+            max="100"
             onChange={(event) => this.props.updateCut({
               ...cut,
-              power: toRealPower(Number.parseInt(event.target.value, 10)),
+              power: toRealPower(asInteger(event.target.value)),
             })}
+            onBlur={() => this.props.storeLocalMaterial()}
+          />
+        </div>
+        <div>
+          <label>Max Power</label>
+          <input
+            type="checkbox"
+            value={this.state.maxPower}
+            checked={this.state.maxPower}
+            onChange={(event) => {
+              const nextMaxPower = !this.state.maxPower;
+              this.props.updateCut({
+                ...cut,
+                power: (nextMaxPower) ? 100 : 99,
+              });
+              this.setState({
+                maxPower: nextMaxPower,
+              });
+            }}
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
@@ -51,7 +76,7 @@ class Cut extends React.Component {
             value={cut.passes}
             onChange={(event) => this.props.updateCut({
               ...cut,
-              passes: Number.parseInt(event.target.value, 10),
+              passes: asInteger(event.target.value),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
           />
@@ -63,7 +88,7 @@ class Cut extends React.Component {
             value={cut.focalOffset}
             onChange={(event) => this.props.updateCut({
               ...cut,
-              focalOffset: precisionRound(Number.parseFloat(event.target.value, 10), 3),
+              focalOffset: precisionRound(asFloat(event.target.value), 3),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
           />

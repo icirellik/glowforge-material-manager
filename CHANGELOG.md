@@ -1,5 +1,10 @@
 # Changelog
 
+## Release 0.3.1
+
+* Fix power settings for values below 50.
+* Fix padding when there are multiple score or engraves.
+
 ## Release 0.3.0
 
 ** User Features **
