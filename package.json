@@ -9,11 +9,12 @@
     "react-scripts": "1.1.1"
   },
   "scripts": {
+    "clean": "rm -rf build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "release-test": "yarn build && mkdir -p releases && cd build && sed -i 's/Glowforge Material Manager/Glowforge Material Manager Test/g' manifest.json && zip -r glowforge-material-manager-test.zip . && mv -f *.zip ../releases && cd ..",
-    "release": "yarn build && mkdir -p releases && cd build && zip -r glowforge-material-manager.zip . && mv -f *.zip ../releases && cd .."
+    "release-test": "yarn build && mkdir -p releases && cd build && sed -i '/\"key\"/d' manifest.json && sed -i 's/Glowforge Material Manager/Glowforge Material Manager Test/g' manifest.json && zip -r glowforge-material-manager-test.zip . && mv -f *.zip ../releases && cd ..",
+    "release": "yarn build && mkdir -p releases && cd build && sed -i '/\"key\"/d' manifest.json && zip -r glowforge-material-manager.zip . && mv -f *.zip ../releases && cd .."
   }
 }
