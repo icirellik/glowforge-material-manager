@@ -14,6 +14,9 @@ import {
   STATE_ADD,
   STATE_EDIT,
 } from './state';
+import {
+  asFloat,
+} from './lib/utils';
 import './MaterialEditor.css';
 
 class MaterialEditor extends React.Component {
@@ -66,7 +69,7 @@ class MaterialEditor extends React.Component {
             type="number"
             value={material.thickness}
             onChange={(event) => {
-              this.props.updateMaterial('thickness', event.target.value);
+              this.props.updateMaterial('thickness', asFloat(event.target.value));
             }}
             onBlur={() => this.storeLocalMaterial()}
           />

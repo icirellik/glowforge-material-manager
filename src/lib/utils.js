@@ -30,6 +30,10 @@ export function asFloat(number) {
   return Number.parseFloat(number, 10);
 }
 
+export function asFloatWithPrecision(number, precision) {
+  return Number.parseFloat(number, 10).toPrecision(precision);
+}
+
 export function compress(json) {
   return pako.deflate(JSON.stringify(json), { to: 'string' });
 }
