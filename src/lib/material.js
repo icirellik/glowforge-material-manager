@@ -158,6 +158,8 @@ export async function fullSynchronizedMaterials(remove=false) {
 
       await storeMaterials([...full, newMaterial]);
       await storeRawMaterials([...raw, json]);
+
+      console.log('Modified');
     }
   }
   console.log('Synchronized');

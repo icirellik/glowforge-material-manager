@@ -1,13 +1,23 @@
 /**
  * Browser background task to syncronize the GFUI with the custom materials.
  */
+function asFloat(number) {
+  return Number.parseFloat(number, 10);
+}
+
+function verifyTypes(material) {
+  return Object.assign({},
+    material, {
+      nominal_thickness: asFloat(material.nominal_thickness)
+    });
+}
 
 function refreshMaterials(callback) {
   chrome.storage.local.get(null, result => {
     if (result && result.materials && result.shouldUpdate) {
       if (callback) {
         callback({
-          materials: result.materials
+          materials: result.materials.map(verifyTypes),
         });
         chrome.storage.local.set({
           'shouldUpdate': false,
