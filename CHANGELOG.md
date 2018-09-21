@@ -1,5 +1,10 @@
 # Changelog
 
+## Release 0.3.2
+
+* Fix glowforge settings causing unknown errors.
+* Fix refreshing the extension page.
+
 ## Release 0.3.1
 
 * Fix power settings for values below 50.
