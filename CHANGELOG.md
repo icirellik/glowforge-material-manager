@@ -1,5 +1,9 @@
 # Changelog
 
+## Release 0.3.3
+
+* Fix a bug where null thicknesses are causing the nodes to keep upgrading.
+
 ## Release 0.3.2
 
 * Fix glowforge settings causing unknown errors.
