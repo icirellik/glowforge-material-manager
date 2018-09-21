@@ -23,14 +23,23 @@ export function precisionRound(number, precision) {
 }
 
 export function asInteger(number) {
+  if (number === null) {
+    return null;
+  }
   return Number.parseInt(number, 10);
 }
 
 export function asFloat(number) {
+  if (number === null) {
+    return null;
+  }
   return Number.parseFloat(number, 10);
 }
 
 export function asFloatWithPrecision(number, precision) {
+  if (number === null) {
+    return null;
+  }
   return Number.parseFloat(number, 10).toPrecision(precision);
 }
 

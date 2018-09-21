@@ -25,7 +25,9 @@ async function upgrade() {
     chrome.storage.local.get(null, async result => {
       let upgraded = false;
       const _materials = result.materials.map(material => {
-        if (material.nominal_thickness === parseFloat(material.nominal_thickness)) {
+        if (material.nominal_thickness === null ||
+            material.nominal_thickness === parseFloat(material.nominal_thickness)
+        ) {
           return material;
         }
         upgraded = true;
@@ -36,7 +38,9 @@ async function upgrade() {
       });
 
       const _rawMaterials = result.rawMaterials.map(rawMaterial => {
-        if (rawMaterial.thickness === parseFloat(rawMaterial.thickness)) {
+        if (rawMaterial.thickness === null ||
+            rawMaterial.thickness === parseFloat(rawMaterial.thickness)
+        ) {
           return rawMaterial;
         }
         upgraded = true;
