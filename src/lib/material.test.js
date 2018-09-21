@@ -5,21 +5,23 @@ import {
   EMPTY_MATERIAL,
 } from './constants'
 
-const dataCallback = jest.fn();
+describe('material', () => {
+  const dataCallback = jest.fn();
 
-global.chrome = {
-  extension: {
-    getURL: dataCallback,
-  },
-};
-
-it('creates a custom material', () => {
-  dataCallback.mockReturnValueOnce('image.png');
-
-  const id = 4;
-  const rawMaterial = {
-    ...EMPTY_MATERIAL,
+  global.chrome = {
+    extension: {
+      getURL: dataCallback,
+    },
   };
 
-  expect(createMaterial(rawMaterial, id)).toMatchSnapshot();
+  it('creates a custom material', () => {
+    dataCallback.mockReturnValueOnce('image.png');
+
+    const id = 4;
+    const rawMaterial = {
+      ...EMPTY_MATERIAL,
+    };
+
+    expect(createMaterial(rawMaterial, id)).toMatchSnapshot();
+  });
 });
