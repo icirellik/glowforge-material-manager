@@ -159,7 +159,7 @@ export async function inGlowforgeTab() {
       'active': true,
       'lastFocusedWindow': true
     }, (tabs) => {
-      resolve(tabs[0].url.indexOf('app.glowforge.com') !== -1);
+      resolve(!!tabs && !!tabs[0] && tabs[0].url.indexOf('app.glowforge.com') !== -1);
     });
   });
 }
