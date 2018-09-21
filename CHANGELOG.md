@@ -1,5 +1,9 @@
 # Changelog
 
+## Release 0.3.4
+
+* Fixes a bug where in certain cases the materials would keep trying to upgrade.
+
 ## Release 0.3.3
 
 * Fix a bug where null thicknesses are causing the nodes to keep upgrading.
