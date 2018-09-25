@@ -278,6 +278,7 @@ function createBitmapEngraveSettings(bitmapEngrave) {
     focal_offset: bitmapEngrave.focalOffset,
     scangap: bitmapEngrave.scanGap,
     render_method: null,
+    // Rescale method is always lagrange at this point.
     rescale_method: "LagrangeFilter",
     minimum_gray_percent: null,
     maximum_gray_percent: null,
