@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   asFloat,
   asInteger,
@@ -11,46 +10,32 @@ import {
   toRealCutSpeed,
   toRealPower,
 } from './lib/glowforgeUnits';
+import { CutSetting } from './lib/material';
 
-class Score extends React.Component {
-  constructor(props) {
-    super(props);
-    if (props.score.power === 100) {
-      this.setState({
-        maxPower: true,
-      });
-    }
-  }
+interface CutProps {
+  cut: CutSetting;
+  storeLocalMaterial: Function;
+  updateCut: Function;
+}
 
+class Cut extends React.Component<CutProps> {
   state = {
-    maxPower: false,
+    maxPower: (this.props.cut.power === 100),
   }
 
   render() {
-    const { id, score } = this.props;
+    const { cut } = this.props;
     return (
       <React.Fragment>
-        <div className="App-field" style={(id !== 0) ? { marginTop: '20px' } : null}>
-          <label>Name</label>
-          <input
-            type="text"
-            value={score.name}
-            onChange={(event) => this.props.updateScore(id, {
-              ...score,
-              name: event.target.value,
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
         <div className="App-field">
           <label>Speed</label>
           <input
             type="number"
-            value={toDisplayCutSpeed(score.speed)}
+            value={toDisplayCutSpeed(cut.speed)}
             min="100"
             max="500"
-            onChange={(event) => this.props.updateScore(id, {
-              ...score,
+            onChange={(event) => this.props.updateCut({
+              ...cut,
               speed: toRealCutSpeed(asInteger(event.target.value)),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
@@ -61,11 +46,11 @@ class Score extends React.Component {
           <input
             type="number"
             disabled={this.state.maxPower}
-            value={toDisplayPower(score.power, false)}
+            value={toDisplayPower(cut.power)}
             min="0"
             max="100"
-            onChange={(event) => this.props.updateScore(id, {
-              ...score,
+            onChange={(event) => this.props.updateCut({
+              ...cut,
               power: toRealPower(asInteger(event.target.value)),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
@@ -75,11 +60,12 @@ class Score extends React.Component {
           <label>Max Power</label>
           <input
             type="checkbox"
-            value={this.state.maxPower}
+            value={this.state.maxPower? 1 : 0}
+            checked={this.state.maxPower}
             onChange={(event) => {
               const nextMaxPower = !this.state.maxPower;
-              this.props.updateScore(id, {
-                ...score,
+              this.props.updateCut({
+                ...cut,
                 power: (nextMaxPower) ? 100 : 99,
               });
               this.setState({
@@ -93,9 +79,9 @@ class Score extends React.Component {
           <label>Passes</label>
           <input
             type="number"
-            value={score.passes}
-            onChange={(event) => this.props.updateScore(id, {
-              ...score,
+            value={cut.passes}
+            onChange={(event) => this.props.updateCut({
+              ...cut,
               passes: asInteger(event.target.value),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
@@ -105,9 +91,9 @@ class Score extends React.Component {
           <label>Focal Offset (mm)</label>
           <input
             type="number"
-            value={score.focalOffset}
-            onChange={(event) => this.props.updateScore(id, {
-              ...score,
+            value={cut.focalOffset ? cut.focalOffset : undefined}
+            onChange={(event) => this.props.updateCut({
+              ...cut,
               focalOffset: precisionRound(asFloat(event.target.value), 3),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
@@ -118,17 +104,4 @@ class Score extends React.Component {
   }
 }
 
-Score.propTypes = {
-  id: PropTypes.number.isRequired,
-  score: PropTypes.shape({
-    focalOffset: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    passes: PropTypes.number.isRequired,
-    power: PropTypes.number.isRequired,
-    speed: PropTypes.number.isRequired,
-  }).isRequired,
-  storeLocalMaterial: PropTypes.func.isRequired,
-  updateScore: PropTypes.func.isRequired,
-}
-
-export default Score;
+export default Cut;

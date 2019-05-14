@@ -5,10 +5,10 @@ import {
 describe('chromeWrappers', () => {
   const dataCallback = jest.fn();
 
-  global.chrome = {
+  (<any>global).chrome = {
     storage: {
       local: {
-        get: (key, cb) => {
+        get: (key: any, cb: any) => {
           cb(dataCallback());
         }
       },

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   STATE_ADD,
   STATE_DISPLAY,
@@ -7,8 +6,17 @@ import {
   STATE_SELECTED,
  } from './state';
  import './MaterialButtonBar.css';
+import { AddMaterial, ModeCancel, EditMaterial } from './App';
 
-class MaterialButtonBar extends React.Component {
+interface MaterialButtonBarProps {
+  action: string;
+  addMaterial: AddMaterial;
+  cancelMaterial: ModeCancel;
+  editMaterial: EditMaterial;
+  title: string;
+}
+
+class MaterialButtonBar extends React.Component<MaterialButtonBarProps> {
   render() {
     switch (this.props.action) {
       case STATE_ADD:
@@ -37,14 +45,6 @@ class MaterialButtonBar extends React.Component {
         return null;
     }
   }
-}
-
-MaterialButtonBar.propTypes = {
-  action: PropTypes.string.isRequired,
-  addMaterial: PropTypes.func.isRequired,
-  cancelMaterial: PropTypes.func.isRequired,
-  editMaterial: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
 }
 
 export default MaterialButtonBar;

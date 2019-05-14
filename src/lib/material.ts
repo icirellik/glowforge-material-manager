@@ -7,6 +7,9 @@ import {
   storeMaterials,
   storeRawMaterials,
   storeSynchronizedMaterial,
+  RawMaterial,
+  Material,
+  MaterialSettings,
 } from './chromeWrappers';
 import {
   compress,
@@ -21,7 +24,96 @@ export async function getNextMaterialId() {
   }, -1) + 1;
 }
 
-export async function removeMaterial(materialId) {
+export type MaterialId = any;
+
+export type CutSetting = {
+  focalOffset: number | null;
+  passes: number;
+  power: number;
+  speed: number;
+}
+
+export type ScoreSetting = {
+  focalOffset: number | null;
+  name: string;
+  passes: number;
+  power: number;
+  speed: number;
+}
+
+export type VectorEngraveSetting = {
+  focalOffset: number | null;
+  name: string;
+  passes: number;
+  power: number;
+  scanGap: number | null;
+  speed: number;
+}
+
+export type BitmapEngraveSetting = {
+  power: number;
+  speed: number;
+  passes: number;
+  focalOffset: number | null;
+  scanGap: number | null;
+  name: string;
+  renderMethod: 'FloydSteinbergDitherMethod' | 'RiemersmaDitherMethod' | null;
+  rescaleMethod: 'LagrangeFilter';
+  minimumGrayPercent: null;
+  maximumGrayPercent: null;
+  horizontaTiming: null;
+}
+
+export type GFOutcome = {
+  name: string;
+  dev_id: string;
+}
+
+export type GFCutSetting = {
+  power: number;
+  speed: number;
+  passes: number;
+  focalOffset: number;
+}
+
+export type GFScoreSetting = {
+  power: number;
+  speed: number;
+  passes: number;
+  focalOffset: number;
+  uses: null;
+  display_color_mask: null;
+  outcome: GFOutcome;
+}
+
+export type GFEngraveSetting = {
+  power: number;
+  speed: number;
+  passes: number;
+  focal_offset: number;
+  scangap: number;
+  uses: null;
+  display_color_mask: null;
+  outcome: GFOutcome;
+}
+
+export type GFBitmapEngraveSetting = {
+  power: number;
+  speed: number;
+  passes: number;
+  focal_offset: number;
+  scangap: number;
+  render_method: 'FloydSteinbergDitherMethod' | 'RiemersmaDitherMethod' | null;
+  rescale_method: 'LagrangeFilter';
+  minimum_gray_percent: null;
+  maximum_gray_percent: null;
+  horizontal_timing: null;
+  uses: null;
+  display_color_mask: null;
+  outcome: GFOutcome;
+}
+
+export async function removeMaterial(materialId: MaterialId) {
   const materials = await getMaterials();
   const newMaterials = await storeMaterials(
     materials.filter(material => material.id !== materialId)
@@ -30,7 +122,7 @@ export async function removeMaterial(materialId) {
   return newMaterials;
 }
 
-export async function removeMaterialTitle(title) {
+export async function removeMaterialTitle(title: string) {
   const materials = await getMaterials();
   const newMaterials = await storeMaterials(
     materials.filter(material => material.title !== title)
@@ -39,7 +131,7 @@ export async function removeMaterialTitle(title) {
   return newMaterials;
 }
 
-export async function removeRawMaterial(title) {
+export async function removeRawMaterial(title: string) {
   const rawMaterials = await getRawMaterials();
   const newRawMaterials = await storeRawMaterials(
     rawMaterials.filter(material => `${material.thickName} ${material.name}` !== title)
@@ -48,7 +140,7 @@ export async function removeRawMaterial(title) {
   return newRawMaterials;
 }
 
-export async function sendCloudMaterial(rawMaterial) {
+export async function sendCloudMaterial(rawMaterial: RawMaterial) {
   const hash = await hashTitle(rawMaterial);
   const compressed = compress(toTinyMaterial(rawMaterial));
 
@@ -56,7 +148,7 @@ export async function sendCloudMaterial(rawMaterial) {
   await storeSynchronizedMaterial(hash, compressed);
 }
 
-export async function removeCloudMaterial(rawMaterial) {
+export async function removeCloudMaterial(rawMaterial: RawMaterial) {
   const hash = await hashTitle(rawMaterial);
   return await removeSynchronizedMaterial(hash);
 }
@@ -67,10 +159,10 @@ export async function fullSynchronizedMaterials(remove=false) {
   const rawMaterials = await getRawMaterials();
 
   console.log(synchronizedMaterials);
-  const currentTitleHashes = [];
+  const currentTitleHashes: string[] = [];
   const currentDataHashes = [];
-  const rawMaterialTitleMap = {};
-  const rawMaterialDataMap = {};
+  const rawMaterialTitleMap: any = {};
+  const rawMaterialDataMap: any = {};
   for (let i = 0; i < rawMaterials.length; i++) {
     const material = rawMaterials[i];
     const titleHash = await hashTitle(material);
@@ -168,8 +260,8 @@ export async function fullSynchronizedMaterials(remove=false) {
 /**
  * Creates a new custom material.
  */
-export function createMaterial(params, id) {
-  let material = {
+export function createMaterial(params: any, id: string): Material {
+  return {
     id: `Custom:${id}`,
     title: `${params.thickName} ${params.name}`,
     sku: '',
@@ -189,15 +281,13 @@ export function createMaterial(params, id) {
       createSettings(params, 'pro')
     ]
   };
-
-  return material;
 }
 
 /**
  * Creates the settings for a given tube type.
  */
-function createSettings(params, tubeType) {
-  let settings = {
+function createSettings(params: any, tubeType: string): MaterialSettings {
+  return {
     description: `${params.thickName} ${params.name} Settings`,
     active_date: "2017-04-06T00:00-07:00",
     environment: [
@@ -205,23 +295,22 @@ function createSettings(params, tubeType) {
     ],
     tube_type: tubeType,
     cut_setting: createCutSettings(params.cut),
-    score_settings: params.scores.map(score => {
+    score_settings: params.scores.map((score: any) => {
       return createScoreSettings(score);
     }),
-    vector_engrave_settings: params.vectors.map(vector => {
+    vector_engrave_settings: params.vectors.map((vector: any) => {
       return createVectorEngraveSettings(vector);
     }),
-    bitmap_engrave_settings: params.bitmaps.map(bitmap => {
+    bitmap_engrave_settings: params.bitmaps.map((bitmap: any) => {
       return createBitmapEngraveSettings(bitmap);
     }),
   }
-  return settings;
 }
 
 /**
  * Creates a new set of cut settings.
  */
-function createCutSettings(cut) {
+function createCutSettings(cut: CutSetting) {
   return {
     power: cut.power,
     speed: cut.speed,
@@ -233,7 +322,7 @@ function createCutSettings(cut) {
 /**
  * Creates a new set of score settings.
  */
-function createScoreSettings(score) {
+function createScoreSettings(score: ScoreSetting) {
   return {
     power: score.power,
     speed: score.speed,
@@ -251,7 +340,7 @@ function createScoreSettings(score) {
 /**
  * Creates a new set of vector engrave settings.
  */
-function createVectorEngraveSettings(vectorEngrave) {
+function createVectorEngraveSettings(vectorEngrave: VectorEngraveSetting) {
   return {
     power: vectorEngrave.power,
     speed: vectorEngrave.speed,
@@ -270,7 +359,7 @@ function createVectorEngraveSettings(vectorEngrave) {
 /**
  * Creates a new set of bitmap engrave settings.
  */
-function createBitmapEngraveSettings(bitmapEngrave) {
+function createBitmapEngraveSettings(bitmapEngrave: BitmapEngrave) {
   return {
     power: bitmapEngrave.power,
     speed: bitmapEngrave.speed,
@@ -278,7 +367,6 @@ function createBitmapEngraveSettings(bitmapEngrave) {
     focal_offset: bitmapEngrave.focalOffset,
     scangap: bitmapEngrave.scanGap,
     render_method: null,
-    // Rescale method is always lagrange at this point.
     rescale_method: "LagrangeFilter",
     minimum_gray_percent: null,
     maximum_gray_percent: null,
@@ -326,7 +414,7 @@ export function toFullMaterial(tinyMaterial) {
   };
 }
 
-function toTinyScore(score) {
+function toTinyScore(score: ScoreSetting) {
   return {
     n: score.name,
     p: score.power,
@@ -346,7 +434,7 @@ function toFullScore(score) {
   };
 }
 
-function toTinyVectorEngrave(vectorEngrave) {
+function toTinyVectorEngrave(vectorEngrave: VectorEngraveSetting) {
   return {
     n: vectorEngrave.name,
     p: vectorEngrave.power,
@@ -368,7 +456,7 @@ function toFullVectorEngrave(vectorEngrave) {
   };
 }
 
-function toTinyBitmmapEngrave(bitmapEngrave) {
+function toTinyBitmmapEngrave(bitmapEngrave: BitmapEngrave) {
   return {
     n: bitmapEngrave.name,
     p: bitmapEngrave.power,

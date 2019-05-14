@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import MaterialButtonBar from './MaterialButtonBar';
 import { STATE_SELECTED } from './state';
 import {
@@ -12,12 +11,22 @@ import {
 import {
   precisionRound,
 } from './lib/utils';
+import { ModeCancel, AddMaterial, EditMaterial } from './App';
+import { TempMaterial } from './lib/constants';
 
-function toDisplayPowerWords(power) {
+function toDisplayPowerWords(power: number) {
   return (power === 100) ? 'Max' : toDisplayPower(power);
 }
 
-class MaterialViewer extends React.Component {
+export type MaterialViewerProps = {
+  action: string;
+  addMaterial: AddMaterial;
+  cancelMaterial: ModeCancel;
+  editMaterial: EditMaterial;
+  material: TempMaterial;
+}
+
+class MaterialViewer extends React.Component<MaterialViewerProps> {
   render() {
 
     const {
@@ -149,17 +158,14 @@ class MaterialViewer extends React.Component {
 
         <MaterialButtonBar
           action={this.props.action}
+          addMaterial={this.props.addMaterial}
           cancelMaterial={this.props.cancelMaterial}
+          editMaterial={this.props.editMaterial}
+          title='TODO: No Title'
         />
       </React.Fragment>
     );
   }
-}
-
-MaterialViewer.propTypes = {
-  action: PropTypes.string.isRequired,
-  cancelMaterial: PropTypes.func.isRequired,
-  material: PropTypes.object.isRequired,
 }
 
 export default MaterialViewer;

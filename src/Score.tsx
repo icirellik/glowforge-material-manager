@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   asFloat,
   asInteger,
@@ -11,25 +10,54 @@ import {
   toRealCutSpeed,
   toRealPower,
 } from './lib/glowforgeUnits';
+import { ScoreSetting } from './lib/material';
 
-class Cut extends React.Component {
+interface ScoreProps {
+  id: number;
+  score: ScoreSetting;
+  storeLocalMaterial: Function;
+  updateScore: Function;
+}
+
+class Score extends React.Component<ScoreProps> {
+  constructor(props: ScoreProps) {
+    super(props);
+    if (props.score.power === 100) {
+      this.setState({
+        maxPower: true,
+      });
+    }
+  }
+
   state = {
-    maxPower: (this.props.cut.power === 100),
+    maxPower: false,
   }
 
   render() {
-    const { cut } = this.props;
+    const { id, score } = this.props;
     return (
       <React.Fragment>
+        <div className="App-field" style={(id !== 0) ? { marginTop: '20px' } : undefined}>
+          <label>Name</label>
+          <input
+            type="text"
+            value={score.name}
+            onChange={(event) => this.props.updateScore(id, {
+              ...score,
+              name: event.target.value,
+            })}
+            onBlur={() => this.props.storeLocalMaterial()}
+          />
+        </div>
         <div className="App-field">
           <label>Speed</label>
           <input
             type="number"
-            value={toDisplayCutSpeed(cut.speed)}
+            value={toDisplayCutSpeed(score.speed)}
             min="100"
             max="500"
-            onChange={(event) => this.props.updateCut({
-              ...cut,
+            onChange={(event) => this.props.updateScore(id, {
+              ...score,
               speed: toRealCutSpeed(asInteger(event.target.value)),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
@@ -40,11 +68,11 @@ class Cut extends React.Component {
           <input
             type="number"
             disabled={this.state.maxPower}
-            value={toDisplayPower(cut.power, false)}
+            value={toDisplayPower(score.power)}
             min="0"
             max="100"
-            onChange={(event) => this.props.updateCut({
-              ...cut,
+            onChange={(event) => this.props.updateScore(id, {
+              ...score,
               power: toRealPower(asInteger(event.target.value)),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
@@ -54,12 +82,11 @@ class Cut extends React.Component {
           <label>Max Power</label>
           <input
             type="checkbox"
-            value={this.state.maxPower}
-            checked={this.state.maxPower}
+            value={this.state.maxPower? 1 : 0}
             onChange={(event) => {
               const nextMaxPower = !this.state.maxPower;
-              this.props.updateCut({
-                ...cut,
+              this.props.updateScore(id, {
+                ...score,
                 power: (nextMaxPower) ? 100 : 99,
               });
               this.setState({
@@ -73,9 +100,9 @@ class Cut extends React.Component {
           <label>Passes</label>
           <input
             type="number"
-            value={cut.passes}
-            onChange={(event) => this.props.updateCut({
-              ...cut,
+            value={score.passes}
+            onChange={(event) => this.props.updateScore(id, {
+              ...score,
               passes: asInteger(event.target.value),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
@@ -85,9 +112,9 @@ class Cut extends React.Component {
           <label>Focal Offset (mm)</label>
           <input
             type="number"
-            value={cut.focalOffset}
-            onChange={(event) => this.props.updateCut({
-              ...cut,
+            value={score.focalOffset ? score.focalOffset : undefined}
+            onChange={(event) => this.props.updateScore(id, {
+              ...score,
               focalOffset: precisionRound(asFloat(event.target.value), 3),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
@@ -98,15 +125,4 @@ class Cut extends React.Component {
   }
 }
 
-Cut.propTypes = {
-  cut: PropTypes.shape({
-    focalOffset: PropTypes.number.isRequired,
-    passes: PropTypes.number.isRequired,
-    power: PropTypes.number.isRequired,
-    speed: PropTypes.number.isRequired,
-  }).isRequired,
-  storeLocalMaterial: PropTypes.func.isRequired,
-  updateCut: PropTypes.func.isRequired,
-}
-
-export default Cut;
+export default Score;

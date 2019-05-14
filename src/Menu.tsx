@@ -4,9 +4,13 @@ import {
 } from './Icons';
 import './Menu.css';
 
-class Menu extends React.Component {
-  constructor() {
-    super();
+interface MenuState {
+  showMenu: boolean;
+}
+
+class Menu extends React.Component<{}, MenuState>  {
+  constructor(props: {}) {
+    super(props);
 
     this.state = {
       showMenu: false,
@@ -16,14 +20,14 @@ class Menu extends React.Component {
     this.closeMenu = this.closeMenu.bind(this);
   }
 
-  showMenu(event) {
+  showMenu(event: Event) {
     event.preventDefault();
     this.setState({ showMenu: true }, () => {
       document.addEventListener('click', this.closeMenu);
     });
   }
 
-  closeMenu(event) {
+  closeMenu(event: Event) {
     this.setState({ showMenu: false }, () => {
       document.removeEventListener('click', this.closeMenu);
     });

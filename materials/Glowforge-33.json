@@ -1,0 +1,341 @@
+{
+  "Glowforge:33": {
+    "id": "Glowforge:33",
+    "nominal_thickness": 3.175,
+    "selected": false,
+    "settings": [
+      {
+        "active_date": "2017-04-06T00:00:00.000-07:00",
+        "bitmap_engrave_settings": [
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "horizontal_timing": null,
+            "maximum_gray_percent": null,
+            "minimum_gray_percent": null,
+            "outcome": {
+              "dev_id": "draft-graphic-new",
+              "name": "Draft Graphic"
+            },
+            "passes": 1,
+            "power": 100,
+            "render_method": null,
+            "rescale_method": "LagrangeFilter",
+            "scangap": 7,
+            "speed": 8500,
+            "uses": null
+          },
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "horizontal_timing": null,
+            "maximum_gray_percent": null,
+            "minimum_gray_percent": null,
+            "outcome": {
+              "dev_id": "sd-graphic-new",
+              "name": "SD Graphic"
+            },
+            "passes": 1,
+            "power": 100,
+            "render_method": null,
+            "rescale_method": "LagrangeFilter",
+            "scangap": 5,
+            "speed": 8500,
+            "uses": null
+          },
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "horizontal_timing": null,
+            "maximum_gray_percent": null,
+            "minimum_gray_percent": null,
+            "outcome": {
+              "dev_id": "hd-graphic-new",
+              "name": "HD Graphic"
+            },
+            "passes": null,
+            "power": 16,
+            "render_method": "FloydSteinbergDitherMethod",
+            "rescale_method": "LagrangeFilter",
+            "scangap": 3,
+            "speed": 1967,
+            "uses": null
+          },
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "horizontal_timing": null,
+            "maximum_gray_percent": null,
+            "minimum_gray_percent": null,
+            "outcome": {
+              "dev_id": "3d-engrave-shallow",
+              "name": "3D Engrave"
+            },
+            "passes": null,
+            "power": 100,
+            "render_method": null,
+            "rescale_method": "LagrangeFilter",
+            "scangap": 4,
+            "speed": 2900,
+            "uses": null
+          }
+        ],
+        "cut_setting": {
+          "focal_offset": null,
+          "passes": 1,
+          "power": 100,
+          "speed": 584
+        },
+        "description": "Medium Purple Acrylic",
+        "environment": [
+          "staging",
+          "production"
+        ],
+        "score_settings": [
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "outcome": {
+              "dev_id": "high-quality",
+              "name": "High Quality"
+            },
+            "passes": null,
+            "power": 11,
+            "speed": 344,
+            "uses": [
+              "default"
+            ]
+          },
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "outcome": {
+              "dev_id": "draft",
+              "name": "Draft"
+            },
+            "passes": null,
+            "power": 41,
+            "speed": 2050,
+            "uses": null
+          }
+        ],
+        "tube_type": "basic",
+        "vector_engrave_settings": [
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "outcome": {
+              "dev_id": "draft-graphic-new",
+              "name": "Draft Graphic"
+            },
+            "passes": 1,
+            "power": 100,
+            "scangap": 7,
+            "speed": 8500,
+            "uses": null
+          },
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "outcome": {
+              "dev_id": "sd-graphic-new",
+              "name": "SD Graphic"
+            },
+            "passes": 1,
+            "power": 100,
+            "scangap": 5,
+            "speed": 8500,
+            "uses": [
+              "default"
+            ]
+          },
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "outcome": {
+              "dev_id": "hd-graphic-new",
+              "name": "HD Graphic"
+            },
+            "passes": null,
+            "power": 16,
+            "scangap": 3,
+            "speed": 1967,
+            "uses": null
+          }
+        ]
+      },
+      {
+        "active_date": "2017-04-06T00:00:00.000-07:00",
+        "bitmap_engrave_settings": [
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "horizontal_timing": null,
+            "maximum_gray_percent": null,
+            "minimum_gray_percent": null,
+            "outcome": {
+              "dev_id": "draft-graphic-new",
+              "name": "Draft Graphic"
+            },
+            "passes": 1,
+            "power": 100,
+            "render_method": null,
+            "rescale_method": "LagrangeFilter",
+            "scangap": 7,
+            "speed": 8500,
+            "uses": null
+          },
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "horizontal_timing": null,
+            "maximum_gray_percent": null,
+            "minimum_gray_percent": null,
+            "outcome": {
+              "dev_id": "sd-graphic-new",
+              "name": "SD Graphic"
+            },
+            "passes": 1,
+            "power": 100,
+            "render_method": null,
+            "rescale_method": "LagrangeFilter",
+            "scangap": 5,
+            "speed": 8500,
+            "uses": null
+          },
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "horizontal_timing": null,
+            "maximum_gray_percent": null,
+            "minimum_gray_percent": null,
+            "outcome": {
+              "dev_id": "hd-graphic-new",
+              "name": "HD Graphic"
+            },
+            "passes": null,
+            "power": 16,
+            "render_method": "FloydSteinbergDitherMethod",
+            "rescale_method": "LagrangeFilter",
+            "scangap": 3,
+            "speed": 1967,
+            "uses": null
+          },
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "horizontal_timing": null,
+            "maximum_gray_percent": null,
+            "minimum_gray_percent": null,
+            "outcome": {
+              "dev_id": "3d-engrave-shallow",
+              "name": "3D Engrave"
+            },
+            "passes": null,
+            "power": 100,
+            "render_method": null,
+            "rescale_method": "LagrangeFilter",
+            "scangap": 4,
+            "speed": 3840,
+            "uses": null
+          }
+        ],
+        "cut_setting": {
+          "focal_offset": null,
+          "passes": null,
+          "power": 100,
+          "speed": 711
+        },
+        "description": "Medium Purple Acrylic, Pro",
+        "environment": [
+          "staging",
+          "production"
+        ],
+        "score_settings": [
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "outcome": {
+              "dev_id": "high-quality",
+              "name": "High Quality"
+            },
+            "passes": null,
+            "power": 11,
+            "speed": 344,
+            "uses": [
+              "default"
+            ]
+          },
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "outcome": {
+              "dev_id": "draft",
+              "name": "Draft"
+            },
+            "passes": null,
+            "power": 41,
+            "speed": 2050,
+            "uses": null
+          }
+        ],
+        "tube_type": "pro",
+        "vector_engrave_settings": [
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "outcome": {
+              "dev_id": "draft-graphic-new",
+              "name": "Draft Graphic"
+            },
+            "passes": 1,
+            "power": 100,
+            "scangap": 7,
+            "speed": 8500,
+            "uses": null
+          },
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "outcome": {
+              "dev_id": "sd-graphic-new",
+              "name": "SD Graphic"
+            },
+            "passes": 1,
+            "power": 100,
+            "scangap": 5,
+            "speed": 8500,
+            "uses": [
+              "default"
+            ]
+          },
+          {
+            "display_color_mask": null,
+            "focal_offset": null,
+            "outcome": {
+              "dev_id": "hd-graphic-new",
+              "name": "HD Graphic"
+            },
+            "passes": null,
+            "power": 16,
+            "scangap": 3,
+            "speed": 1967,
+            "uses": null
+          }
+        ]
+      }
+    ],
+    "sku": "purple-acrylic-medium-fake",
+    "thickness_name": "Medium",
+    "title": "Purple Acrylic, 1/8\"",
+    "variety": {
+      "common_name": "Medium Purple Acrylic",
+      "display_options": null,
+      "name": "medium-purple-acrylic",
+      "thumbnails": [
+        "//images.ctfassets.net/ljtyf78xujn2/2IqfJCUTqMMs42ycic8I0/620271563052ca858906bf6b4bc2b4f0/Purple-Acrylic-Thumbnail.jpg"
+      ],
+      "type_name": "Purple Acrylic"
+    }
+  }
+}

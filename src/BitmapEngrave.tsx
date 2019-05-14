@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   asFloat,
   asInteger,
@@ -12,24 +11,32 @@ import {
   toRealEngraveSpeed,
   toRealPower,
 } from './lib/glowforgeUnits';
+import { BitmapEngraveSetting } from './lib/material';
 
-class VectorEngrave extends React.Component {
+interface BitmapEngraveProps {
+  id: number;
+  bitmap: BitmapEngraveSetting;
+  storeLocalMaterial: Function;
+  updateBitmapEngrave: Function;
+}
+
+class BitmapEngrave extends React.Component<BitmapEngraveProps> {
   state = {
-    maxPower: (this.props.vector.power === 100),
+    maxPower: (this.props.bitmap.power === 100),
   }
 
   render() {
-    const { id, vector } = this.props;
+    const { id, bitmap } = this.props;
     return (
       <React.Fragment>
-        <div className="App-field" style={(id !== 0) ? { marginTop: '20px' } : null}>
+        <div className="App-field" style={(id !== 0) ? { marginTop: '20px' } : undefined}>
           <label>Name</label>
           <input
             type="text"
-            value={vector.name}
-            onChange={(event) => this.props.updateVectorEngrave(id, {
-              ...vector,
-              name: event.target.value
+            value={bitmap.name}
+            onChange={(event) => this.props.updateBitmapEngrave(id, {
+              ...bitmap,
+              name: event.target.value,
             })}
             onBlur={() => this.props.storeLocalMaterial()}
           />
@@ -38,11 +45,11 @@ class VectorEngrave extends React.Component {
           <label>Speed</label>
           <input
             type="number"
-            value={toDisplayEngraveSpeed(vector.speed, false)}
+            value={toDisplayEngraveSpeed(bitmap.speed)}
             min="100"
             max="1000"
-            onChange={(event) => this.props.updateVectorEngrave(id, {
-              ...vector,
+            onChange={(event) => this.props.updateBitmapEngrave(id, {
+              ...bitmap,
               speed: toRealEngraveSpeed(asInteger(event.target.value)),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
@@ -53,11 +60,11 @@ class VectorEngrave extends React.Component {
           <input
             type="number"
             disabled={this.state.maxPower}
-            value={toDisplayPower(vector.power, false)}
+            value={toDisplayPower(bitmap.power)}
             min="0"
             max="100"
-            onChange={(event) => this.props.updateVectorEngrave(id, {
-              ...vector,
+            onChange={(event) => this.props.updateBitmapEngrave(id, {
+              ...bitmap,
               power: toRealPower(asInteger(event.target.value)),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
@@ -67,12 +74,12 @@ class VectorEngrave extends React.Component {
           <label>Max Power</label>
           <input
             type="checkbox"
-            value={this.state.maxPower}
+            value={this.state.maxPower? 1 : 0}
             checked={this.state.maxPower}
             onChange={(event) => {
               const nextMaxPower = !this.state.maxPower;
-              this.props.updateVectorEngrave(id, {
-                ...vector,
+              this.props.updateBitmapEngrave(id, {
+                ...bitmap,
                 power: (nextMaxPower) ? 100 : 99,
               });
               this.setState({
@@ -86,9 +93,9 @@ class VectorEngrave extends React.Component {
           <label>Passes</label>
           <input
             type="number"
-            value={vector.passes}
-            onChange={(event) => this.props.updateVectorEngrave(id, {
-              ...vector,
+            value={bitmap.passes}
+            onChange={(event) => this.props.updateBitmapEngrave(id, {
+              ...bitmap,
               passes: asInteger(event.target.value),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
@@ -98,21 +105,21 @@ class VectorEngrave extends React.Component {
           <label>Focal Offset (mm)</label>
           <input
             type="number"
-            value={vector.focalOffset}
-            onChange={(event) => this.props.updateVectorEngrave(id, {
-              ...vector,
+            value={bitmap.focalOffset ? bitmap.focalOffset : undefined}
+            onChange={(event) => this.props.updateBitmapEngrave(id, {
+              ...bitmap,
               focalOffset: precisionRound(asFloat(event.target.value), 3),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
         <div className="App-field">
-          <label>Scan Gap (LPI {`${toDisplayLinesPerInch(vector.scanGap)}`})</label>
+          <label>Scan Gap (LPI {`${toDisplayLinesPerInch(bitmap.scanGap ? bitmap.scanGap : 0)}`})</label>
           <input
             type="number"
-            value={vector.scanGap}
-            onChange={(event) => this.props.updateVectorEngrave(id, {
-              ...vector,
+            value={bitmap.scanGap ? bitmap.scanGap : undefined}
+            onChange={(event) => this.props.updateBitmapEngrave(id, {
+              ...bitmap,
               scanGap: asInteger(event.target.value),
             })}
             onBlur={() => this.props.storeLocalMaterial()}
@@ -123,18 +130,4 @@ class VectorEngrave extends React.Component {
   }
 }
 
-VectorEngrave.propTypes = {
-  id: PropTypes.number.isRequired,
-  vector: PropTypes.shape({
-    focalOffset: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    passes: PropTypes.number.isRequired,
-    power: PropTypes.number.isRequired,
-    scanGap: PropTypes.number.isRequired,
-    speed: PropTypes.number.isRequired,
-  }).isRequired,
-  storeLocalMaterial: PropTypes.func.isRequired,
-  updateVectorEngrave: PropTypes.func.isRequired,
-}
-
-export default VectorEngrave;
+export default BitmapEngrave;

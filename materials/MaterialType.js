@@ -66,7 +66,7 @@ const type = {
         // Array of as many bitmap settings as you would like.
         bitmap_engrave_settings: [
           {
-            display_color_mask: null,
+            display_color_mask: null,               // Always null
             focal_offset: 'Integer|null',
             horizontal_timing: null,                // Always null
             // Used for 3d engrave on raster images only
