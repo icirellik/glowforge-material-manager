@@ -5,6 +5,7 @@ import MaterialButtonBar from './MaterialButtonBar';
 import Score from './Score';
 import VectorEngrave from './VectorEngrave';
 import {
+  RawMaterial,
   storeTempMaterial,
 } from './lib/chromeWrappers';
 import {
@@ -18,8 +19,37 @@ import {
   asFloat,
 } from './lib/utils';
 import './MaterialEditor.css';
+import {
+  AddBitmapEngrave,
+  AddMaterial,
+  AddScore,
+  AddVectorEngrave,
+  EditMaterial,
+  ModeCancel,
+  UpdateBitmapEngrave,
+  UpdateCut,
+  UpdateMaterial,
+  UpdateScore,
+  UpdateVectorEngrave,
+} from './App';
 
-class MaterialEditor extends React.Component {
+interface MaterialEditorProps {
+  action: string;
+  addBitmapEngrave: AddBitmapEngrave;
+  addMaterial: AddMaterial;
+  addScore: AddScore;
+  addVectorEngrave: AddVectorEngrave;
+  cancelMaterial: ModeCancel;
+  editMaterial: EditMaterial;
+  material: RawMaterial;
+  updateBitmapEngrave: UpdateBitmapEngrave;
+  updateCut: UpdateCut;
+  updateMaterial: UpdateMaterial;
+  updateScore: UpdateScore;
+  updateVectorEngrave: UpdateVectorEngrave;
+}
+
+class MaterialEditor extends React.Component<MaterialEditorProps> {
 
   storeLocalMaterial() {
     if (this.props.action === STATE_ADD) {

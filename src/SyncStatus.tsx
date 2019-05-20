@@ -1,9 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { IconCircle } from './Icons';
+import { ForceSyncronize } from './App';
 import './SyncStatus.css';
 
-class SyncStatus extends React.Component {
+interface SyncStatusProps {
+  connected: boolean;
+  forceSync: ForceSyncronize;
+  synchronized: boolean;
+}
+
+class SyncStatus extends React.Component<SyncStatusProps> {
   render() {
     return (
       <div className={
@@ -14,12 +20,6 @@ class SyncStatus extends React.Component {
       </div>
     );
   }
-}
-
-SyncStatus.propTypes = {
-  connected: PropTypes.bool.isRequired,
-  forceSync: PropTypes.func.isRequired,
-  synchronized: PropTypes.bool.isRequired,
 }
 
 export default SyncStatus;

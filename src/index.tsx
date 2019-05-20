@@ -8,6 +8,8 @@ import {
   inGlowforgeTab,
   storeMaterials,
   storeRawMaterials,
+  Material,
+  RawMaterial,
 } from './lib/chromeWrappers';
 import {
   fullSynchronizedMaterials,
@@ -24,21 +26,21 @@ async function upgrade() {
   return new Promise (resolve => {
     chrome.storage.local.get(null, async result => {
       let upgraded = false;
-      const _materials = result.materials.map(material => {
+      const _materials = result.materials.map((material: Material) => {
         if (!material.hasOwnProperty('nominal_thickness') ||
             material.nominal_thickness === null ||
-            material.nominal_thickness === parseFloat(material.nominal_thickness)
+            material.nominal_thickness === parseFloat((material.nominal_thickness as any))
         ) {
           return material;
         }
         upgraded = true;
         return {
           ...material,
-          nominal_thickness: asFloat(material.nominal_thickness),
+          nominal_thickness: asFloat(material.nominal_thickness as any),
         };
       });
 
-      const _rawMaterials = result.rawMaterials.map(rawMaterial => {
+      const _rawMaterials = result.rawMaterials.map((rawMaterial: RawMaterial) => {
         if (!rawMaterial.hasOwnProperty('thickness') ||
             rawMaterial.thickness === null ||
             rawMaterial.thickness === parseFloat(rawMaterial.thickness)

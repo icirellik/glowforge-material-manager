@@ -17,7 +17,7 @@ const MIN_POWER = 1;
  * Best guess is that this is the maximum vertical rampup speed. It makes sense
  * that this value could be higher for emgraves as there is no y axis motion
  */
-function getMaxVRSpeed(minSpeed, maxSpeed) {
+function getMaxVRSpeed(minSpeed: number, maxSpeed: number) {
   const speedDifference = maxSpeed - minSpeed;
   const uiSpeedRange = MAX_UI_SPEED - MIN_UI_SPEED
   const vrSpeed = speedDifference / MAX_MOTOR_SPEED * uiSpeedRange + MIN_UI_SPEED;
@@ -27,7 +27,7 @@ function getMaxVRSpeed(minSpeed, maxSpeed) {
 /**
  * Converts a Glowforge internal speed to the GFUI Speed.
  */
-export function toDisplaySpeed(rawSpeed, minSpeed, maxSpeed) {
+export function toDisplaySpeed(rawSpeed: number, minSpeed: number, maxSpeed: number) {
   const maxVRSpeed = getMaxVRSpeed(minSpeed, maxSpeed) - MIN_UI_SPEED;
   const speed = (rawSpeed - minSpeed) / (maxSpeed - minSpeed) * maxVRSpeed + MIN_UI_SPEED;
   return Math.round(speed)
@@ -36,49 +36,49 @@ export function toDisplaySpeed(rawSpeed, minSpeed, maxSpeed) {
 /**
  * Converts a Glowforge UI speed to a Glowforge internal speed.
  */
-export function toRealSpeed(displaySpeed, minSpeed, maxSpeed) {
+export function toRealSpeed(displaySpeed: number, minSpeed: number, maxSpeed: number) {
   return (displaySpeed - minSpeed) / (getMaxVRSpeed(minSpeed, maxSpeed) - MIN_UI_SPEED) * (maxSpeed - minSpeed) + minSpeed
 }
 
 // Engrave conversion settings.
-export function toDisplayEngraveSpeed(rawSpeed) {
+export function toDisplayEngraveSpeed(rawSpeed: number) {
   return toDisplaySpeed(rawSpeed, 100, 8500);
 }
 
-export function toRealEngraveSpeed(displaySpeed) {
+export function toRealEngraveSpeed(displaySpeed: number) {
   return toRealSpeed(displaySpeed, 100, 8500);
 }
 
 // Cut conversion settings.
-export function toDisplayCutSpeed(rawSpeed) {
+export function toDisplayCutSpeed(rawSpeed: number) {
   return toDisplaySpeed(rawSpeed, 100, 4000);
 }
 
-export function toRealCutSpeed(displaySpeed) {
+export function toRealCutSpeed(displaySpeed: number) {
   return toRealSpeed(displaySpeed, 100, 4000);
 }
 
 // Power conversion settings.
-export function toDisplayPower(power) {
+export function toDisplayPower(power: number) {
   return Math.round(power / (MAX_POWER - MIN_POWER) * MAX_POWER);
 }
 
-export function toRealPower(displayPower) {
+export function toRealPower(displayPower: number) {
   return displayPower / MAX_POWER * (MAX_POWER - 1);
 }
 
 // Lines per inch.
-export function toDisplayLinesPerInch(scanGap) {
+export function toDisplayLinesPerInch(scanGap: number) {
   if (!scanGap || scanGap < 0) {
     return 0;
   }
   return roundToNearest5(1 / (scanGap * STANDARD_SCAN_GAP_INCHES))
 }
 
-export function toRealLinesPerInch(scanGap) {
+export function toRealLinesPerInch(scanGap: number) {
   return Math.round(1 / (scanGap * STANDARD_SCAN_GAP_INCHES))
 }
 
-export function toSteps(linesPerInch) {
+export function toSteps(linesPerInch: number) {
   return Math.round(1 / linesPerInch / STANDARD_SCAN_GAP_INCHES)
 }

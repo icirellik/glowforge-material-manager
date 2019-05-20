@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Menu from './Menu';
 import {
   IconCopy,
@@ -8,8 +7,23 @@ import {
   IconTrashCan,
 } from './Icons';
 import './Material.css';
+import { Material as MaterialType } from './lib/chromeWrappers';
+import {
+  CopyMaterial,
+  ModeEdit,
+  ModeSelect,
+  RemoveMaterial,
+} from './App';
 
-class Material extends React.Component {
+interface MaterialProps {
+  cloneMaterial: CopyMaterial;
+  editMaterial: ModeEdit;
+  material: MaterialType;
+  removeMaterial: RemoveMaterial;
+  selectMaterial: ModeSelect;
+}
+
+class Material extends React.Component<MaterialProps> {
   render() {
     const {
       cloneMaterial,
@@ -28,7 +42,7 @@ class Material extends React.Component {
         </span>
         <span>
           <Menu>
-          <div onClick={() => selectMaterial(material.title)}>
+            <div onClick={() => selectMaterial(material.title)}>
               <span>View </span>
               <IconOpen />
             </div>
@@ -49,16 +63,6 @@ class Material extends React.Component {
       </div>
     );
   }
-}
-
-Material.propTypes = {
-  materials: PropTypes.shape({
-    title: PropTypes.string.isRequired
-  }).isRequired,
-  cloneMaterial: PropTypes.func.isRequired,
-  editMaterial: PropTypes.func.isRequired,
-  removeMaterial: PropTypes.func.isRequired,
-  selectMaterial: PropTypes.func.isRequired,
 }
 
 export default Material;

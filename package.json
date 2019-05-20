@@ -3,18 +3,43 @@
   "version": "0.3.4",
   "private": true,
   "dependencies": {
+    "@types/chrome": "^0.0.83",
+    "@types/jest": "^24.0.12",
+    "@types/pako": "^1.0.1",
+    "@types/react": "^16.8.16",
+    "@types/react-dom": "^16.8.4",
     "pako": "^1.0.6",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.1.1"
+    "react-scripts": "^3.0.0",
+    "typescript": "^3.4.5"
   },
   "scripts": {
     "clean": "rm -rf build",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "release-test": "yarn build && mkdir -p releases && cd build && sed -i '/\"key\"/d' manifest.json && sed -i 's/Glowforge Material Manager/Glowforge Material Manager Test/g' manifest.json && zip -r glowforge-material-manager-test.zip . && mv -f *.zip ../releases && cd ..",
     "release": "yarn build && mkdir -p releases && cd build && sed -i '/\"key\"/d' manifest.json && zip -r glowforge-material-manager.zip . && mv -f *.zip ../releases && cd .."
+  },
+  "devDependencies": {
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.11.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

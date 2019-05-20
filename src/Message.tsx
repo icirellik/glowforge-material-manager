@@ -1,8 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './Message.css';
 
-class Message extends React.Component {
+interface MessageProps {
+  color?: string | null;
+  message: string;
+}
+
+class Message extends React.Component<MessageProps> {
   render() {
     if (this.props.message && this.props.message.length > 0) {
       let styles;
@@ -20,10 +24,5 @@ class Message extends React.Component {
     return null;
   }
 }
-
-Message.propTypes = {
-  color: PropTypes.string,
-  message: PropTypes.string.isRequired,
-};
 
 export default Message;

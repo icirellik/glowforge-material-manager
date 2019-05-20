@@ -8,7 +8,7 @@ import {
 describe('material', () => {
   const dataCallback = jest.fn();
 
-  global.chrome = {
+  (<any>global).chrome = {
     extension: {
       getURL: dataCallback,
     },

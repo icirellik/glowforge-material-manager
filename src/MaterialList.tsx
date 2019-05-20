@@ -1,8 +1,22 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Material from './Material';
+import { Material as MaterialType } from './lib/chromeWrappers';
+import {
+  CopyMaterial,
+  ModeEdit,
+  ModeSelect,
+  RemoveMaterial,
+} from './App';
 
-class MaterialList extends React.Component {
+type MaterialListProps = {
+  materials: MaterialType[]
+  cloneMaterial: CopyMaterial;
+  editMaterial: ModeEdit;
+  removeMaterial: RemoveMaterial;
+  selectMaterial: ModeSelect;
+}
+
+class MaterialList extends React.Component<MaterialListProps> {
   render() {
     const { materials } = this.props
 
@@ -33,16 +47,6 @@ class MaterialList extends React.Component {
       </div>
     );
   }
-}
-
-MaterialList.propTypes = {
-  materials: PropTypes.arrayOf(PropTypes.shape({
-    title: PropTypes.string.isRequired
-  })).isRequired,
-  cloneMaterial: PropTypes.func.isRequired,
-  editMaterial: PropTypes.func.isRequired,
-  removeMaterial: PropTypes.func.isRequired,
-  selectMaterial: PropTypes.func.isRequired,
 }
 
 export default MaterialList;
