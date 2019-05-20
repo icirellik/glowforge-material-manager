@@ -74,7 +74,7 @@ class MaterialViewer extends React.Component<MaterialViewerProps> {
           material.scores.map((score, index) => {
             return (
               <React.Fragment>
-                <div className="App-field" style={(index !== 0) ? { marginTop: '10px' } : null}>
+                <div className="App-field" style={(index !== 0) ? { marginTop: '10px' } : undefined}>
                   {`Name ${score.name}`}
                 </div>
                 <div className="App-field">
@@ -102,7 +102,7 @@ class MaterialViewer extends React.Component<MaterialViewerProps> {
           material.vectors.map((vector, index) => {
             return (
               <React.Fragment>
-                <div className="App-field" style={(index !== 0) ? { marginTop: '10px' } : null}>
+                <div className="App-field" style={(index !== 0) ? { marginTop: '10px' } : undefined}>
                   {`Name ${vector.name}`}
                 </div>
                 <div className="App-field">
@@ -133,7 +133,7 @@ class MaterialViewer extends React.Component<MaterialViewerProps> {
           material.bitmaps.map((bitmap, index) => {
             return (
               <React.Fragment>
-                <div className="App-field" style={(index !== 0) ? { marginTop: '10px' } : null}>
+                <div className="App-field" style={(index !== 0) ? { marginTop: '10px' } : undefined}>
                   {`Name ${bitmap.name}`}
                 </div>
                 <div className="App-field">

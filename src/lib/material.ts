@@ -10,6 +10,7 @@ import {
   RawMaterial,
   Material,
   MaterialSettings,
+  MaterialTubeType,
 } from './chromeWrappers';
 import {
   compress,
@@ -19,21 +20,22 @@ import {
 } from './utils';
 export async function getNextMaterialId() {
   const materials = await getMaterials();
-  return materials.map(material => material.id.split(':')[1]).reduce((prev, cur) => {
-    return parseInt((prev > cur) ? prev : cur, 10);
+  return materials.map(material => material.id.split(':')[1]).reduce((prev: number, cur: string) => {
+    const curInt = parseInt(cur, 10);
+    return prev > curInt ? prev : curInt;
   }, -1) + 1;
 }
 
 export type MaterialId = any;
 
-export type CutSetting = {
+export type PluginCutSetting = {
   focalOffset: number | null;
   passes: number;
   power: number;
   speed: number;
 }
 
-export type ScoreSetting = {
+export type PluginScoreSetting = {
   focalOffset: number | null;
   name: string;
   passes: number;
@@ -41,27 +43,108 @@ export type ScoreSetting = {
   speed: number;
 }
 
-export type VectorEngraveSetting = {
+export type PluginVectorEngraveSetting = {
   focalOffset: number | null;
   name: string;
   passes: number;
   power: number;
-  scanGap: number | null;
+  scanGap: number;
   speed: number;
 }
 
-export type BitmapEngraveSetting = {
+export type PluginBitmapEngraveSetting = {
   power: number;
   speed: number;
   passes: number;
   focalOffset: number | null;
-  scanGap: number | null;
+  scanGap: number;
   name: string;
   renderMethod: 'FloydSteinbergDitherMethod' | 'RiemersmaDitherMethod' | null;
   rescaleMethod: 'LagrangeFilter';
   minimumGrayPercent: null;
   maximumGrayPercent: null;
   horizontaTiming: null;
+}
+
+export type TinyMaterial = {
+  // name
+  n: string;
+  // thickName
+  t: string;
+  // thickness
+  d: any;
+  // cut
+  c: TinyCutSetting;
+  // scores
+  s: TinyScoreSetting[];
+  // vectors
+  v: TinyVectorEngraveSetting[];
+  // bitmaps
+  b: TinyBitmapEngraveSetting[];
+}
+
+export type TinyCutSetting = {
+  // focalOffset
+  f: number | null;
+  // passes
+  a: number;
+  // power
+  p: number;
+  // speed
+  s: number;
+}
+
+export type TinyScoreSetting = {
+  // focalOffset
+  f: number | null;
+  // name
+  n: string;
+  // passes
+  a: number;
+  // power
+  p: number;
+  // speed
+  s: number;
+}
+
+export type TinyVectorEngraveSetting = {
+  // focalOffset
+  f: number | null;
+  // name
+  n: string;
+  // passes
+  a: number;
+  // power
+  p: number;
+  // scanGap
+  g: number;
+  // speed
+  s: number;
+}
+
+export type TinyBitmapEngraveSetting = {
+  // power
+  p: number;
+  // speed
+  s: number;
+  // passes
+  a: number;
+  // focalOffset
+  f: number | null;
+  // scanGap
+  g: number;
+  // name
+  n: string;
+  // renderMethod
+  rm: 'FloydSteinbergDitherMethod' | 'RiemersmaDitherMethod' | null;
+  // rescaleMethod
+  re: 'LagrangeFilter';
+  // minimumGrayPercent
+  ip: null;
+  // maximumGrayPercent
+  ap: null;
+  // horizontaTiming
+  t: null;
 }
 
 export type GFOutcome = {
@@ -73,14 +156,14 @@ export type GFCutSetting = {
   power: number;
   speed: number;
   passes: number;
-  focalOffset: number;
+  focal_offset: number | null;
 }
 
 export type GFScoreSetting = {
   power: number;
   speed: number;
   passes: number;
-  focalOffset: number;
+  focal_offset: number | null;
   uses: null;
   display_color_mask: null;
   outcome: GFOutcome;
@@ -90,7 +173,7 @@ export type GFEngraveSetting = {
   power: number;
   speed: number;
   passes: number;
-  focal_offset: number;
+  focal_offset: number | null;
   scangap: number;
   uses: null;
   display_color_mask: null;
@@ -101,7 +184,7 @@ export type GFBitmapEngraveSetting = {
   power: number;
   speed: number;
   passes: number;
-  focal_offset: number;
+  focal_offset: number | null;
   scangap: number;
   render_method: 'FloydSteinbergDitherMethod' | 'RiemersmaDitherMethod' | null;
   rescale_method: 'LagrangeFilter';
@@ -260,7 +343,7 @@ export async function fullSynchronizedMaterials(remove=false) {
 /**
  * Creates a new custom material.
  */
-export function createMaterial(params: any, id: string): Material {
+export function createMaterial(params: any, id: number | string): Material {
   return {
     id: `Custom:${id}`,
     title: `${params.thickName} ${params.name}`,
@@ -286,7 +369,7 @@ export function createMaterial(params: any, id: string): Material {
 /**
  * Creates the settings for a given tube type.
  */
-function createSettings(params: any, tubeType: string): MaterialSettings {
+function createSettings(params: any, tubeType: MaterialTubeType): MaterialSettings {
   return {
     description: `${params.thickName} ${params.name} Settings`,
     active_date: "2017-04-06T00:00-07:00",
@@ -310,7 +393,7 @@ function createSettings(params: any, tubeType: string): MaterialSettings {
 /**
  * Creates a new set of cut settings.
  */
-function createCutSettings(cut: CutSetting) {
+function createCutSettings(cut: PluginCutSetting): GFCutSetting {
   return {
     power: cut.power,
     speed: cut.speed,
@@ -322,7 +405,7 @@ function createCutSettings(cut: CutSetting) {
 /**
  * Creates a new set of score settings.
  */
-function createScoreSettings(score: ScoreSetting) {
+function createScoreSettings(score: PluginScoreSetting): GFScoreSetting {
   return {
     power: score.power,
     speed: score.speed,
@@ -340,7 +423,7 @@ function createScoreSettings(score: ScoreSetting) {
 /**
  * Creates a new set of vector engrave settings.
  */
-function createVectorEngraveSettings(vectorEngrave: VectorEngraveSetting) {
+function createVectorEngraveSettings(vectorEngrave: PluginVectorEngraveSetting): GFEngraveSetting {
   return {
     power: vectorEngrave.power,
     speed: vectorEngrave.speed,
@@ -359,7 +442,7 @@ function createVectorEngraveSettings(vectorEngrave: VectorEngraveSetting) {
 /**
  * Creates a new set of bitmap engrave settings.
  */
-function createBitmapEngraveSettings(bitmapEngrave: BitmapEngrave) {
+function createBitmapEngraveSettings(bitmapEngrave: PluginBitmapEngraveSetting): GFBitmapEngraveSetting {
   return {
     power: bitmapEngrave.power,
     speed: bitmapEngrave.speed,
@@ -380,7 +463,7 @@ function createBitmapEngraveSettings(bitmapEngrave: BitmapEngrave) {
   };
 }
 
-export function toTinyMaterial(fullMaterial) {
+export function toTinyMaterial(fullMaterial: RawMaterial): TinyMaterial {
   return {
     n: fullMaterial.name,
     t: fullMaterial.thickName,
@@ -397,7 +480,7 @@ export function toTinyMaterial(fullMaterial) {
   };
 }
 
-export function toFullMaterial(tinyMaterial) {
+export function toFullMaterial(tinyMaterial: TinyMaterial): RawMaterial {
   return {
     name: tinyMaterial.n,
     thickName: tinyMaterial.t,
@@ -414,7 +497,7 @@ export function toFullMaterial(tinyMaterial) {
   };
 }
 
-function toTinyScore(score: ScoreSetting) {
+function toTinyScore(score: PluginScoreSetting): TinyScoreSetting {
   return {
     n: score.name,
     p: score.power,
@@ -424,7 +507,7 @@ function toTinyScore(score: ScoreSetting) {
   };
 }
 
-function toFullScore(score) {
+function toFullScore(score: TinyScoreSetting): PluginScoreSetting {
   return {
     name: score.n,
     power: score.p,
@@ -434,7 +517,7 @@ function toFullScore(score) {
   };
 }
 
-function toTinyVectorEngrave(vectorEngrave: VectorEngraveSetting) {
+function toTinyVectorEngrave(vectorEngrave: PluginVectorEngraveSetting): TinyVectorEngraveSetting {
   return {
     n: vectorEngrave.name,
     p: vectorEngrave.power,
@@ -445,7 +528,7 @@ function toTinyVectorEngrave(vectorEngrave: VectorEngraveSetting) {
   };
 }
 
-function toFullVectorEngrave(vectorEngrave) {
+function toFullVectorEngrave(vectorEngrave: TinyVectorEngraveSetting): PluginVectorEngraveSetting {
   return {
     name: vectorEngrave.n,
     power: vectorEngrave.p,
@@ -456,7 +539,7 @@ function toFullVectorEngrave(vectorEngrave) {
   };
 }
 
-function toTinyBitmmapEngrave(bitmapEngrave: BitmapEngrave) {
+function toTinyBitmmapEngrave(bitmapEngrave: PluginBitmapEngraveSetting): TinyBitmapEngraveSetting {
   return {
     n: bitmapEngrave.name,
     p: bitmapEngrave.power,
@@ -472,7 +555,7 @@ function toTinyBitmmapEngrave(bitmapEngrave: BitmapEngrave) {
   };
 }
 
-function toFullBitmapEngrave(bitmapEngrave) {
+function toFullBitmapEngrave(bitmapEngrave: TinyBitmapEngraveSetting): PluginBitmapEngraveSetting {
   return {
     name: bitmapEngrave.n,
     power: bitmapEngrave.p,

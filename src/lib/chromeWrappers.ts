@@ -1,4 +1,13 @@
-import { CutSetting, ScoreSetting, VectorEngraveSetting, BitmapEngraveSetting } from "./material";
+import {
+  PluginBitmapEngraveSetting,
+  PluginCutSetting,
+  GFBitmapEngraveSetting,
+  GFCutSetting,
+  GFEngraveSetting,
+  GFScoreSetting,
+  PluginScoreSetting,
+  PluginVectorEngraveSetting,
+} from './material';
 
 /* global chrome:true */
 
@@ -8,10 +17,10 @@ export type RawMaterial = {
   thickName: string;
   thickness: any;
 
-  bitmaps: BitmapEngraveSetting[];
-  cut: CutSetting;
-  scores: ScoreSetting[];
-  vectors: VectorEngraveSetting[];
+  bitmaps: PluginBitmapEngraveSetting[];
+  cut: PluginCutSetting;
+  scores: PluginScoreSetting[];
+  vectors: PluginVectorEngraveSetting[];
 };
 
 // Glowforge Redux Material Shape
@@ -20,13 +29,13 @@ export type MaterialTubeType = 'basic' | 'pro';
 
 export type MaterialSettings = {
   active_date: string;
-  bitmap_engrave_settings: any[];
-  cut_setting: CutSetting;
+  bitmap_engrave_settings: GFBitmapEngraveSetting[];
+  cut_setting: GFCutSetting;
   description: string;
   environment: MaterialEnvironment[];
-  score_settings: any[];
+  score_settings: GFScoreSetting[];
   tube_type: MaterialTubeType;
-  vector_engrave_setting: any[];
+  vector_engrave_settings: GFEngraveSetting[];
 }
 
 export type MaterialVariety = {
@@ -52,7 +61,7 @@ export type SynchronizedMaterials = {
   [key: string]: any;
 }
 
-export async function clearTempMaterial() {
+export async function clearTempMaterial(): Promise<boolean> {
   return new Promise(resolve => {
     chrome.storage.local.set({
       'tempMaterial': null,
@@ -102,19 +111,7 @@ export async function getRawMaterials(): Promise<RawMaterial[]> {
   });
 }
 
-export async function getSynchronizedMaterials(): Promise<SynchronizedMaterials> {
-  return new Promise(resolve => {
-    chrome.storage.sync.get(null, result => {
-      if (result) {
-        resolve(result);
-      } else {
-        resolve({});
-      }
-    });
-  });
-}
-
-export async function getTempMaterial() {
+export async function getTempMaterial(): Promise<RawMaterial | object> {
   return new Promise(resolve => {
     chrome.storage.local.get(null, result => {
       if (result && result.tempMaterial) {
@@ -142,15 +139,7 @@ export function getUrl(itemName: string) {
   return chrome.extension.getURL(itemName);
 }
 
-export async function removeSynchronizedMaterial(materialHash: string) {
-  return new Promise(resolve => {
-    chrome.storage.sync.remove(materialHash, () => {
-      resolve(materialHash);
-    });
-  });
-}
-
-export async function storeMaterials(materials: Material[]) {
+export async function storeMaterials(materials: Material[]): Promise<Material[]> {
   return new Promise(resolve => {
     chrome.storage.local.set({
       'materials': materials,
@@ -161,7 +150,7 @@ export async function storeMaterials(materials: Material[]) {
   });
 }
 
-export async function storeRawMaterials(rawMaterials: RawMaterial[]) {
+export async function storeRawMaterials(rawMaterials: RawMaterial[]): Promise<RawMaterial[]> {
   return new Promise(resolve => {
     chrome.storage.local.set({
       'rawMaterials': rawMaterials,
@@ -172,7 +161,40 @@ export async function storeRawMaterials(rawMaterials: RawMaterial[]) {
   });
 }
 
-export async function storeSynchronizedMaterial(hash: string, material: Material) {
+/**
+ * Returns a list of materials that have been synchronized by the hashed title
+ * of the RawMaterial -> compressed RawMaterial data.
+ */
+export async function getSynchronizedMaterials(): Promise<SynchronizedMaterials> {
+  return new Promise(resolve => {
+    chrome.storage.sync.get(null, result => {
+      if (result) {
+        resolve(result);
+      } else {
+        resolve({});
+      }
+    });
+  });
+}
+
+/**
+ *
+ * @param hash The hashed title of the RawMaterial to remove.
+ */
+export async function removeSynchronizedMaterial(hash: string) {
+  return new Promise(resolve => {
+    chrome.storage.sync.remove(hash, () => {
+      resolve(hash);
+    });
+  });
+}
+
+/**
+ *
+ * @param hash The hashed title of the RawMaterial that is being stored.
+ * @param material Compressed material as a base64? encoded string.
+ */
+export async function storeSynchronizedMaterial(hash: string, material: string): Promise<string> {
   return new Promise(resolve => {
     chrome.storage.sync.set({
       [hash]: material,
@@ -185,7 +207,7 @@ export async function storeSynchronizedMaterial(hash: string, material: Material
   });
 }
 
-export async function storeTempMaterial(material: Material) {
+export async function storeTempMaterial(material: RawMaterial) {
   return new Promise(resolve => {
     chrome.storage.local.set({
       'tempMaterial': material,

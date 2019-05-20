@@ -10,10 +10,10 @@ import {
   toRealCutSpeed,
   toRealPower,
 } from './lib/glowforgeUnits';
-import { CutSetting } from './lib/material';
+import { PluginCutSetting } from './lib/material';
 
 interface CutProps {
-  cut: CutSetting;
+  cut: PluginCutSetting;
   storeLocalMaterial: Function;
   updateCut: Function;
 }

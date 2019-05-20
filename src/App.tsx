@@ -11,10 +11,10 @@ import {
   removeMaterial,
   removeRawMaterial,
   sendCloudMaterial,
-  CutSetting,
-  ScoreSetting,
-  VectorEngraveSetting,
-  BitmapEngraveSetting,
+  PluginCutSetting,
+  PluginScoreSetting,
+  PluginVectorEngraveSetting,
+  PluginBitmapEngraveSetting,
 } from './lib/material';
 import { IconPlus } from './Icons';
 import {
@@ -50,18 +50,18 @@ export type EditMaterial = (title: string) => Promise<void>;
 export type RemoveMaterial = (id: string, title: string) => Promise<void>;
 export type UpdateMaterial = (key: string, value: any) => void;
 
-export type UpdateCut = (cut: CutSetting) => void;
+export type UpdateCut = (cut: PluginCutSetting) => void;
 
 export type AddScore = () => void;
-export type UpdateScore = (index: number, score: ScoreSetting) => void;
+export type UpdateScore = (index: number, score: PluginScoreSetting) => void;
 
 export type AddBitmapEngrave = () => void;
-export type UpdateBitmapEngrave = (index: number, bitmap: BitmapEngraveSetting) => void;
+export type UpdateBitmapEngrave = (index: number, bitmap: PluginBitmapEngraveSetting) => void;
 
 export type AddVectorEngrave = () => void;
-export type UpdateVectorEngrave = (index: number, vector: VectorEngraveSetting) => void;
+export type UpdateVectorEngrave = (index: number, vector: PluginVectorEngraveSetting) => void;
 
-interface MaterialEditor {
+interface IMaterialEditor {
   addMaterial: AddMaterial;
   copyMaterial: CopyMaterial;
   editMaterial: EditMaterial;
@@ -112,7 +112,7 @@ interface AppState {
   synchronized: boolean;
 }
 
-class App extends React.Component<AppProps, AppState> implements Modes, MaterialEditor {
+class App extends React.Component<AppProps, AppState> implements Modes, IMaterialEditor {
   state: AppState = {
     action: STATE_DISPLAY,
     cloudStorageBytesUsed: 0,
@@ -172,7 +172,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, Material
     });
   }
 
-  updateCut(cut: CutSetting) {
+  updateCut(cut: PluginCutSetting) {
     this.setState({
       material: {
         ...this.state.material,
@@ -190,7 +190,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, Material
     });
   }
 
-  updateScore(index: number, score: ScoreSetting) {
+  updateScore(index: number, score: PluginScoreSetting) {
     const scores = this.state.material.scores;
     scores[index] = score;
     this.setState({
@@ -210,7 +210,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, Material
     });
   }
 
-  updateVectorEngrave(index: number, vector: VectorEngraveSetting) {
+  updateVectorEngrave(index: number, vector: PluginVectorEngraveSetting) {
     const vectors = this.state.material.vectors;
     vectors[index] = vector;
     this.setState({
@@ -230,7 +230,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, Material
     });
   }
 
-  updateBitmapEngrave(index: number, bitmap: BitmapEngraveSetting) {
+  updateBitmapEngrave(index: number, bitmap: PluginBitmapEngraveSetting) {
     const bitmaps = this.state.material.bitmaps;
     bitmaps[index] = bitmap;
     this.setState({
@@ -250,7 +250,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, Material
 
   async addMaterial() {
     const nextId = await getNextMaterialId();
-    const newMaterial = createMaterial(this.state.material,nextId);
+    const newMaterial = createMaterial(this.state.material, nextId);
     const duplicate = this.state.materials.find(material => {
       return material.id === newMaterial.id || material.title === newMaterial.title;
     });
@@ -287,7 +287,6 @@ class App extends React.Component<AppProps, AppState> implements Modes, Material
    * @param {string} title
    */
   async copyMaterial(title: string) {
-
     const duplicates = this.state.materials.filter(material => {
       return material.title === title;
     });
@@ -301,13 +300,15 @@ class App extends React.Component<AppProps, AppState> implements Modes, Material
       return `${rawMaterial.thickName} ${rawMaterial.name}` === title;
     });
 
-    this.setState({
-      action: STATE_ADD,
-      material: {
-        ...material,
-        name: `${material.name} (${duplicates.length})`,
-      },
-    });
+    if (material) {
+      this.setState({
+        action: STATE_ADD,
+        material: {
+          ...material,
+          name: `${material.name} (${duplicates.length})`,
+        },
+      });
+    }
   }
 
   async editMaterial(title: string) {
@@ -338,9 +339,12 @@ class App extends React.Component<AppProps, AppState> implements Modes, Material
     await storeRawMaterials(newRawMaterials);
 
     // Send updated materials to the cloud
-    await removeCloudMaterial(this.state.materials.find(material => {
-      return material.title === `${title}`;
-    }));
+    const rawMaterial = this.state.rawMaterials.find(rawMaterial => {
+      return `${rawMaterial.thickName} ${rawMaterial.name}` === `${title}`;
+    });
+    if (rawMaterial) {
+      await removeCloudMaterial(rawMaterial);
+    }
     await sendCloudMaterial(this.state.material);
 
     this.setState({

@@ -1,12 +1,12 @@
 import React from 'react';
 import './Message.css';
 
-interface Message {
-  color?: string;
+interface MessageProps {
+  color?: string | null;
   message: string;
 }
 
-class Message extends React.Component<Message> {
+class Message extends React.Component<MessageProps> {
   render() {
     if (this.props.message && this.props.message.length > 0) {
       let styles;

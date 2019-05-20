@@ -1,5 +1,5 @@
-import { RawMaterial } from "./chromeWrappers";
-import { ScoreSetting, VectorEngraveSetting, BitmapEngraveSetting } from "./material";
+import { RawMaterial } from './chromeWrappers';
+import { PluginScoreSetting, PluginVectorEngraveSetting, PluginBitmapEngraveSetting } from "./material";
 
 // What a raw empty material looks like, this form is smaller and easier to work
 // with then the generated material for the Glowforge UI.
@@ -25,7 +25,7 @@ export const EMPTY_MATERIAL: TempMaterial = {
   bitmaps: [],
 };
 
-export const EMPTY_SCORE: ScoreSetting = {
+export const EMPTY_SCORE: PluginScoreSetting = {
   name: '',
   power: 99,
   speed: 100,
@@ -33,22 +33,22 @@ export const EMPTY_SCORE: ScoreSetting = {
   focalOffset: null,
 };
 
-export const EMPTY_VECTOR_ENGRAVE: VectorEngraveSetting = {
+export const EMPTY_VECTOR_ENGRAVE: PluginVectorEngraveSetting = {
   name: '',
   power: 99,
   speed: 100,
   passes: 1,
   focalOffset: null,
-  scanGap: null,
+  scanGap: -1,
 };
 
-export const EMPTY_BITMAP_ENGRAVE: BitmapEngraveSetting = {
+export const EMPTY_BITMAP_ENGRAVE: PluginBitmapEngraveSetting = {
   name: '',
   power: 99,
   speed: 100,
   passes: 1,
   focalOffset: null,
-  scanGap: null,
+  scanGap: -1,
   renderMethod: null,
   rescaleMethod: 'LagrangeFilter',
   minimumGrayPercent: null,

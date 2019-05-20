@@ -9,6 +9,9 @@ interface MenuState {
 }
 
 class Menu extends React.Component<{}, MenuState>  {
+
+  dropdownMenu: HTMLElement | null = null;
+
   constructor(props: {}) {
     super(props);
 
@@ -20,7 +23,7 @@ class Menu extends React.Component<{}, MenuState>  {
     this.closeMenu = this.closeMenu.bind(this);
   }
 
-  showMenu(event: Event) {
+  showMenu(event: React.MouseEvent) {
     event.preventDefault();
     this.setState({ showMenu: true }, () => {
       document.addEventListener('click', this.closeMenu);
@@ -38,19 +41,16 @@ class Menu extends React.Component<{}, MenuState>  {
       <div className="dropdown">
         <IconMenu click={this.showMenu} />
         {
-          this.state.showMenu
-            ? (
-              <div
-                className="dropdown-content"
-                ref={(element) => {
-                  this.dropdownMenu = element;
-                }}
-              >
-                {this.props.children}
-              </div>
-            ) : (
-              null
-            )
+          this.state.showMenu ? (
+            <div
+              className="dropdown-content"
+              ref={(element) => {
+                this.dropdownMenu = element;
+              }}
+            >
+              {this.props.children}
+            </div>
+          ) : null
         }
       </div>
     );

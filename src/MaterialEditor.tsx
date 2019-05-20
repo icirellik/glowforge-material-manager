@@ -5,7 +5,8 @@ import MaterialButtonBar from './MaterialButtonBar';
 import Score from './Score';
 import VectorEngrave from './VectorEngrave';
 import {
-  storeTempMaterial, Material,
+  RawMaterial,
+  storeTempMaterial,
 } from './lib/chromeWrappers';
 import {
   IconPlus,
@@ -23,8 +24,8 @@ import {
   AddMaterial,
   AddScore,
   AddVectorEngrave,
-  ModeCancel,
   EditMaterial,
+  ModeCancel,
   UpdateBitmapEngrave,
   UpdateCut,
   UpdateMaterial,
@@ -40,7 +41,7 @@ interface MaterialEditorProps {
   addVectorEngrave: AddVectorEngrave;
   cancelMaterial: ModeCancel;
   editMaterial: EditMaterial;
-  material: Material;
+  material: RawMaterial;
   updateBitmapEngrave: UpdateBitmapEngrave;
   updateCut: UpdateCut;
   updateMaterial: UpdateMaterial;
