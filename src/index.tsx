@@ -8,13 +8,13 @@ import {
   inGlowforgeTab,
   storeMaterials,
   storeRawMaterials,
-  Material,
-  RawMaterial,
 } from './lib/chromeWrappers';
 import {
   fullSynchronizedMaterials,
   removeCloudMaterial,
   sendCloudMaterial,
+  GFMaterial,
+  RawMaterial,
 } from './lib/material';
 import {
   asFloat,
@@ -26,7 +26,7 @@ async function upgrade() {
   return new Promise (resolve => {
     chrome.storage.local.get(null, async result => {
       let upgraded = false;
-      const _materials = result.materials.map((material: Material) => {
+      const _materials = result.materials.map((material: GFMaterial) => {
         if (!material.hasOwnProperty('nominal_thickness') ||
             material.nominal_thickness === null ||
             material.nominal_thickness === parseFloat((material.nominal_thickness as any))

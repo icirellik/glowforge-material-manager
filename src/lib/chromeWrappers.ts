@@ -1,64 +1,22 @@
 import {
-  PluginBitmapEngraveSetting,
-  PluginCutSetting,
-  GFBitmapEngraveSetting,
-  GFCutSetting,
-  GFEngraveSetting,
-  GFScoreSetting,
-  PluginScoreSetting,
-  PluginVectorEngraveSetting,
+  GFMaterial,
+  RawMaterial,
 } from './material';
 
 /* global chrome:true */
 
-// Internal Plugin Data Structure
-export type RawMaterial = {
-  name: string;
-  thickName: string;
-  thickness: any;
-
-  bitmaps: PluginBitmapEngraveSetting[];
-  cut: PluginCutSetting;
-  scores: PluginScoreSetting[];
-  vectors: PluginVectorEngraveSetting[];
-};
-
-// Glowforge Redux Material Shape
-export type MaterialEnvironment = 'production';
-export type MaterialTubeType = 'basic' | 'pro';
-
-export type MaterialSettings = {
-  active_date: string;
-  bitmap_engrave_settings: GFBitmapEngraveSetting[];
-  cut_setting: GFCutSetting;
-  description: string;
-  environment: MaterialEnvironment[];
-  score_settings: GFScoreSetting[];
-  tube_type: MaterialTubeType;
-  vector_engrave_settings: GFEngraveSetting[];
-}
-
-export type MaterialVariety = {
-  common_name: string;
-  display_options: null;
-  name: string;
-  thumbnails: string[];
-  type_name: string;
-}
-
-export type Material = {
-  // Format "Custom:0"
-  id: string;
-  nominal_thickness: null | number;
-  sku: string;
-  thickness_name: string;
-  title: string;
-  settings: MaterialSettings[];
-  variety: MaterialVariety;
-};
-
 export type SynchronizedMaterials = {
   [key: string]: any;
+}
+
+interface StorageLocal {
+  materials?: GFMaterial[];
+  rawMaterials?: RawMaterial[];
+  // Should the list in the glowforge app be updated?
+  shouldUpdate?: boolean;
+  // A material that was saved due to the popup window being dismissed without
+  // clicking the save button.
+  tempMaterial?: RawMaterial | null;
 }
 
 export async function clearTempMaterial(): Promise<boolean> {
@@ -71,15 +29,7 @@ export async function clearTempMaterial(): Promise<boolean> {
   });
 }
 
-export async function getBytesInUse(): Promise<number> {
-  return new Promise(resolve => {
-    chrome.storage.sync.getBytesInUse(null, bytesInUse => {
-      resolve(bytesInUse);
-    });
-  });
-}
-
-export async function getMaterials(): Promise<Material[]> {
+export async function getMaterials(): Promise<GFMaterial[]> {
   return new Promise(resolve => {
     chrome.storage.local.get(null, result => {
       if (result && result.materials) {
@@ -135,11 +85,7 @@ export async function getShouldUpdate(): Promise<boolean> {
   });
 }
 
-export function getUrl(itemName: string) {
-  return chrome.extension.getURL(itemName);
-}
-
-export async function storeMaterials(materials: Material[]): Promise<Material[]> {
+export async function storeMaterials(materials: GFMaterial[]): Promise<GFMaterial[]> {
   return new Promise(resolve => {
     chrome.storage.local.set({
       'materials': materials,
@@ -157,6 +103,41 @@ export async function storeRawMaterials(rawMaterials: RawMaterial[]): Promise<Ra
       'shouldUpdate': true,
     }, () => {
       resolve(rawMaterials);
+    });
+  });
+}
+
+export async function storeTempMaterial(material: RawMaterial) {
+  return new Promise(resolve => {
+    chrome.storage.local.set({
+      'tempMaterial': material,
+    }, () => {
+      resolve(material);
+    });
+  });
+}
+
+export async function forceSync() {
+  return new Promise(resolve => {
+    chrome.storage.local.set({
+      'shouldUpdate': true,
+    }, () => {
+      resolve(true);
+    });
+  });
+}
+
+// Syncronized Storage
+// ===================================================================
+
+/**
+ * The number of bytes of free chrome cloud storage that are currently in use by
+ * the plugin.
+ */
+export async function getBytesInUse(): Promise<number> {
+  return new Promise(resolve => {
+    chrome.storage.sync.getBytesInUse(null, bytesInUse => {
+      resolve(bytesInUse);
     });
   });
 }
@@ -207,24 +188,16 @@ export async function storeSynchronizedMaterial(hash: string, material: string):
   });
 }
 
-export async function storeTempMaterial(material: RawMaterial) {
-  return new Promise(resolve => {
-    chrome.storage.local.set({
-      'tempMaterial': material,
-    }, () => {
-      resolve(material);
-    });
-  });
-}
+// Tab Management
+// ===================================================================
 
-export async function forceSync() {
-  return new Promise(resolve => {
-    chrome.storage.local.set({
-      'shouldUpdate': true,
-    }, () => {
-      resolve(true);
-    });
-  });
+/**
+ * Gets the URL for some content that is packaged in the extension.
+ *
+ * @param itemName The content name.
+ */
+export function getUrl(itemName: string) {
+  return chrome.extension.getURL(itemName);
 }
 
 export async function inGlowforgeTab(): Promise<boolean> {
@@ -242,7 +215,10 @@ export async function inGlowforgeTab(): Promise<boolean> {
   });
 }
 
-export async function reload() {
+/**
+ * Reloads the current GlowForge application tab.
+ */
+export async function reloadGlowForgeTab(): Promise<void> {
   return new Promise(async resolve => {
     if (await inGlowforgeTab()) {
       // tabId is optional as per the docs
@@ -252,5 +228,16 @@ export async function reload() {
     } else {
       resolve();
     }
+  });
+}
+
+/**
+ * Reloads the current tab.
+ */
+export async function reload(): Promise<void> {
+  return new Promise(async resolve => {
+    chrome.tabs.reload(null as any, { bypassCache: true }, () => {
+      resolve();
+    });
   });
 }

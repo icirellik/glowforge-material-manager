@@ -15,6 +15,8 @@ import {
   PluginScoreSetting,
   PluginVectorEngraveSetting,
   PluginBitmapEngraveSetting,
+  GFMaterial,
+  RawMaterial,
 } from './lib/material';
 import { IconPlus } from './Icons';
 import {
@@ -22,11 +24,9 @@ import {
   forceSync,
   getBytesInUse,
   getShouldUpdate,
-  reload,
+  reloadGlowForgeTab,
   storeMaterials,
   storeRawMaterials,
-  Material,
-  RawMaterial,
 } from './lib/chromeWrappers';
 import {
   STATE_ADD,
@@ -94,7 +94,7 @@ interface Modes {
 interface AppProps {
   cloudStorageBytesUsed: number;
   connected: boolean;
-  materials: Material[];
+  materials: GFMaterial[];
   platform: string;
   rawMaterials: RawMaterial[];
   shouldUpdate: boolean;
@@ -105,7 +105,7 @@ interface AppState {
   action: string;
   cloudStorageBytesUsed: number;
   material: TempMaterial;
-  materials: Material[];
+  materials: GFMaterial[];
   message: string;
   messageColor: string | null;
   rawMaterials: RawMaterial[];
@@ -261,7 +261,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
     }
 
     // Create and store.
-    const newMaterials: Material[] = [...this.state.materials, newMaterial];
+    const newMaterials: GFMaterial[] = [...this.state.materials, newMaterial];
     const newRawMaterials = [...this.state.rawMaterials, this.state.material];
     await storeMaterials(newMaterials)
     await storeRawMaterials(newRawMaterials);
@@ -377,7 +377,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
       rawMaterials,
       synchronized: false,
     });
-    await reload();
+    await reloadGlowForgeTab();
   }
 
   async forceSyncronize() {
