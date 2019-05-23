@@ -1,49 +1,54 @@
 import React from 'react';
-import Material from './Material';
-import { Material as MaterialType } from './lib/chromeWrappers';
+import MaterialListItem from './MaterialListItem';
+import { GFMaterial } from './lib/material';
 import {
   CopyMaterial,
   ModeEdit,
   ModeSelect,
   RemoveMaterial,
 } from './App';
+import './MaterialList.css';
 
 type MaterialListProps = {
-  materials: MaterialType[]
+  materials: GFMaterial[]
   cloneMaterial: CopyMaterial;
   editMaterial: ModeEdit;
   removeMaterial: RemoveMaterial;
   selectMaterial: ModeSelect;
 }
 
+function MaterialListNoElements() {
+  return (
+    <p>Materials you create appear here.</p>
+  );
+}
+
 class MaterialList extends React.Component<MaterialListProps> {
   render() {
     const { materials } = this.props
 
-    if (materials.length === 0) {
+    const materialElements = materials.map(material => {
       return (
-        <div>
-          <h3>Custom Materials</h3>
-          <p>Materials you create appear here.</p>
-        </div>
+        <MaterialListItem
+          cloneMaterial={this.props.cloneMaterial}
+          editMaterial={this.props.editMaterial}
+          material={material}
+          removeMaterial={this.props.removeMaterial}
+          selectMaterial={this.props.selectMaterial}
+        />
       );
-    }
+    });
+
     return (
-      <div>
+      <div className="MaterialList">
         <h3>Custom Materials</h3>
-      {
-        materials.map(material => {
-          return (
-            <Material
-              cloneMaterial={this.props.cloneMaterial}
-              editMaterial={this.props.editMaterial}
-              material={material}
-              removeMaterial={this.props.removeMaterial}
-              selectMaterial={this.props.selectMaterial}
-            />
-          );
-        })
-      }
+        {materialElements.length > 0 ? (
+          <div className="MaterialList-list">
+            {materialElements}
+          </div>
+        ) : (
+          <MaterialListNoElements />
+        )}
       </div>
     );
   }

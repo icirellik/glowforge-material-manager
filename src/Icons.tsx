@@ -9,7 +9,7 @@ export const IconEdit = (props: IconProps) => {
   return (
     <button
       className="icon"
-      onClick={(props.click) ? props.click : () => {}}
+      onClick={(props.click) ? props.click : undefined}
       title="Edit"
     >
       <i className="icon">
@@ -25,7 +25,7 @@ export const IconMinus = (props: IconProps) => {
   return (
     <button
       className="icon"
-      onClick={(props.click) ? props.click : () => {}}
+      onClick={(props.click) ? props.click : undefined}
       title="Remove"
     >
       <i className="icon">
@@ -41,7 +41,7 @@ export const IconPlus = (props: IconProps) => {
   return (
     <button
       className="icon"
-      onClick={(props.click) ? props.click : () => {}}
+      onClick={(props.click) ? props.click : undefined}
       title="New"
     >
       <i className="icon">
@@ -57,7 +57,7 @@ export const IconCircle = (props: IconProps) => {
   return (
     <button
       className="icon"
-      onClick={(props.click) ? props.click : () => {}}
+      onClick={(props.click) ? props.click : undefined}
       title="Status"
     >
       <i className="icon">
@@ -73,7 +73,7 @@ export const IconCopy = (props: IconProps) => {
   return (
     <button
       className="icon"
-      onClick={(props.click) ? props.click : () => {}}
+      onClick={(props.click) ? props.click : undefined}
       title="Copy"
     >
       <i className="icon">
@@ -89,7 +89,7 @@ export const IconMenu = (props: IconProps) => {
   return (
     <button
       className="icon"
-      onClick={(props.click) ? props.click : () => {}}
+      onClick={(props.click) ? props.click : undefined}
       title="Menu"
     >
       <i className="icon">
@@ -105,7 +105,7 @@ export const IconTrashCan = (props: IconProps) => {
   return (
     <button
       className="icon"
-      onClick={(props.click) ? props.click : () => {}}
+      onClick={(props.click) ? props.click : undefined}
       title="Trash"
     >
       <i className="icon">
@@ -121,7 +121,7 @@ export const IconOpen = (props: IconProps) => {
   return (
     <button
       className="icon"
-      onClick={(props.click) ? props.click : () => {}}
+      onClick={(props.click) ? props.click : undefined}
       title="Open"
     >
       <i className="icon">

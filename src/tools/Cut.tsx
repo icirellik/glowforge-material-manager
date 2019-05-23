@@ -3,14 +3,14 @@ import {
   asFloat,
   asInteger,
   precisionRound,
-} from './lib/utils';
+} from '../lib/utils';
 import {
   toDisplayCutSpeed,
   toDisplayPower,
   toRealCutSpeed,
   toRealPower,
-} from './lib/glowforgeUnits';
-import { PluginCutSetting } from './lib/material';
+} from '../lib/glowforgeUnits';
+import { PluginCutSetting } from '../lib/material';
 
 interface CutProps {
   cut: PluginCutSetting;

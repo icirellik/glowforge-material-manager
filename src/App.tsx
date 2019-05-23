@@ -444,28 +444,28 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Glowforge Material Manager</h1>
-          <SyncStatusProps
-            connected={this.props.connected}
-            forceSync={this.forceSyncronize.bind(this)}
-            synchronized={this.state.synchronized}
-          />
+        <header className="header">
+          <div>
+            <img src={logo} className="header__logo" alt="logo" />
+            <h1 className="header__title">Glowforge Material Manager</h1>
+            <SyncStatusProps
+              connected={this.props.connected}
+              forceSync={this.forceSyncronize.bind(this)}
+              synchronized={this.state.synchronized}
+            />
+          </div>
           <span>{`Cloud Storage Used ${this.state.cloudStorageBytesUsed} / 102,400`}</span>
         </header>
         <Message message={this.state.message} color={this.state.messageColor} />
         <div className={`App-grid ${(this.props.platform === 'mac') ? 'osx' : ''}`}>
           <div className="col-materials">
-            <div className="App-materials">
-              <MaterialList
-                cloneMaterial={this.copyMaterial.bind(this)}
-                editMaterial={this.modeEdit.bind(this)}
-                materials={this.state.materials}
-                removeMaterial={this.remove.bind(this)}
-                selectMaterial={this.modeSelect.bind(this)}
-              />
-            </div>
+            <MaterialList
+              cloneMaterial={this.copyMaterial.bind(this)}
+              editMaterial={this.modeEdit.bind(this)}
+              materials={this.state.materials}
+              removeMaterial={this.remove.bind(this)}
+              selectMaterial={this.modeSelect.bind(this)}
+            />
           </div>
           <div className="col-contents">
             <div className="App-intro">

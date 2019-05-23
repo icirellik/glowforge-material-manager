@@ -15,17 +15,6 @@ import {
   hashTitle,
 } from './utils';
 
-
-
-
-
-
-
-
-
-
-
-
 // Internal Plugin Data Structure
 export type RawMaterial = {
   name: string;
@@ -70,14 +59,6 @@ export type GFMaterial = {
   settings: MaterialSettings[];
   variety: MaterialVariety;
 };
-
-
-
-
-
-
-
-
 
 export type MaterialId = any;
 

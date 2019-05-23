@@ -1,33 +1,52 @@
 /**
- * Browser background task to syncronize the GFUI with the custom materials.
+ * Only log messages in development mode.
+ */
+function log(message) {
+  if (!('update_url' in chrome.runtime.getManifest())) {
+    console.log(message);
+  }
+}
+
+/**
+ * Browser background task to synchronize the GFUI with the custom materials.
  */
 function asFloat(number) {
   return Number.parseFloat(number, 10);
 }
 
+/**
+ * Used to convert old floats stored as a string to real floats.
+ *
+ * Deprecated.
+ */
 function verifyTypes(material) {
   return Object.assign({},
     material, {
-      nominal_thickness: asFloat(material.nominal_thickness)
+      nominal_thickness: asFloat(material.nominal_thickness),
     });
 }
 
+/**
+ * Gets the materials from local storage and sends them the to UI for
+ * installation.
+ */
 function refreshMaterials(callback) {
-  chrome.storage.local.get(null, result => {
+  chrome.storage.local.get(null, (result) => {
+    const response = {};
     if (result && result.materials && result.shouldUpdate) {
-      if (callback) {
-        callback({
-          materials: result.materials.map(verifyTypes),
-        });
-        chrome.storage.local.set({
-          'shouldUpdate': false,
-        });
-        console.log('Refreshed materials: ' + result.materials.length);
-      }
-    } else if (result && result.shouldUpdate) {
+      response.materials = result.materials.map(verifyTypes);
       chrome.storage.local.set({
-        'shouldUpdate': false,
+        shouldUpdate: false,
       });
+      log(`sending materials: ${response.materials.length}`);
+    } else if (result && result.shouldUpdate) {
+      log('clearing shouldUpdate');
+      chrome.storage.local.set({
+        shouldUpdate: false,
+      });
+    }
+    if (callback) {
+      callback(response);
     }
   });
 }
@@ -38,7 +57,7 @@ function refreshMaterials(callback) {
 function forceRefresh() {
   // Set a one time refresh on content injection. New tabs, refreshes.
   chrome.storage.local.set({
-    'shouldUpdate': true,
+    shouldUpdate: true,
   });
 }
 
@@ -46,32 +65,41 @@ function forceRefresh() {
  * Handle messaging with the Glowforge UI.
  */
 chrome.runtime.onMessageExternal.addListener(
-  function(request, sender, sendResponse) {
+  (request, sender, sendResponse) => {
     if (request.materialCheck) {
+      log('received refreshMaterials message');
       refreshMaterials(sendResponse);
       return true;
-    } else if (request.forceRefresh) {
-      forceRefresh();
     }
-  }
+
+    if (request.forceRefresh) {
+      log('received forceRefresh message');
+      forceRefresh();
+    } else {
+      log('received generic message');
+    }
+
+    sendResponse();
+    return false;
+  },
 );
 
-chrome.storage.local.get(null, result => {
+chrome.storage.local.get(null, (result) => {
   if (result && result.materials) {
     // Set a one time load refresh on browser restart.
     chrome.storage.local.set({
-      'shouldUpdate': true,
+      shouldUpdate: true,
     });
-    console.log('Storage already initialized.');
+    log('Storage already initialized.');
   } else {
-    console.log('Initalizing storage.');
+    log('Initalizing storage.');
     chrome.storage.local.set({
-      'materials': [],
-      'rawMaterials': [],
-      'shouldUpdate': false,
-    }, function() {
-      console.log('Storage is initialized.');
+      materials: [],
+      rawMaterials: [],
+      shouldUpdate: false,
+    }, () => {
+      log('Storage is initialized.');
     });
   }
-  console.log('Storage loaded.');
+  log('Storage loaded.');
 });

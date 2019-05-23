@@ -6,25 +6,34 @@
 //
 // Webstore Prod:
 // const extensionId = 'adabmafjmdcjnihkmggljljeopjfghii';
-const extensionId = window.extensionId;
+const { extensionId } = window;
+
+function log(message) {
+  if (window.extensionDevMode) {
+    console.log(message);
+  }
+}
 
 /**
  * Leverage the redux actions to inject custom materials.
  */
 function handleMaterialCheck(response) {
+  log('material check response');
   if (!response) {
     return;
   }
 
   if (response.materials) {
+    log('updating materials');
     window.store.dispatch({
-      type: "ADD_MATERIALS",
-      materials: response.materials
+      type: 'ADD_MATERIALS',
+      materials: response.materials,
     });
   } else if (response.material) {
+    log('updating material');
     window.store.dispatch({
-      type: "ADD_MATERIAL",
-      material: response.material
+      type: 'ADD_MATERIAL',
+      material: response.material,
     });
   }
 }
@@ -32,18 +41,17 @@ function handleMaterialCheck(response) {
 /**
  * Additional tasks to execute after the first refresh.
  */
-function handleForceRefresh(response) {
-  if (!response) {
-    return;
-  }
+function handleForceRefresh() {
+  log('force refresh response');
 }
 
 /**
  * Checks and displays any runtime errors.
  */
-function lastRuntimeError() {
+function checkLastRuntimeError() {
   if (chrome.runtime.lastError) {
-    console.log(chrome.runtime.lastError);
+    log(`Last seen error: ${chrome.runtime.lastError.message}`);
+    chrome.runtime.lastError = null;
   }
 }
 
@@ -55,20 +63,26 @@ setInterval(() => {
     extensionId, {
       materialCheck: true,
     },
-    handleMaterialCheck,
+    (response) => {
+      handleMaterialCheck(response);
+      checkLastRuntimeError();
+    },
   );
-  lastRuntimeError();
 }, 5000);
 
 /**
  * Set a one-time refresh on content injection. New tabs, refreshes.
+ *
+ * Sets shouldUpdate to true.
  */
-setImmediate(() => {
+setTimeout(() => {
   chrome.runtime.sendMessage(
     extensionId, {
       forceRefresh: true,
     },
-    handleForceRefresh,
+    (response) => {
+      handleForceRefresh(response);
+      checkLastRuntimeError();
+    },
   );
-  lastRuntimeError();
-});
+}, 0);
