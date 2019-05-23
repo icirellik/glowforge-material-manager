@@ -1,13 +1,14 @@
 import * as pako from 'pako';
 import {
+  RawMaterial,
   toFullMaterial,
   toTinyMaterial,
 } from './material';
-import { RawMaterial } from './chromeWrappers';
 
 /**
  * A helper function that rounds to the nearest 5.
- * @param {*} number
+ *
+ * @param number
  */
 export function roundToNearest5(number: number) {
   return 5 * Math.round(number / 5)
@@ -15,8 +16,8 @@ export function roundToNearest5(number: number) {
 
 /**
  * A helper function to assist with rounding to a specific precision.
- * @param {*} number
- * @param {*} precision
+ * @param number
+ * @param precision
  */
 export function precisionRound(number: number, precision: number) {
   const factor = Math.pow(10, precision);

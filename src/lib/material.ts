@@ -7,10 +7,6 @@ import {
   storeMaterials,
   storeRawMaterials,
   storeSynchronizedMaterial,
-  RawMaterial,
-  Material,
-  MaterialSettings,
-  MaterialTubeType,
 } from './chromeWrappers';
 import {
   compress,
@@ -18,13 +14,51 @@ import {
   hashRawMaterial,
   hashTitle,
 } from './utils';
-export async function getNextMaterialId() {
-  const materials = await getMaterials();
-  return materials.map(material => material.id.split(':')[1]).reduce((prev: number, cur: string) => {
-    const curInt = parseInt(cur, 10);
-    return prev > curInt ? prev : curInt;
-  }, -1) + 1;
+
+// Internal Plugin Data Structure
+export type RawMaterial = {
+  name: string;
+  thickName: string;
+  thickness: any;
+  bitmaps: PluginBitmapEngraveSetting[];
+  cut: PluginCutSetting;
+  scores: PluginScoreSetting[];
+  vectors: PluginVectorEngraveSetting[];
+};
+
+// Glowforge Redux Material Shape
+export type MaterialEnvironment = 'production';
+export type MaterialTubeType = 'basic' | 'pro';
+
+export type MaterialSettings = {
+  active_date: string;
+  bitmap_engrave_settings: GFBitmapEngraveSetting[];
+  cut_setting: GFCutSetting;
+  description: string;
+  environment: MaterialEnvironment[];
+  score_settings: GFScoreSetting[];
+  tube_type: MaterialTubeType;
+  vector_engrave_settings: GFEngraveSetting[];
 }
+
+export type MaterialVariety = {
+  common_name: string;
+  display_options: null;
+  name: string;
+  thumbnails: string[];
+  type_name: string;
+}
+
+export type GFMaterial = {
+  // Format "Custom:0"
+  id: string;
+  nominal_thickness: null | number;
+  sku: string;
+  thickness_name: string;
+  title: string;
+  settings: MaterialSettings[];
+  variety: MaterialVariety;
+};
 
 export type MaterialId = any;
 
@@ -196,6 +230,17 @@ export type GFBitmapEngraveSetting = {
   outcome: GFOutcome;
 }
 
+/**
+ * Gets the next material id.
+ */
+export async function getNextMaterialId(): Promise<number> {
+  const materials = await getMaterials();
+  return materials.map(material => material.id.split(':')[1]).reduce((prev: number, cur: string) => {
+    const curInt = parseInt(cur, 10);
+    return prev > curInt ? prev : curInt;
+  }, -1) + 1;
+}
+
 export async function removeMaterial(materialId: MaterialId) {
   const materials = await getMaterials();
   const newMaterials = await storeMaterials(
@@ -343,7 +388,7 @@ export async function fullSynchronizedMaterials(remove=false) {
 /**
  * Creates a new custom material.
  */
-export function createMaterial(params: any, id: number | string): Material {
+export function createMaterial(params: any, id: number | string): GFMaterial {
   return {
     id: `Custom:${id}`,
     title: `${params.thickName} ${params.name}`,

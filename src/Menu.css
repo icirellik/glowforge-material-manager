@@ -24,12 +24,14 @@
   position: absolute;
   width: 90px;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .dropdown-content div {
   color: black;
-  display: block;
-  padding: 10px;
+  display: flex;
+  padding: 8px 12px;
   text-decoration: none;
 }
 
@@ -38,6 +40,12 @@
 }
 
 .dropdown-content span {
-  display: inline-block;
+  line-height: 18px;
   width: 50px;
+}
+
+.dropdown-content .icon {
+  display: inline-block;
+  height: 18px;
+  width: 18px;
 }

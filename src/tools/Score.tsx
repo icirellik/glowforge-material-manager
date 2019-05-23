@@ -3,14 +3,14 @@ import {
   asFloat,
   asInteger,
   precisionRound,
-} from './lib/utils';
+} from '../lib/utils';
 import {
   toDisplayCutSpeed,
   toDisplayPower,
   toRealCutSpeed,
   toRealPower,
-} from './lib/glowforgeUnits';
-import { PluginScoreSetting } from './lib/material';
+} from '../lib/glowforgeUnits';
+import { PluginScoreSetting } from '../lib/material';
 
 interface ScoreProps {
   id: number;

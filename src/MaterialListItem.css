@@ -1,0 +1,24 @@
+.MaterialListItem-root {
+  display: flex;
+  margin-bottom: 4px;
+}
+
+.MaterialListItem-root:last-child {
+  margin-bottom: 0;
+}
+
+.MaterialListItem-name {
+  margin-right: 10px;
+}
+
+.MaterialListItem-menu {
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-top: auto;
+}
+
+.MaterialListItem-menu .icon {
+  display: inline-block;
+  height: 18px;
+  width: 18px;
+}

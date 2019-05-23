@@ -1,4 +1,3 @@
-/* global chrome:true */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
@@ -8,13 +7,13 @@ import {
   inGlowforgeTab,
   storeMaterials,
   storeRawMaterials,
-  Material,
-  RawMaterial,
 } from './lib/chromeWrappers';
 import {
   fullSynchronizedMaterials,
   removeCloudMaterial,
   sendCloudMaterial,
+  GFMaterial,
+  RawMaterial,
 } from './lib/material';
 import {
   asFloat,
@@ -24,9 +23,9 @@ import './index.css';
 
 async function upgrade() {
   return new Promise (resolve => {
-    chrome.storage.local.get(null, async result => {
+    window.chrome.storage.local.get(null, async result => {
       let upgraded = false;
-      const _materials = result.materials.map((material: Material) => {
+      const _materials = result.materials.map((material: GFMaterial) => {
         if (!material.hasOwnProperty('nominal_thickness') ||
             material.nominal_thickness === null ||
             material.nominal_thickness === parseFloat((material.nominal_thickness as any))
@@ -73,7 +72,7 @@ async function upgrade() {
 }
 
 (async () => {
-  chrome.tabs.query({
+  window.chrome.tabs.query({
     'active': true,
     'lastFocusedWindow': true
   }, async (tabs) => {
@@ -83,7 +82,7 @@ async function upgrade() {
     await fullSynchronizedMaterials();
     const cloudStorageBytesUsed = await getBytesInUse();
 
-    chrome.storage.local.get(null, async result => {
+    window.chrome.storage.local.get(null, async result => {
       ReactDOM.render(<App
         cloudStorageBytesUsed={cloudStorageBytesUsed}
         connected={glowforgeConnected}

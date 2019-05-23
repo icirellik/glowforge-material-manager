@@ -1,5 +1,9 @@
-import { RawMaterial } from './chromeWrappers';
-import { PluginScoreSetting, PluginVectorEngraveSetting, PluginBitmapEngraveSetting } from "./material";
+import {
+  PluginBitmapEngraveSetting,
+  PluginScoreSetting,
+  PluginVectorEngraveSetting,
+  RawMaterial,
+} from './material';
 
 // What a raw empty material looks like, this form is smaller and easier to work
 // with then the generated material for the Glowforge UI.

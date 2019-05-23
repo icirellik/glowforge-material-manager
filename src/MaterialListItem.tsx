@@ -6,8 +6,8 @@ import {
   IconOpen,
   IconTrashCan,
 } from './Icons';
-import './Material.css';
-import { Material as MaterialType } from './lib/chromeWrappers';
+import './MaterialListItem.css';
+import { GFMaterial } from './lib/material';
 import {
   CopyMaterial,
   ModeEdit,
@@ -18,12 +18,12 @@ import {
 interface MaterialProps {
   cloneMaterial: CopyMaterial;
   editMaterial: ModeEdit;
-  material: MaterialType;
+  material: GFMaterial;
   removeMaterial: RemoveMaterial;
   selectMaterial: ModeSelect;
 }
 
-class Material extends React.Component<MaterialProps> {
+class MaterialListItem extends React.Component<MaterialProps> {
   render() {
     const {
       cloneMaterial,
@@ -33,29 +33,29 @@ class Material extends React.Component<MaterialProps> {
       selectMaterial,
     } = this.props
     return (
-      <div className="Material-root">
+      <div className="MaterialListItem-root">
         <span
           onClick={() => selectMaterial(material.title)}
-          className="Material-name"
+          className="MaterialListItem-name"
         >
           {material.title}
         </span>
-        <span>
+        <span className="MaterialListItem-menu">
           <Menu>
             <div onClick={() => selectMaterial(material.title)}>
-              <span>View </span>
+              <span>View</span>
               <IconOpen />
             </div>
             <div onClick={() => editMaterial(material.title)}>
-              <span>Edit </span>
+              <span>Edit</span>
               <IconEdit />
             </div>
             <div onClick={() => cloneMaterial(material.title)}>
-              <span>Copy </span>
+              <span>Copy</span>
               <IconCopy />
             </div>
             <div onClick={() => removeMaterial(material.id, material.title)}>
-              <span>Delete </span>
+              <span>Delete</span>
               <IconTrashCan />
             </div>
           </Menu>
@@ -65,4 +65,4 @@ class Material extends React.Component<MaterialProps> {
   }
 }
 
-export default Material;
+export default MaterialListItem;

@@ -2,25 +2,40 @@
   height: 600px;
 }
 
-.App-logo {
-  float: left;
-  height: 43px;
-  margin-left: 50px;
-  width: 50px;
-}
-
-.App-header {
+.App .header {
   background-color: #001f23;
   color: white;
+  display: flex;
+  flex-direction: column;
   height: 60px;
+  justify-content: center;
   padding: 20px;
   width: 450px;
 }
 
-.App-header span {
-  display: inline-block;
-  text-align: center;
+.App .header div {
+  display: flex;
+  justify-content: center;
+}
+
+.App .header span {
+  display: flex;
+  justify-content: center;
   width: 100%;
+}
+
+.App .header__logo {
+  display: flex;
+  height: 43px;
+  width: 50px;
+}
+
+.App .header__title {
+  font-size: 1.5em;
+  height: 43px;
+  line-height: 43px;
+  margin-left: 15px;
+  margin: 0;
 }
 
 .App-intro p {
@@ -32,15 +47,6 @@
   display: inline-block;
   height: 25px;
   width: 25px;
-}
-
-.App-title {
-  font-size: 1.5em;
-  height: 43px;
-  margin: 0;
-  margin-left: 15px;
-  padding-top: 12px;
-  float: left;
 }
 
 .App-intro {
@@ -73,17 +79,6 @@
   margin: 10px 0;
 }
 
-.App-materials {
-  border-right: #efefef 1px solid;
-  margin-right: 10px;
-}
-
-.App-materials .icon{
-  display: inline-block;
-  height: 18px;
-  width: 18px;
-}
-
 .App-grid {
   display: flex;
   justify-content: space-between;
@@ -95,10 +90,10 @@
   overflow-y: scroll;
 }
 
-.App-grid .col-contents{
+.App-grid .col-contents {
   width: 300px;
 }
 
-.App-grid .col-materials{
+.App-grid .col-materials {
   width: 150px;
 }

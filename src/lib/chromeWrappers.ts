@@ -1,87 +1,33 @@
 import {
-  PluginBitmapEngraveSetting,
-  PluginCutSetting,
-  GFBitmapEngraveSetting,
-  GFCutSetting,
-  GFEngraveSetting,
-  GFScoreSetting,
-  PluginScoreSetting,
-  PluginVectorEngraveSetting,
+  GFMaterial,
+  RawMaterial,
 } from './material';
 
-/* global chrome:true */
-
-// Internal Plugin Data Structure
-export type RawMaterial = {
-  name: string;
-  thickName: string;
-  thickness: any;
-
-  bitmaps: PluginBitmapEngraveSetting[];
-  cut: PluginCutSetting;
-  scores: PluginScoreSetting[];
-  vectors: PluginVectorEngraveSetting[];
-};
-
-// Glowforge Redux Material Shape
-export type MaterialEnvironment = 'production';
-export type MaterialTubeType = 'basic' | 'pro';
-
-export type MaterialSettings = {
-  active_date: string;
-  bitmap_engrave_settings: GFBitmapEngraveSetting[];
-  cut_setting: GFCutSetting;
-  description: string;
-  environment: MaterialEnvironment[];
-  score_settings: GFScoreSetting[];
-  tube_type: MaterialTubeType;
-  vector_engrave_settings: GFEngraveSetting[];
-}
-
-export type MaterialVariety = {
-  common_name: string;
-  display_options: null;
-  name: string;
-  thumbnails: string[];
-  type_name: string;
-}
-
-export type Material = {
-  // Format "Custom:0"
-  id: string;
-  nominal_thickness: null | number;
-  sku: string;
-  thickness_name: string;
-  title: string;
-  settings: MaterialSettings[];
-  variety: MaterialVariety;
-};
+export type SyncId = string;
+export type SyncData = string;
 
 export type SynchronizedMaterials = {
-  [key: string]: any;
+  [key in SyncId]: SyncData;
 }
 
-export async function clearTempMaterial(): Promise<boolean> {
-  return new Promise(resolve => {
-    chrome.storage.local.set({
-      'tempMaterial': null,
-    }, () => {
-      resolve(true);
-    });
-  });
+interface StorageLocal {
+  // The Glowforge formatted materials.
+  materials?: GFMaterial[];
+  // The raw material data that is used to generated Glowforge materials.
+  rawMaterials?: RawMaterial[];
+  // Should the list in the glowforge app be updated?
+  shouldUpdate?: boolean;
+  // A material that was saved due to the popup window being dismissed without
+  // clicking the save button.
+  tempMaterial?: RawMaterial | null;
 }
 
-export async function getBytesInUse(): Promise<number> {
-  return new Promise(resolve => {
-    chrome.storage.sync.getBytesInUse(null, bytesInUse => {
-      resolve(bytesInUse);
-    });
-  });
-}
+// Local Storage
+// ===================================================================
 
-export async function getMaterials(): Promise<Material[]> {
+export async function getMaterials(): Promise<GFMaterial[]> {
   return new Promise(resolve => {
-    chrome.storage.local.get(null, result => {
+    window.chrome.storage.local.get(null, (result: StorageLocal) => {
       if (result && result.materials) {
         resolve(result.materials);
       } else {
@@ -91,17 +37,25 @@ export async function getMaterials(): Promise<Material[]> {
   });
 }
 
-export async function getPlatform(): Promise<string> {
+/**
+ * Saves the Glowforge materials and forces the glowforge app to synchronize.
+ *
+ * @param materials
+ */
+export async function storeMaterials(materials: GFMaterial[]): Promise<GFMaterial[]> {
   return new Promise(resolve => {
-    chrome.runtime.getPlatformInfo(info => {
-      resolve(info.os);
+    window.chrome.storage.local.set({
+      'materials': materials,
+      'shouldUpdate': true,
+    }, () => {
+      resolve(materials);
     });
   });
 }
 
 export async function getRawMaterials(): Promise<RawMaterial[]> {
   return new Promise(resolve => {
-    chrome.storage.local.get(null, result => {
+    window.chrome.storage.local.get(null, (result: StorageLocal) => {
       if (result && result.rawMaterials) {
         resolve(result.rawMaterials);
       } else {
@@ -111,9 +65,41 @@ export async function getRawMaterials(): Promise<RawMaterial[]> {
   });
 }
 
+/**
+ * Saves teh raw materials and forces the glowforge app to synchronize.
+ *
+ * TODO: Is the synchronization here required, raw materials don't hold new
+ * information.
+ *
+ * @param rawMaterials
+ */
+export async function storeRawMaterials(rawMaterials: RawMaterial[]): Promise<RawMaterial[]> {
+  return new Promise(resolve => {
+    window.chrome.storage.local.set({
+      'rawMaterials': rawMaterials,
+      'shouldUpdate': true,
+    }, () => {
+      resolve(rawMaterials);
+    });
+  });
+}
+
+/**
+ * Removes and stored temporary material.
+ */
+export async function clearTempMaterial(): Promise<boolean> {
+  return new Promise(resolve => {
+    window.chrome.storage.local.set({
+      'tempMaterial': null,
+    }, () => {
+      resolve(true);
+    });
+  });
+}
+
 export async function getTempMaterial(): Promise<RawMaterial | object> {
   return new Promise(resolve => {
-    chrome.storage.local.get(null, result => {
+    window.chrome.storage.local.get(null, (result: StorageLocal) => {
       if (result && result.tempMaterial) {
         resolve(result.tempMaterial);
       } else {
@@ -123,9 +109,19 @@ export async function getTempMaterial(): Promise<RawMaterial | object> {
   });
 }
 
+export async function storeTempMaterial(material: RawMaterial): Promise<RawMaterial> {
+  return new Promise(resolve => {
+    window.chrome.storage.local.set({
+      'tempMaterial': material,
+    }, () => {
+      resolve(material);
+    });
+  });
+}
+
 export async function getShouldUpdate(): Promise<boolean> {
   return new Promise(resolve => {
-    chrome.storage.local.get(null, result => {
+    window.chrome.storage.local.get(null, (result: StorageLocal) => {
       if (result && result.shouldUpdate) {
         resolve(result.shouldUpdate);
       } else {
@@ -135,28 +131,30 @@ export async function getShouldUpdate(): Promise<boolean> {
   });
 }
 
-export function getUrl(itemName: string) {
-  return chrome.extension.getURL(itemName);
-}
-
-export async function storeMaterials(materials: Material[]): Promise<Material[]> {
+/**
+ * Forces the glowforge application to synchronize with any material changes.
+ */
+export async function forceSync(): Promise<boolean> {
   return new Promise(resolve => {
-    chrome.storage.local.set({
-      'materials': materials,
+    window.chrome.storage.local.set({
       'shouldUpdate': true,
     }, () => {
-      resolve(materials);
+      resolve(true);
     });
   });
 }
 
-export async function storeRawMaterials(rawMaterials: RawMaterial[]): Promise<RawMaterial[]> {
+// Synchronized Storage
+// ===================================================================
+
+/**
+ * The number of bytes of free chrome cloud storage that are currently in use by
+ * the plugin.
+ */
+export async function getBytesInUse(): Promise<number> {
   return new Promise(resolve => {
-    chrome.storage.local.set({
-      'rawMaterials': rawMaterials,
-      'shouldUpdate': true,
-    }, () => {
-      resolve(rawMaterials);
+    window.chrome.storage.sync.getBytesInUse(null, bytesInUse => {
+      resolve(bytesInUse);
     });
   });
 }
@@ -167,7 +165,7 @@ export async function storeRawMaterials(rawMaterials: RawMaterial[]): Promise<Ra
  */
 export async function getSynchronizedMaterials(): Promise<SynchronizedMaterials> {
   return new Promise(resolve => {
-    chrome.storage.sync.get(null, result => {
+    window.chrome.storage.sync.get(null, (result: SynchronizedMaterials) => {
       if (result) {
         resolve(result);
       } else {
@@ -183,7 +181,7 @@ export async function getSynchronizedMaterials(): Promise<SynchronizedMaterials>
  */
 export async function removeSynchronizedMaterial(hash: string) {
   return new Promise(resolve => {
-    chrome.storage.sync.remove(hash, () => {
+    window.chrome.storage.sync.remove(hash, () => {
       resolve(hash);
     });
   });
@@ -196,10 +194,10 @@ export async function removeSynchronizedMaterial(hash: string) {
  */
 export async function storeSynchronizedMaterial(hash: string, material: string): Promise<string> {
   return new Promise(resolve => {
-    chrome.storage.sync.set({
+    window.chrome.storage.sync.set({
       [hash]: material,
     }, () => {
-      chrome.storage.sync.getBytesInUse(null, bytesInUse => {
+      window.chrome.storage.sync.getBytesInUse(null, bytesInUse => {
         console.log(`cloud bytes in use ${bytesInUse}`);
         resolve(hash);
       });
@@ -207,29 +205,21 @@ export async function storeSynchronizedMaterial(hash: string, material: string):
   });
 }
 
-export async function storeTempMaterial(material: RawMaterial) {
-  return new Promise(resolve => {
-    chrome.storage.local.set({
-      'tempMaterial': material,
-    }, () => {
-      resolve(material);
-    });
-  });
-}
+// Tab Management
+// ===================================================================
 
-export async function forceSync() {
-  return new Promise(resolve => {
-    chrome.storage.local.set({
-      'shouldUpdate': true,
-    }, () => {
-      resolve(true);
-    });
-  });
+/**
+ * Gets the URL for some content that is packaged in the extension.
+ *
+ * @param itemName The content name.
+ */
+export function getUrl(itemName: string): string {
+  return window.chrome.extension.getURL(itemName);
 }
 
 export async function inGlowforgeTab(): Promise<boolean> {
   return new Promise(resolve => {
-    chrome.tabs.query({
+    window.chrome.tabs.query({
       'active': true,
       'lastFocusedWindow': true
     }, (tabs) => {
@@ -242,15 +232,43 @@ export async function inGlowforgeTab(): Promise<boolean> {
   });
 }
 
-export async function reload() {
+/**
+ * Reloads the current GlowForge application tab.
+ */
+export async function reloadGlowForgeTab(): Promise<void> {
   return new Promise(async resolve => {
     if (await inGlowforgeTab()) {
       // tabId is optional as per the docs
-      chrome.tabs.reload(null as any, { bypassCache: true }, () => {
+      window.chrome.tabs.reload(null as any, { bypassCache: true }, () => {
         resolve();
       });
     } else {
       resolve();
     }
+  });
+}
+
+/**
+ * Reloads the current tab.
+ */
+export async function reload(): Promise<void> {
+  return new Promise(async resolve => {
+    window.chrome.tabs.reload(null as any, { bypassCache: true }, () => {
+      resolve();
+    });
+  });
+}
+
+// Misc.
+// ===================================================================
+
+/**
+ * Gets the operation system that the plugin is running on.
+ */
+export async function getPlatform(): Promise<string> {
+  return new Promise(resolve => {
+    window.chrome.runtime.getPlatformInfo(info => {
+      resolve(info.os);
+    });
   });
 }

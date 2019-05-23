@@ -1,11 +1,10 @@
 import React from 'react';
-import BitmapEngrave from './BitmapEngrave';
-import Cut from './Cut';
+import BitmapEngrave from './tools/BitmapEngrave';
+import Cut from './tools/Cut';
 import MaterialButtonBar from './MaterialButtonBar';
-import Score from './Score';
-import VectorEngrave from './VectorEngrave';
+import Score from './tools/Score';
+import VectorEngrave from './tools/VectorEngrave';
 import {
-  RawMaterial,
   storeTempMaterial,
 } from './lib/chromeWrappers';
 import {
@@ -32,6 +31,7 @@ import {
   UpdateScore,
   UpdateVectorEngrave,
 } from './App';
+import { RawMaterial } from './lib/material';
 
 interface MaterialEditorProps {
   action: string;
