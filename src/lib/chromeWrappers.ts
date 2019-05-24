@@ -25,6 +25,20 @@ interface StorageLocal {
 // Local Storage
 // ===================================================================
 
+/**
+ * Gets all the data from local storage.
+ */
+export async function getLocalStorage(): Promise<StorageLocal> {
+  return new Promise(resolve => {
+    window.chrome.storage.local.get(null, (result: StorageLocal) => {
+      resolve(result);
+    });
+  });
+}
+
+/**
+ * Gets the Glowforge formatted styles from local storage.
+ */
 export async function getMaterials(): Promise<GFMaterial[]> {
   return new Promise(resolve => {
     window.chrome.storage.local.get(null, (result: StorageLocal) => {

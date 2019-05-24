@@ -5,14 +5,7 @@ import {
   RawMaterial,
 } from './material';
 
-// What a raw empty material looks like, this form is smaller and easier to work
-// with then the generated material for the Glowforge UI.
-type MaterialId = {
-  // id: string;
-  // title: string;
-}
-
-export type TempMaterial = RawMaterial & MaterialId;
+export type TempMaterial = RawMaterial;
 
 export const EMPTY_MATERIAL: TempMaterial = {
   name: '',
