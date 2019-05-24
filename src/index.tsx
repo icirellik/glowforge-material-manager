@@ -7,6 +7,7 @@ import {
   inGlowforgeTab,
   storeMaterials,
   storeRawMaterials,
+  getLocalStorage,
 } from './lib/chromeWrappers';
 import {
   fullSynchronizedMaterials,
@@ -72,34 +73,29 @@ async function upgrade() {
 }
 
 (async () => {
-  window.chrome.tabs.query({
-    'active': true,
-    'lastFocusedWindow': true
-  }, async (tabs) => {
-    const glowforgeConnected = await inGlowforgeTab();
-    const platform = await getPlatform();
-    await upgrade();
-    await fullSynchronizedMaterials();
-    const cloudStorageBytesUsed = await getBytesInUse();
+  const glowforgeConnected = await inGlowforgeTab();
+  const platform = await getPlatform();
+  await upgrade();
+  await fullSynchronizedMaterials();
+  const cloudStorageBytesUsed = await getBytesInUse();
 
-    window.chrome.storage.local.get(null, async result => {
-      ReactDOM.render(<App
-        cloudStorageBytesUsed={cloudStorageBytesUsed}
-        connected={glowforgeConnected}
-        materials={result.materials}
-        platform={platform}
-        rawMaterials={result.rawMaterials}
-        shouldUpdate={result.shouldUpdate}
-        tempMaterial={result.tempMaterial}
-      />, document.getElementById('root'));
-    });
+  const localStorage = await getLocalStorage();
 
-    if (platform === 'mac') {
-      setTimeout(() => {
-        document.body.style.width = `${document.body.clientWidth + 1}px`;
-      }, 250);
-    }
-  });
+  ReactDOM.render(<App
+    cloudStorageBytesUsed={cloudStorageBytesUsed}
+    connected={glowforgeConnected}
+    materials={localStorage.materials!}
+    platform={platform}
+    rawMaterials={localStorage.rawMaterials!}
+    shouldUpdate={localStorage.shouldUpdate!}
+    tempMaterial={localStorage.tempMaterial}
+  />, document.getElementById('root'));
+
+  if (platform === 'mac') {
+    setTimeout(() => {
+      document.body.style.width = `${document.body.clientWidth + 1}px`;
+    }, 250);
+  }
 })();
 
 // registerServiceWorker();

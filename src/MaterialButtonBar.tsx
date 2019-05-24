@@ -1,45 +1,42 @@
 import React from 'react';
-import {
-  STATE_ADD,
-  STATE_DISPLAY,
-  STATE_EDIT,
-  STATE_SELECTED,
- } from './state';
- import './MaterialButtonBar.css';
-import { AddMaterial, ModeCancel, EditMaterial } from './App';
+import { AddMaterial, ModeCancel, EditMaterial, EditorMode } from './App';
+import './MaterialButtonBar.css';
 
 interface MaterialButtonBarProps {
-  action: string;
-  addMaterial: AddMaterial;
-  cancelMaterial: ModeCancel;
-  editMaterial: EditMaterial;
-  title: string;
+  editorMode: EditorMode;
+  addMaterial?: AddMaterial;
+  cancelMaterial?: ModeCancel;
+  editMaterial?: EditMaterial;
+  title?: string;
 }
 
 class MaterialButtonBar extends React.Component<MaterialButtonBarProps> {
   render() {
-    switch (this.props.action) {
-      case STATE_ADD:
+    switch (this.props.editorMode) {
+      case 'ADD':
         return (
           <div className="Material-buttons">
             <button onClick={this.props.addMaterial}>Create</button>
             <button onClick={this.props.cancelMaterial}>Cancel</button>
           </div>
         );
-      case STATE_EDIT:
+      case 'EDIT':
+        if (!this.props.editMaterial || !this.props.title) {
+          return null;
+        }
         return (
           <div className="Material-buttons">
-            <button onClick={() => this.props.editMaterial(this.props.title)}>Update</button>
+            <button onClick={() => this.props.editMaterial!(this.props.title!)}>Update</button>
             <button onClick={this.props.cancelMaterial}>Cancel</button>
           </div>
         );
-      case STATE_SELECTED:
+      case 'SELECTED':
         return (
           <div className="Material-buttons">
             <button onClick={this.props.cancelMaterial}>Cancel</button>
           </div>
         );
-      case STATE_DISPLAY:
+      case 'DISPLAY':
         return null;
       default:
         return null;

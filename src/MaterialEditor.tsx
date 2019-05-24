@@ -11,10 +11,6 @@ import {
   IconPlus,
 } from './Icons';
 import {
-  STATE_ADD,
-  STATE_EDIT,
-} from './state';
-import {
   asFloat,
 } from './lib/utils';
 import './MaterialEditor.css';
@@ -30,11 +26,12 @@ import {
   UpdateMaterial,
   UpdateScore,
   UpdateVectorEngrave,
+  EditorMode,
 } from './App';
 import { RawMaterial } from './lib/material';
 
 interface MaterialEditorProps {
-  action: string;
+  action: EditorMode;
   addBitmapEngrave: AddBitmapEngrave;
   addMaterial: AddMaterial;
   addScore: AddScore;
@@ -52,7 +49,7 @@ interface MaterialEditorProps {
 class MaterialEditor extends React.Component<MaterialEditorProps> {
 
   storeLocalMaterial() {
-    if (this.props.action === STATE_ADD) {
+    if (this.props.action === 'ADD') {
       storeTempMaterial(this.props.material);
     }
   }
@@ -63,7 +60,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
       material,
     } = this.props;
 
-    if (action !== STATE_ADD && action !== STATE_EDIT) {
+    if (action !== 'ADD' && action !== 'EDIT') {
       return null;
     }
 
@@ -72,7 +69,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
         <div className="App-field">
           <label>Thickness Name</label>
           <input
-            disabled={action === STATE_EDIT}
+            disabled={action === 'EDIT'}
             type="text"
             value={material.thickName}
             onChange={(event) => {
@@ -84,7 +81,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
         <div className="App-field">
           <label>Material Name</label>
           <input
-            disabled={action === STATE_EDIT}
+            disabled={action === 'EDIT'}
             type="text"
             value={material.name}
             onChange={(event) => {
@@ -167,7 +164,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
           <IconPlus click={this.props.addBitmapEngrave} />
         </div>
         <MaterialButtonBar
-          action={this.props.action}
+          editorMode={this.props.action}
           addMaterial={this.props.addMaterial}
           cancelMaterial={this.props.cancelMaterial}
           editMaterial={this.props.editMaterial}

@@ -27,39 +27,6 @@ export type RawMaterial = {
 };
 
 // Glowforge Redux Material Shape
-export type MaterialEnvironment = 'production';
-export type MaterialTubeType = 'basic' | 'pro';
-
-export type MaterialSettings = {
-  active_date: string;
-  bitmap_engrave_settings: GFBitmapEngraveSetting[];
-  cut_setting: GFCutSetting;
-  description: string;
-  environment: MaterialEnvironment[];
-  score_settings: GFScoreSetting[];
-  tube_type: MaterialTubeType;
-  vector_engrave_settings: GFEngraveSetting[];
-}
-
-export type MaterialVariety = {
-  common_name: string;
-  display_options: null;
-  name: string;
-  thumbnails: string[];
-  type_name: string;
-}
-
-export type GFMaterial = {
-  // Format "Custom:0"
-  id: string;
-  nominal_thickness: null | number;
-  sku: string;
-  thickness_name: string;
-  title: string;
-  settings: MaterialSettings[];
-  variety: MaterialVariety;
-};
-
 export type MaterialId = any;
 
 export type PluginCutSetting = {
@@ -181,6 +148,39 @@ export type TinyBitmapEngraveSetting = {
   t: null;
 }
 
+export type GFMaterialEnvironment = 'production';
+export type GFMaterialTubeType = 'basic' | 'pro';
+
+export type GFMaterial = {
+  // Format "Custom:0"
+  id: string;
+  nominal_thickness: null | number;
+  sku: string;
+  thickness_name: string;
+  title: string;
+  settings: GFMaterialSettings[];
+  variety: GFMaterialVariety;
+};
+
+export type GFMaterialSettings = {
+  active_date: string;
+  bitmap_engrave_settings: GFBitmapEngraveSetting[];
+  cut_setting: GFCutSetting;
+  description: string;
+  environment: GFMaterialEnvironment[];
+  score_settings: GFScoreSetting[];
+  tube_type: GFMaterialTubeType;
+  vector_engrave_settings: GFEngraveSetting[];
+}
+
+export type GFMaterialVariety = {
+  common_name: string;
+  display_options: null;
+  name: string;
+  thumbnails: string[];
+  type_name: string;
+}
+
 export type GFOutcome = {
   name: string;
   dev_id: string;
@@ -235,10 +235,11 @@ export type GFBitmapEngraveSetting = {
  */
 export async function getNextMaterialId(): Promise<number> {
   const materials = await getMaterials();
-  return materials.map(material => material.id.split(':')[1]).reduce((prev: number, cur: string) => {
-    const curInt = parseInt(cur, 10);
-    return prev > curInt ? prev : curInt;
-  }, -1) + 1;
+  return materials.map(material => material.id.split(':')[1])
+    .reduce((prev: number, cur: string) => {
+      const curInt = parseInt(cur, 10);
+      return prev > curInt ? prev : curInt;
+    }, -1) + 1;
 }
 
 export async function removeMaterial(materialId: MaterialId) {
@@ -388,25 +389,25 @@ export async function fullSynchronizedMaterials(remove=false) {
 /**
  * Creates a new custom material.
  */
-export function createMaterial(params: any, id: number | string): GFMaterial {
+export function createMaterial(tempMaterial: RawMaterial, id: number | string): GFMaterial {
   return {
     id: `Custom:${id}`,
-    title: `${params.thickName} ${params.name}`,
+    title: `${tempMaterial.thickName} ${tempMaterial.name}`,
     sku: '',
-    nominal_thickness: params.thickness,
-    thickness_name: params.thickName,
+    nominal_thickness: tempMaterial.thickness,
+    thickness_name: tempMaterial.thickName,
     variety: {
-      name: `${params.thickName.toLowerCase().replace(/[ ]/g, '-')}-${params.name.toLowerCase().replace(/[ ]/g, '-')}`,
-      common_name: `${params.thickName} ${params.name}`,
-      type_name: params.name,
+      name: `${tempMaterial.thickName.toLowerCase().replace(/[ ]/g, '-')}-${tempMaterial.name.toLowerCase().replace(/[ ]/g, '-')}`,
+      common_name: `${tempMaterial.thickName} ${tempMaterial.name}`,
+      type_name: tempMaterial.name,
       thumbnails: [
         getUrl('custom-material.png'),
       ],
       display_options: null
     },
     settings: [
-      createSettings(params, 'basic'),
-      createSettings(params, 'pro')
+      createSettings(tempMaterial, 'basic'),
+      createSettings(tempMaterial, 'pro')
     ]
   };
 }
@@ -414,22 +415,22 @@ export function createMaterial(params: any, id: number | string): GFMaterial {
 /**
  * Creates the settings for a given tube type.
  */
-function createSettings(params: any, tubeType: MaterialTubeType): MaterialSettings {
+function createSettings(tempMaterial: RawMaterial, tubeType: GFMaterialTubeType): GFMaterialSettings {
   return {
-    description: `${params.thickName} ${params.name} Settings`,
+    description: `${tempMaterial.thickName} ${tempMaterial.name} Settings`,
     active_date: "2017-04-06T00:00-07:00",
     environment: [
       'production'
     ],
     tube_type: tubeType,
-    cut_setting: createCutSettings(params.cut),
-    score_settings: params.scores.map((score: any) => {
+    cut_setting: createCutSettings(tempMaterial.cut),
+    score_settings: tempMaterial.scores.map((score: any) => {
       return createScoreSettings(score);
     }),
-    vector_engrave_settings: params.vectors.map((vector: any) => {
+    vector_engrave_settings: tempMaterial.vectors.map((vector: any) => {
       return createVectorEngraveSettings(vector);
     }),
-    bitmap_engrave_settings: params.bitmaps.map((bitmap: any) => {
+    bitmap_engrave_settings: tempMaterial.bitmaps.map((bitmap: any) => {
       return createBitmapEngraveSettings(bitmap);
     }),
   }

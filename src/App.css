@@ -2,6 +2,24 @@
   height: 600px;
 }
 
+.App-flexColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.App-flex {
+  display: flex;
+}
+
+.App-flexLabel {
+  width: 50%;
+}
+
+.App-flexSectionHeader {
+  font-weight: 600;
+  margin: 10px 0;
+}
+
 .App .header {
   background-color: #001f23;
   color: white;

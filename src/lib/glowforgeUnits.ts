@@ -82,3 +82,7 @@ export function toRealLinesPerInch(scanGap: number) {
 export function toSteps(linesPerInch: number) {
   return Math.round(1 / linesPerInch / STANDARD_SCAN_GAP_INCHES)
 }
+
+export function toDisplayPowerWords(power: number) {
+  return (power === 100) ? 'Max' : toDisplayPower(power);
+}

@@ -1,7 +1,7 @@
 import React from 'react';
 import MaterialEditor from './MaterialEditor';
 import MaterialList from './MaterialList';
-import MaterialViewer from './MaterialViewer';
+import MaterialViewer from './viewer/MaterialViewer';
 import Message from './Message';
 import SyncStatusProps from './SyncStatus';
 import {
@@ -29,12 +29,6 @@ import {
   storeRawMaterials,
 } from './lib/chromeWrappers';
 import {
-  STATE_ADD,
-  STATE_DISPLAY,
-  STATE_EDIT,
-  STATE_SELECTED,
-} from './state';
-import {
   EMPTY_BITMAP_ENGRAVE,
   EMPTY_MATERIAL,
   EMPTY_SCORE,
@@ -48,7 +42,7 @@ export type AddMaterial = () => Promise<void>;
 export type CopyMaterial = (title: string) => Promise<void>;
 export type EditMaterial = (title: string) => Promise<void>;
 export type RemoveMaterial = (id: string, title: string) => Promise<void>;
-export type UpdateMaterial = (key: string, value: any) => void;
+export type UpdateMaterial = (key: keyof TempMaterial, value: any) => void;
 
 export type UpdateCut = (cut: PluginCutSetting) => void;
 
@@ -65,7 +59,7 @@ interface IMaterialEditor {
   addMaterial: AddMaterial;
   copyMaterial: CopyMaterial;
   editMaterial: EditMaterial;
-  remove: RemoveMaterial;
+  removeMaterial: RemoveMaterial;
   updateMaterial: UpdateMaterial;
 
   updateCut: UpdateCut;
@@ -79,16 +73,19 @@ interface IMaterialEditor {
 
 export type ForceSyncronize = () => Promise<void>;
 
-export type ModeCancel = () => Promise<void>;
+export type EditorMode =  'DISPLAY' | 'ADD' | 'EDIT' | 'SELECTED';
+export type EditorModeChange = (mode: EditorMode, material: TempMaterial) => Promise<void>;
 export type ModeAdd = () => Promise<void>;
+export type ModeCancel = () => Promise<void>;
 export type ModeEdit = (title: string) => Promise<void>;
 export type ModeSelect = (title: string) => Promise<void>;
 
-interface Modes {
-  modeAdd: ModeAdd;
-  modeCancel: ModeCancel
-  modeEdit: ModeEdit;
-  modeSelect: ModeSelect;
+interface IEditorMode {
+  changeEditorMode: EditorModeChange;
+  setEditorModeAdd: ModeAdd;
+  setEditorModeCancel: ModeCancel
+  setEditorModeEdit: ModeEdit;
+  setEditorModeSelect: ModeSelect;
 }
 
 interface AppProps {
@@ -98,11 +95,11 @@ interface AppProps {
   platform: string;
   rawMaterials: RawMaterial[];
   shouldUpdate: boolean;
-  tempMaterial: TempMaterial;
+  tempMaterial?: TempMaterial | null;
 }
 
 interface AppState {
-  action: string;
+  action: EditorMode;
   cloudStorageBytesUsed: number;
   material: TempMaterial;
   materials: GFMaterial[];
@@ -112,9 +109,9 @@ interface AppState {
   synchronized: boolean;
 }
 
-class App extends React.Component<AppProps, AppState> implements Modes, IMaterialEditor {
+class App extends React.Component<AppProps, AppState> implements IEditorMode, IMaterialEditor {
   state: AppState = {
-    action: STATE_DISPLAY,
+    action: 'DISPLAY',
     cloudStorageBytesUsed: 0,
     message: '',
     messageColor: null,
@@ -129,7 +126,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
   componentDidMount() {
     if (this.props.tempMaterial) {
       this.setState({
-        action: STATE_ADD,
+        action: 'ADD',
         cloudStorageBytesUsed: this.props.cloudStorageBytesUsed,
         material: this.props.tempMaterial,
         materials: this.props.materials,
@@ -163,7 +160,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
     }, 5000);
   }
 
-  updateMaterial(key: string, value: any) {
+  updateMaterial(key: keyof TempMaterial, value: any) {
     this.setState({
       material: {
         ...this.state.material,
@@ -271,7 +268,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
     await sendCloudMaterial(this.state.material);
 
     this.setState({
-      action: STATE_DISPLAY,
+      action: 'DISPLAY',
       material: { ...EMPTY_MATERIAL },
       materials: newMaterials,
       message: '',
@@ -302,7 +299,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
 
     if (material) {
       this.setState({
-        action: STATE_ADD,
+        action: 'ADD',
         material: {
           ...material,
           name: `${material.name} (${duplicates.length})`,
@@ -348,7 +345,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
     await sendCloudMaterial(this.state.material);
 
     this.setState({
-      action: STATE_DISPLAY,
+      action: 'DISPLAY',
       material: { ...EMPTY_MATERIAL },
       materials: newMaterials,
       message: '',
@@ -358,7 +355,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
     });
   }
 
-  async remove(id: string, title: string) {
+  async removeMaterial(id: string, title: string) {
     const found = this.state.rawMaterials.find((material: RawMaterial) => {
       return `${material.thickName} ${material.name}` === `${title}`;
     })
@@ -369,7 +366,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
     const materials = await removeMaterial(id);
     const rawMaterials = await removeRawMaterial(title);
     this.setState({
-      action: STATE_DISPLAY,
+      action: 'DISPLAY',
       material: {
         ...EMPTY_MATERIAL,
       },
@@ -387,7 +384,17 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
     });
   }
 
-  async changeMode(mode: string, material = EMPTY_MATERIAL) {
+  // Modes
+  // =================================================================
+
+  /**
+   * Changes the edit mode and clears any temporary material set in local
+   * storage along with resetting the current in progress material.
+   *
+   * @param mode
+   * @param material
+   */
+  async changeEditorMode(mode: EditorMode, material = EMPTY_MATERIAL) {
     await clearTempMaterial();
     this.setState({
       action: mode,
@@ -403,42 +410,42 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
    * Switches to `add material` mode and resets the current material state to
    * a blank material.
    */
-  async modeAdd() {
-    await this.changeMode(STATE_ADD);
+  async setEditorModeAdd() {
+    await this.changeEditorMode('ADD');
   }
 
   /**
    * Cancels the current input mode, resetting the materiall state and clearing
    * any system messages.
    */
-  async modeCancel() {
-    await this.changeMode(STATE_DISPLAY);
+  async setEditorModeCancel() {
+    await this.changeEditorMode('DISPLAY');
   }
 
   /**
    * Switches to `edit material` mode and opens up an existing material for
    * alterations.
    *
-   * @param {string} title The material tile.
+   * @param title The material title in the form `thickName name`
    */
-  async modeEdit(title: string) {
-    const material = this.state.rawMaterials.find(material => {
-      return `${material.thickName} ${material.name}` === title;
+  async setEditorModeEdit(title: string) {
+    const rawMaterial = this.state.rawMaterials.find(rawMaterial => {
+      return `${rawMaterial.thickName} ${rawMaterial.name}` === title;
     });
-    await this.changeMode(STATE_EDIT, material);
+    await this.changeEditorMode('EDIT', rawMaterial);
   }
 
   /**
    * Switches to `selected mode` opens up a material for viewing its current
    * settings.
    *
-   * @param {string} title The material title.
+   * @param title The material title in the form `thickName name`
    */
-  async modeSelect(title: string) {
-    const material = this.state.rawMaterials.find(material => {
-      return `${material.thickName} ${material.name}` === title;
+  async setEditorModeSelect(title: string) {
+    const rawMaterial = this.state.rawMaterials.find(rawMaterial => {
+      return `${rawMaterial.thickName} ${rawMaterial.name}` === title;
     });
-    await this.changeMode(STATE_SELECTED, material);
+    await this.changeEditorMode('SELECTED', rawMaterial);
   }
 
   render() {
@@ -461,10 +468,10 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
           <div className="col-materials">
             <MaterialList
               cloneMaterial={this.copyMaterial.bind(this)}
-              editMaterial={this.modeEdit.bind(this)}
+              editMaterial={this.setEditorModeEdit.bind(this)}
               materials={this.state.materials}
-              removeMaterial={this.remove.bind(this)}
-              selectMaterial={this.modeSelect.bind(this)}
+              removeMaterial={this.removeMaterial.bind(this)}
+              selectMaterial={this.setEditorModeSelect.bind(this)}
             />
           </div>
           <div className="col-contents">
@@ -473,14 +480,12 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
                 Add your own custom material settings here.
               </p>
               <div style={{float: 'right', margin: '14px 14px 14px 0'}}>
-                <IconPlus click={this.modeAdd.bind(this)} />
+                <IconPlus click={this.setEditorModeAdd.bind(this)} />
               </div>
             </div>
             <MaterialViewer
-              action={this.state.action}
-              addMaterial={this.addMaterial.bind(this)}
-              cancelMaterial={this.modeCancel.bind(this)}
-              editMaterial={this.editMaterial.bind(this)}
+              editorMode={this.state.action}
+              cancelMaterial={this.setEditorModeCancel.bind(this)}
               material={this.state.material}
             />
             <MaterialEditor
@@ -489,7 +494,7 @@ class App extends React.Component<AppProps, AppState> implements Modes, IMateria
               addMaterial={this.addMaterial.bind(this)}
               addScore={this.addScore.bind(this)}
               addVectorEngrave={this.addVectorEngrave.bind(this)}
-              cancelMaterial={this.modeCancel.bind(this)}
+              cancelMaterial={this.setEditorModeCancel.bind(this)}
               editMaterial={this.editMaterial.bind(this)}
               material={this.state.material}
               updateBitmapEngrave={this.updateBitmapEngrave.bind(this)}
