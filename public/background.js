@@ -32,14 +32,19 @@ function verifyTypes(material) {
  */
 function refreshMaterials(callback) {
   chrome.storage.local.get(null, (result) => {
-    const response = {};
+    const response = {
+      messages: window.messages.splice(0),
+    };
     if (result && result.materials && result.shouldUpdate) {
-      response.type = 'setMaterials';
-      response.materials = result.materials.map(verifyTypes);
+      const message = {
+        type: 'setMaterials',
+        materials: result.materials.map(verifyTypes),
+      };
+      response.messages.push(message);
       chrome.storage.local.set({
         shouldUpdate: false,
       });
-      log(`sending materials: ${response.materials.length}`);
+      log(`sending materials: ${message.materials.length}`);
     } else if (result && result.shouldUpdate) {
       log('clearing shouldUpdate');
       chrome.storage.local.set({
@@ -47,11 +52,7 @@ function refreshMaterials(callback) {
       });
     }
     if (callback) {
-      callback({
-        messages: [
-          response,
-        ],
-      });
+      callback(response);
     }
   });
 }
@@ -71,14 +72,6 @@ function forceRefresh() {
  */
 chrome.runtime.onMessageExternal.addListener(
   (request, sender, sendResponse) => {
-    if (window.messages.length > 0) {
-      console.log('spliging')
-      sendResponse({
-        messages: window.messages.splice(0),
-      });
-      return false;
-    }
-
     if (request.materialCheck) {
       log('received refreshMaterials message');
       refreshMaterials(sendResponse);
@@ -117,4 +110,5 @@ chrome.storage.local.get(null, (result) => {
   log('Storage loaded.');
 });
 
+// Basic message queue for allowing request to come in from the app.
 window.messages = [];

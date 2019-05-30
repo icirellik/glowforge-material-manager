@@ -141,13 +141,8 @@ export const IconCheck = (props: IconProps) => {
       title="Open"
     >
       <i className="icon">
-        <svg
-        className="svg-icon"
-        version="1.1" x="0px"
-        y="0px" width="448.8px" height="448.8px" viewBox="0 0 448.8 448.8">
-	        <g id="done">
-		        <polygon points="142.8,323.85 35.7,216.75 0,252.45 142.8,395.25 448.8,89.25 413.1,53.55"/>
-	        </g>
+        <svg className="svg-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12">
+          <path fill-rule="evenodd" d="M2 6.086A1 1 0 0 0 2 7.5L4.5 10l5.512-5.598a1 1 0 0 0-1.414-1.414L4.5 7.172 3.414 6.086a1 1 0 0 0-1.414 0z"/>
         </svg>
       </i>
     </button>

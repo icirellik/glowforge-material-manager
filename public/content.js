@@ -75,7 +75,6 @@ function handleMaterialCheck(response) {
     const message = response.messages[i];
 
     log('material check response');
-    console.log(message)
     if (!message) {
       return;
     }

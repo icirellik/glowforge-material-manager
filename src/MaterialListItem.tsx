@@ -46,8 +46,8 @@ class MaterialListItem extends React.Component<MaterialProps> {
         </span>
         <span className="MaterialListItem-menu">
           <Menu>
-            <div>
-              <span onClick={() => setMaterial(material.id, material.title)}>Set In GFUI</span>
+            <div onClick={() => setMaterial(material.id, material.title)}>
+              <span>Set</span>
               <IconCheck />
             </div>
             <div onClick={() => selectMaterial(material.title)}>

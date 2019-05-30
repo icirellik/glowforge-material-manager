@@ -386,8 +386,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
           (window as any).messages = [];
         }
         (window as any).messages.push({
-          type: 'setMaterial',
-          materialId: `${id}`
+          type: 'selectMaterial',
+          materialId: id,
         });
       }
     });
