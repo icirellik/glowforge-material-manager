@@ -129,7 +129,7 @@ setInterval(() => {
       checkLastRuntimeError();
     },
   );
-}, 5000);
+}, 750);
 
 /**
  * Set a one-time refresh on content injection. New tabs, refreshes.
