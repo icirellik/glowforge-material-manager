@@ -5,6 +5,7 @@ import {
   IconEdit,
   IconOpen,
   IconTrashCan,
+  IconCheck,
 } from './Icons';
 import './MaterialListItem.css';
 import { GFMaterial } from './lib/material';
@@ -13,6 +14,7 @@ import {
   ModeEdit,
   ModeSelect,
   RemoveMaterial,
+  SetMaterial,
 } from './App';
 
 interface MaterialProps {
@@ -21,6 +23,7 @@ interface MaterialProps {
   material: GFMaterial;
   removeMaterial: RemoveMaterial;
   selectMaterial: ModeSelect;
+  setMaterial: SetMaterial;
 }
 
 class MaterialListItem extends React.Component<MaterialProps> {
@@ -31,6 +34,7 @@ class MaterialListItem extends React.Component<MaterialProps> {
       material,
       removeMaterial,
       selectMaterial,
+      setMaterial,
     } = this.props
     return (
       <div className="MaterialListItem-root">
@@ -42,6 +46,10 @@ class MaterialListItem extends React.Component<MaterialProps> {
         </span>
         <span className="MaterialListItem-menu">
           <Menu>
+            <div onClick={() => setMaterial(material.id, material.title)}>
+              <span>Set</span>
+              <IconCheck />
+            </div>
             <div onClick={() => selectMaterial(material.title)}>
               <span>View</span>
               <IconOpen />

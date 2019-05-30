@@ -42,6 +42,7 @@ export type AddMaterial = () => Promise<void>;
 export type CopyMaterial = (title: string) => Promise<void>;
 export type EditMaterial = (title: string) => Promise<void>;
 export type RemoveMaterial = (id: string, title: string) => Promise<void>;
+export type SetMaterial = (id: string, title: string) => Promise<void>;
 export type UpdateMaterial = (key: keyof TempMaterial, value: any) => void;
 
 export type UpdateCut = (cut: PluginCutSetting) => void;
@@ -60,6 +61,7 @@ interface IMaterialEditor {
   copyMaterial: CopyMaterial;
   editMaterial: EditMaterial;
   removeMaterial: RemoveMaterial;
+  setMaterial: SetMaterial;
   updateMaterial: UpdateMaterial;
 
   updateCut: UpdateCut;
@@ -377,6 +379,20 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     await reloadGlowForgeTab();
   }
 
+  async setMaterial(id: string, title: string) {
+    window.chrome.runtime.getBackgroundPage((window) => {
+      if (window) {
+        if (!(window as any).messages) {
+          (window as any).messages = [];
+        }
+        (window as any).messages.push({
+          type: 'selectMaterial',
+          materialId: id,
+        });
+      }
+    });
+  }
+
   async forceSyncronize() {
     await forceSync();
     this.setState({
@@ -472,6 +488,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
               materials={this.state.materials}
               removeMaterial={this.removeMaterial.bind(this)}
               selectMaterial={this.setEditorModeSelect.bind(this)}
+              setMaterial={this.setMaterial.bind(this)}
             />
           </div>
           <div className="col-contents">

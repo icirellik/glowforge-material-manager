@@ -6,6 +6,7 @@ import {
   ModeEdit,
   ModeSelect,
   RemoveMaterial,
+  SetMaterial,
 } from './App';
 import './MaterialList.css';
 
@@ -15,6 +16,7 @@ type MaterialListProps = {
   editMaterial: ModeEdit;
   removeMaterial: RemoveMaterial;
   selectMaterial: ModeSelect;
+  setMaterial: SetMaterial;
 }
 
 function MaterialListNoElements() {
@@ -35,6 +37,7 @@ class MaterialList extends React.Component<MaterialListProps> {
           material={material}
           removeMaterial={this.props.removeMaterial}
           selectMaterial={this.props.selectMaterial}
+          setMaterial={this.props.setMaterial}
         />
       );
     });

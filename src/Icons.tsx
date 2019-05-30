@@ -132,3 +132,19 @@ export const IconOpen = (props: IconProps) => {
     </button>
   );
 }
+
+export const IconCheck = (props: IconProps) => {
+  return (
+    <button
+      className="icon"
+      onClick={(props.click) ? props.click : undefined}
+      title="Open"
+    >
+      <i className="icon">
+        <svg className="svg-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12">
+          <path fill-rule="evenodd" d="M2 6.086A1 1 0 0 0 2 7.5L4.5 10l5.512-5.598a1 1 0 0 0-1.414-1.414L4.5 7.172 3.414 6.086a1 1 0 0 0-1.414 0z"/>
+        </svg>
+      </i>
+    </button>
+  );
+}
