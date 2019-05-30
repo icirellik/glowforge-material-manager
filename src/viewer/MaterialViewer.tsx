@@ -13,44 +13,40 @@ export type MaterialViewerProps = {
   material: RawMaterial;
 }
 
-class MaterialViewer extends React.Component<MaterialViewerProps> {
-  render() {
-    const {
-      editorMode,
-      material,
-    } = this.props;
+export default function MaterialViewer(props: MaterialViewerProps) {
+  const {
+    editorMode,
+    material,
+  } = props;
 
-    if (editorMode !== 'SELECTED') {
-      return null;
-    }
-
-    return (
-      <div className="App-flexColumn">
-        <div className="App-flex">
-          <p className="App-flexLabel">Thickness Name</p>
-          <p>{material.thickName}</p>
-        </div>
-        <div className="App-flex">
-          <p className="App-flexLabel">Material Name:</p>
-          <p>{material.name}</p>
-        </div>
-        <div className="App-flex">
-          <p className="App-flexLabel">Thickness (mm)</p>
-          <p>{material.thickness}</p>
-        </div>
-
-        <MaterialCutViewer cut={material.cut} />
-        <MaterialScoresViewer scores={material.scores} />
-        <MaterialVectorEngravesViewer vectors={material.vectors} />
-        <MaterialBitmapEngravesViewer bitmaps={material.bitmaps} />
-
-        <MaterialButtonBar
-          editorMode={this.props.editorMode}
-          cancelMaterial={this.props.cancelMaterial}
-        />
-      </div>
-    );
+  if (editorMode !== 'SELECTED') {
+    return null;
   }
-}
 
-export default MaterialViewer;
+  return (
+    <div className="App-flexColumn">
+      <div className="App-flex">
+        <p className="App-flexLabel">Thickness Name</p>
+        <p>{material.thickName}</p>
+      </div>
+      <div className="App-flex">
+        <p className="App-flexLabel">Material Name:</p>
+        <p>{material.name}</p>
+      </div>
+      <div className="App-flex">
+        <p className="App-flexLabel">Thickness (mm)</p>
+        <p>{material.thickness}</p>
+      </div>
+
+      <MaterialCutViewer cut={material.cut} />
+      <MaterialScoresViewer scores={material.scores} />
+      <MaterialVectorEngravesViewer vectors={material.vectors} />
+      <MaterialBitmapEngravesViewer bitmaps={material.bitmaps} />
+
+      <MaterialButtonBar
+        editorMode={props.editorMode}
+        cancelMaterial={props.cancelMaterial}
+      />
+    </div>
+  );
+}

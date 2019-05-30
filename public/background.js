@@ -34,6 +34,7 @@ function refreshMaterials(callback) {
   chrome.storage.local.get(null, (result) => {
     const response = {};
     if (result && result.materials && result.shouldUpdate) {
+      response.type = 'setMaterials';
       response.materials = result.materials.map(verifyTypes);
       chrome.storage.local.set({
         shouldUpdate: false,
@@ -46,7 +47,11 @@ function refreshMaterials(callback) {
       });
     }
     if (callback) {
-      callback(response);
+      callback({
+        messages: [
+          response,
+        ],
+      });
     }
   });
 }
@@ -66,6 +71,14 @@ function forceRefresh() {
  */
 chrome.runtime.onMessageExternal.addListener(
   (request, sender, sendResponse) => {
+    if (window.messages.length > 0) {
+      console.log('spliging')
+      sendResponse({
+        messages: window.messages.splice(0),
+      });
+      return false;
+    }
+
     if (request.materialCheck) {
       log('received refreshMaterials message');
       refreshMaterials(sendResponse);
@@ -103,3 +116,5 @@ chrome.storage.local.get(null, (result) => {
   }
   log('Storage loaded.');
 });
+
+window.messages = [];

@@ -132,3 +132,24 @@ export const IconOpen = (props: IconProps) => {
     </button>
   );
 }
+
+export const IconCheck = (props: IconProps) => {
+  return (
+    <button
+      className="icon"
+      onClick={(props.click) ? props.click : undefined}
+      title="Open"
+    >
+      <i className="icon">
+        <svg
+        className="svg-icon"
+        version="1.1" x="0px"
+        y="0px" width="448.8px" height="448.8px" viewBox="0 0 448.8 448.8">
+	        <g id="done">
+		        <polygon points="142.8,323.85 35.7,216.75 0,252.45 142.8,395.25 448.8,89.25 413.1,53.55"/>
+	        </g>
+        </svg>
+      </i>
+    </button>
+  );
+}
