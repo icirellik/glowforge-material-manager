@@ -205,6 +205,7 @@ export async function removeSynchronizedMaterial(hash: string) {
  *
  * @param hash The hashed title of the RawMaterial that is being stored.
  * @param material Compressed material as a base64? encoded string.
+ * @returns The hash that was stored.
  */
 export async function storeSynchronizedMaterial(hash: string, material: string): Promise<string> {
   return new Promise(resolve => {

@@ -16,8 +16,8 @@ export type MaterialBitmapEngravesViewerProps = {
 export default function MaterialBitmapEngravesViewer(props: MaterialBitmapEngravesViewerProps) {
   return (
     <>
-      <div className="App-flex">
-        <p className="App-flexSectionHeader">Bitmap Engrave Settings</p>
+      <div className="App-flexSectionHeader">
+        <p>Bitmap Engrave Settings</p>
       </div>
       {
         (props.bitmaps.length > 0) ?

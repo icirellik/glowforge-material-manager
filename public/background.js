@@ -20,20 +20,19 @@ function asFloat(number) {
  * Deprecated.
  */
 function verifyTypes(material) {
-  return Object.assign({},
-    material, {
-      nominal_thickness: asFloat(material.nominal_thickness),
-    });
+  return Object.assign({}, material, {
+    nominal_thickness: asFloat(material.nominal_thickness),
+  });
 }
 
 /**
  * Gets the materials from local storage and sends them the to UI for
  * installation.
  */
-function refreshMaterials(callback) {
+function refreshMaterials(relayMessages, callback) {
   chrome.storage.local.get(null, (result) => {
     const response = {
-      messages: window.messages.splice(0),
+      messages: relayMessages,
     };
     if (result && result.materials && result.shouldUpdate) {
       const message = {
@@ -72,24 +71,39 @@ function forceRefresh() {
  */
 chrome.runtime.onMessageExternal.addListener(
   (request, sender, sendResponse) => {
-    if (request.materialCheck) {
-      log('received refreshMaterials message');
-      refreshMaterials(sendResponse);
+    const relayMessages = window.inboundQueue.splice(0);
+
+    if (request.type === 'lidImage') {
+      log('lidImage message');
+      window.outboundQueue.push(request);
+
+    } else if (request.type === 'materialCheck') {
+      log('refreshMaterials message');
+      refreshMaterials(relayMessages, sendResponse);
       return true;
-    }
 
-    if (request.forceRefresh) {
-      log('received forceRefresh message');
+    } else if (request.type === 'forceRefresh') {
+      log('forceRefresh message');
       forceRefresh();
+
     } else {
-      log('received generic message');
+      log('unknown message');
     }
 
-    sendResponse();
+    if (relayMessages.length > 0) {
+      sendResponse({
+        messages: relayMessages,
+      });
+    } else {
+      sendResponse();
+    }
     return false;
   },
 );
 
+/**
+ * Initialize the background process and local storage.
+ */
 chrome.storage.local.get(null, (result) => {
   if (result && result.materials) {
     // Set a one time load refresh on browser restart.
@@ -110,5 +124,10 @@ chrome.storage.local.get(null, (result) => {
   log('Storage loaded.');
 });
 
+// Handle messaging with the react app.
+
 // Basic message queue for allowing request to come in from the app.
-window.messages = [];
+window.inboundQueue = [];
+
+// Basic message queue for holding messages to be sent to the app.
+window.outboundQueue = [];

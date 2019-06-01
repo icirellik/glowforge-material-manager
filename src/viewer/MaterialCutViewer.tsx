@@ -15,8 +15,8 @@ export type MaterialCutViewerProps = {
 export default function MaterialCutViewer(props: MaterialCutViewerProps) {
   return (
     <>
-      <div className="App-flex">
-        <p className="App-flexSectionHeader">Cut Settings</p>
+      <div className="App-flexSectionHeader">
+        <p>Cut Settings</p>
       </div>
       <div className="App-flex">
         <p className="App-flexLabel">Speed</p>

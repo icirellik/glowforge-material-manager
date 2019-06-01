@@ -22,6 +22,7 @@ import {
 // import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
+// TODO: Add upgrade to deterministic ids
 async function upgrade() {
   return new Promise (resolve => {
     window.chrome.storage.local.get(null, async result => {

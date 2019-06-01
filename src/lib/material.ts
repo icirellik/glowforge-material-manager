@@ -11,7 +11,7 @@ import {
 import {
   compress,
   decompress,
-  hashRawMaterial,
+  hashMaterial,
   hashTitle,
 } from './utils';
 
@@ -64,7 +64,7 @@ export type PluginBitmapEngraveSetting = {
   rescaleMethod: 'LagrangeFilter';
   minimumGrayPercent: null;
   maximumGrayPercent: null;
-  horizontaTiming: null;
+  horizontalTiming: null;
 }
 
 export type TinyMaterial = {
@@ -144,7 +144,7 @@ export type TinyBitmapEngraveSetting = {
   ip: null;
   // maximumGrayPercent
   ap: null;
-  // horizontaTiming
+  // horizontalTiming
   t: null;
 }
 
@@ -242,6 +242,10 @@ export async function getNextMaterialId(): Promise<number> {
     }, -1) + 1;
 }
 
+/**
+ *
+ * @param materialId
+ */
 export async function removeMaterial(materialId: MaterialId) {
   const materials = await getMaterials();
   const newMaterials = await storeMaterials(
@@ -251,6 +255,11 @@ export async function removeMaterial(materialId: MaterialId) {
   return newMaterials;
 }
 
+/**
+ * Removes a GF Material from local storage by its title.
+ *
+ * @param title Is of the following format `${material.thickName} ${material.name}`
+ */
 export async function removeMaterialTitle(title: string) {
   const materials = await getMaterials();
   const newMaterials = await storeMaterials(
@@ -260,6 +269,11 @@ export async function removeMaterialTitle(title: string) {
   return newMaterials;
 }
 
+/**
+ * Removes an internal material from local storage by its title.
+ *
+ * @param title Is of the following format `${material.thickName} ${material.name}`
+ */
 export async function removeRawMaterial(title: string) {
   const rawMaterials = await getRawMaterials();
   const newRawMaterials = await storeRawMaterials(
@@ -269,16 +283,25 @@ export async function removeRawMaterial(title: string) {
   return newRawMaterials;
 }
 
-export async function sendCloudMaterial(rawMaterial: RawMaterial) {
-  const hash = await hashTitle(rawMaterial);
-  const compressed = compress(toTinyMaterial(rawMaterial));
+/**
+ * Stores a material in the cloud.
+ *
+ * @param material The material to syncronize with the cloud.
+ */
+export async function sendCloudMaterial(material: RawMaterial) {
+  const hash = await hashTitle(material);
+  const compressed = compress(toTinyMaterial(material));
 
-  // Sync , check hashes for changes.
   await storeSynchronizedMaterial(hash, compressed);
 }
 
-export async function removeCloudMaterial(rawMaterial: RawMaterial) {
-  const hash = await hashTitle(rawMaterial);
+/**
+ * Removes a material from the cloud.
+ *
+ * @param material The material to remove from the cloud.
+ */
+export async function removeCloudMaterial(material: RawMaterial) {
+  const hash = await hashTitle(material);
   return await removeSynchronizedMaterial(hash);
 }
 
@@ -295,7 +318,7 @@ export async function fullSynchronizedMaterials(remove=false) {
   for (let i = 0; i < rawMaterials.length; i++) {
     const material = rawMaterials[i];
     const titleHash = await hashTitle(material);
-    const dataHash = await hashRawMaterial(material);
+    const dataHash = await hashMaterial(material);
     currentTitleHashes.push(titleHash);
     currentDataHashes.push(dataHash);
     rawMaterialTitleMap[titleHash] = material;
@@ -362,7 +385,7 @@ export async function fullSynchronizedMaterials(remove=false) {
     const hash = updatedHashes[i];
     const binaryData = synchronizedMaterials[hash];
     const json = toFullMaterial(decompress(binaryData));
-    const dataHash = await hashRawMaterial(json);
+    const dataHash = await hashMaterial(json);
     console.log(`Updating ${hash} -> ${dataHash}`);
 
     if (!rawMaterialDataMap.hasOwnProperty(dataHash)) {
@@ -597,7 +620,7 @@ function toTinyBitmmapEngrave(bitmapEngrave: PluginBitmapEngraveSetting): TinyBi
     re: bitmapEngrave.rescaleMethod,
     ip: bitmapEngrave.minimumGrayPercent,
     ap: bitmapEngrave.maximumGrayPercent,
-    t: bitmapEngrave.horizontaTiming,
+    t: bitmapEngrave.horizontalTiming,
   };
 }
 
@@ -613,6 +636,6 @@ function toFullBitmapEngrave(bitmapEngrave: TinyBitmapEngraveSetting): PluginBit
     rescaleMethod: bitmapEngrave.re,
     minimumGrayPercent: bitmapEngrave.ip,
     maximumGrayPercent: bitmapEngrave.ap,
-    horizontaTiming: bitmapEngrave.t,
+    horizontalTiming: bitmapEngrave.t,
   };
 }
