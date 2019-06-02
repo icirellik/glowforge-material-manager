@@ -412,25 +412,25 @@ export async function fullSynchronizedMaterials(remove=false) {
 /**
  * Creates a new custom material.
  */
-export function createMaterial(tempMaterial: RawMaterial, id: number | string): GFMaterial {
+export function createMaterial(material: RawMaterial, id: number | string): GFMaterial {
   return {
     id: `Custom:${id}`,
-    title: `${tempMaterial.thickName} ${tempMaterial.name}`,
+    title: `${material.thickName} ${material.name}`,
     sku: '',
-    nominal_thickness: tempMaterial.thickness,
-    thickness_name: tempMaterial.thickName,
+    nominal_thickness: material.thickness,
+    thickness_name: material.thickName,
     variety: {
-      name: `${tempMaterial.thickName.toLowerCase().replace(/[ ]/g, '-')}-${tempMaterial.name.toLowerCase().replace(/[ ]/g, '-')}`,
-      common_name: `${tempMaterial.thickName} ${tempMaterial.name}`,
-      type_name: tempMaterial.name,
+      name: `${material.thickName.toLowerCase().replace(/[ ]/g, '-')}-${material.name.toLowerCase().replace(/[ ]/g, '-')}`,
+      common_name: `${material.thickName} ${material.name}`,
+      type_name: material.name,
       thumbnails: [
         getUrl('custom-material.png'),
       ],
       display_options: null
     },
     settings: [
-      createSettings(tempMaterial, 'basic'),
-      createSettings(tempMaterial, 'pro')
+      createSettings(material, 'basic'),
+      createSettings(material, 'pro')
     ]
   };
 }
@@ -438,22 +438,22 @@ export function createMaterial(tempMaterial: RawMaterial, id: number | string): 
 /**
  * Creates the settings for a given tube type.
  */
-function createSettings(tempMaterial: RawMaterial, tubeType: GFMaterialTubeType): GFMaterialSettings {
+function createSettings(material: RawMaterial, tubeType: GFMaterialTubeType): GFMaterialSettings {
   return {
-    description: `${tempMaterial.thickName} ${tempMaterial.name} Settings`,
+    description: `${material.thickName} ${material.name} Settings`,
     active_date: "2017-04-06T00:00-07:00",
     environment: [
       'production'
     ],
     tube_type: tubeType,
-    cut_setting: createCutSettings(tempMaterial.cut),
-    score_settings: tempMaterial.scores.map((score: any) => {
+    cut_setting: createCutSettings(material.cut),
+    score_settings: material.scores.map((score: any) => {
       return createScoreSettings(score);
     }),
-    vector_engrave_settings: tempMaterial.vectors.map((vector: any) => {
+    vector_engrave_settings: material.vectors.map((vector: any) => {
       return createVectorEngraveSettings(vector);
     }),
-    bitmap_engrave_settings: tempMaterial.bitmaps.map((bitmap: any) => {
+    bitmap_engrave_settings: material.bitmaps.map((bitmap: any) => {
       return createBitmapEngraveSettings(bitmap);
     }),
   }
@@ -532,20 +532,20 @@ function createBitmapEngraveSettings(bitmapEngrave: PluginBitmapEngraveSetting):
   };
 }
 
-export function toTinyMaterial(fullMaterial: RawMaterial): TinyMaterial {
+export function toTinyMaterial(material: RawMaterial): TinyMaterial {
   return {
-    n: fullMaterial.name,
-    t: fullMaterial.thickName,
-    d: fullMaterial.thickness,
+    n: material.name,
+    t: material.thickName,
+    d: material.thickness,
     c: {
-      p: fullMaterial.cut.power,
-      s: fullMaterial.cut.speed,
-      a: fullMaterial.cut.passes,
-      f: fullMaterial.cut.focalOffset,
+      p: material.cut.power,
+      s: material.cut.speed,
+      a: material.cut.passes,
+      f: material.cut.focalOffset,
     },
-    s: fullMaterial.scores.map(score => toTinyScore(score)),
-    v: fullMaterial.vectors.map(vector => toTinyVectorEngrave(vector)),
-    b: fullMaterial.bitmaps.map(bitmap => toTinyBitmmapEngrave(bitmap)),
+    s: material.scores.map(score => toTinyScore(score)),
+    v: material.vectors.map(vector => toTinyVectorEngrave(vector)),
+    b: material.bitmaps.map(bitmap => toTinyBitmmapEngrave(bitmap)),
   };
 }
 
