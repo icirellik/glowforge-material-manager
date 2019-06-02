@@ -45,25 +45,49 @@ export function asFloatWithPrecision(number: string, precision: number) {
   return Number.parseFloat(number).toPrecision(precision);
 }
 
-export function compress(json: any) {
+/**
+ * Compresses JSON data.
+ *
+ * @param json The object to compress.
+ */
+export function compress(json: object | Array<unknown>) {
   return pako.deflate(JSON.stringify(json), { to: 'string' });
 }
 
+/**
+ * Decompresses a compressed JSON buffer.
+ *
+ * @param binaryJson A compressed JSON buffer.
+ */
 export function decompress(binaryJson: any) {
   return JSON.parse(pako.inflate(binaryJson, { to: 'string' }));
 }
 
-export async function sha1(message: string) {
+async function sha1(message: string) {
   const msgBuffer = new TextEncoder().encode(message);
   const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
 }
 
-export async function hashTitle(rawMaterial: RawMaterial) {
-  return await sha1(`${rawMaterial.thickName} ${rawMaterial.name}`);
+/**
+ * Hashes a materials title: `${material.thickName} ${material.name}`
+ *
+ * @param material The material to hash.
+ * @returns The material title hash.
+ */
+export async function hashTitle(material: RawMaterial) {
+  return await sha1(`${material.thickName} ${material.name}`);
 }
 
-export async function hashRawMaterial(rawMaterial: RawMaterial) {
-  return await sha1(JSON.stringify(toFullMaterial(toTinyMaterial(rawMaterial))));
+/**
+ * Hashes the full contents of a material.
+ *
+ * The material is converted between tiny and full to remove and additional
+ * properties that may have been added.
+ *
+ * @param material The material to hash.
+ */
+export async function hashMaterial(material: RawMaterial) {
+  return await sha1(JSON.stringify(toFullMaterial(toTinyMaterial(material))));
 }

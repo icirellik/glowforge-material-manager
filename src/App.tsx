@@ -1,4 +1,5 @@
 import React from 'react';
+import QrCode from 'qrcode-reader';
 import MaterialEditor from './MaterialEditor';
 import MaterialList from './MaterialList';
 import MaterialViewer from './viewer/MaterialViewer';
@@ -159,7 +160,35 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
           cloudStorageBytesUsed,
         });
       }
-    }, 5000);
+
+      // Check background threads for messages.
+      window.chrome.runtime.getBackgroundPage((window) => {
+        if (window) {
+          const outboundQueue = (window as any).outboundQueue;
+
+          if (outboundQueue.length > 0) {
+            const messages = outboundQueue.splice(0);
+
+            for (let i = 0; i < messages.length; i += 1) {
+              const message = messages[i];
+              // Worst QR Library ever.
+              const qr = new QrCode();
+
+              qr.callback = (err, result) => {
+                if (err) {
+                  console.log(err);
+                  return;
+                }
+                console.log(result);
+              }
+
+              const image = `https://app.glowforge.com${message.image}`;
+              qr.decode(image);
+            }
+          }
+        }
+      });
+    }, 750);
   }
 
   updateMaterial(key: keyof TempMaterial, value: any) {
@@ -382,10 +411,10 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   async setMaterial(id: string, title: string) {
     window.chrome.runtime.getBackgroundPage((window) => {
       if (window) {
-        if (!(window as any).messages) {
-          (window as any).messages = [];
+        if (!(window as any).inboundQueue) {
+          (window as any).inboundQueue = [];
         }
-        (window as any).messages.push({
+        (window as any).inboundQueue.push({
           type: 'selectMaterial',
           materialId: id,
         });

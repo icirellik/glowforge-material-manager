@@ -15,8 +15,8 @@ export type MaterialScoresViewerProps = {
 export default function MaterialScoresViewer(props: MaterialScoresViewerProps) {
   return (
     <>
-      <div className="App-flex">
-        <p className="App-flexSectionHeader">Score Settings</p>
+      <div className="App-flexSectionHeader">
+        <p>Score Settings</p>
       </div>
       {
         (props.scores.length > 0) ?

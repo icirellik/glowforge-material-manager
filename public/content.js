@@ -117,18 +117,32 @@ function checkLastRuntimeError() {
 }
 
 /**
+ * Sends a message to the chrome background process.
+ *
+ * @param message The message.
+ * @param callback The response handler.
+ */
+function sendBackgroundMessage(message, callback) {
+  chrome.runtime.sendMessage(
+    extensionId,
+    message,
+    (response) => {
+      callback(response);
+    },
+  );
+}
+
+/**
  * Request the materials created by the user in the extension.
  */
 setInterval(() => {
-  chrome.runtime.sendMessage(
-    extensionId, {
-      materialCheck: true,
-    },
-    (response) => {
-      handleMaterialCheck(response);
-      checkLastRuntimeError();
-    },
-  );
+  sendBackgroundMessage({
+    type: 'materialCheck',
+  },
+  (response) => {
+    handleMaterialCheck(response);
+    checkLastRuntimeError();
+  });
 }, 750);
 
 /**
@@ -137,23 +151,47 @@ setInterval(() => {
  * Sets shouldUpdate to true.
  */
 setTimeout(() => {
-  chrome.runtime.sendMessage(
-    extensionId, {
-      forceRefresh: true,
-    },
-    (response) => {
-      handleForceRefresh(response);
-      checkLastRuntimeError();
-    },
-  );
+  sendBackgroundMessage({
+    type: 'forceRefresh',
+  },
+  (response) => {
+    handleForceRefresh(response);
+    checkLastRuntimeError();
+  });
 }, 0);
 
+/**
+ * Checks if the lid image has changed and if so, informs the app.
+ */
+let prevPreloadedLidImage = null;
+function checkLidImage(preloadedLidImage) {
+  if (!preloadedLidImage) {
+    return;
+  }
 
+  if (preloadedLidImage !== prevPreloadedLidImage) {
+    // do something new.
+    sendBackgroundMessage({
+      type: 'lidImage',
+      image: preloadedLidImage,
+    }, () => {
+      log('lidImage - success');
+    });
+    prevPreloadedLidImage = preloadedLidImage;
+  }
+}
 
+/**
+ * Subscribe to redux store changes.
+ */
 window.store.subscribe(() => {
-  // const state = window.store.getState();
+  const state = window.store.getState().toJSON();
 
-  // state.get('machines').get('machineMap').get([...state.get('machines').get('machineMap').keys()][0]).get('preloadedLidImage');
+  if (Object.keys(state.machines.machineMap).length > 0) {
+    const { preloadedLidImage } = state.machines.machineMap[Object.keys(state.machines.machineMap)];
+    checkLidImage(preloadedLidImage);
+  }
+
 
   // Send image to plugin.
 

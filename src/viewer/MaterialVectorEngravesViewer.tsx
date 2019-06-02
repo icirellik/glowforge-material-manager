@@ -16,8 +16,8 @@ export type MaterialVectorEngravesViewerProps = {
 export default function MaterialVectorEngravesViewer(props: MaterialVectorEngravesViewerProps) {
   return (
     <>
-      <div className="App-flex">
-        <p className="App-flexSectionHeader">Vector Engrave Settings</p>
+      <div className="App-flexSectionHeader">
+        <p>Vector Engrave Settings</p>
       </div>
       {
         (props.vectors.length > 0) ?

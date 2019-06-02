@@ -50,5 +50,5 @@ export const EMPTY_BITMAP_ENGRAVE: PluginBitmapEngraveSetting = {
   rescaleMethod: 'LagrangeFilter',
   minimumGrayPercent: null,
   maximumGrayPercent: null,
-  horizontaTiming: null,
+  horizontalTiming: null,
 };

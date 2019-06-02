@@ -85,15 +85,15 @@ export async function getRawMaterials(): Promise<RawMaterial[]> {
  * TODO: Is the synchronization here required, raw materials don't hold new
  * information.
  *
- * @param rawMaterials
+ * @param materials
  */
-export async function storeRawMaterials(rawMaterials: RawMaterial[]): Promise<RawMaterial[]> {
+export async function storeRawMaterials(materials: RawMaterial[]): Promise<RawMaterial[]> {
   return new Promise(resolve => {
     window.chrome.storage.local.set({
-      'rawMaterials': rawMaterials,
+      'rawMaterials': materials,
       'shouldUpdate': true,
     }, () => {
-      resolve(rawMaterials);
+      resolve(materials);
     });
   });
 }
@@ -205,6 +205,7 @@ export async function removeSynchronizedMaterial(hash: string) {
  *
  * @param hash The hashed title of the RawMaterial that is being stored.
  * @param material Compressed material as a base64? encoded string.
+ * @returns The hash that was stored.
  */
 export async function storeSynchronizedMaterial(hash: string, material: string): Promise<string> {
   return new Promise(resolve => {
