@@ -4,13 +4,11 @@ import {
   toDisplayLinesPerInch,
   toDisplayPowerWords,
 } from '../lib/glowforgeUnits';
-import {
-  precisionRound,
-} from '../lib/utils';
-import { RawMaterial } from '../lib/material';
+import { PluginMaterial } from '../lib/materialRaw';
+import { precisionRound } from '../lib/utils';
 
 export type MaterialVectorEngravesViewerProps = {
-  vectors: RawMaterial['vectors'];
+  vectors: PluginMaterial['vectors'];
 }
 
 export default function MaterialVectorEngravesViewer(props: MaterialVectorEngravesViewerProps) {

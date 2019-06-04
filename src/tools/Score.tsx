@@ -10,7 +10,7 @@ import {
   toRealCutSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
-import { PluginScoreSetting } from '../lib/material';
+import { PluginScoreSetting } from '../lib/materialRaw';
 
 interface ScoreProps {
   id: number;

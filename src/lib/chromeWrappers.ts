@@ -1,7 +1,5 @@
-import {
-  GFMaterial,
-  RawMaterial,
-} from './material';
+import { GFMaterial } from './materialGlowforge';
+import { PluginMaterial } from './materialRaw';
 
 export type SyncId = string;
 export type SyncData = string;
@@ -14,12 +12,12 @@ interface StorageLocal {
   // The Glowforge formatted materials.
   materials?: GFMaterial[];
   // The raw material data that is used to generated Glowforge materials.
-  rawMaterials?: RawMaterial[];
+  rawMaterials?: PluginMaterial[];
   // Should the list in the glowforge app be updated?
   shouldUpdate?: boolean;
   // A material that was saved due to the popup window being dismissed without
   // clicking the save button.
-  tempMaterial?: RawMaterial | null;
+  tempMaterial?: PluginMaterial | null;
 }
 
 // Local Storage
@@ -37,9 +35,9 @@ export async function getLocalStorage(): Promise<StorageLocal> {
 }
 
 /**
- * Gets the Glowforge formatted styles from local storage.
+ * Gets the Glowforge materials from local storage.
  */
-export async function getMaterials(): Promise<GFMaterial[]> {
+export async function getGlowforgeMaterials(): Promise<GFMaterial[]> {
   return new Promise(resolve => {
     window.chrome.storage.local.get(null, (result: StorageLocal) => {
       if (result && result.materials) {
@@ -52,11 +50,11 @@ export async function getMaterials(): Promise<GFMaterial[]> {
 }
 
 /**
- * Saves the Glowforge materials and forces the glowforge app to synchronize.
+ * Saves the Glowforge materials and forces the Glowforge UI to synchronize.
  *
  * @param materials
  */
-export async function storeMaterials(materials: GFMaterial[]): Promise<GFMaterial[]> {
+export async function storeGlowforgeMaterials(materials: GFMaterial[]): Promise<GFMaterial[]> {
   return new Promise(resolve => {
     window.chrome.storage.local.set({
       'materials': materials,
@@ -67,7 +65,10 @@ export async function storeMaterials(materials: GFMaterial[]): Promise<GFMateria
   });
 }
 
-export async function getRawMaterials(): Promise<RawMaterial[]> {
+/**
+ * Gets the raw materials from local storage.
+ */
+export async function getRawMaterials(): Promise<PluginMaterial[]> {
   return new Promise(resolve => {
     window.chrome.storage.local.get(null, (result: StorageLocal) => {
       if (result && result.rawMaterials) {
@@ -80,14 +81,14 @@ export async function getRawMaterials(): Promise<RawMaterial[]> {
 }
 
 /**
- * Saves teh raw materials and forces the glowforge app to synchronize.
+ * Saves the raw materials and forces the glowforge app to synchronize.
  *
  * TODO: Is the synchronization here required, raw materials don't hold new
  * information.
  *
  * @param materials
  */
-export async function storeRawMaterials(materials: RawMaterial[]): Promise<RawMaterial[]> {
+export async function storeRawMaterials(materials: PluginMaterial[]): Promise<PluginMaterial[]> {
   return new Promise(resolve => {
     window.chrome.storage.local.set({
       'rawMaterials': materials,
@@ -111,7 +112,11 @@ export async function clearTempMaterial(): Promise<boolean> {
   });
 }
 
-export async function getTempMaterial(): Promise<RawMaterial | object> {
+/**
+ * Get a temporary material from local storage is was being created when the
+ * plugin was closed.
+ */
+export async function getTempMaterial(): Promise<PluginMaterial | object> {
   return new Promise(resolve => {
     window.chrome.storage.local.get(null, (result: StorageLocal) => {
       if (result && result.tempMaterial) {
@@ -123,7 +128,13 @@ export async function getTempMaterial(): Promise<RawMaterial | object> {
   });
 }
 
-export async function storeTempMaterial(material: RawMaterial): Promise<RawMaterial> {
+/**
+ * Stores the current material state in case the plugin is closed so that it can
+ * be reloaded.
+ *
+ * @param material
+ */
+export async function storeTempMaterial(material: PluginMaterial): Promise<PluginMaterial> {
   return new Promise(resolve => {
     window.chrome.storage.local.set({
       'tempMaterial': material,
@@ -133,6 +144,9 @@ export async function storeTempMaterial(material: RawMaterial): Promise<RawMater
   });
 }
 
+/**
+ * Gets the status of the force update flag.
+ */
 export async function getShouldUpdate(): Promise<boolean> {
   return new Promise(resolve => {
     window.chrome.storage.local.get(null, (result: StorageLocal) => {

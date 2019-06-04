@@ -7,17 +7,10 @@ import Message from './Message';
 import SyncStatusProps from './SyncStatus';
 import {
   createMaterial,
-  getNextMaterialId,
   removeCloudMaterial,
-  removeMaterial,
   removeRawMaterial,
   sendCloudMaterial,
-  PluginCutSetting,
-  PluginScoreSetting,
-  PluginVectorEngraveSetting,
-  PluginBitmapEngraveSetting,
-  GFMaterial,
-  RawMaterial,
+  removeMaterialTitle,
 } from './lib/material';
 import { IconPlus } from './Icons';
 import {
@@ -26,7 +19,7 @@ import {
   getBytesInUse,
   getShouldUpdate,
   reloadGlowForgeTab,
-  storeMaterials,
+  storeGlowforgeMaterials,
   storeRawMaterials,
 } from './lib/chromeWrappers';
 import {
@@ -38,12 +31,21 @@ import {
 } from './lib/constants';
 import './App.css';
 import logo from './logo.svg';
+import {
+  PluginBitmapEngraveSetting,
+  PluginCutSetting,
+  PluginScoreSetting,
+  PluginVectorEngraveSetting,
+  PluginMaterial,
+} from './lib/materialRaw';
+import { GFMaterial } from './lib/materialGlowforge';
+import { sha1 } from './lib/utils';
 
 export type AddMaterial = () => Promise<void>;
 export type CopyMaterial = (title: string) => Promise<void>;
 export type EditMaterial = (title: string) => Promise<void>;
-export type RemoveMaterial = (id: string, title: string) => Promise<void>;
-export type SetMaterial = (id: string, title: string) => Promise<void>;
+export type RemoveMaterial = (title: string) => Promise<void>;
+export type SetMaterial = (title: string) => Promise<void>;
 export type UpdateMaterial = (key: keyof TempMaterial, value: any) => void;
 
 export type UpdateCut = (cut: PluginCutSetting) => void;
@@ -96,7 +98,7 @@ interface AppProps {
   connected: boolean;
   materials: GFMaterial[];
   platform: string;
-  rawMaterials: RawMaterial[];
+  rawMaterials: PluginMaterial[];
   shouldUpdate: boolean;
   tempMaterial?: TempMaterial | null;
 }
@@ -104,12 +106,12 @@ interface AppProps {
 interface AppState {
   action: EditorMode;
   cloudStorageBytesUsed: number;
-  material: TempMaterial;
   materials: GFMaterial[];
   message: string;
   messageColor: string | null;
-  rawMaterials: RawMaterial[];
+  rawMaterials: PluginMaterial[];
   synchronized: boolean;
+  tempMaterial: TempMaterial;
 }
 
 class App extends React.Component<AppProps, AppState> implements IEditorMode, IMaterialEditor {
@@ -118,7 +120,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     cloudStorageBytesUsed: 0,
     message: '',
     messageColor: null,
-    material: {
+    tempMaterial: {
       ...EMPTY_MATERIAL,
     },
     materials: [],
@@ -131,12 +133,12 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       this.setState({
         action: 'ADD',
         cloudStorageBytesUsed: this.props.cloudStorageBytesUsed,
-        material: this.props.tempMaterial,
         materials: this.props.materials,
         message: 'Material settings were automatically restored from a previous session.',
         messageColor: null,
         rawMaterials: this.props.rawMaterials,
         synchronized: !this.props.shouldUpdate,
+        tempMaterial: this.props.tempMaterial,
       });
     } else {
       this.setState({
@@ -191,10 +193,16 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }, 750);
   }
 
-  updateMaterial(key: keyof TempMaterial, value: any) {
+  // Temporary Material State
+  // =================================================================
+
+  /**
+   * Updates the base material properties: thickName, name, thickness
+   */
+  updateMaterial(key: keyof TempMaterial, value: string | number) {
     this.setState({
-      material: {
-        ...this.state.material,
+      tempMaterial: {
+        ...this.state.tempMaterial,
         [key]: value,
       },
     });
@@ -202,8 +210,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
   updateCut(cut: PluginCutSetting) {
     this.setState({
-      material: {
-        ...this.state.material,
+      tempMaterial: {
+        ...this.state.tempMaterial,
         cut,
       },
     });
@@ -211,19 +219,19 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
   addScore() {
     this.setState({
-      material: {
-        ...this.state.material,
-        scores: [ ...this.state.material.scores, EMPTY_SCORE ],
+      tempMaterial: {
+        ...this.state.tempMaterial,
+        scores: [ ...this.state.tempMaterial.scores, EMPTY_SCORE ],
       },
     });
   }
 
   updateScore(index: number, score: PluginScoreSetting) {
-    const scores = this.state.material.scores;
+    const scores = this.state.tempMaterial.scores;
     scores[index] = score;
     this.setState({
-      material: {
-        ...this.state.material,
+      tempMaterial: {
+        ...this.state.tempMaterial,
         scores: [...scores],
       }
     });
@@ -231,19 +239,19 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
   addVectorEngrave() {
     this.setState({
-      material: {
-        ...this.state.material,
-        vectors: [ ...this.state.material.vectors, EMPTY_VECTOR_ENGRAVE ],
+      tempMaterial: {
+        ...this.state.tempMaterial,
+        vectors: [ ...this.state.tempMaterial.vectors, EMPTY_VECTOR_ENGRAVE ],
       },
     });
   }
 
   updateVectorEngrave(index: number, vector: PluginVectorEngraveSetting) {
-    const vectors = this.state.material.vectors;
+    const vectors = this.state.tempMaterial.vectors;
     vectors[index] = vector;
     this.setState({
-      material: {
-        ...this.state.material,
+      tempMaterial: {
+        ...this.state.tempMaterial,
         vectors: [...vectors],
       }
     });
@@ -251,34 +259,41 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
   addBitmapEngrave() {
     this.setState({
-      material: {
-        ...this.state.material,
-        bitmaps: [ ...this.state.material.bitmaps, EMPTY_BITMAP_ENGRAVE ],
+      tempMaterial: {
+        ...this.state.tempMaterial,
+        bitmaps: [ ...this.state.tempMaterial.bitmaps, EMPTY_BITMAP_ENGRAVE ],
       },
     });
   }
 
   updateBitmapEngrave(index: number, bitmap: PluginBitmapEngraveSetting) {
-    const bitmaps = this.state.material.bitmaps;
+    const bitmaps = this.state.tempMaterial.bitmaps;
     bitmaps[index] = bitmap;
     this.setState({
-      material: {
-        ...this.state.material,
+      tempMaterial: {
+        ...this.state.tempMaterial,
         bitmaps: [...bitmaps],
       }
     });
   }
 
-  displayError(message: string) {
-    this.setState({
-      message,
-      messageColor: '#CC3A4B',
-    });
-  }
+  // Material Management
+  // =================================================================
 
+  /**
+   *
+   */
   async addMaterial() {
-    const nextId = await getNextMaterialId();
-    const newMaterial = createMaterial(this.state.material, nextId);
+    // Hash the title and take the first seven for the id.
+    const { thickName, name } = this.state.tempMaterial;
+    const title = `${thickName} ${name}`
+    const hash = await sha1(title);
+    const id = hash.substring(0, 7);
+
+    // Create the new material.
+    const newMaterial = createMaterial(this.state.tempMaterial, id);
+
+    // Double check for duplicates
     const duplicate = this.state.materials.find(material => {
       return material.id === newMaterial.id || material.title === newMaterial.title;
     });
@@ -290,17 +305,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // Create and store.
     const newMaterials: GFMaterial[] = [...this.state.materials, newMaterial];
-    const newRawMaterials = [...this.state.rawMaterials, this.state.material];
-    await storeMaterials(newMaterials)
+    const newRawMaterials = [...this.state.rawMaterials, this.state.tempMaterial];
+    await storeGlowforgeMaterials(newMaterials)
     await storeRawMaterials(newRawMaterials);
     await clearTempMaterial();
 
     // Send materials to the cloud
-    await sendCloudMaterial(this.state.material);
+    await sendCloudMaterial(this.state.tempMaterial);
 
+    // Update the application state.
     this.setState({
       action: 'DISPLAY',
-      material: { ...EMPTY_MATERIAL },
+      tempMaterial: { ...EMPTY_MATERIAL },
       materials: newMaterials,
       message: '',
       messageColor: null,
@@ -315,23 +331,27 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * @param {string} title
    */
   async copyMaterial(title: string) {
+    // Look for any duplicates.
     const duplicates = this.state.materials.filter(material => {
       return material.title === title;
     });
 
+    // There should be at least one since we are cloning.
     if (duplicates.length < 1) {
       this.displayError('Could not clone the source material was removed.');
       return;
     }
 
+    // Get the material so we can clone it.
     const material = this.state.rawMaterials.find(rawMaterial => {
       return `${rawMaterial.thickName} ${rawMaterial.name}` === title;
     });
 
+    // Update the application state.
     if (material) {
       this.setState({
         action: 'ADD',
-        material: {
+        tempMaterial: {
           ...material,
           name: `${material.name} (${duplicates.length})`,
         },
@@ -339,6 +359,10 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }
   }
 
+  /**
+   *
+   * @param title
+   */
   async editMaterial(title: string) {
     const duplicates = this.state.materials.filter(material => {
       return material.title === `${title}`;
@@ -351,7 +375,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // Update material using the same id.
     const materialId = duplicates[0].id.split(':')[1];
-    const newMaterial = createMaterial(this.state.material, materialId)
+    const newMaterial = createMaterial(this.state.tempMaterial, materialId)
 
     // Store
     const newMaterials = this.state.materials.filter(material => {
@@ -361,9 +385,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     const newRawMaterials = this.state.rawMaterials.filter(material => {
       return `${material.thickName} ${material.name}` !== `${title}`;
     });
-    newRawMaterials.push(this.state.material);
+    newRawMaterials.push(this.state.tempMaterial);
 
-    await storeMaterials(newMaterials)
+    await storeGlowforgeMaterials(newMaterials)
     await storeRawMaterials(newRawMaterials);
 
     // Send updated materials to the cloud
@@ -373,11 +397,12 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     if (rawMaterial) {
       await removeCloudMaterial(rawMaterial);
     }
-    await sendCloudMaterial(this.state.material);
+    await sendCloudMaterial(this.state.tempMaterial);
 
+    // Update the application state.
     this.setState({
       action: 'DISPLAY',
-      material: { ...EMPTY_MATERIAL },
+      tempMaterial: { ...EMPTY_MATERIAL },
       materials: newMaterials,
       message: '',
       messageColor: null,
@@ -386,29 +411,47 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
   }
 
-  async removeMaterial(id: string, title: string) {
-    const found = this.state.rawMaterials.find((material: RawMaterial) => {
+  async removeMaterial(title: string) {
+    // Look for the material.
+    const found = this.state.rawMaterials.find((material: PluginMaterial) => {
       return `${material.thickName} ${material.name}` === `${title}`;
-    })
+    });
+
+    // If there is no material exit.
     if (!found) {
       return;
     }
+
+    // Remove from cloud, local, and glowforge.
     await removeCloudMaterial(found);
-    const materials = await removeMaterial(id);
+    const materials = await removeMaterialTitle(title);
     const rawMaterials = await removeRawMaterial(title);
+
+    // Update the application state.
     this.setState({
       action: 'DISPLAY',
-      material: {
-        ...EMPTY_MATERIAL,
-      },
+      tempMaterial: { ...EMPTY_MATERIAL },
       materials,
       rawMaterials,
       synchronized: false,
     });
+
+    // Reload the tab to ensure everything is up to date.
+    // TOOD: Do we need this.
     await reloadGlowForgeTab();
   }
 
-  async setMaterial(id: string, title: string) {
+  /**
+   * Sets the selected material in the GFUI.
+   *
+   * @param title
+   */
+  async setMaterial(title: string) {
+    // Hash the title and take the first seven for the id.
+    const hash = await sha1(title);
+    const id = `Custom:${hash.substring(0, 7)}`;
+
+    // Forward the request to the GFUI
     window.chrome.runtime.getBackgroundPage((window) => {
       if (window) {
         if (!(window as any).inboundQueue) {
@@ -429,6 +472,16 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
   }
 
+  // Messaging
+  //
+
+  displayError(message: string) {
+    this.setState({
+      message,
+      messageColor: '#CC3A4B',
+    });
+  }
+
   // Modes
   // =================================================================
 
@@ -443,7 +496,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     await clearTempMaterial();
     this.setState({
       action: mode,
-      material: {
+      tempMaterial: {
         ...material,
       },
       message: '',
@@ -514,7 +567,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
             <MaterialList
               cloneMaterial={this.copyMaterial.bind(this)}
               editMaterial={this.setEditorModeEdit.bind(this)}
-              materials={this.state.materials}
+              materials={this.state.rawMaterials}
               removeMaterial={this.removeMaterial.bind(this)}
               selectMaterial={this.setEditorModeSelect.bind(this)}
               setMaterial={this.setMaterial.bind(this)}
@@ -532,7 +585,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
             <MaterialViewer
               editorMode={this.state.action}
               cancelMaterial={this.setEditorModeCancel.bind(this)}
-              material={this.state.material}
+              material={this.state.tempMaterial}
             />
             <MaterialEditor
               action={this.state.action}
@@ -542,7 +595,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
               addVectorEngrave={this.addVectorEngrave.bind(this)}
               cancelMaterial={this.setEditorModeCancel.bind(this)}
               editMaterial={this.editMaterial.bind(this)}
-              material={this.state.material}
+              material={this.state.tempMaterial}
               updateBitmapEngrave={this.updateBitmapEngrave.bind(this)}
               updateCut={this.updateCut.bind(this)}
               updateMaterial={this.updateMaterial.bind(this)}

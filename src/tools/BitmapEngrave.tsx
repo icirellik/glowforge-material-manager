@@ -11,7 +11,7 @@ import {
   toRealEngraveSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
-import { PluginBitmapEngraveSetting } from '../lib/material';
+import { PluginBitmapEngraveSetting } from '../lib/materialRaw';
 
 interface BitmapEngraveProps {
   id: number;

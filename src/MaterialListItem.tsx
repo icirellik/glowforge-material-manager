@@ -7,8 +7,7 @@ import {
   IconTrashCan,
   IconCheck,
 } from './Icons';
-import './MaterialListItem.css';
-import { GFMaterial } from './lib/material';
+import { PluginMaterial } from './lib/materialRaw';
 import {
   CopyMaterial,
   ModeEdit,
@@ -16,11 +15,12 @@ import {
   RemoveMaterial,
   SetMaterial,
 } from './App';
+import './MaterialListItem.css';
 
 interface MaterialProps {
   cloneMaterial: CopyMaterial;
   editMaterial: ModeEdit;
-  material: GFMaterial;
+  material: PluginMaterial;
   removeMaterial: RemoveMaterial;
   selectMaterial: ModeSelect;
   setMaterial: SetMaterial;
@@ -36,33 +36,34 @@ class MaterialListItem extends React.Component<MaterialProps> {
       selectMaterial,
       setMaterial,
     } = this.props
+    const title = `${material.thickName} ${material.name}`;
     return (
       <div className="MaterialListItem-root">
         <span
-          onClick={() => selectMaterial(material.title)}
+          onClick={() => selectMaterial(title)}
           className="MaterialListItem-name"
         >
-          {material.title}
+          {title}
         </span>
         <span className="MaterialListItem-menu">
           <Menu>
-            <div onClick={() => setMaterial(material.id, material.title)}>
+            <div onClick={() => setMaterial(title)}>
               <span>Set</span>
               <IconCheck />
             </div>
-            <div onClick={() => selectMaterial(material.title)}>
+            <div onClick={() => selectMaterial(title)}>
               <span>View</span>
               <IconOpen />
             </div>
-            <div onClick={() => editMaterial(material.title)}>
+            <div onClick={() => editMaterial(title)}>
               <span>Edit</span>
               <IconEdit />
             </div>
-            <div onClick={() => cloneMaterial(material.title)}>
+            <div onClick={() => cloneMaterial(title)}>
               <span>Copy</span>
               <IconCopy />
             </div>
-            <div onClick={() => removeMaterial(material.id, material.title)}>
+            <div onClick={() => removeMaterial(title)}>
               <span>Delete</span>
               <IconTrashCan />
             </div>

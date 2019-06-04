@@ -1,6 +1,6 @@
 import React from 'react';
 import MaterialListItem from './MaterialListItem';
-import { GFMaterial } from './lib/material';
+import { PluginMaterial } from './lib/materialRaw';
 import {
   CopyMaterial,
   ModeEdit,
@@ -11,7 +11,7 @@ import {
 import './MaterialList.css';
 
 type MaterialListProps = {
-  materials: GFMaterial[]
+  materials: PluginMaterial[]
   cloneMaterial: CopyMaterial;
   editMaterial: ModeEdit;
   removeMaterial: RemoveMaterial;

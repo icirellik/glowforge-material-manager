@@ -3,13 +3,11 @@ import {
   toDisplayCutSpeed,
   toDisplayPowerWords,
 } from '../lib/glowforgeUnits';
-import {
-  precisionRound,
-} from '../lib/utils';
-import { RawMaterial } from '../lib/material';
+import { PluginMaterial } from '../lib/materialRaw';
+import { precisionRound } from '../lib/utils';
 
 export type MaterialCutViewerProps = {
-  cut: RawMaterial['cut'];
+  cut: PluginMaterial['cut'];
 }
 
 export default function MaterialCutViewer(props: MaterialCutViewerProps) {

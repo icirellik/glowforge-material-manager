@@ -1,6 +1,6 @@
 import React from 'react';
 import { ModeCancel, EditorMode } from '../App';
-import { RawMaterial } from '../lib/material';
+import { PluginMaterial } from '../lib/materialRaw';
 import MaterialBitmapEngravesViewer from './MaterialBitmapEngravesViewer';
 import MaterialButtonBar from '../MaterialButtonBar';
 import MaterialCutViewer from './MaterialCutViewer';
@@ -10,7 +10,7 @@ import MaterialVectorEngravesViewer from './MaterialVectorEngravesViewer';
 export type MaterialViewerProps = {
   editorMode: EditorMode;
   cancelMaterial: ModeCancel;
-  material: RawMaterial;
+  material: PluginMaterial;
 }
 
 export default function MaterialViewer(props: MaterialViewerProps) {

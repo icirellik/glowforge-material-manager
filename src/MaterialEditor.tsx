@@ -28,7 +28,7 @@ import {
   UpdateVectorEngrave,
   EditorMode,
 } from './App';
-import { RawMaterial } from './lib/material';
+import { PluginMaterial } from './lib/materialRaw';
 
 interface MaterialEditorProps {
   action: EditorMode;
@@ -38,7 +38,7 @@ interface MaterialEditorProps {
   addVectorEngrave: AddVectorEngrave;
   cancelMaterial: ModeCancel;
   editMaterial: EditMaterial;
-  material: RawMaterial;
+  material: PluginMaterial;
   updateBitmapEngrave: UpdateBitmapEngrave;
   updateCut: UpdateCut;
   updateMaterial: UpdateMaterial;
