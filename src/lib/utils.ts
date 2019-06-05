@@ -1,9 +1,9 @@
 import * as pako from 'pako';
 import {
-  RawMaterial,
   toFullMaterial,
   toTinyMaterial,
 } from './material';
+import { PluginMaterial } from './materialRaw';
 
 /**
  * A helper function that rounds to the nearest 5.
@@ -63,7 +63,7 @@ export function decompress(binaryJson: any) {
   return JSON.parse(pako.inflate(binaryJson, { to: 'string' }));
 }
 
-async function sha1(message: string) {
+export async function sha1(message: string) {
   const msgBuffer = new TextEncoder().encode(message);
   const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -76,7 +76,7 @@ async function sha1(message: string) {
  * @param material The material to hash.
  * @returns The material title hash.
  */
-export async function hashTitle(material: RawMaterial) {
+export async function hashTitle(material: PluginMaterial) {
   return await sha1(`${material.thickName} ${material.name}`);
 }
 
@@ -88,6 +88,6 @@ export async function hashTitle(material: RawMaterial) {
  *
  * @param material The material to hash.
  */
-export async function hashMaterial(material: RawMaterial) {
+export async function hashMaterial(material: PluginMaterial) {
   return await sha1(JSON.stringify(toFullMaterial(toTinyMaterial(material))));
 }

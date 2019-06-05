@@ -76,16 +76,13 @@ chrome.runtime.onMessageExternal.addListener(
     if (request.type === 'lidImage') {
       log('lidImage message');
       window.outboundQueue.push(request);
-
     } else if (request.type === 'materialCheck') {
       log('refreshMaterials message');
       refreshMaterials(relayMessages, sendResponse);
       return true;
-
     } else if (request.type === 'forceRefresh') {
       log('forceRefresh message');
       forceRefresh();
-
     } else {
       log('unknown message');
     }

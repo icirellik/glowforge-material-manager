@@ -1,10 +1,10 @@
 import {
-  getMaterials,
+  getGlowforgeMaterials,
   getRawMaterials,
   getSynchronizedMaterials,
   getUrl,
   removeSynchronizedMaterial,
-  storeMaterials,
+  storeGlowforgeMaterials,
   storeRawMaterials,
   storeSynchronizedMaterial,
 } from './chromeWrappers';
@@ -13,242 +13,39 @@ import {
   decompress,
   hashMaterial,
   hashTitle,
+  sha1,
 } from './utils';
-
-// Internal Plugin Data Structure
-export type RawMaterial = {
-  name: string;
-  thickName: string;
-  thickness: any;
-  bitmaps: PluginBitmapEngraveSetting[];
-  cut: PluginCutSetting;
-  scores: PluginScoreSetting[];
-  vectors: PluginVectorEngraveSetting[];
-};
-
-// Glowforge Redux Material Shape
-export type MaterialId = any;
-
-export type PluginCutSetting = {
-  focalOffset: number | null;
-  passes: number;
-  power: number;
-  speed: number;
-}
-
-export type PluginScoreSetting = {
-  focalOffset: number | null;
-  name: string;
-  passes: number;
-  power: number;
-  speed: number;
-}
-
-export type PluginVectorEngraveSetting = {
-  focalOffset: number | null;
-  name: string;
-  passes: number;
-  power: number;
-  scanGap: number;
-  speed: number;
-}
-
-export type PluginBitmapEngraveSetting = {
-  power: number;
-  speed: number;
-  passes: number;
-  focalOffset: number | null;
-  scanGap: number;
-  name: string;
-  renderMethod: 'FloydSteinbergDitherMethod' | 'RiemersmaDitherMethod' | null;
-  rescaleMethod: 'LagrangeFilter';
-  minimumGrayPercent: null;
-  maximumGrayPercent: null;
-  horizontalTiming: null;
-}
-
-export type TinyMaterial = {
-  // name
-  n: string;
-  // thickName
-  t: string;
-  // thickness
-  d: any;
-  // cut
-  c: TinyCutSetting;
-  // scores
-  s: TinyScoreSetting[];
-  // vectors
-  v: TinyVectorEngraveSetting[];
-  // bitmaps
-  b: TinyBitmapEngraveSetting[];
-}
-
-export type TinyCutSetting = {
-  // focalOffset
-  f: number | null;
-  // passes
-  a: number;
-  // power
-  p: number;
-  // speed
-  s: number;
-}
-
-export type TinyScoreSetting = {
-  // focalOffset
-  f: number | null;
-  // name
-  n: string;
-  // passes
-  a: number;
-  // power
-  p: number;
-  // speed
-  s: number;
-}
-
-export type TinyVectorEngraveSetting = {
-  // focalOffset
-  f: number | null;
-  // name
-  n: string;
-  // passes
-  a: number;
-  // power
-  p: number;
-  // scanGap
-  g: number;
-  // speed
-  s: number;
-}
-
-export type TinyBitmapEngraveSetting = {
-  // power
-  p: number;
-  // speed
-  s: number;
-  // passes
-  a: number;
-  // focalOffset
-  f: number | null;
-  // scanGap
-  g: number;
-  // name
-  n: string;
-  // renderMethod
-  rm: 'FloydSteinbergDitherMethod' | 'RiemersmaDitherMethod' | null;
-  // rescaleMethod
-  re: 'LagrangeFilter';
-  // minimumGrayPercent
-  ip: null;
-  // maximumGrayPercent
-  ap: null;
-  // horizontalTiming
-  t: null;
-}
-
-export type GFMaterialEnvironment = 'production';
-export type GFMaterialTubeType = 'basic' | 'pro';
-
-export type GFMaterial = {
-  // Format "Custom:0"
-  id: string;
-  nominal_thickness: null | number;
-  sku: string;
-  thickness_name: string;
-  title: string;
-  settings: GFMaterialSettings[];
-  variety: GFMaterialVariety;
-};
-
-export type GFMaterialSettings = {
-  active_date: string;
-  bitmap_engrave_settings: GFBitmapEngraveSetting[];
-  cut_setting: GFCutSetting;
-  description: string;
-  environment: GFMaterialEnvironment[];
-  score_settings: GFScoreSetting[];
-  tube_type: GFMaterialTubeType;
-  vector_engrave_settings: GFEngraveSetting[];
-}
-
-export type GFMaterialVariety = {
-  common_name: string;
-  display_options: null;
-  name: string;
-  thumbnails: string[];
-  type_name: string;
-}
-
-export type GFOutcome = {
-  name: string;
-  dev_id: string;
-}
-
-export type GFCutSetting = {
-  power: number;
-  speed: number;
-  passes: number;
-  focal_offset: number | null;
-}
-
-export type GFScoreSetting = {
-  power: number;
-  speed: number;
-  passes: number;
-  focal_offset: number | null;
-  uses: null;
-  display_color_mask: null;
-  outcome: GFOutcome;
-}
-
-export type GFEngraveSetting = {
-  power: number;
-  speed: number;
-  passes: number;
-  focal_offset: number | null;
-  scangap: number;
-  uses: null;
-  display_color_mask: null;
-  outcome: GFOutcome;
-}
-
-export type GFBitmapEngraveSetting = {
-  power: number;
-  speed: number;
-  passes: number;
-  focal_offset: number | null;
-  scangap: number;
-  render_method: 'FloydSteinbergDitherMethod' | 'RiemersmaDitherMethod' | null;
-  rescale_method: 'LagrangeFilter';
-  minimum_gray_percent: null;
-  maximum_gray_percent: null;
-  horizontal_timing: null;
-  uses: null;
-  display_color_mask: null;
-  outcome: GFOutcome;
-}
-
-/**
- * Gets the next material id.
- */
-export async function getNextMaterialId(): Promise<number> {
-  const materials = await getMaterials();
-  return materials.map(material => material.id.split(':')[1])
-    .reduce((prev: number, cur: string) => {
-      const curInt = parseInt(cur, 10);
-      return prev > curInt ? prev : curInt;
-    }, -1) + 1;
-}
+import {
+  PluginBitmapEngraveSetting,
+  PluginCutSetting,
+  PluginMaterial,
+  PluginMaterialId,
+  PluginScoreSetting,
+  PluginVectorEngraveSetting,
+} from './materialRaw';
+import {
+  GFBitmapEngraveSetting,
+  GFCutSetting,
+  GFEngraveSetting,
+  GFMaterial,
+  GFMaterialSettings,
+  GFMaterialTubeType,
+  GFScoreSetting,
+} from './materialGlowforge';
+import {
+  TinyBitmapEngraveSetting,
+  TinyMaterial,
+  TinyScoreSetting,
+  TinyVectorEngraveSetting,
+} from './materialTiny';
 
 /**
  *
  * @param materialId
  */
-export async function removeMaterial(materialId: MaterialId) {
-  const materials = await getMaterials();
-  const newMaterials = await storeMaterials(
+export async function removeMaterial(materialId: PluginMaterialId) {
+  const materials = await getGlowforgeMaterials();
+  const newMaterials = await storeGlowforgeMaterials(
     materials.filter(material => material.id !== materialId)
   );
   console.log(`Material removed ${materialId}`);
@@ -261,8 +58,8 @@ export async function removeMaterial(materialId: MaterialId) {
  * @param title Is of the following format `${material.thickName} ${material.name}`
  */
 export async function removeMaterialTitle(title: string) {
-  const materials = await getMaterials();
-  const newMaterials = await storeMaterials(
+  const materials = await getGlowforgeMaterials();
+  const newMaterials = await storeGlowforgeMaterials(
     materials.filter(material => material.title !== title)
   );
   console.log(`Material removed ${title}`);
@@ -288,7 +85,7 @@ export async function removeRawMaterial(title: string) {
  *
  * @param material The material to syncronize with the cloud.
  */
-export async function sendCloudMaterial(material: RawMaterial) {
+export async function sendCloudMaterial(material: PluginMaterial) {
   const hash = await hashTitle(material);
   const compressed = compress(toTinyMaterial(material));
 
@@ -300,7 +97,7 @@ export async function sendCloudMaterial(material: RawMaterial) {
  *
  * @param material The material to remove from the cloud.
  */
-export async function removeCloudMaterial(material: RawMaterial) {
+export async function removeCloudMaterial(material: PluginMaterial) {
   const hash = await hashTitle(material);
   return await removeSynchronizedMaterial(hash);
 }
@@ -371,12 +168,17 @@ export async function fullSynchronizedMaterials(remove=false) {
     const json = toFullMaterial(decompress(binaryData));
     console.log(`Adding ${json.thickName} ${json.name}`);
 
-    const full = await getMaterials();
-    const raw = await getRawMaterials();
-    const nextId = await getNextMaterialId();
-    const newMaterial = await createMaterial(json, nextId);
+    // Hash the title and take the first seven for the id.
+    const { thickName, name } = json;
+    const title = `${thickName} ${name}`
+    const titleHash = await sha1(title);
+    const id = `Custom:${titleHash.substring(0, 7)}`;
 
-    await storeMaterials([...full, newMaterial]);
+    const full = await getGlowforgeMaterials();
+    const raw = await getRawMaterials();
+    const newMaterial = await createMaterial(json, id);
+
+    await storeGlowforgeMaterials([...full, newMaterial]);
     await storeRawMaterials([...raw, json]);
   }
 
@@ -394,13 +196,16 @@ export async function fullSynchronizedMaterials(remove=false) {
       await removeMaterialTitle(title);
       await removeRawMaterial(title);
 
-      // Replace
-      const full = await getMaterials();
-      const raw = await getRawMaterials();
-      const nextId = await getNextMaterialId();
-      const newMaterial = await createMaterial(json, nextId);
+      // Hash the title and take the first seven for the id.
+      const titleHash = await sha1(title);
+      const id = `Custom:${titleHash.substring(0, 7)}`;
 
-      await storeMaterials([...full, newMaterial]);
+      // Replace
+      const full = await getGlowforgeMaterials();
+      const raw = await getRawMaterials();
+      const newMaterial = await createMaterial(json, id);
+
+      await storeGlowforgeMaterials([...full, newMaterial]);
       await storeRawMaterials([...raw, json]);
 
       console.log('Modified');
@@ -412,7 +217,7 @@ export async function fullSynchronizedMaterials(remove=false) {
 /**
  * Creates a new custom material.
  */
-export function createMaterial(material: RawMaterial, id: number | string): GFMaterial {
+export function createMaterial(material: PluginMaterial, id: number | string): GFMaterial {
   return {
     id: `Custom:${id}`,
     title: `${material.thickName} ${material.name}`,
@@ -438,7 +243,7 @@ export function createMaterial(material: RawMaterial, id: number | string): GFMa
 /**
  * Creates the settings for a given tube type.
  */
-function createSettings(material: RawMaterial, tubeType: GFMaterialTubeType): GFMaterialSettings {
+function createSettings(material: PluginMaterial, tubeType: GFMaterialTubeType): GFMaterialSettings {
   return {
     description: `${material.thickName} ${material.name} Settings`,
     active_date: "2017-04-06T00:00-07:00",
@@ -532,7 +337,7 @@ function createBitmapEngraveSettings(bitmapEngrave: PluginBitmapEngraveSetting):
   };
 }
 
-export function toTinyMaterial(material: RawMaterial): TinyMaterial {
+export function toTinyMaterial(material: PluginMaterial): TinyMaterial {
   return {
     n: material.name,
     t: material.thickName,
@@ -549,7 +354,7 @@ export function toTinyMaterial(material: RawMaterial): TinyMaterial {
   };
 }
 
-export function toFullMaterial(tinyMaterial: TinyMaterial): RawMaterial {
+export function toFullMaterial(tinyMaterial: TinyMaterial): PluginMaterial {
   return {
     name: tinyMaterial.n,
     thickName: tinyMaterial.t,

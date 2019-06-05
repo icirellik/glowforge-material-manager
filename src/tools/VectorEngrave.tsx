@@ -11,7 +11,7 @@ import {
   toRealEngraveSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
-import { PluginVectorEngraveSetting } from '../lib/material';
+import { PluginVectorEngraveSetting } from '../lib/materialRaw';
 
 interface VectorEngraveProps {
   id: number;

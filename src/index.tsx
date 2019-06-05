@@ -5,7 +5,7 @@ import {
   getBytesInUse,
   getPlatform,
   inGlowforgeTab,
-  storeMaterials,
+  storeGlowforgeMaterials,
   storeRawMaterials,
   getLocalStorage,
 } from './lib/chromeWrappers';
@@ -13,12 +13,12 @@ import {
   fullSynchronizedMaterials,
   removeCloudMaterial,
   sendCloudMaterial,
-  GFMaterial,
-  RawMaterial,
 } from './lib/material';
 import {
   asFloat,
 } from './lib/utils';
+import { GFMaterial } from './lib/materialGlowforge';
+import { PluginMaterial } from './lib/materialRaw';
 // import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
@@ -41,7 +41,7 @@ async function upgrade() {
         };
       });
 
-      const _rawMaterials = result.rawMaterials.map((rawMaterial: RawMaterial) => {
+      const _rawMaterials = result.rawMaterials.map((rawMaterial: PluginMaterial) => {
         if (!rawMaterial.hasOwnProperty('thickness') ||
             rawMaterial.thickness === null ||
             rawMaterial.thickness === parseFloat(rawMaterial.thickness)
@@ -57,7 +57,7 @@ async function upgrade() {
 
       if (upgraded) {
         console.log('upgraded');
-        await storeMaterials(_materials);
+        await storeGlowforgeMaterials(_materials);
         await storeRawMaterials(_rawMaterials);
 
         for (const rawMaterial of result.rawMaterials) {

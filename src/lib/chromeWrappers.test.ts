@@ -1,5 +1,5 @@
 import {
-  getMaterials,
+  getGlowforgeMaterials,
 } from './chromeWrappers';
 
 describe('chromeWrappers', () => {
@@ -21,7 +21,7 @@ describe('chromeWrappers', () => {
     };
 
     dataCallback.mockReturnValueOnce(resp);
-    const actual = await getMaterials();
+    const actual = await getGlowforgeMaterials();
     expect(actual).toEqual([]);
   });
 });

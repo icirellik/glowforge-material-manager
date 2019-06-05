@@ -4,13 +4,11 @@ import {
   toDisplayLinesPerInch,
   toDisplayPowerWords,
 } from '../lib/glowforgeUnits';
-import {
-  precisionRound,
-} from '../lib/utils';
-import { RawMaterial } from '../lib/material';
+import { PluginMaterial } from '../lib/materialRaw';
+import { precisionRound } from '../lib/utils';
 
 export type MaterialBitmapEngravesViewerProps = {
-  bitmaps: RawMaterial['bitmaps'];
+  bitmaps: PluginMaterial['bitmaps'];
 }
 
 export default function MaterialBitmapEngravesViewer(props: MaterialBitmapEngravesViewerProps) {

@@ -2,10 +2,10 @@ import {
   PluginBitmapEngraveSetting,
   PluginScoreSetting,
   PluginVectorEngraveSetting,
-  RawMaterial,
-} from './material';
+  PluginMaterial,
+} from './materialRaw';
 
-export type TempMaterial = RawMaterial;
+export type TempMaterial = PluginMaterial;
 
 export const EMPTY_MATERIAL: TempMaterial = {
   name: '',

@@ -66,15 +66,12 @@ function addMaterials(materials) {
  * Leverage the redux actions to inject custom materials.
  */
 function handleMaterialCheck(response) {
-  if (!response.messages) {
-    log('bad message');
+  if (!response || !response.messages) {
     return;
   }
 
   for (let i = 0; i < response.messages.length; i += 1) {
     const message = response.messages[i];
-
-    log('material check response');
     if (!message) {
       return;
     }
@@ -93,6 +90,8 @@ function handleMaterialCheck(response) {
     } else if (message.type === 'selectMaterial') {
       log('select material');
       setMaterial(message.materialId);
+    } else {
+      log('unknown message');
     }
   }
 
