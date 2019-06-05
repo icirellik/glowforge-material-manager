@@ -2,12 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import {
-  getBytesInUse,
   getPlatform,
   inGlowforgeTab,
   storeGlowforgeMaterials,
   storeRawMaterials,
-  getLocalStorage,
 } from './lib/chromeWrappers';
 import {
   fullSynchronizedMaterials,
@@ -74,22 +72,22 @@ async function upgrade() {
 }
 
 (async () => {
+  // Verify the glowforge tab.
   const glowforgeConnected = await inGlowforgeTab();
-  const platform = await getPlatform();
-  await upgrade();
-  await fullSynchronizedMaterials();
-  const cloudStorageBytesUsed = await getBytesInUse();
 
-  const localStorage = await getLocalStorage();
+  // Get the platform we are on.
+  const platform = await getPlatform();
+
+  // Attempt to run any ugrade scripts.
+  await upgrade();
+
+  // Run a full syncronization with remote storage. This is kept fast because
+  // chrome caches this data locally is it hasn't changed.
+  await fullSynchronizedMaterials();
 
   ReactDOM.render(<App
-    cloudStorageBytesUsed={cloudStorageBytesUsed}
     connected={glowforgeConnected}
-    materials={localStorage.materials!}
     platform={platform}
-    rawMaterials={localStorage.rawMaterials!}
-    shouldUpdate={localStorage.shouldUpdate!}
-    tempMaterial={localStorage.tempMaterial}
   />, document.getElementById('root'));
 
   if (platform === 'mac') {
