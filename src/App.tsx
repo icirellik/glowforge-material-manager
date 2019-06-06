@@ -101,15 +101,14 @@ interface AppProps {
 
 interface AppMessage {
   message: string;
-  color: string
+  color: string | null;
 }
 
 interface AppState {
   action: EditorMode;
   cloudStorageBytesUsed: number;
   materials: GFMaterial[];
-  message: string;
-  messageColor: string | null;
+  message: AppMessage | null;
   rawMaterials: PluginMaterial[];
   synchronized: boolean;
   tempMaterial: TempMaterial;
@@ -133,8 +132,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     this.state = {
       action: 'DISPLAY',
       cloudStorageBytesUsed: 0,
-      message: '',
-      messageColor: null,
+      message: null,
       tempMaterial: {
         ...EMPTY_MATERIAL,
       },
@@ -156,8 +154,10 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         action: 'ADD',
         cloudStorageBytesUsed,
         materials: localStorage.materials!,
-        message: 'Material settings were automatically restored from a previous session.',
-        messageColor: null,
+        message: {
+          message: 'Material settings were automatically restored from a previous session.',
+          color: null,
+        },
         rawMaterials: localStorage.rawMaterials!,
         synchronized: !localStorage.shouldUpdate,
         tempMaterial: localStorage.tempMaterial,
@@ -211,12 +211,21 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
               if (qrCodeData && qrCodeData.startsWith('Glowforge')) {
                 this.setState({
-                  message: 'Proofgrade material detected.',
+                  message: {
+                    message: 'Proofgrade material detected.',
+                    color: null,
+                  },
                 });
               } else if (qrCodeData && qrCodeData.startsWith('Custom')) {
                 sendMessage({
                   type: 'selectMaterial',
                   materialId: qrCodeData,
+                });
+                this.setState({
+                  message: {
+                    message: 'Custom material detected.',
+                    color: null,
+                  },
                 });
               }
             }
@@ -351,8 +360,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       action: 'DISPLAY',
       tempMaterial: { ...EMPTY_MATERIAL },
       materials: newMaterials,
-      message: '',
-      messageColor: null,
+      message: null,
       rawMaterials: newRawMaterials,
       synchronized: false,
     });
@@ -437,8 +445,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       action: 'DISPLAY',
       tempMaterial: { ...EMPTY_MATERIAL },
       materials: newMaterials,
-      message: '',
-      messageColor: null,
+      message: null,
       rawMaterials: newRawMaterials,
       synchronized: false,
     });
@@ -502,8 +509,10 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
   displayError(message: string) {
     this.setState({
-      message,
-      messageColor: '#CC3A4B',
+      message: {
+        message,
+        color: '#CC3A4B',
+      },
     });
   }
 
@@ -525,8 +534,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       tempMaterial: {
         ...material,
       },
-      message: '',
-      messageColor: null,
+      message: null,
     });
   }
 
@@ -587,7 +595,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
           </div>
           <span>{`Cloud Storage Used ${this.state.cloudStorageBytesUsed} / 102,400`}</span>
         </header>
-        <Message message={this.state.message} color={this.state.messageColor} />
         <div className={`App-grid ${(this.props.platform === 'mac') ? 'osx' : ''}`}>
           <div className="col-materials">
             <MaterialList
@@ -630,6 +637,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
             />
           </div>
         </div>
+        {this.state.message !== null ? <Message {...this.state.message} /> : null }
       </div>
     );
   }

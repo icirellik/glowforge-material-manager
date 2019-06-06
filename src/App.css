@@ -1,5 +1,6 @@
 .App {
   height: 600px;
+  width: 750px;
 }
 
 .App-flexColumn {
@@ -20,35 +21,36 @@
   margin: 10px 0;
 }
 
-.App .header {
-  background-color: #001f23;
-  color: white;
+.header {
   display: flex;
   flex-direction: column;
-  height: 60px;
   justify-content: center;
+
+  height: 60px;
   padding: 20px;
-  width: 450px;
+
+  background-color: #001f23;
+  color: white;
 }
 
-.App .header div {
+.header div {
   display: flex;
   justify-content: center;
 }
 
-.App .header span {
+.header span {
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
-.App .header__logo {
+.header__logo {
   display: flex;
   height: 43px;
   width: 50px;
 }
 
-.App .header__title {
+.header__title {
   font-size: 1.5em;
   height: 43px;
   line-height: 43px;
@@ -100,18 +102,20 @@
 .App-grid {
   display: flex;
   justify-content: space-between;
-  padding: 0 10px;
 }
 
-.App-grid.osx {
+/* .App-grid.osx {
   height: 500px;
   overflow-y: scroll;
+} */
+
+.App-grid .col-materials {
+  padding-left: 10px;
+  width: 150px;
 }
 
 .App-grid .col-contents {
+  height: 500px;
   width: 300px;
-}
-
-.App-grid .col-materials {
-  width: 150px;
+  overflow-y: auto;
 }
