@@ -6,6 +6,7 @@ import MaterialButtonBar from '../MaterialButtonBar';
 import MaterialCutViewer from './MaterialCutViewer';
 import MaterialScoresViewer from './MaterialScoresViewer';
 import MaterialVectorEngravesViewer from './MaterialVectorEngravesViewer';
+import QrCodeViewer from './QrCodeViewer';
 
 export type MaterialViewerProps = {
   editorMode: EditorMode;
@@ -42,6 +43,8 @@ export default function MaterialViewer(props: MaterialViewerProps) {
       <MaterialScoresViewer scores={material.scores} />
       <MaterialVectorEngravesViewer vectors={material.vectors} />
       <MaterialBitmapEngravesViewer bitmaps={material.bitmaps} />
+
+      <QrCodeViewer material={material} />
 
       <MaterialButtonBar
         editorMode={props.editorMode}

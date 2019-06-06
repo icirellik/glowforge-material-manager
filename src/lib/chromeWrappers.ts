@@ -29,6 +29,12 @@ interface StorageLocal {
 export async function getLocalStorage(): Promise<StorageLocal> {
   return new Promise(resolve => {
     window.chrome.storage.local.get(null, (result: StorageLocal) => {
+      if (!result.materials) {
+        result.materials = [];
+      }
+      if (!result.rawMaterials) {
+        result.rawMaterials = [];
+      }
       resolve(result);
     });
   });

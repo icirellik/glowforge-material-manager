@@ -1,5 +1,4 @@
 import React from 'react';
-import QrCode from 'qrcode-reader';
 import MaterialEditor from './MaterialEditor';
 import MaterialList from './MaterialList';
 import MaterialViewer from './viewer/MaterialViewer';
@@ -17,6 +16,7 @@ import {
   clearTempMaterial,
   forceSync,
   getBytesInUse,
+  getLocalStorage,
   getShouldUpdate,
   reloadGlowForgeTab,
   storeGlowforgeMaterials,
@@ -40,6 +40,7 @@ import {
 } from './lib/materialRaw';
 import { GFMaterial } from './lib/materialGlowforge';
 import { sha1 } from './lib/utils';
+import { readQrCode } from './lib/qrCode';
 
 export type AddMaterial = () => Promise<void>;
 export type CopyMaterial = (title: string) => Promise<void>;
@@ -94,13 +95,13 @@ interface IEditorMode {
 }
 
 interface AppProps {
-  cloudStorageBytesUsed: number;
   connected: boolean;
-  materials: GFMaterial[];
   platform: string;
-  rawMaterials: PluginMaterial[];
-  shouldUpdate: boolean;
-  tempMaterial?: TempMaterial | null;
+}
+
+interface AppMessage {
+  message: string;
+  color: string
 }
 
 interface AppState {
@@ -114,44 +115,73 @@ interface AppState {
   tempMaterial: TempMaterial;
 }
 
-class App extends React.Component<AppProps, AppState> implements IEditorMode, IMaterialEditor {
-  state: AppState = {
-    action: 'DISPLAY',
-    cloudStorageBytesUsed: 0,
-    message: '',
-    messageColor: null,
-    tempMaterial: {
-      ...EMPTY_MATERIAL,
-    },
-    materials: [],
-    rawMaterials: [],
-    synchronized: true,
-  };
+function sendMessage(message: object) {
+  // Forward the request to the GFUI
+  window.chrome.runtime.getBackgroundPage((window) => {
+    if (window) {
+      if (!(window as any).inboundQueue) {
+        (window as any).inboundQueue = [];
+      }
+      (window as any).inboundQueue.push(message);
+    }
+  });
+}
 
-  componentDidMount() {
-    if (this.props.tempMaterial) {
+class App extends React.Component<AppProps, AppState> implements IEditorMode, IMaterialEditor {
+  constructor(props: AppProps) {
+    super(props);
+    this.state = {
+      action: 'DISPLAY',
+      cloudStorageBytesUsed: 0,
+      message: '',
+      messageColor: null,
+      tempMaterial: {
+        ...EMPTY_MATERIAL,
+      },
+      materials: [],
+      rawMaterials: [],
+      synchronized: true,
+    };
+  }
+
+  async componentDidMount() {
+    // Track the bytes used.
+    const cloudStorageBytesUsed = await getBytesInUse();
+
+    // Get the initial state from local storage.
+    const localStorage = await getLocalStorage();
+
+    if (localStorage.tempMaterial) {
       this.setState({
         action: 'ADD',
-        cloudStorageBytesUsed: this.props.cloudStorageBytesUsed,
-        materials: this.props.materials,
+        cloudStorageBytesUsed,
+        materials: localStorage.materials!,
         message: 'Material settings were automatically restored from a previous session.',
         messageColor: null,
-        rawMaterials: this.props.rawMaterials,
-        synchronized: !this.props.shouldUpdate,
-        tempMaterial: this.props.tempMaterial,
+        rawMaterials: localStorage.rawMaterials!,
+        synchronized: !localStorage.shouldUpdate,
+        tempMaterial: localStorage.tempMaterial,
       });
     } else {
       this.setState({
-        cloudStorageBytesUsed: this.props.cloudStorageBytesUsed,
-        materials: this.props.materials,
-        rawMaterials: this.props.rawMaterials,
-        synchronized: !this.props.shouldUpdate,
+        cloudStorageBytesUsed,
+        materials: localStorage.materials!,
+        rawMaterials: localStorage.rawMaterials!,
+        synchronized: !localStorage.shouldUpdate,
       });
     }
 
+    /**
+     * Start an interval to handle messaging with the background process.
+     */
     setInterval(async () => {
+      // Refresh the cloud storage in use
       const cloudStorageBytesUsed = await getBytesInUse();
+
+      // Refresh the sync status.
       const shouldUpdate = await getShouldUpdate();
+
+      // Update teh state.
       if (this.state.synchronized === shouldUpdate) {
         this.setState({
           cloudStorageBytesUsed,
@@ -164,7 +194,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       }
 
       // Check background threads for messages.
-      window.chrome.runtime.getBackgroundPage((window) => {
+      window.chrome.runtime.getBackgroundPage(async (window) => {
         if (window) {
           const outboundQueue = (window as any).outboundQueue;
 
@@ -173,19 +203,22 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
             for (let i = 0; i < messages.length; i += 1) {
               const message = messages[i];
-              // Worst QR Library ever.
-              const qr = new QrCode();
-
-              qr.callback = (err, result) => {
-                if (err) {
-                  console.log(err);
-                  return;
-                }
-                console.log(result);
-              }
 
               const image = `https://app.glowforge.com${message.image}`;
-              qr.decode(image);
+
+              const qrCodeData = await readQrCode(image);
+              console.log(qrCodeData);
+
+              if (qrCodeData && qrCodeData.startsWith('Glowforge')) {
+                this.setState({
+                  message: 'Proofgrade material detected.',
+                });
+              } else if (qrCodeData && qrCodeData.startsWith('Custom')) {
+                sendMessage({
+                  type: 'selectMaterial',
+                  materialId: qrCodeData,
+                });
+              }
             }
           }
         }
@@ -451,17 +484,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     const hash = await sha1(title);
     const id = `Custom:${hash.substring(0, 7)}`;
 
-    // Forward the request to the GFUI
-    window.chrome.runtime.getBackgroundPage((window) => {
-      if (window) {
-        if (!(window as any).inboundQueue) {
-          (window as any).inboundQueue = [];
-        }
-        (window as any).inboundQueue.push({
-          type: 'selectMaterial',
-          materialId: id,
-        });
-      }
+    sendMessage({
+      type: 'selectMaterial',
+      materialId: id,
     });
   }
 
@@ -494,6 +519,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    */
   async changeEditorMode(mode: EditorMode, material = EMPTY_MATERIAL) {
     await clearTempMaterial();
+
     this.setState({
       action: mode,
       tempMaterial: {
