@@ -1,28 +1,29 @@
 import React from 'react';
 import './Message.css';
+import IconClear from './icons/IconClear';
 
-interface MessageProps {
+type MessageProps = {
+  clearMessage: (event: React.MouseEvent) => void;
   color?: string | null;
   message: string;
 }
 
-class Message extends React.Component<MessageProps> {
-  render() {
-    if (this.props.message && this.props.message.length > 0) {
-      let styles;
-      if (this.props.color) {
-        styles = {
-          color: this.props.color,
-        };
-      }
-      return (
-        <p className="Message-box" style={styles}>
-          {this.props.message}
-        </p>
-      );
+export default function Message(props: MessageProps) {
+  if (props.message && props.message.length > 0) {
+    let styles;
+    if (props.color) {
+      styles = {
+        color: props.color,
+      };
     }
-    return null;
+    return (
+      <div className="message-box__container" style={styles}>
+        <span className="message-box__message">{props.message}</span>
+        <div className="message-box__close">
+          <IconClear click={props.clearMessage} title="Close" />
+        </div>
+      </div>
+    );
   }
-}
-
-export default Message;
+  return null;
+};

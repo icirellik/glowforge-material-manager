@@ -1,10 +1,4 @@
 import React from 'react';
-import BitmapEngraveSetting from './tools/BitmapEngraveSetting';
-import CutSettings from './tools/CutSettings';
-import IconPlus from './icons/IconPlus';
-import MaterialButtonBar from './MaterialButtonBar';
-import ScoreSetting from './tools/ScoreSetting';
-import VectorEngraveSetting from './tools/VectorEngraveSetting';
 import {
   storeTempMaterial,
 } from './lib/chromeWrappers';
@@ -28,11 +22,13 @@ import {
 import {
   PluginMaterial,
 } from './lib/materialRaw';
-import './MaterialEditor.css';
-import MaterialSettings from './tools/MaterialSettings';
-import VectorEngraveSettings from './tools/VectorEngraveSettings';
-import ScoreSettings from './tools/ScoreSettings';
 import BitmapEngraveSettings from './tools/BitmapEngraveSettings';
+import CutSettings from './tools/CutSettings';
+import MaterialButtonBar from './MaterialButtonBar';
+import MaterialSettings from './tools/MaterialSettings';
+import ScoreSettings from './tools/ScoreSettings';
+import VectorEngraveSettings from './tools/VectorEngraveSettings';
+import './MaterialEditor.css';
 
 interface MaterialEditorProps {
   action: EditorMode;

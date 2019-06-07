@@ -162,6 +162,10 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     this.addVectorEngrave = this.addVectorEngrave.bind(this);
     this.removeVectorEngrave = this.removeVectorEngrave.bind(this);
     this.updateVectorEngrave = this.updateVectorEngrave.bind(this);
+
+    // Messaging
+    this.displayMessage = this.displayMessage.bind(this);
+    this.clearMessage = this.clearMessage.bind(this);
   }
 
   async componentDidMount() {
@@ -399,7 +403,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
 
     if (duplicate) {
-      this.displayError('A material with the same name already exists.');
+      this.displayMessage('A material with the same name already exists.');
       return;
     }
 
@@ -437,7 +441,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // There should be at least one since we are cloning.
     if (duplicates.length < 1) {
-      this.displayError('Could not clone the source material was removed.');
+      this.displayMessage('Could not clone the source material was removed.');
       return;
     }
 
@@ -468,7 +472,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
 
     if (duplicates.length !== 1) {
-      this.displayError('Could not update. A material with the same name already exists.');
+      this.displayMessage('Could not update. A material with the same name already exists.');
       return;
     }
 
@@ -565,12 +569,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   // Messaging
   //
 
-  displayError(message: string) {
+  displayMessage(message: string) {
     this.setState({
       message: {
         message,
         color: '#CC3A4B',
       },
+    });
+  }
+
+  clearMessage() {
+    this.setState({
+      message: null,
     });
   }
 
@@ -695,7 +705,10 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
             />
           </div>
         </div>
-        {this.state.message !== null ? <Message {...this.state.message} /> : null }
+        {
+          this.state.message !== null ?
+            <Message clearMessage={this.clearMessage} {...this.state.message} /> : null
+        }
       </div>
     );
   }
