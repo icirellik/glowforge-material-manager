@@ -12,25 +12,40 @@ import {
   toRealPower,
 } from '../lib/glowforgeUnits';
 import { PluginVectorEngraveSetting } from '../lib/materialRaw';
+import IconMinus from '../icons/IconMinus';
 
-interface VectorEngraveProps {
-  id: number;
-  vector: PluginVectorEngraveSetting;
+interface VectorEngraveSettingProps {
+  index: number;
+  removeVectorEngrave: Function;
   storeLocalMaterial: Function;
   updateVectorEngrave: Function;
+  vector: PluginVectorEngraveSetting;
 }
 
-class VectorEngrave extends React.Component<VectorEngraveProps> {
+export default class VectorEngraveSetting extends React.Component<VectorEngraveSettingProps> {
   state = {
     maxPower: (this.props.vector.power === 100),
   }
 
   render() {
-    const { id, vector } = this.props;
+    const { index: id, vector } = this.props;
     return (
-      <React.Fragment>
-        <div className="App-field" style={(id !== 0) ? { marginTop: '20px' } : undefined}>
-          <label>Name</label>
+      <>
+        <div style={{display: 'flex', marginBottom: '8px'}}>
+          <p style={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '18px',
+            marginRight: '4px',
+          }}>
+            {`Vector Engrave ${this.props.index + 1}`}
+          </p>
+          <IconMinus click={() => {
+            this.props.removeVectorEngrave(this.props.index);
+          }} height="16px" width="16px" />
+        </div>
+        <div className="form-field" style={(id !== 0) ? { marginTop: '20px' } : undefined}>
+          <label>Name *</label>
           <input
             type="text"
             value={vector.name}
@@ -41,8 +56,8 @@ class VectorEngrave extends React.Component<VectorEngraveProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field">
-          <label>Speed</label>
+        <div className="form-field">
+          <label>Speed *</label>
           <input
             type="number"
             value={toDisplayEngraveSpeed(vector.speed)}
@@ -55,8 +70,27 @@ class VectorEngrave extends React.Component<VectorEngraveProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field">
-          <label>Power</label>
+        <div className="form-field">
+          <div className="form-field-right">
+            <label>Power *</label>
+            <label className="label">Max Power</label>
+            <input
+              type="checkbox"
+              value={this.state.maxPower? 1 : 0}
+              checked={this.state.maxPower}
+              onChange={() => {
+                const nextMaxPower = !this.state.maxPower;
+                this.props.updateVectorEngrave(id, {
+                  ...vector,
+                  power: (nextMaxPower) ? 100 : 99,
+                });
+                this.setState({
+                  maxPower: nextMaxPower,
+                });
+              }}
+              onBlur={() => this.props.storeLocalMaterial()}
+            />
+          </div>
           <input
             type="number"
             disabled={this.state.maxPower}
@@ -70,26 +104,7 @@ class VectorEngrave extends React.Component<VectorEngraveProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div>
-          <label>Max Power</label>
-          <input
-            type="checkbox"
-            value={this.state.maxPower? 1 : 0}
-            checked={this.state.maxPower}
-            onChange={(event) => {
-              const nextMaxPower = !this.state.maxPower;
-              this.props.updateVectorEngrave(id, {
-                ...vector,
-                power: (nextMaxPower) ? 100 : 99,
-              });
-              this.setState({
-                maxPower: nextMaxPower,
-              });
-            }}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="App-field">
+        <div className="form-field">
           <label>Passes</label>
           <input
             type="number"
@@ -101,7 +116,7 @@ class VectorEngrave extends React.Component<VectorEngraveProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field">
+        <div className="form-field">
           <label>Focal Offset (mm)</label>
           <input
             type="number"
@@ -113,7 +128,7 @@ class VectorEngrave extends React.Component<VectorEngraveProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field">
+        <div className="form-field">
           <label>Scan Gap (LPI {`${toDisplayLinesPerInch(vector.scanGap ? vector.scanGap : 0)}`})</label>
           <input
             type="number"
@@ -125,9 +140,7 @@ class VectorEngrave extends React.Component<VectorEngraveProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-      </React.Fragment>
+      </>
     );
   }
 }
-
-export default VectorEngrave;

@@ -1,20 +1,72 @@
-.MaterialEditor-section {
+.form-header {
   display: flex;
   font-size: 14px;
   padding-right: 14px;
+  margin: 0 0 15px 0;
+  color: #2C2E31;
 }
 
-.MaterialEditor-section p {
+.form-header p {
   display: flex;
   flex-grow: 1;
   align-content: center;
   font-weight: 600;
-  margin: 15px 0;
 }
 
-.MaterialEditor-section div {
+.form-header div {
   display: flex;
   flex-grow: 1;
   align-content: center;
   justify-content: flex-end;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  margin-right: 14px;
+  margin-bottom: 8px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 8px;
+
+  font-size: 10px;
+  color: #404246;
+}
+
+.form-field input {
+  padding: 2px 4px;
+}
+
+.form-field-right {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+}
+
+.form-field-right label {
+  display: flex;
+  align-items: center;
+}
+
+.form-field-right .label {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+
+  font-size: 10px;
+  color: #404246;
+}
+
+.form-field-right input {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 12px;
+  width: 12px;
+  margin-bottom: 8px;
 }

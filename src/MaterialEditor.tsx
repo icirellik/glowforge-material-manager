@@ -1,32 +1,38 @@
 import React from 'react';
-import BitmapEngrave from './tools/BitmapEngrave';
-import Cut from './tools/Cut';
+import BitmapEngraveSetting from './tools/BitmapEngraveSetting';
+import CutSettings from './tools/CutSettings';
+import IconPlus from './icons/IconPlus';
 import MaterialButtonBar from './MaterialButtonBar';
-import Score from './tools/Score';
-import VectorEngrave from './tools/VectorEngrave';
+import ScoreSetting from './tools/ScoreSetting';
+import VectorEngraveSetting from './tools/VectorEngraveSetting';
 import {
   storeTempMaterial,
 } from './lib/chromeWrappers';
-import IconPlus from './icons/IconPlus';
-import {
-  asFloat,
-} from './lib/utils';
-import './MaterialEditor.css';
 import {
   AddBitmapEngrave,
   AddMaterial,
   AddScore,
   AddVectorEngrave,
   EditMaterial,
+  EditorMode,
   ModeCancel,
+  RemoveBitmapEngrave,
+  RemoveScore,
+  RemoveVectorEngrave,
   UpdateBitmapEngrave,
   UpdateCut,
   UpdateMaterial,
   UpdateScore,
   UpdateVectorEngrave,
-  EditorMode,
 } from './App';
-import { PluginMaterial } from './lib/materialRaw';
+import {
+  PluginMaterial,
+} from './lib/materialRaw';
+import './MaterialEditor.css';
+import MaterialSettings from './tools/MaterialSettings';
+import VectorEngraveSettings from './tools/VectorEngraveSettings';
+import ScoreSettings from './tools/ScoreSettings';
+import BitmapEngraveSettings from './tools/BitmapEngraveSettings';
 
 interface MaterialEditorProps {
   action: EditorMode;
@@ -37,6 +43,9 @@ interface MaterialEditorProps {
   cancelMaterial: ModeCancel;
   editMaterial: EditMaterial;
   material: PluginMaterial;
+  removeScore: RemoveScore;
+  removeBitmapEngrave: RemoveBitmapEngrave;
+  removeVectorEngrave: RemoveVectorEngrave;
   updateBitmapEngrave: UpdateBitmapEngrave;
   updateCut: UpdateCut;
   updateMaterial: UpdateMaterial;
@@ -67,119 +76,39 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
     }
 
     return (
-      <React.Fragment>
-        <div className="App-field">
-          <label>Thickness Name</label>
-          <input
-            disabled={action === 'EDIT'}
-            type="text"
-            value={material.thickName}
-            onChange={(event) => {
-              this.props.updateMaterial('thickName', event.target.value);
-            }}
-            onBlur={this.storeLocalMaterial}
-          />
-        </div>
-        <div className="App-field">
-          <label>Material Name</label>
-          <input
-            disabled={action === 'EDIT'}
-            type="text"
-            value={material.name}
-            onChange={(event) => {
-              this.props.updateMaterial('name', event.target.value);
-            }}
-            onBlur={this.storeLocalMaterial}
-          />
-        </div>
-        <div className="App-field">
-          <label>Thickness (mm)</label>
-          <input
-            type="number"
-            value={material.thickness}
-            onChange={(event) => {
-              this.props.updateMaterial('thickness', asFloat(event.target.value));
-            }}
-            onBlur={this.storeLocalMaterial}
-          />
-        </div>
-        <div className="MaterialEditor-section">
-          <p>Cut Settings</p>
-        </div>
-        <Cut
+      <>
+        <MaterialSettings
+          action={this.props.action}
+          material={this.props.material}
+          storeLocalMaterial={this.storeLocalMaterial}
+          updateMaterial={this.props.updateMaterial}
+        />
+        <CutSettings
           cut={material.cut}
-          storeLocalMaterial={this.storeLocalMaterial.bind(this)}
+          storeLocalMaterial={this.storeLocalMaterial}
           updateCut={this.props.updateCut}
         />
-        <div className="MaterialEditor-section">
-          <p>Score Settings</p>
-          <div>
-            <IconPlus
-              click={this.props.addScore}
-              fill="#001f23"
-              height="18px"
-              width="18px"
-            />
-          </div>
-        </div>
-        {
-          material.scores.map((score, index) => {
-            return (
-              <Score
-                id={index}
-                score={score}
-                storeLocalMaterial={this.storeLocalMaterial.bind(this)}
-                updateScore={this.props.updateScore}
-              />
-            );
-          })
-        }
-        <div className="MaterialEditor-section">
-          <p>Vector Engrave Settings</p>
-          <div>
-            <IconPlus
-              click={this.props.addVectorEngrave}
-              fill="#001f23"
-              height="18px"
-              width="18px"
-            />
-          </div>
-        </div>
-        {
-          material.vectors.map((vector, index) => {
-            return (
-              <VectorEngrave
-                id={index}
-                storeLocalMaterial={this.storeLocalMaterial.bind(this)}
-                updateVectorEngrave={this.props.updateVectorEngrave}
-                vector={vector}
-              />
-            );
-          })
-        }
-        <div className="MaterialEditor-section">
-          <p>Bitmap Engrave Settings</p>
-          <div>
-            <IconPlus
-              click={this.props.addBitmapEngrave}
-              fill="#001f23"
-              height="18px"
-              width="18px"
-            />
-          </div>
-        </div>
-        {
-          material.bitmaps.map((bitmap, index) => {
-            return (
-              <BitmapEngrave
-                bitmap={bitmap}
-                id={index}
-                storeLocalMaterial={this.storeLocalMaterial.bind(this)}
-                updateBitmapEngrave={this.props.updateBitmapEngrave}
-              />
-            );
-          })
-        }
+        <ScoreSettings
+          addScore={this.props.addScore}
+          removeScore={this.props.removeScore}
+          scores={this.props.material.scores}
+          storeLocalMaterial={this.storeLocalMaterial}
+          updateScore={this.props.updateScore}
+        />
+        <VectorEngraveSettings
+          addVectorEngrave={this.props.addVectorEngrave}
+          removeVectorEngrave={this.props.removeVectorEngrave}
+          storeLocalMaterial={this.storeLocalMaterial}
+          updateVectorEngrave={this.props.updateVectorEngrave}
+          vectors={this.props.material.vectors}
+        />
+        <BitmapEngraveSettings
+          addBitmapEngrave={this.props.addBitmapEngrave}
+          bitmaps={this.props.material.bitmaps}
+          removeBitmapEngrave={this.props.removeBitmapEngrave}
+          storeLocalMaterial={this.storeLocalMaterial}
+          updateBitmapEngrave={this.props.updateBitmapEngrave}
+        />
         <MaterialButtonBar
           editorMode={this.props.action}
           addMaterial={this.props.addMaterial}
@@ -187,7 +116,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
           editMaterial={this.props.editMaterial}
           title={`${this.props.material.thickName} ${this.props.material.name}`}
         />
-      </React.Fragment>
+      </>
     );
   }
 }

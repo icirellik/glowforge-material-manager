@@ -11,16 +11,18 @@ import {
   toRealPower,
 } from '../lib/glowforgeUnits';
 import { PluginScoreSetting } from '../lib/materialRaw';
+import IconMinus from '../icons/IconMinus';
 
-interface ScoreProps {
-  id: number;
+interface ScoreSettingProps {
+  index: number;
+  removeScore: Function;
   score: PluginScoreSetting;
   storeLocalMaterial: Function;
   updateScore: Function;
 }
 
-class Score extends React.Component<ScoreProps> {
-  constructor(props: ScoreProps) {
+export default class ScoreSetting extends React.Component<ScoreSettingProps> {
+  constructor(props: ScoreSettingProps) {
     super(props);
     if (props.score.power === 100) {
       this.setState({
@@ -34,11 +36,24 @@ class Score extends React.Component<ScoreProps> {
   }
 
   render() {
-    const { id, score } = this.props;
+    const { index: id, score } = this.props;
     return (
-      <React.Fragment>
-        <div className="App-field" style={(id !== 0) ? { marginTop: '20px' } : undefined}>
-          <label>Name</label>
+      <>
+        <div style={{display: 'flex', marginBottom: '8px'}}>
+          <p style={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '18px',
+            marginRight: '4px',
+          }}>
+            {`Score ${this.props.index + 1}`}
+          </p>
+          <IconMinus click={() => {
+            this.props.removeScore(this.props.index);
+          }} height="16px" width="16px" />
+        </div>
+        <div className="form-field" style={(id !== 0) ? { marginTop: '20px' } : undefined}>
+          <label>Name *</label>
           <input
             type="text"
             value={score.name}
@@ -49,8 +64,8 @@ class Score extends React.Component<ScoreProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field">
-          <label>Speed</label>
+        <div className="form-field">
+          <label>Speed *</label>
           <input
             type="number"
             value={toDisplayCutSpeed(score.speed)}
@@ -63,8 +78,26 @@ class Score extends React.Component<ScoreProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field">
-          <label>Power</label>
+        <div className="form-field">
+          <div className="form-field-right">
+            <label>Power *</label>
+            <label className="label">Max Power</label>
+            <input
+              type="checkbox"
+              value={this.state.maxPower? 1 : 0}
+              onChange={() => {
+                const nextMaxPower = !this.state.maxPower;
+                this.props.updateScore(id, {
+                  ...score,
+                  power: (nextMaxPower) ? 100 : 99,
+                });
+                this.setState({
+                  maxPower: nextMaxPower,
+                });
+              }}
+              onBlur={() => this.props.storeLocalMaterial()}
+            />
+          </div>
           <input
             type="number"
             disabled={this.state.maxPower}
@@ -78,25 +111,7 @@ class Score extends React.Component<ScoreProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div>
-          <label>Max Power</label>
-          <input
-            type="checkbox"
-            value={this.state.maxPower? 1 : 0}
-            onChange={(event) => {
-              const nextMaxPower = !this.state.maxPower;
-              this.props.updateScore(id, {
-                ...score,
-                power: (nextMaxPower) ? 100 : 99,
-              });
-              this.setState({
-                maxPower: nextMaxPower,
-              });
-            }}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="App-field">
+        <div className="form-field">
           <label>Passes</label>
           <input
             type="number"
@@ -108,7 +123,7 @@ class Score extends React.Component<ScoreProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field">
+        <div className="form-field">
           <label>Focal Offset (mm)</label>
           <input
             type="number"
@@ -120,9 +135,7 @@ class Score extends React.Component<ScoreProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-      </React.Fragment>
+      </>
     );
   }
 }
-
-export default Score;

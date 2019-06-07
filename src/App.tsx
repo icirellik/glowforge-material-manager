@@ -51,12 +51,15 @@ export type UpdateMaterial = (key: keyof TempMaterial, value: any) => void;
 export type UpdateCut = (cut: PluginCutSetting) => void;
 
 export type AddScore = () => void;
+export type RemoveScore = (index: number) => void;
 export type UpdateScore = (index: number, score: PluginScoreSetting) => void;
 
 export type AddBitmapEngrave = () => void;
+export type RemoveBitmapEngrave = (index: number) => void;
 export type UpdateBitmapEngrave = (index: number, bitmap: PluginBitmapEngraveSetting) => void;
 
 export type AddVectorEngrave = () => void;
+export type RemoveVectorEngrave = (index: number) => void;
 export type UpdateVectorEngrave = (index: number, vector: PluginVectorEngraveSetting) => void;
 
 interface IMaterialEditor {
@@ -68,11 +71,17 @@ interface IMaterialEditor {
   updateMaterial: UpdateMaterial;
 
   updateCut: UpdateCut;
+
   addScore: AddScore;
+  removeScore: RemoveScore;
   updateScore: UpdateScore;
+
   addVectorEngrave: AddVectorEngrave;
+  removeVectorEngrave: RemoveVectorEngrave;
   updateVectorEngrave: UpdateVectorEngrave;
+
   addBitmapEngrave: AddBitmapEngrave;
+  removeBitmapEngrave: RemoveBitmapEngrave;
   updateBitmapEngrave: UpdateBitmapEngrave;
 }
 
@@ -139,6 +148,20 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       rawMaterials: [],
       synchronized: true,
     };
+
+    this.updateCut = this.updateCut.bind(this);
+
+    this.addScore = this.addScore.bind(this);
+    this.removeScore = this.removeScore.bind(this);
+    this.updateScore = this.updateScore.bind(this);
+
+    this.addBitmapEngrave = this.addBitmapEngrave.bind(this);
+    this.removeBitmapEngrave = this.removeBitmapEngrave.bind(this);
+    this.updateBitmapEngrave = this.updateBitmapEngrave.bind(this);
+
+    this.addVectorEngrave = this.addVectorEngrave.bind(this);
+    this.removeVectorEngrave = this.removeVectorEngrave.bind(this);
+    this.updateVectorEngrave = this.updateVectorEngrave.bind(this);
   }
 
   async componentDidMount() {
@@ -267,6 +290,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
   }
 
+  removeScore(index: number) {
+    this.setState((state) => {
+      state.tempMaterial.scores.splice(index, 1);
+      return {
+        tempMaterial: {
+          ...state.tempMaterial,
+          scores: [...state.tempMaterial.scores],
+        },
+      };
+    });
+  }
+
   updateScore(index: number, score: PluginScoreSetting) {
     const scores = this.state.tempMaterial.scores;
     scores[index] = score;
@@ -287,6 +322,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
   }
 
+  removeVectorEngrave(index: number) {
+    this.setState((state) => {
+      state.tempMaterial.vectors.splice(index, 1);
+      return {
+        tempMaterial: {
+          ...state.tempMaterial,
+          vectors: [...state.tempMaterial.vectors],
+        },
+      };
+    });
+  }
+
   updateVectorEngrave(index: number, vector: PluginVectorEngraveSetting) {
     const vectors = this.state.tempMaterial.vectors;
     vectors[index] = vector;
@@ -304,6 +351,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         ...this.state.tempMaterial,
         bitmaps: [ ...this.state.tempMaterial.bitmaps, EMPTY_BITMAP_ENGRAVE ],
       },
+    });
+  }
+
+  removeBitmapEngrave(index: number) {
+    this.setState((state) => {
+      state.tempMaterial.bitmaps.splice(index, 1);
+      return {
+        tempMaterial: {
+          ...state.tempMaterial,
+          bitmaps: [...state.tempMaterial.bitmaps],
+        },
+      };
     });
   }
 
@@ -618,18 +677,21 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
             />
             <MaterialEditor
               action={this.state.action}
-              addBitmapEngrave={this.addBitmapEngrave.bind(this)}
+              addBitmapEngrave={this.addBitmapEngrave}
               addMaterial={this.addMaterial.bind(this)}
-              addScore={this.addScore.bind(this)}
-              addVectorEngrave={this.addVectorEngrave.bind(this)}
+              addScore={this.addScore}
+              addVectorEngrave={this.addVectorEngrave}
               cancelMaterial={this.setEditorModeCancel.bind(this)}
               editMaterial={this.editMaterial.bind(this)}
               material={this.state.tempMaterial}
-              updateBitmapEngrave={this.updateBitmapEngrave.bind(this)}
-              updateCut={this.updateCut.bind(this)}
+              removeBitmapEngrave={this.removeBitmapEngrave}
+              removeScore={this.removeScore}
+              removeVectorEngrave={this.removeVectorEngrave}
+              updateBitmapEngrave={this.updateBitmapEngrave}
+              updateCut={this.updateCut}
               updateMaterial={this.updateMaterial.bind(this)}
-              updateScore={this.updateScore.bind(this)}
-              updateVectorEngrave={this.updateVectorEngrave.bind(this)}
+              updateScore={this.updateScore}
+              updateVectorEngrave={this.updateVectorEngrave}
             />
           </div>
         </div>

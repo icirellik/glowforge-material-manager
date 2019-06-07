@@ -2,7 +2,7 @@ import React from 'react';
 import { IconProps } from './IconsProps';
 import './Icons.css';
 
-export default function IconCheck(props: IconProps) {
+export default function IconVisibility(props: IconProps) {
   const styles = {
     fill: props.fill ? props.fill : 'currentColor',
     height: props.height ? props.height : "24px",
@@ -13,14 +13,14 @@ export default function IconCheck(props: IconProps) {
     <button
       className="icon-button"
       onClick={(props.click) ? props.click : undefined}
-      title={(props.title) ? props.title : 'Select'}
+      title={(props.title) ? props.title : 'Visibility'}
     >
       <svg
         className={(props.className) ? props.className : undefined}
         style={styles} xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
       >
-        <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
       </svg>
     </button>
   );

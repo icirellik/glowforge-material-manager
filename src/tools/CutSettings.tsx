@@ -12,13 +12,13 @@ import {
 } from '../lib/glowforgeUnits';
 import { PluginCutSetting } from '../lib/materialRaw';
 
-interface CutProps {
+interface CutSettingsProps {
   cut: PluginCutSetting;
   storeLocalMaterial: Function;
   updateCut: Function;
 }
 
-class Cut extends React.Component<CutProps> {
+export default class CutSettings extends React.Component<CutSettingsProps> {
   state = {
     maxPower: (this.props.cut.power === 100),
   }
@@ -26,9 +26,12 @@ class Cut extends React.Component<CutProps> {
   render() {
     const { cut } = this.props;
     return (
-      <React.Fragment>
-        <div className="App-field">
-          <label>Speed</label>
+      <>
+        <div className="form-header">
+          <p>Cut Settings</p>
+        </div>
+        <div className="form-field">
+          <label>Speed *</label>
           <input
             type="number"
             value={toDisplayCutSpeed(cut.speed)}
@@ -41,8 +44,27 @@ class Cut extends React.Component<CutProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field">
-          <label>Power</label>
+        <div className="form-field">
+          <div className="form-field-right">
+            <label>Power *</label>
+            <label className="label">Max Power</label>
+            <input
+              type="checkbox"
+              value={this.state.maxPower? 1 : 0}
+              checked={this.state.maxPower}
+              onChange={() => {
+                const nextMaxPower = !this.state.maxPower;
+                this.props.updateCut({
+                  ...cut,
+                  power: (nextMaxPower) ? 100 : 99,
+                });
+                this.setState({
+                  maxPower: nextMaxPower,
+                });
+              }}
+              onBlur={() => this.props.storeLocalMaterial()}
+            />
+          </div>
           <input
             type="number"
             disabled={this.state.maxPower}
@@ -56,26 +78,7 @@ class Cut extends React.Component<CutProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div>
-          <label>Max Power</label>
-          <input
-            type="checkbox"
-            value={this.state.maxPower? 1 : 0}
-            checked={this.state.maxPower}
-            onChange={(event) => {
-              const nextMaxPower = !this.state.maxPower;
-              this.props.updateCut({
-                ...cut,
-                power: (nextMaxPower) ? 100 : 99,
-              });
-              this.setState({
-                maxPower: nextMaxPower,
-              });
-            }}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="App-field">
+        <div className="form-field">
           <label>Passes</label>
           <input
             type="number"
@@ -87,7 +90,7 @@ class Cut extends React.Component<CutProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field">
+        <div className="form-field">
           <label>Focal Offset (mm)</label>
           <input
             type="number"
@@ -99,9 +102,7 @@ class Cut extends React.Component<CutProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-      </React.Fragment>
+      </>
     );
   }
 }
-
-export default Cut;

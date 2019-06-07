@@ -12,25 +12,40 @@ import {
   toRealPower,
 } from '../lib/glowforgeUnits';
 import { PluginBitmapEngraveSetting } from '../lib/materialRaw';
+import IconMinus from '../icons/IconMinus';
 
-interface BitmapEngraveProps {
-  id: number;
+interface BitmapEngraveSettingProps {
   bitmap: PluginBitmapEngraveSetting;
+  index: number;
+  removeBitmapEngrave: Function;
   storeLocalMaterial: Function;
   updateBitmapEngrave: Function;
 }
 
-class BitmapEngrave extends React.Component<BitmapEngraveProps> {
+export default class BitmapEngraveSetting extends React.Component<BitmapEngraveSettingProps> {
   state = {
     maxPower: (this.props.bitmap.power === 100),
   }
 
   render() {
-    const { id, bitmap } = this.props;
+    const { index: id, bitmap } = this.props;
     return (
-      <React.Fragment>
-        <div className="App-field" style={(id !== 0) ? { marginTop: '20px' } : undefined}>
-          <label>Name</label>
+      <>
+        <div style={{display: 'flex', marginBottom: '8px'}}>
+          <p style={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '18px',
+            marginRight: '4px',
+          }}>
+            {`Bitmap Engrave ${this.props.index + 1}`}
+          </p>
+          <IconMinus click={() => {
+            this.props.removeBitmapEngrave(this.props.index);
+          }} height="16px" width="16px" />
+        </div>
+        <div className="form-field" style={(id !== 0) ? { marginTop: '20px' } : undefined}>
+          <label>Name *</label>
           <input
             type="text"
             value={bitmap.name}
@@ -41,8 +56,8 @@ class BitmapEngrave extends React.Component<BitmapEngraveProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field">
-          <label>Speed</label>
+        <div className="form-field">
+          <label>Speed *</label>
           <input
             type="number"
             value={toDisplayEngraveSpeed(bitmap.speed)}
@@ -55,8 +70,27 @@ class BitmapEngrave extends React.Component<BitmapEngraveProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field">
-          <label>Power</label>
+        <div className="form-field">
+          <div className="form-field-right">
+            <label>Power *</label>
+            <label className="label">Max Power</label>
+            <input
+              type="checkbox"
+              value={this.state.maxPower? 1 : 0}
+              checked={this.state.maxPower}
+              onChange={() => {
+                const nextMaxPower = !this.state.maxPower;
+                this.props.updateBitmapEngrave(id, {
+                  ...bitmap,
+                  power: (nextMaxPower) ? 100 : 99,
+                });
+                this.setState({
+                  maxPower: nextMaxPower,
+                });
+              }}
+              onBlur={() => this.props.storeLocalMaterial()}
+            />
+          </div>
           <input
             type="number"
             disabled={this.state.maxPower}
@@ -70,26 +104,7 @@ class BitmapEngrave extends React.Component<BitmapEngraveProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div>
-          <label>Max Power</label>
-          <input
-            type="checkbox"
-            value={this.state.maxPower? 1 : 0}
-            checked={this.state.maxPower}
-            onChange={(event) => {
-              const nextMaxPower = !this.state.maxPower;
-              this.props.updateBitmapEngrave(id, {
-                ...bitmap,
-                power: (nextMaxPower) ? 100 : 99,
-              });
-              this.setState({
-                maxPower: nextMaxPower,
-              });
-            }}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="App-field">
+        <div className="form-field">
           <label>Passes</label>
           <input
             type="number"
@@ -101,7 +116,7 @@ class BitmapEngrave extends React.Component<BitmapEngraveProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field">
+        <div className="form-field">
           <label>Focal Offset (mm)</label>
           <input
             type="number"
@@ -113,7 +128,7 @@ class BitmapEngrave extends React.Component<BitmapEngraveProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-        <div className="App-field">
+        <div className="form-field">
           <label>Scan Gap (LPI {`${toDisplayLinesPerInch(bitmap.scanGap ? bitmap.scanGap : 0)}`})</label>
           <input
             type="number"
@@ -125,9 +140,7 @@ class BitmapEngrave extends React.Component<BitmapEngraveProps> {
             onBlur={() => this.props.storeLocalMaterial()}
           />
         </div>
-      </React.Fragment>
+      </>
     );
   }
 }
-
-export default BitmapEngrave;
