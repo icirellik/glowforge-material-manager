@@ -7,9 +7,7 @@ import VectorEngrave from './tools/VectorEngrave';
 import {
   storeTempMaterial,
 } from './lib/chromeWrappers';
-import {
-  IconPlus,
-} from './Icons';
+import IconPlus from './icons/IconPlus';
 import {
   asFloat,
 } from './lib/utils';
@@ -47,6 +45,10 @@ interface MaterialEditorProps {
 }
 
 class MaterialEditor extends React.Component<MaterialEditorProps> {
+  constructor(props: MaterialEditorProps) {
+    super(props);
+    this.storeLocalMaterial = this.storeLocalMaterial.bind(this);
+  }
 
   storeLocalMaterial() {
     if (this.props.action === 'ADD') {
@@ -75,7 +77,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
             onChange={(event) => {
               this.props.updateMaterial('thickName', event.target.value);
             }}
-            onBlur={() => this.storeLocalMaterial()}
+            onBlur={this.storeLocalMaterial}
           />
         </div>
         <div className="App-field">
@@ -87,7 +89,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
             onChange={(event) => {
               this.props.updateMaterial('name', event.target.value);
             }}
-            onBlur={() => this.storeLocalMaterial()}
+            onBlur={this.storeLocalMaterial}
           />
         </div>
         <div className="App-field">
@@ -98,7 +100,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
             onChange={(event) => {
               this.props.updateMaterial('thickness', asFloat(event.target.value));
             }}
-            onBlur={() => this.storeLocalMaterial()}
+            onBlur={this.storeLocalMaterial}
           />
         </div>
         <div className="MaterialEditor-section">
@@ -111,6 +113,14 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
         />
         <div className="MaterialEditor-section">
           <p>Score Settings</p>
+          <div>
+            <IconPlus
+              click={this.props.addScore}
+              fill="#001f23"
+              height="18px"
+              width="18px"
+            />
+          </div>
         </div>
         {
           material.scores.map((score, index) => {
@@ -124,11 +134,16 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
             );
           })
         }
-        <div className="MaterialEditor-buttonBar">
-          <IconPlus click={this.props.addScore} />
-        </div>
         <div className="MaterialEditor-section">
           <p>Vector Engrave Settings</p>
+          <div>
+            <IconPlus
+              click={this.props.addVectorEngrave}
+              fill="#001f23"
+              height="18px"
+              width="18px"
+            />
+          </div>
         </div>
         {
           material.vectors.map((vector, index) => {
@@ -142,11 +157,16 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
             );
           })
         }
-        <div className="MaterialEditor-buttonBar">
-          <IconPlus click={this.props.addVectorEngrave} />
-        </div>
         <div className="MaterialEditor-section">
           <p>Bitmap Engrave Settings</p>
+          <div>
+            <IconPlus
+              click={this.props.addBitmapEngrave}
+              fill="#001f23"
+              height="18px"
+              width="18px"
+            />
+          </div>
         </div>
         {
           material.bitmaps.map((bitmap, index) => {
@@ -160,9 +180,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
             );
           })
         }
-        <div className="MaterialEditor-buttonBar">
-          <IconPlus click={this.props.addBitmapEngrave} />
-        </div>
         <MaterialButtonBar
           editorMode={this.props.action}
           addMaterial={this.props.addMaterial}

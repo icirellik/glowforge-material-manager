@@ -3,7 +3,6 @@ import MaterialEditor from './MaterialEditor';
 import MaterialList from './MaterialList';
 import MaterialViewer from './viewer/MaterialViewer';
 import Message from './Message';
-import SyncStatusProps from './SyncStatus';
 import {
   createMaterial,
   removeCloudMaterial,
@@ -11,7 +10,7 @@ import {
   sendCloudMaterial,
   removeMaterialTitle,
 } from './lib/material';
-import { IconPlus } from './Icons';
+import IconPlus from './icons/IconPlus';
 import {
   clearTempMaterial,
   forceSync,
@@ -30,7 +29,6 @@ import {
   TempMaterial,
 } from './lib/constants';
 import './App.css';
-import logo from './logo.svg';
 import {
   PluginBitmapEngraveSetting,
   PluginCutSetting,
@@ -41,6 +39,7 @@ import {
 import { GFMaterial } from './lib/materialGlowforge';
 import { sha1 } from './lib/utils';
 import { readQrCode } from './lib/qrCode';
+import { AppHeader } from './AppHeader';
 
 export type AddMaterial = () => Promise<void>;
 export type CopyMaterial = (title: string) => Promise<void>;
@@ -583,18 +582,12 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   render() {
     return (
       <div className="App">
-        <header className="header">
-          <div>
-            <img src={logo} className="header__logo" alt="logo" />
-            <h1 className="header__title">Glowforge Material Manager</h1>
-            <SyncStatusProps
-              connected={this.props.connected}
-              forceSync={this.forceSyncronize.bind(this)}
-              synchronized={this.state.synchronized}
-            />
-          </div>
-          <span>{`Cloud Storage Used ${this.state.cloudStorageBytesUsed} / 102,400`}</span>
-        </header>
+        <AppHeader
+          connected={this.props.connected}
+          forceSyncronize={this.forceSyncronize.bind(this)}
+          synchronized={this.state.synchronized}
+          cloudStorageBytesUsed={this.state.cloudStorageBytesUsed}
+        />
         <div className={`App-grid ${(this.props.platform === 'mac') ? 'osx' : ''}`}>
           <div className="col-materials">
             <MaterialList
@@ -607,12 +600,15 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
             />
           </div>
           <div className="col-contents">
-            <div className="App-intro">
-              <p style={{float: 'left', width: '250px'}}>
-                Add your own custom material settings here.
-              </p>
-              <div style={{float: 'right', margin: '14px 14px 14px 0'}}>
-                <IconPlus click={this.setEditorModeAdd.bind(this)} />
+            <div className="intro">
+              <p>Add your own custom material settings here.</p>
+              <div>
+                <IconPlus
+                  click={this.setEditorModeAdd.bind(this)}
+                  fill="#001f23"
+                  height="25px"
+                  width="25px"
+                />
               </div>
             </div>
             <MaterialViewer

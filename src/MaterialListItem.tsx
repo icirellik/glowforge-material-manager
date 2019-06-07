@@ -1,12 +1,10 @@
 import React from 'react';
 import Menu from './Menu';
-import {
-  IconCopy,
-  IconEdit,
-  IconOpen,
-  IconTrashCan,
-  IconCheck,
-} from './Icons';
+import IconCheck from './icons/IconCheck';
+import IconOpen from './icons/IconOpen';
+import IconDeleteForever from './icons/IconDeleteForever';
+import IconCopy from './icons/IconCopy';
+import IconEdit from './icons/IconEdit';
 import { PluginMaterial } from './lib/materialRaw';
 import {
   CopyMaterial,
@@ -49,23 +47,23 @@ class MaterialListItem extends React.Component<MaterialProps> {
           <Menu>
             <div onClick={() => setMaterial(title)}>
               <span>Set</span>
-              <IconCheck />
+              <IconCheck height="18px" width="18px" />
             </div>
             <div onClick={() => selectMaterial(title)}>
               <span>View</span>
-              <IconOpen />
+              <IconOpen height="18px" width="18px" />
             </div>
             <div onClick={() => editMaterial(title)}>
               <span>Edit</span>
-              <IconEdit />
+              <IconEdit height="18px" width="18px" />
             </div>
             <div onClick={() => cloneMaterial(title)}>
               <span>Copy</span>
-              <IconCopy />
+              <IconCopy height="18px" width="18px" />
             </div>
             <div onClick={() => removeMaterial(title)}>
               <span>Delete</span>
-              <IconTrashCan />
+              <IconDeleteForever height="18px" width="18px" />
             </div>
           </Menu>
         </span>

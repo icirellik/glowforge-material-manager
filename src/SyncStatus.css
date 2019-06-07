@@ -1,24 +1,16 @@
 .Status {
-  display: inline-block;
-  padding-top: 15px;
-  margin-left: 15px;
-  width: 12px;
-  height: 12px;
+  display: flex;
+  align-items: center;
 }
 
-.Status .icon {
-  width: 12px;
-  height: 12px;
-}
-
-.Status-green .icon {
+.Status-green .icon-button {
   color: rgb(55, 253, 55);
 }
 
-.Status-red .icon {
+.Status-red .icon-button {
   color: rgb(250, 250, 114);
 }
 
-.Status-gray .icon {
+.Status-gray .icon-button {
   color: rgb(202, 202, 202);
 }
