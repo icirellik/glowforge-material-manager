@@ -8,17 +8,16 @@
 }
 
 .MaterialListItem-name {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
   margin-right: 10px;
 }
 
 .MaterialListItem-menu {
-  margin-bottom: auto;
-  margin-left: auto;
-  margin-top: auto;
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: flex-end;
 }
 
-.MaterialListItem-menu .icon {
-  display: inline-block;
-  height: 18px;
-  width: 18px;
-}

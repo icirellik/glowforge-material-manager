@@ -3,7 +3,6 @@ import MaterialEditor from './MaterialEditor';
 import MaterialList from './MaterialList';
 import MaterialViewer from './viewer/MaterialViewer';
 import Message from './Message';
-import SyncStatusProps from './SyncStatus';
 import {
   createMaterial,
   removeCloudMaterial,
@@ -11,7 +10,7 @@ import {
   sendCloudMaterial,
   removeMaterialTitle,
 } from './lib/material';
-import { IconPlus } from './Icons';
+import IconPlus from './icons/IconPlus';
 import {
   clearTempMaterial,
   forceSync,
@@ -30,7 +29,6 @@ import {
   TempMaterial,
 } from './lib/constants';
 import './App.css';
-import logo from './logo.svg';
 import {
   PluginBitmapEngraveSetting,
   PluginCutSetting,
@@ -41,6 +39,7 @@ import {
 import { GFMaterial } from './lib/materialGlowforge';
 import { sha1 } from './lib/utils';
 import { readQrCode } from './lib/qrCode';
+import { AppHeader } from './AppHeader';
 
 export type AddMaterial = () => Promise<void>;
 export type CopyMaterial = (title: string) => Promise<void>;
@@ -52,12 +51,15 @@ export type UpdateMaterial = (key: keyof TempMaterial, value: any) => void;
 export type UpdateCut = (cut: PluginCutSetting) => void;
 
 export type AddScore = () => void;
+export type RemoveScore = (index: number) => void;
 export type UpdateScore = (index: number, score: PluginScoreSetting) => void;
 
 export type AddBitmapEngrave = () => void;
+export type RemoveBitmapEngrave = (index: number) => void;
 export type UpdateBitmapEngrave = (index: number, bitmap: PluginBitmapEngraveSetting) => void;
 
 export type AddVectorEngrave = () => void;
+export type RemoveVectorEngrave = (index: number) => void;
 export type UpdateVectorEngrave = (index: number, vector: PluginVectorEngraveSetting) => void;
 
 interface IMaterialEditor {
@@ -69,11 +71,17 @@ interface IMaterialEditor {
   updateMaterial: UpdateMaterial;
 
   updateCut: UpdateCut;
+
   addScore: AddScore;
+  removeScore: RemoveScore;
   updateScore: UpdateScore;
+
   addVectorEngrave: AddVectorEngrave;
+  removeVectorEngrave: RemoveVectorEngrave;
   updateVectorEngrave: UpdateVectorEngrave;
+
   addBitmapEngrave: AddBitmapEngrave;
+  removeBitmapEngrave: RemoveBitmapEngrave;
   updateBitmapEngrave: UpdateBitmapEngrave;
 }
 
@@ -140,6 +148,24 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       rawMaterials: [],
       synchronized: true,
     };
+
+    this.updateCut = this.updateCut.bind(this);
+
+    this.addScore = this.addScore.bind(this);
+    this.removeScore = this.removeScore.bind(this);
+    this.updateScore = this.updateScore.bind(this);
+
+    this.addBitmapEngrave = this.addBitmapEngrave.bind(this);
+    this.removeBitmapEngrave = this.removeBitmapEngrave.bind(this);
+    this.updateBitmapEngrave = this.updateBitmapEngrave.bind(this);
+
+    this.addVectorEngrave = this.addVectorEngrave.bind(this);
+    this.removeVectorEngrave = this.removeVectorEngrave.bind(this);
+    this.updateVectorEngrave = this.updateVectorEngrave.bind(this);
+
+    // Messaging
+    this.displayMessage = this.displayMessage.bind(this);
+    this.clearMessage = this.clearMessage.bind(this);
   }
 
   async componentDidMount() {
@@ -268,6 +294,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
   }
 
+  removeScore(index: number) {
+    this.setState((state) => {
+      state.tempMaterial.scores.splice(index, 1);
+      return {
+        tempMaterial: {
+          ...state.tempMaterial,
+          scores: [...state.tempMaterial.scores],
+        },
+      };
+    });
+  }
+
   updateScore(index: number, score: PluginScoreSetting) {
     const scores = this.state.tempMaterial.scores;
     scores[index] = score;
@@ -288,6 +326,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
   }
 
+  removeVectorEngrave(index: number) {
+    this.setState((state) => {
+      state.tempMaterial.vectors.splice(index, 1);
+      return {
+        tempMaterial: {
+          ...state.tempMaterial,
+          vectors: [...state.tempMaterial.vectors],
+        },
+      };
+    });
+  }
+
   updateVectorEngrave(index: number, vector: PluginVectorEngraveSetting) {
     const vectors = this.state.tempMaterial.vectors;
     vectors[index] = vector;
@@ -305,6 +355,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         ...this.state.tempMaterial,
         bitmaps: [ ...this.state.tempMaterial.bitmaps, EMPTY_BITMAP_ENGRAVE ],
       },
+    });
+  }
+
+  removeBitmapEngrave(index: number) {
+    this.setState((state) => {
+      state.tempMaterial.bitmaps.splice(index, 1);
+      return {
+        tempMaterial: {
+          ...state.tempMaterial,
+          bitmaps: [...state.tempMaterial.bitmaps],
+        },
+      };
     });
   }
 
@@ -341,7 +403,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
 
     if (duplicate) {
-      this.displayError('A material with the same name already exists.');
+      this.displayMessage('A material with the same name already exists.');
       return;
     }
 
@@ -379,7 +441,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // There should be at least one since we are cloning.
     if (duplicates.length < 1) {
-      this.displayError('Could not clone the source material was removed.');
+      this.displayMessage('Could not clone the source material was removed.');
       return;
     }
 
@@ -410,7 +472,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
 
     if (duplicates.length !== 1) {
-      this.displayError('Could not update. A material with the same name already exists.');
+      this.displayMessage('Could not update. A material with the same name already exists.');
       return;
     }
 
@@ -507,12 +569,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   // Messaging
   //
 
-  displayError(message: string) {
+  displayMessage(message: string) {
     this.setState({
       message: {
         message,
         color: '#CC3A4B',
       },
+    });
+  }
+
+  clearMessage() {
+    this.setState({
+      message: null,
     });
   }
 
@@ -583,18 +651,12 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   render() {
     return (
       <div className="App">
-        <header className="header">
-          <div>
-            <img src={logo} className="header__logo" alt="logo" />
-            <h1 className="header__title">Glowforge Material Manager</h1>
-            <SyncStatusProps
-              connected={this.props.connected}
-              forceSync={this.forceSyncronize.bind(this)}
-              synchronized={this.state.synchronized}
-            />
-          </div>
-          <span>{`Cloud Storage Used ${this.state.cloudStorageBytesUsed} / 102,400`}</span>
-        </header>
+        <AppHeader
+          connected={this.props.connected}
+          forceSyncronize={this.forceSyncronize.bind(this)}
+          synchronized={this.state.synchronized}
+          cloudStorageBytesUsed={this.state.cloudStorageBytesUsed}
+        />
         <div className={`App-grid ${(this.props.platform === 'mac') ? 'osx' : ''}`}>
           <div className="col-materials">
             <MaterialList
@@ -607,12 +669,15 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
             />
           </div>
           <div className="col-contents">
-            <div className="App-intro">
-              <p style={{float: 'left', width: '250px'}}>
-                Add your own custom material settings here.
-              </p>
-              <div style={{float: 'right', margin: '14px 14px 14px 0'}}>
-                <IconPlus click={this.setEditorModeAdd.bind(this)} />
+            <div className="intro">
+              <p>Add your own custom material settings here.</p>
+              <div>
+                <IconPlus
+                  click={this.setEditorModeAdd.bind(this)}
+                  fill="#001f23"
+                  height="25px"
+                  width="25px"
+                />
               </div>
             </div>
             <MaterialViewer
@@ -622,22 +687,28 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
             />
             <MaterialEditor
               action={this.state.action}
-              addBitmapEngrave={this.addBitmapEngrave.bind(this)}
+              addBitmapEngrave={this.addBitmapEngrave}
               addMaterial={this.addMaterial.bind(this)}
-              addScore={this.addScore.bind(this)}
-              addVectorEngrave={this.addVectorEngrave.bind(this)}
+              addScore={this.addScore}
+              addVectorEngrave={this.addVectorEngrave}
               cancelMaterial={this.setEditorModeCancel.bind(this)}
               editMaterial={this.editMaterial.bind(this)}
               material={this.state.tempMaterial}
-              updateBitmapEngrave={this.updateBitmapEngrave.bind(this)}
-              updateCut={this.updateCut.bind(this)}
+              removeBitmapEngrave={this.removeBitmapEngrave}
+              removeScore={this.removeScore}
+              removeVectorEngrave={this.removeVectorEngrave}
+              updateBitmapEngrave={this.updateBitmapEngrave}
+              updateCut={this.updateCut}
               updateMaterial={this.updateMaterial.bind(this)}
-              updateScore={this.updateScore.bind(this)}
-              updateVectorEngrave={this.updateVectorEngrave.bind(this)}
+              updateScore={this.updateScore}
+              updateVectorEngrave={this.updateVectorEngrave}
             />
           </div>
         </div>
-        {this.state.message !== null ? <Message {...this.state.message} /> : null }
+        {
+          this.state.message !== null ?
+            <Message clearMessage={this.clearMessage} {...this.state.message} /> : null
+        }
       </div>
     );
   }

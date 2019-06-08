@@ -34,3 +34,13 @@
   stroke: currentColor;
   stroke-width: 1;
 }
+
+.icon-button {
+  background: transparent;
+  border: none;
+  display: inline-flex;
+  margin: 0px;
+  padding: 0px;
+  outline: none;
+  text-align: center;
+}

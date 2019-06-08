@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconCircle } from './Icons';
+import IconStatus from './icons/IconStatus';
 import { ForceSyncronize } from './App';
 import './SyncStatus.css';
 
@@ -15,7 +15,7 @@ function SyncStatus(props: SyncStatusProps) {
       (props.connected) ?
         (props.synchronized) ? 'Status Status-green' : 'Status Status-red'
       : 'Status Status-gray'}>
-      <IconCircle click={props.forceSync} />
+      <IconStatus click={props.forceSync} height="12px" width="12px" />
     </div>
   );
 }
