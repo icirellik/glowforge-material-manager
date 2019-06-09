@@ -14,10 +14,8 @@ import {
   sendCloudMaterial,
 } from './lib/material';
 import {
-  asFloat, sha1,
+  sha1,
 } from './lib/utils';
-import { GFMaterial } from './lib/materialGlowforge';
-import { PluginMaterial } from './lib/materialRaw';
 import './index.css';
 
 async function upgrade() {

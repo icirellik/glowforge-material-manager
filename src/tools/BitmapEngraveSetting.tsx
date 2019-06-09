@@ -129,7 +129,7 @@ export default class BitmapEngraveSetting extends React.Component<BitmapEngraveS
           />
         </div>
         <div className="form-field">
-          <label>Scan Gap (LPI {`${toDisplayLinesPerInch(bitmap.scanGap ? bitmap.scanGap : 0)}`})</label>
+          <label>Scan Gap (LPI {`${toDisplayLinesPerInch(bitmap.scanGap ? bitmap.scanGap : 0)}`}) *</label>
           <input
             type="number"
             value={bitmap.scanGap ? bitmap.scanGap : undefined}

@@ -129,7 +129,7 @@ export default class VectorEngraveSetting extends React.Component<VectorEngraveS
           />
         </div>
         <div className="form-field">
-          <label>Scan Gap (LPI {`${toDisplayLinesPerInch(vector.scanGap ? vector.scanGap : 0)}`})</label>
+          <label>Scan Gap (LPI {`${toDisplayLinesPerInch(vector.scanGap ? vector.scanGap : 0)}`}) *</label>
           <input
             type="number"
             value={vector.scanGap ? vector.scanGap : undefined}

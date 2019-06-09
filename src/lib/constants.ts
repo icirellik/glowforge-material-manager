@@ -36,7 +36,7 @@ export const EMPTY_VECTOR_ENGRAVE: PluginVectorEngraveSetting = {
   speed: 100,
   passes: 1,
   focalOffset: null,
-  scanGap: -1,
+  scanGap: 3,
 };
 
 export const EMPTY_BITMAP_ENGRAVE: PluginBitmapEngraveSetting = {
@@ -45,7 +45,7 @@ export const EMPTY_BITMAP_ENGRAVE: PluginBitmapEngraveSetting = {
   speed: 100,
   passes: 1,
   focalOffset: null,
-  scanGap: -1,
+  scanGap: 3,
   renderMethod: null,
   rescaleMethod: 'LagrangeFilter',
   minimumGrayPercent: null,
