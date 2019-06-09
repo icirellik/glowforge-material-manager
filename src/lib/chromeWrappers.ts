@@ -8,7 +8,7 @@ export type SynchronizedMaterials = {
   [key in SyncId]: SyncData;
 }
 
-interface StorageLocal {
+export interface StorageLocal {
   // The Glowforge formatted materials.
   materials?: GFMaterial[];
   // The raw material data that is used to generated Glowforge materials.
