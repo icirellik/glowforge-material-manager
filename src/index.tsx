@@ -6,6 +6,7 @@ import {
   inGlowforgeTab,
   storeGlowforgeMaterials,
   storeRawMaterials,
+  StorageLocal,
 } from './lib/chromeWrappers';
 import {
   fullSynchronizedMaterials,
@@ -13,52 +14,47 @@ import {
   sendCloudMaterial,
 } from './lib/material';
 import {
-  asFloat,
+  sha1,
 } from './lib/utils';
-import { GFMaterial } from './lib/materialGlowforge';
-import { PluginMaterial } from './lib/materialRaw';
-// import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
-// TODO: Add upgrade to deterministic ids
 async function upgrade() {
   return new Promise (resolve => {
-    window.chrome.storage.local.get(null, async result => {
+    window.chrome.storage.local.get(null, async (result: StorageLocal) => {
       let upgraded = false;
-      const _materials = result.materials.map((material: GFMaterial) => {
-        if (!material.hasOwnProperty('nominal_thickness') ||
-            material.nominal_thickness === null ||
-            material.nominal_thickness === parseFloat((material.nominal_thickness as any))
-        ) {
-          return material;
-        }
-        upgraded = true;
-        return {
-          ...material,
-          nominal_thickness: asFloat(material.nominal_thickness as any),
-        };
-      });
 
-      const _rawMaterials = result.rawMaterials.map((rawMaterial: PluginMaterial) => {
-        if (!rawMaterial.hasOwnProperty('thickness') ||
-            rawMaterial.thickness === null ||
-            rawMaterial.thickness === parseFloat(rawMaterial.thickness)
-        ) {
-          return rawMaterial;
+      // Apply any fixed material upgrades.
+      const _materials = [];
+      for (let i = 0; i < result.materials!.length; i += 1) {
+        // Update hashes
+        const material = result.materials![i];
+        const hash = await sha1(material.title);
+        const id = hash.substring(0, 7);
+
+        if (`Custom:${id}` !== material.id) {
+          upgraded = true;
+          _materials.push({
+            ...material,
+            id: `Custom:${id}`,
+          });
+        } else {
+          _materials.push(material);
         }
-        upgraded = true;
-        return {
-          ...rawMaterial,
-          thickness: asFloat(rawMaterial.thickness),
-        };
-      });
+      }
+
+      // Apply any setting upgrades.
+      const _rawMaterials = [];
+      for (let i = 0; i < result.rawMaterials!.length; i += 1) {
+        const rawMaterial = result.rawMaterials![i];
+        _rawMaterials.push(rawMaterial);
+      }
 
       if (upgraded) {
         console.log('upgraded');
         await storeGlowforgeMaterials(_materials);
         await storeRawMaterials(_rawMaterials);
 
-        for (const rawMaterial of result.rawMaterials) {
+        for (const rawMaterial of result.rawMaterials!) {
           await removeCloudMaterial(rawMaterial);
         }
         for (const _rawMaterial of _rawMaterials) {
@@ -96,5 +92,3 @@ async function upgrade() {
     }, 250);
   }
 })();
-
-// registerServiceWorker();
