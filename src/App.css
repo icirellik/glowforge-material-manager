@@ -46,6 +46,9 @@
 }
 
 .App-grid .col-materials {
+  display: flex;
+  margin-bottom: auto;
+  align-items: stretch;
   padding-left: 10px;
   width: 240px;
 }

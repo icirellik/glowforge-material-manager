@@ -140,11 +140,11 @@ export async function fullSynchronizedMaterials(remove=false) {
   console.log('Added:');
   console.log(newHashes);
 
-  const updatedHashes = currentTitleHashes.filter(hash => {
+  const possiblyUpdatedHashes = currentTitleHashes.filter(hash => {
     return synchronizedMaterials.hasOwnProperty(hash);
   });
   console.log('Existing:');
-  console.log(updatedHashes);
+  console.log(possiblyUpdatedHashes);
 
   // Remove old.
   if (remove) {
@@ -183,8 +183,8 @@ export async function fullSynchronizedMaterials(remove=false) {
   }
 
   // Update existing.
-  for (let i = 0; i < updatedHashes.length; i++) {
-    const hash = updatedHashes[i];
+  for (let i = 0; i < possiblyUpdatedHashes.length; i++) {
+    const hash = possiblyUpdatedHashes[i];
     const binaryData = synchronizedMaterials[hash];
     const json = toFullMaterial(decompress(binaryData));
     const dataHash = await hashMaterial(json);
