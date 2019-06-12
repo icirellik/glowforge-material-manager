@@ -3,6 +3,7 @@ import { PluginMaterial } from '../lib/materialRaw';
 import { sha1 } from '../lib/utils';
 import { qrcodeAsDataUri, qrcodeAsSvg } from '../lib/qrCode';
 import { toTinyMaterial } from '../lib/material';
+import './Viewer.css';
 
 export interface QrCodeViewerProps {
   material: PluginMaterial;
@@ -54,14 +55,15 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
     const title = `${thickName} ${name}`;
     return (
       <>
-        <div className="App-flexSectionHeader">
+        <div className="viewer__headerRow">
           <p>Scannable QR Code</p>
         </div>
         <img style={{
           border: '1px solid #000',
           width: 'fit-content',
         }} src={this.state.materialIdImageUri} alt="qrcode" />
-        <div className="App-flexSectionHeader">
+
+        <div className="viewer__headerRow">
           <p>Download SVG</p>
         </div>
         <div style={{

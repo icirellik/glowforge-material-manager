@@ -22,12 +22,12 @@ import {
 import {
   PluginMaterial,
 } from './lib/materialRaw';
-import BitmapEngraveSettings from './tools/BitmapEngraveSettings';
-import CutSettings from './tools/CutSettings';
+import BitmapEngraveSettings from './editor/BitmapEngraveSettings';
+import CutSettings from './editor/CutSettings';
 import MaterialButtonBar from './MaterialButtonBar';
-import MaterialSettings from './tools/MaterialSettings';
-import ScoreSettings from './tools/ScoreSettings';
-import VectorEngraveSettings from './tools/VectorEngraveSettings';
+import MaterialSettings from './editor/MaterialSettings';
+import ScoreSettings from './editor/ScoreSettings';
+import VectorEngraveSettings from './editor/VectorEngraveSettings';
 import './MaterialEditor.css';
 
 interface MaterialEditorProps {

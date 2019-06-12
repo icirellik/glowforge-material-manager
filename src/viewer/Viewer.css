@@ -1,0 +1,30 @@
+.viewer {
+
+}
+
+.viewer__column {
+  display: flex;
+  flex-direction: column;
+}
+
+.viewer__headerRow {
+  font-weight: 600;
+  margin: 10px 0;
+}
+
+.viewer__row {
+  display: flex;
+}
+
+.viewer__label {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  width: 50%;
+}
+
+.viewer__value {
+  display: flex;
+  align-items: center;
+  height: 18px;
+}

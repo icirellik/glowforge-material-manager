@@ -3,43 +3,6 @@
   width: 750px;
 }
 
-.App-flexColumn {
-  display: flex;
-  flex-direction: column;
-}
-
-.App-flex {
-  display: flex;
-}
-
-.App-flexLabel {
-  width: 50%;
-}
-
-.App-flexSectionHeader {
-  font-weight: 600;
-  margin: 10px 0;
-}
-
-.App-field {
-  display: block;
-}
-
-.App-field label {
-  display: inline-block;
-  width: 140px;
-}
-
-.App-field input {
-  display: inline-block;
-  width: 150px;
-}
-
-.App-field p {
-  font-weight: 600;
-  margin: 10px 0;
-}
-
 .App-grid {
   display: flex;
   justify-content: space-between;
@@ -47,8 +10,6 @@
 
 .App-grid .col-materials {
   display: flex;
-  margin-bottom: auto;
-  align-items: stretch;
   padding-left: 10px;
   width: 240px;
 }

@@ -6,49 +6,53 @@ import {
 } from '../lib/glowforgeUnits';
 import { PluginMaterial } from '../lib/materialRaw';
 import { precisionRound } from '../lib/utils';
+import './Viewer.css';
 
 export type MaterialVectorEngravesViewerProps = {
   vectors: PluginMaterial['vectors'];
 }
 
 export default function MaterialVectorEngravesViewer(props: MaterialVectorEngravesViewerProps) {
+  if (props.vectors.length === 0) {
+    return null;
+  }
+
   return (
     <>
-      <div className="App-flexSectionHeader">
+      <div className="viewer__headerRow">
         <p>Vector Engrave Settings</p>
       </div>
       {
-        (props.vectors.length > 0) ?
         props.vectors.map((vector, index) => {
           return (
             <>
-              <div className="App-flex" style={(index !== 0) ? { marginTop: '10px' } : undefined}>
-                <p className="App-flexLabel">Name</p>
-                <p>{vector.name}</p>
+              <div className="viewer__row" style={(index !== 0) ? { marginTop: '10px' } : undefined}>
+                <p className="viewer__label">Name</p>
+                <p className="viewer__value">{vector.name}</p>
               </div>
-              <div className="App-flex">
-                <p className="App-flexLabel">Speed</p>
-                <p>{toDisplayEngraveSpeed(vector.speed)} ({precisionRound(vector.speed, 2)})</p>
+              <div className="viewer__row">
+                <p className="viewer__label">Speed</p>
+                <p className="viewer__value">{toDisplayEngraveSpeed(vector.speed)} ({precisionRound(vector.speed, 2)})</p>
               </div>
-              <div className="App-flex">
-                <p className="App-flexLabel">Power</p>
-                <p>{toDisplayPowerWords(vector.power)} ({precisionRound(vector.power, 2)})</p>
+              <div className="viewer__row">
+                <p className="viewer__label">Power</p>
+                <p className="viewer__value">{toDisplayPowerWords(vector.power)} ({precisionRound(vector.power, 2)})</p>
               </div>
-              <div className="App-flex">
-                <p className="App-flexLabel">Passes</p>
-                <p>{vector.passes}</p>
+              <div className="viewer__row">
+                <p className="viewer__label">Passes</p>
+                <p className="viewer__value">{vector.passes}</p>
               </div>
-              <div className="App-flex">
-                <p className="App-flexLabel">Focal Offset</p>
-                <p>{vector.focalOffset}</p>
+              <div className="viewer__row">
+                <p className="viewer__label">Focal Offset</p>
+                <p className="viewer__value">{vector.focalOffset}</p>
               </div>
-              <div className="App-flex" style={{marginBottom: '10px'}}>
-                <p className="App-flexLabel">Scan Gap</p>
-                <p>{vector.scanGap}, LPI {toDisplayLinesPerInch(vector.scanGap)}</p>
+              <div className="viewer__row" style={{marginBottom: '10px'}}>
+                <p className="viewer__label">Scan Gap</p>
+                <p className="viewer__value">{vector.scanGap}, LPI {toDisplayLinesPerInch(vector.scanGap)}</p>
               </div>
             </>
           );
-        }) : 'None'
+        })
       }
     </>
   );

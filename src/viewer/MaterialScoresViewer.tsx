@@ -5,45 +5,49 @@ import {
 } from '../lib/glowforgeUnits';
 import { PluginMaterial } from '../lib/materialRaw';
 import { precisionRound } from '../lib/utils';
+import './Viewer.css';
 
 export type MaterialScoresViewerProps = {
   scores: PluginMaterial['scores'];
 }
 
 export default function MaterialScoresViewer(props: MaterialScoresViewerProps) {
+  if (props.scores.length === 0) {
+    return null;
+  }
+
   return (
     <>
-      <div className="App-flexSectionHeader">
+      <div className="viewer__headerRow">
         <p>Score Settings</p>
       </div>
       {
-        (props.scores.length > 0) ?
         props.scores.map((score, index) => {
           return (
             <>
-              <div className="App-flex" style={(index !== 0) ? { marginTop: '10px' } : undefined}>
-                <p className="App-flexLabel">Name</p>
-                <p>{score.name}</p>
+              <div className="viewer__row" style={(index !== 0) ? { marginTop: '10px' } : undefined}>
+                <p className="viewer__label">Name</p>
+                <p className="viewer__value">{score.name}</p>
               </div>
-              <div className="App-flex">
-                <p className="App-flexLabel">Speed</p>
-                <p>{toDisplayCutSpeed(score.speed)} ({precisionRound(score.speed, 2)})</p>
+              <div className="viewer__row">
+                <p className="viewer__label">Speed</p>
+                <p className="viewer__value">{toDisplayCutSpeed(score.speed)} ({precisionRound(score.speed, 2)})</p>
               </div>
-              <div className="App-flex">
-                <p className="App-flexLabel">Power</p>
-                <p>{toDisplayPowerWords(score.power)} ({precisionRound(score.power, 2)})</p>
+              <div className="viewer__row">
+                <p className="viewer__label">Power</p>
+                <p className="viewer__value">{toDisplayPowerWords(score.power)} ({precisionRound(score.power, 2)})</p>
               </div>
-              <div className="App-flex">
-                <p className="App-flexLabel">Passes</p>
-                <p>{score.passes}</p>
+              <div className="viewer__row">
+                <p className="viewer__label">Passes</p>
+                <p className="viewer__value">{score.passes}</p>
               </div>
-              <div className="App-flex" style={{marginBottom: '10px'}}>
-                <p className="App-flexLabel">Focal Offset</p>
-                <p>{score.focalOffset}</p>
+              <div className="viewer__row" style={{marginBottom: '10px'}}>
+                <p className="viewer__label">Focal Offset</p>
+                <p className="viewer__value">{score.focalOffset}</p>
               </div>
             </>
           );
-        }) : 'None'
+        })
       }
     </>
   );
