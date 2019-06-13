@@ -5,33 +5,36 @@
 
 .App-grid {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .App-grid .col-materials {
   display: flex;
-  padding-left: 10px;
   width: 240px;
+  background-color: #fbfbfb;
 }
 
 .App-grid .col-contents {
-  padding-left: 10px;
+  position: relative;
   height: 500px;
-  width: 490px;
   overflow-y: auto;
+  flex-grow: 1;
 }
 
 .App-grid.osx .col-contents {
-  padding-left: 10px;
   height: 500px;
-  width: 490px;
   overflow-y: scroll;
 }
+
+.App-grid .col-contents-container {
+  padding: 16px 16px 16px 24px;
+}
+
 
 .intro {
   display: flex;
   font-size: 14px;
-  padding: 14px 14px 14px 0;
+  padding-bottom: 16px;
 }
 
 .intro p {
@@ -45,4 +48,14 @@
   flex-grow: 1;
   align-items: center;
   justify-content: flex-end;
+}
+
+.foo {
+  display: flex;
+  position: absolute;
+  width: 500px;
+  height: 20px;
+  bottom: 0;
+  left: 0;
+  background-color: blue;
 }

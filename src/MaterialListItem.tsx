@@ -13,7 +13,7 @@ import {
   RemoveMaterial,
   SetMaterial,
 } from './App';
-import './MaterialListItem.css';
+import './MaterialList.css';
 
 interface MaterialProps {
   cloneMaterial: CopyMaterial;
@@ -36,14 +36,15 @@ class MaterialListItem extends React.Component<MaterialProps> {
     } = this.props
     const title = `${material.thickName} ${material.name}`;
     return (
-      <div className="MaterialListItem-root">
+      <div className="materialList__item">
         <span
           onClick={() => selectMaterial(title)}
-          className="MaterialListItem-name"
+          className="materialList__itemName"
+          title={title}
         >
           {title}
         </span>
-        <span className="MaterialListItem-menu">
+        <span className="materialList__itemMenu">
           <Menu>
             <div onClick={() => setMaterial(title)}>
               <span>Set</span>

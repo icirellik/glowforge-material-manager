@@ -1,9 +1,13 @@
 .form-header {
   display: flex;
   font-size: 14px;
-  padding-right: 14px;
   margin: 0 0 15px 0;
   color: #2C2E31;
+
+  padding-right: 14px;
+  margin-right: 14px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #dedede;
 }
 
 .form-header p {
@@ -25,7 +29,7 @@
   flex-direction: column;
   width: auto;
   margin-right: 14px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .form-field label {
@@ -38,6 +42,7 @@
 
 .form-field input {
   padding: 2px 4px;
+  height: 20px;
 }
 
 .form-field-right {

@@ -50,6 +50,7 @@ export default function MaterialBitmapEngravesViewer(props: MaterialBitmapEngrav
                 <p className="viewer__label">Scan Gap</p>
                 <p className="viewer__value">{bitmap.scanGap}, LPI {toDisplayLinesPerInch(bitmap.scanGap)}</p>
               </div>
+              {(props.bitmaps.length > 1 && index !== props.bitmaps.length - 1) ? <hr /> : null}
             </>
           );
         })

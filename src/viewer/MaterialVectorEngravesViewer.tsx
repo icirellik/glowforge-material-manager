@@ -50,6 +50,7 @@ export default function MaterialVectorEngravesViewer(props: MaterialVectorEngrav
                 <p className="viewer__label">Scan Gap</p>
                 <p className="viewer__value">{vector.scanGap}, LPI {toDisplayLinesPerInch(vector.scanGap)}</p>
               </div>
+              {(props.vectors.length > 1 && index !== props.vectors.length - 1) ? <hr /> : null}
             </>
           );
         })

@@ -10,6 +10,7 @@ export interface QrCodeViewerProps {
 }
 
 export interface QrCodeViewerState {
+  title: string;
   materialIdImageUri: string;
   materialIdSvgData: string;
   materialImageUri: string;
@@ -21,11 +22,21 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
     super(props);
 
     this.state = {
+      title: '',
       materialIdImageUri: '',
       materialIdSvgData: '',
       materialImageUri: '',
       materialSvgData: '',
     };
+  }
+
+  shouldComponentUpdate(nextProps: QrCodeViewerProps, nextState: QrCodeViewerState) {
+    const  { thickName, name } = nextProps.material;
+    const nextTitle = `${thickName} ${name}`;
+    if (nextTitle === this.state.title) {
+      return false;
+    }
+    return true;
   }
 
   async componentDidUpdate() {
@@ -43,6 +54,7 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
     const materialSvgData = await qrcodeAsSvg(`${materialId}|${materialData}`);
 
     this.setState({
+      title,
       materialIdImageUri,
       materialIdSvgData,
       materialImageUri,

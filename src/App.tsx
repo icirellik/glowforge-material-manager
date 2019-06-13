@@ -669,40 +669,46 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
             />
           </div>
           <div className="col-contents">
-            <div className="intro">
-              <p>Add your own custom material settings here.</p>
-              <div>
-                <IconPlus
-                  click={this.setEditorModeAdd.bind(this)}
-                  fill="#001f23"
-                  height="25px"
-                  width="25px"
-                />
+            <div className="col-contents-container">
+              <div className="intro">
+                <p>Add your own custom material settings here.</p>
+                <div>
+                  <IconPlus
+                    click={this.setEditorModeAdd.bind(this)}
+                    fill="#001f23"
+                    height="25px"
+                    width="25px"
+                  />
+                </div>
               </div>
+              <MaterialViewer
+                editorMode={this.state.action}
+                cancelMaterial={this.setEditorModeCancel.bind(this)}
+                material={this.state.tempMaterial}
+              />
+              <MaterialEditor
+                action={this.state.action}
+                addBitmapEngrave={this.addBitmapEngrave}
+                addMaterial={this.addMaterial.bind(this)}
+                addScore={this.addScore}
+                addVectorEngrave={this.addVectorEngrave}
+                cancelMaterial={this.setEditorModeCancel.bind(this)}
+                editMaterial={this.editMaterial.bind(this)}
+                material={this.state.tempMaterial}
+                removeBitmapEngrave={this.removeBitmapEngrave}
+                removeScore={this.removeScore}
+                removeVectorEngrave={this.removeVectorEngrave}
+                updateBitmapEngrave={this.updateBitmapEngrave}
+                updateCut={this.updateCut}
+                updateMaterial={this.updateMaterial.bind(this)}
+                updateScore={this.updateScore}
+                updateVectorEngrave={this.updateVectorEngrave}
+              />
             </div>
-            <MaterialViewer
-              editorMode={this.state.action}
-              cancelMaterial={this.setEditorModeCancel.bind(this)}
-              material={this.state.tempMaterial}
-            />
-            <MaterialEditor
-              action={this.state.action}
-              addBitmapEngrave={this.addBitmapEngrave}
-              addMaterial={this.addMaterial.bind(this)}
-              addScore={this.addScore}
-              addVectorEngrave={this.addVectorEngrave}
-              cancelMaterial={this.setEditorModeCancel.bind(this)}
-              editMaterial={this.editMaterial.bind(this)}
-              material={this.state.tempMaterial}
-              removeBitmapEngrave={this.removeBitmapEngrave}
-              removeScore={this.removeScore}
-              removeVectorEngrave={this.removeVectorEngrave}
-              updateBitmapEngrave={this.updateBitmapEngrave}
-              updateCut={this.updateCut}
-              updateMaterial={this.updateMaterial.bind(this)}
-              updateScore={this.updateScore}
-              updateVectorEngrave={this.updateVectorEngrave}
-            />
+            <div className="foo">
+
+              Me a bar
+            </div>
           </div>
         </div>
         {
