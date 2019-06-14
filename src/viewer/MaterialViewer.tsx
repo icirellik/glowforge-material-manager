@@ -1,8 +1,7 @@
 import React from 'react';
-import { ModeCancel, EditorMode } from '../App';
+import { EditorMode } from '../App';
 import { PluginMaterial } from '../lib/materialRaw';
 import MaterialBitmapEngravesViewer from './MaterialBitmapEngravesViewer';
-import MaterialButtonBar from '../MaterialButtonBar';
 import MaterialCutViewer from './MaterialCutViewer';
 import MaterialScoresViewer from './MaterialScoresViewer';
 import MaterialVectorEngravesViewer from './MaterialVectorEngravesViewer';
@@ -11,7 +10,6 @@ import './Viewer.css';
 
 export type MaterialViewerProps = {
   editorMode: EditorMode;
-  cancelMaterial: ModeCancel;
   material: PluginMaterial;
 }
 
@@ -49,11 +47,6 @@ export default function MaterialViewer(props: MaterialViewerProps) {
       <MaterialBitmapEngravesViewer bitmaps={material.bitmaps} />
 
       <QrCodeViewer material={material} />
-
-      <MaterialButtonBar
-        editorMode={props.editorMode}
-        cancelMaterial={props.cancelMaterial}
-      />
     </div>
   );
 }

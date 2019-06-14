@@ -3,33 +3,38 @@
   width: 750px;
 }
 
-.App-grid {
+.columns {
   display: flex;
   justify-content: flex-start;
 }
 
-.App-grid .col-materials {
+.column__right {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.columns .col-materials {
   display: flex;
   width: 240px;
   background-color: #fbfbfb;
 }
 
-.App-grid .col-contents {
-  position: relative;
-  height: 500px;
-  overflow-y: auto;
+.columns .col-contents {
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
+  height: 469px;
+  overflow-y: auto;
 }
 
-.App-grid.osx .col-contents {
-  height: 500px;
+.columns.osx .col-contents {
   overflow-y: scroll;
 }
 
-.App-grid .col-contents-container {
+.columns .col-contents-container {
   padding: 16px 16px 16px 24px;
 }
-
 
 .intro {
   display: flex;
@@ -50,12 +55,41 @@
   justify-content: flex-end;
 }
 
-.foo {
+.buttonBar {
   display: flex;
-  position: absolute;
   width: 500px;
-  height: 20px;
-  bottom: 0;
-  left: 0;
-  background-color: blue;
+  height: 28px;
+  border-bottom: 1px solid #dedede;
+}
+
+.buttonBar button {
+  padding: 0 16px;
+  height: 28px;
+  justify-content: center;
+
+  background-color: #001f23;
+  color: white;
+
+  text-align: center;
+  font-weight: 500;
+  line-height: 28px;
+  font-size: 14px;
+
+  border: 0;
+}
+
+.buttonBar button:hover {
+    box-shadow: none;
+}
+
+.buttonBar button:focus {
+    box-shadow: none;
+}
+
+.buttonBar button:disabled {
+    opacity: 0.3;
+}
+
+.buttonBar button:not([disabled]):hover {
+  background-color: #000808;
 }

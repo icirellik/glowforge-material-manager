@@ -24,7 +24,6 @@ import {
 } from './lib/materialRaw';
 import BitmapEngraveSettings from './editor/BitmapEngraveSettings';
 import CutSettings from './editor/CutSettings';
-import MaterialButtonBar from './MaterialButtonBar';
 import MaterialSettings from './editor/MaterialSettings';
 import ScoreSettings from './editor/ScoreSettings';
 import VectorEngraveSettings from './editor/VectorEngraveSettings';
@@ -33,11 +32,8 @@ import './MaterialEditor.css';
 interface MaterialEditorProps {
   action: EditorMode;
   addBitmapEngrave: AddBitmapEngrave;
-  addMaterial: AddMaterial;
   addScore: AddScore;
   addVectorEngrave: AddVectorEngrave;
-  cancelMaterial: ModeCancel;
-  editMaterial: EditMaterial;
   material: PluginMaterial;
   removeScore: RemoveScore;
   removeBitmapEngrave: RemoveBitmapEngrave;
@@ -104,13 +100,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
           removeBitmapEngrave={this.props.removeBitmapEngrave}
           storeLocalMaterial={this.storeLocalMaterial}
           updateBitmapEngrave={this.props.updateBitmapEngrave}
-        />
-        <MaterialButtonBar
-          editorMode={this.props.action}
-          addMaterial={this.props.addMaterial}
-          cancelMaterial={this.props.cancelMaterial}
-          editMaterial={this.props.editMaterial}
-          title={`${this.props.material.thickName} ${this.props.material.name}`}
         />
       </>
     );

@@ -40,6 +40,7 @@ import { GFMaterial } from './lib/materialGlowforge';
 import { sha1 } from './lib/utils';
 import { readQrCode } from './lib/qrCode';
 import { AppHeader } from './AppHeader';
+import MaterialButtonBar from './MaterialButtonBar';
 
 export type AddMaterial = () => Promise<void>;
 export type CopyMaterial = (title: string) => Promise<void>;
@@ -149,6 +150,21 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       synchronized: true,
     };
 
+    // Modes
+    this.setEditorModeAdd = this.setEditorModeAdd.bind(this);
+    this.setEditorModeCancel = this.setEditorModeCancel.bind(this);
+    this.setEditorModeEdit = this.setEditorModeEdit.bind(this)
+    this.setEditorModeSelect = this.setEditorModeSelect.bind(this)
+
+    // Material
+    this.addMaterial = this.addMaterial.bind(this);
+    this.copyMaterial = this.copyMaterial.bind(this);
+    this.editMaterial = this.editMaterial.bind(this);
+    this.removeMaterial = this.removeMaterial.bind(this);
+    this.setMaterial = this.setMaterial.bind(this);
+    this.updateMaterial = this.updateMaterial.bind(this);
+
+    // Settings
     this.updateCut = this.updateCut.bind(this);
 
     this.addScore = this.addScore.bind(this);
@@ -166,6 +182,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     // Messaging
     this.displayMessage = this.displayMessage.bind(this);
     this.clearMessage = this.clearMessage.bind(this);
+
+    // Synchronization
+    this.forceSyncronize = this.forceSyncronize.bind(this)
   }
 
   async componentDidMount() {
@@ -649,65 +668,65 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   }
 
   render() {
+    const intro = (this.state.materials.length === 0) ? (
+      <div className="intro">
+        <p>Add your own custom material settings here.</p>
+      </div>
+    ) : null;
+
     return (
       <div className="App">
         <AppHeader
           connected={this.props.connected}
-          forceSyncronize={this.forceSyncronize.bind(this)}
+          forceSyncronize={this.forceSyncronize}
           synchronized={this.state.synchronized}
           cloudStorageBytesUsed={this.state.cloudStorageBytesUsed}
         />
-        <div className={`App-grid ${(this.props.platform === 'mac') ? 'osx' : ''}`}>
+        <div className={`columns ${(this.props.platform === 'mac') ? 'osx' : ''}`}>
           <div className="col-materials">
             <MaterialList
-              cloneMaterial={this.copyMaterial.bind(this)}
-              editMaterial={this.setEditorModeEdit.bind(this)}
+              cloneMaterial={this.copyMaterial}
+              editMaterial={this.setEditorModeEdit}
               materials={this.state.rawMaterials}
-              removeMaterial={this.removeMaterial.bind(this)}
-              selectMaterial={this.setEditorModeSelect.bind(this)}
-              setMaterial={this.setMaterial.bind(this)}
+              removeMaterial={this.removeMaterial}
+              selectMaterial={this.setEditorModeSelect}
+              setMaterial={this.setMaterial}
             />
           </div>
-          <div className="col-contents">
-            <div className="col-contents-container">
-              <div className="intro">
-                <p>Add your own custom material settings here.</p>
-                <div>
-                  <IconPlus
-                    click={this.setEditorModeAdd.bind(this)}
-                    fill="#001f23"
-                    height="25px"
-                    width="25px"
-                  />
-                </div>
-              </div>
-              <MaterialViewer
+          <div className="column__right">
+            <div className="buttonBar">
+              <MaterialButtonBar
                 editorMode={this.state.action}
-                cancelMaterial={this.setEditorModeCancel.bind(this)}
-                material={this.state.tempMaterial}
-              />
-              <MaterialEditor
-                action={this.state.action}
-                addBitmapEngrave={this.addBitmapEngrave}
-                addMaterial={this.addMaterial.bind(this)}
-                addScore={this.addScore}
-                addVectorEngrave={this.addVectorEngrave}
-                cancelMaterial={this.setEditorModeCancel.bind(this)}
-                editMaterial={this.editMaterial.bind(this)}
-                material={this.state.tempMaterial}
-                removeBitmapEngrave={this.removeBitmapEngrave}
-                removeScore={this.removeScore}
-                removeVectorEngrave={this.removeVectorEngrave}
-                updateBitmapEngrave={this.updateBitmapEngrave}
-                updateCut={this.updateCut}
-                updateMaterial={this.updateMaterial.bind(this)}
-                updateScore={this.updateScore}
-                updateVectorEngrave={this.updateVectorEngrave}
+                addMaterial={this.addMaterial}
+                newMaterial={this.setEditorModeAdd}
+                cancelMaterial={this.setEditorModeCancel}
+                editMaterial={this.editMaterial}
+                title={`${this.state.tempMaterial.thickName} ${this.state.tempMaterial.name}`}
               />
             </div>
-            <div className="foo">
-
-              Me a bar
+            <div className="col-contents">
+              <div className="col-contents-container">
+                {intro}
+                <MaterialViewer
+                  editorMode={this.state.action}
+                  material={this.state.tempMaterial}
+                />
+                <MaterialEditor
+                  action={this.state.action}
+                  addBitmapEngrave={this.addBitmapEngrave}
+                  addScore={this.addScore}
+                  addVectorEngrave={this.addVectorEngrave}
+                  material={this.state.tempMaterial}
+                  removeBitmapEngrave={this.removeBitmapEngrave}
+                  removeScore={this.removeScore}
+                  removeVectorEngrave={this.removeVectorEngrave}
+                  updateBitmapEngrave={this.updateBitmapEngrave}
+                  updateCut={this.updateCut}
+                  updateMaterial={this.updateMaterial}
+                  updateScore={this.updateScore}
+                  updateVectorEngrave={this.updateVectorEngrave}
+                />
+              </div>
             </div>
           </div>
         </div>
