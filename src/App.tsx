@@ -10,7 +10,6 @@ import {
   sendCloudMaterial,
   removeMaterialTitle,
 } from './lib/material';
-import IconPlus from './icons/IconPlus';
 import {
   clearTempMaterial,
   forceSync,

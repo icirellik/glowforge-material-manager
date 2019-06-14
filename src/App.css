@@ -67,7 +67,7 @@
   height: 28px;
   justify-content: center;
 
-  background-color: #001f23;
+  background-color: #173337;
   color: white;
 
   text-align: center;
@@ -76,6 +76,7 @@
   font-size: 14px;
 
   border: 0;
+  border-right: 1px solid #1C0B19;
 }
 
 .buttonBar button:hover {
@@ -91,5 +92,5 @@
 }
 
 .buttonBar button:not([disabled]):hover {
-  background-color: #000808;
+  background-color: #0D1C1E;
 }

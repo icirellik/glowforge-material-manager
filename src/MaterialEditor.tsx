@@ -4,12 +4,9 @@ import {
 } from './lib/chromeWrappers';
 import {
   AddBitmapEngrave,
-  AddMaterial,
   AddScore,
   AddVectorEngrave,
-  EditMaterial,
   EditorMode,
-  ModeCancel,
   RemoveBitmapEngrave,
   RemoveScore,
   RemoveVectorEngrave,
