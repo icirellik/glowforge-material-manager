@@ -1,13 +1,14 @@
 import React from 'react';
-import { AddMaterial, ModeCancel, EditMaterial, EditorMode } from './App';
+import { AddMaterial, ModeCancel, EditMaterial, EditorMode, ModeAdd } from './App';
 import './MaterialButtonBar.css';
 
 interface MaterialButtonBarProps {
   editorMode: EditorMode;
-  addMaterial?: AddMaterial;
-  cancelMaterial?: ModeCancel;
-  editMaterial?: EditMaterial;
-  title?: string;
+  addMaterial: AddMaterial;
+  cancelMaterial: ModeCancel;
+  editMaterial: EditMaterial;
+  newMaterial: ModeAdd;
+  title: string;
 }
 
 class MaterialButtonBar extends React.Component<MaterialButtonBarProps> {
@@ -37,9 +38,12 @@ class MaterialButtonBar extends React.Component<MaterialButtonBarProps> {
           </div>
         );
       case 'DISPLAY':
-        return null;
       default:
-        return null;
+        return (
+          <div className="Material-buttons">
+            <button onClick={this.props.newMaterial}>New</button>
+          </div>
+        );
     }
   }
 }

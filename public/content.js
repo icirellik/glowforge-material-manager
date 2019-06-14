@@ -165,6 +165,7 @@ setTimeout(() => {
 let prevPreloadedLidImage = null;
 function checkLidImage(preloadedLidImage) {
   if (!preloadedLidImage) {
+    prevPreloadedLidImage = null;
     return;
   }
 
@@ -181,6 +182,39 @@ function checkLidImage(preloadedLidImage) {
 }
 
 /**
+ * checks is the loaded designs have changed and if so informs the app.
+ */
+let prevLoadedDesignIds = [];
+function checkLoadedDesignIds(loadedDesignIds) {
+  if (!loadedDesignIds || loadedDesignIds.length === 0) {
+    prevLoadedDesignIds = [];
+    return;
+  }
+
+  let diff = false;
+  if (loadedDesignIds.length === prevLoadedDesignIds.length) {
+    for (let i = 0; i < loadedDesignIds.length; i += 1) {
+      if (loadedDesignIds[i] !== prevLoadedDesignIds[i]) {
+        diff = true;
+      }
+    }
+  } else {
+    diff = true;
+  }
+
+  if (diff) {
+    // do something new.
+    sendBackgroundMessage({
+      type: 'loadedDesignIds',
+      image: loadedDesignIds,
+    }, () => {
+      log('loadedDesignIds - success');
+    });
+    prevLoadedDesignIds = Array.from(loadedDesignIds);
+  }
+}
+
+/**
  * Subscribe to redux store changes.
  */
 window.store.subscribe(() => {
@@ -191,6 +225,12 @@ window.store.subscribe(() => {
     checkLidImage(preloadedLidImage);
   }
 
+  if (state.workspace.present) {
+    const present = state.workspace.present.toJSON();
+    if (present.loadedDesignIds.length > 0) {
+      checkLoadedDesignIds(present.loadedDesignIds);
+    }
+  }
 
   // Send image to plugin.
 

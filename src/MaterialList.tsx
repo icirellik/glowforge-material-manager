@@ -25,36 +25,32 @@ function MaterialListNoElements() {
   );
 }
 
-class MaterialList extends React.Component<MaterialListProps> {
-  render() {
-    const { materials } = this.props
+export default function MaterialList (props: MaterialListProps) {
+  const { materials } = props
 
-    const materialElements = materials.map(material => {
-      return (
-        <MaterialListItem
-          cloneMaterial={this.props.cloneMaterial}
-          editMaterial={this.props.editMaterial}
-          material={material}
-          removeMaterial={this.props.removeMaterial}
-          selectMaterial={this.props.selectMaterial}
-          setMaterial={this.props.setMaterial}
-        />
-      );
-    });
-
+  const materialElements = materials.map(material => {
     return (
-      <div className="MaterialList">
-        <h3>Custom Materials</h3>
-        {materialElements.length > 0 ? (
-          <div className="MaterialList-list">
-            {materialElements}
-          </div>
-        ) : (
-          <MaterialListNoElements />
-        )}
-      </div>
+      <MaterialListItem
+        cloneMaterial={props.cloneMaterial}
+        editMaterial={props.editMaterial}
+        material={material}
+        removeMaterial={props.removeMaterial}
+        selectMaterial={props.selectMaterial}
+        setMaterial={props.setMaterial}
+      />
     );
-  }
-}
+  });
 
-export default MaterialList;
+  return (
+    <div className="materialList">
+      <h3>Custom Materials</h3>
+      {materialElements.length > 0 ? (
+        <div className="materialList__container">
+          {materialElements}
+        </div>
+      ) : (
+        <MaterialListNoElements />
+      )}
+    </div>
+  );
+}

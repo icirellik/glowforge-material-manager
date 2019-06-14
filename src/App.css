@@ -3,71 +3,43 @@
   width: 750px;
 }
 
-.App-flexColumn {
+.columns {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.column__right {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 }
 
-.App-flex {
+.columns .col-materials {
   display: flex;
-}
-
-.App-flexLabel {
-  width: 50%;
-}
-
-.App-flexSectionHeader {
-  font-weight: 600;
-  margin: 10px 0;
-}
-
-.App-field {
-  display: block;
-}
-
-.App-field label {
-  display: inline-block;
-  width: 140px;
-}
-
-.App-field input {
-  display: inline-block;
-  width: 150px;
-}
-
-.App-field p {
-  font-weight: 600;
-  margin: 10px 0;
-}
-
-.App-grid {
-  display: flex;
-  justify-content: space-between;
-}
-
-.App-grid .col-materials {
-  padding-left: 10px;
   width: 240px;
+  background-color: #fbfbfb;
 }
 
-.App-grid .col-contents {
-  padding-left: 10px;
-  height: 500px;
-  width: 490px;
+.columns .col-contents {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 469px;
   overflow-y: auto;
 }
 
-.App-grid.osx .col-contents {
-  padding-left: 10px;
-  height: 500px;
-  width: 490px;
+.columns.osx .col-contents {
   overflow-y: scroll;
+}
+
+.columns .col-contents-container {
+  padding: 16px 16px 16px 24px;
 }
 
 .intro {
   display: flex;
   font-size: 14px;
-  padding: 14px 14px 14px 0;
+  padding-bottom: 16px;
 }
 
 .intro p {
@@ -81,4 +53,44 @@
   flex-grow: 1;
   align-items: center;
   justify-content: flex-end;
+}
+
+.buttonBar {
+  display: flex;
+  width: 500px;
+  height: 28px;
+  border-bottom: 1px solid #dedede;
+}
+
+.buttonBar button {
+  padding: 0 16px;
+  height: 28px;
+  justify-content: center;
+
+  background-color: #173337;
+  color: white;
+
+  text-align: center;
+  font-weight: 500;
+  line-height: 28px;
+  font-size: 14px;
+
+  border: 0;
+  border-right: 1px solid #1C0B19;
+}
+
+.buttonBar button:hover {
+    box-shadow: none;
+}
+
+.buttonBar button:focus {
+    box-shadow: none;
+}
+
+.buttonBar button:disabled {
+    opacity: 0.3;
+}
+
+.buttonBar button:not([disabled]):hover {
+  background-color: #0D1C1E;
 }

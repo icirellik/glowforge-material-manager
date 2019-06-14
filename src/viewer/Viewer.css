@@ -1,0 +1,36 @@
+.viewer__column {
+  display: flex;
+  flex-direction: column;
+}
+
+.viewer__column hr {
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-bottom: 1px solid #dedede;
+  margin-right: 48px;
+}
+
+.viewer__headerRow {
+  font-weight: 600;
+  margin: 20px 48px 12px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #dedede;
+}
+
+.viewer__row {
+  display: flex;
+}
+
+.viewer__label {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  width: 150px;
+}
+
+.viewer__value {
+  display: flex;
+  align-items: center;
+  height: 18px;
+}
