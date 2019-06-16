@@ -119,6 +119,7 @@ interface AppState {
   message: AppMessage | null;
   rawMaterials: PluginMaterial[];
   synchronized: boolean;
+  rawSvg: string | null;
   tempMaterial: TempMaterial;
 }
 
@@ -146,6 +147,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       },
       materials: [],
       rawMaterials: [],
+      rawSvg: null,
       synchronized: true,
     };
 
@@ -246,31 +248,44 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
             const messages = outboundQueue.splice(0);
 
             for (let i = 0; i < messages.length; i += 1) {
+
               const message = messages[i];
+              switch (message.type) {
+                case 'lidImage':
+                  const image = `https://app.glowforge.com${message.image}`;
 
-              const image = `https://app.glowforge.com${message.image}`;
+                  const qrCodeData = await readQrCode(image);
+                  console.log(qrCodeData);
 
-              const qrCodeData = await readQrCode(image);
-              console.log(qrCodeData);
-
-              if (qrCodeData && qrCodeData.startsWith('Glowforge')) {
-                this.setState({
-                  message: {
-                    message: 'Proofgrade material detected.',
-                    color: null,
-                  },
-                });
-              } else if (qrCodeData && qrCodeData.startsWith('Custom')) {
-                sendMessage({
-                  type: 'selectMaterial',
-                  materialId: qrCodeData,
-                });
-                this.setState({
-                  message: {
-                    message: 'Custom material detected.',
-                    color: null,
-                  },
-                });
+                  if (qrCodeData && qrCodeData.startsWith('Glowforge')) {
+                    this.setState({
+                      message: {
+                        message: 'Proofgrade material detected.',
+                        color: null,
+                      },
+                    });
+                  } else if (qrCodeData && qrCodeData.startsWith('Custom')) {
+                    sendMessage({
+                      type: 'selectMaterial',
+                      materialId: qrCodeData,
+                    });
+                    this.setState({
+                      message: {
+                        message: 'Custom material detected.',
+                        color: null,
+                      },
+                    });
+                  }
+                  break;
+                case 'loadedDesignIds':
+                  let svg = null;
+                  if (message.designIds && message.designIds.length > 0) {
+                    svg = `https://storage.googleapis.com/glowforge-files/designs/${message.designIds[0]}/svgf/svgf_file.gzip.svg`
+                  }
+                  this.setState({
+                    rawSvg: svg,
+                  });
+                  break;
               }
             }
           }
@@ -687,6 +702,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
               cloneMaterial={this.copyMaterial}
               editMaterial={this.setEditorModeEdit}
               materials={this.state.rawMaterials}
+              rawSvg={this.state.rawSvg}
               removeMaterial={this.removeMaterial}
               selectMaterial={this.setEditorModeSelect}
               setMaterial={this.setMaterial}

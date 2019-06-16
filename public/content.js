@@ -206,7 +206,7 @@ function checkLoadedDesignIds(loadedDesignIds) {
     // do something new.
     sendBackgroundMessage({
       type: 'loadedDesignIds',
-      image: loadedDesignIds,
+      designIds: loadedDesignIds,
     }, () => {
       log('loadedDesignIds - success');
     });
