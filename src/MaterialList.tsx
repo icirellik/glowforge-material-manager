@@ -44,7 +44,7 @@ export default function MaterialList (props: MaterialListProps) {
 
   let svg = null;
   if (props.rawSvg) {
-    svg = (<a href={props.rawSvg} target="_blank">View SVG</a>);
+    svg = (<a href={props.rawSvg} target="_blank" rel="noopener noreferrer">View SVG</a>);
   }
 
   return (
