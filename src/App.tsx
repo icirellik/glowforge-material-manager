@@ -19,6 +19,7 @@ import {
   reloadGlowForgeTab,
   storeGlowforgeMaterials,
   storeRawMaterials,
+  getUISettings,
 } from './lib/chromeWrappers';
 import {
   EMPTY_BITMAP_ENGRAVE,
@@ -227,15 +228,20 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       // Refresh the sync status.
       const shouldUpdate = await getShouldUpdate();
 
+      const uiSettings = await getUISettings();
+      const rawSvg = (uiSettings && uiSettings.loadedDesignId) ? `https://storage.googleapis.com/glowforge-files/designs/${uiSettings.loadedDesignId}/svgf/svgf_file.gzip.svg` : null;
+
       // Update teh state.
       if (this.state.synchronized === shouldUpdate) {
         this.setState({
           cloudStorageBytesUsed,
+          rawSvg,
           synchronized: !shouldUpdate,
         });
       } else {
         this.setState({
           cloudStorageBytesUsed,
+          rawSvg,
         });
       }
 
@@ -276,15 +282,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
                       },
                     });
                   }
-                  break;
-                case 'loadedDesignIds':
-                  let svg = null;
-                  if (message.designIds && message.designIds.length > 0) {
-                    svg = `https://storage.googleapis.com/glowforge-files/designs/${message.designIds[0]}/svgf/svgf_file.gzip.svg`
-                  }
-                  this.setState({
-                    rawSvg: svg,
-                  });
                   break;
               }
             }

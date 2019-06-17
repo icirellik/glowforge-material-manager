@@ -8,6 +8,45 @@ function log(message) {
 }
 
 /**
+ * Helper function to store data in local storage.
+ */
+function store(data, cb) {
+  chrome.storage.local.set(data, cb);
+}
+
+/**
+ * Helper function to load all data from local storage.
+ */
+function load(cb) {
+  chrome.storage.local.get(null, cb);
+}
+
+/**
+ * Stores new ui settings.
+ */
+function storeUISettings(settings) {
+  load((results) => {
+    if (!results.ui) {
+      store({
+        ui: settings,
+      }, () => {
+        log('UI Settings Created');
+      });
+    } else {
+      const ui = {
+        ...results.ui,
+        ...settings,
+      }
+      store({
+        ui,
+      }, () => {
+        log('UI Settings Updated');
+      });
+    }
+  });
+}
+
+/**
  * Browser background task to synchronize the GFUI with the custom materials.
  */
 function asFloat(number) {
@@ -78,7 +117,15 @@ chrome.runtime.onMessageExternal.addListener(
       window.outboundQueue.push(request);
     } else if (request.type === 'loadedDesignIds') {
       log('loadedDesignIds message');
-      window.outboundQueue.push(request);
+      if (request.designIds && request.designIds.length > 0) {
+        storeUISettings({
+          loadedDesignId: request.designIds[0],
+        });
+      } else {
+        storeUISettings({
+          loadedDesignId: null,
+        });
+      }
     } else if (request.type === 'materialCheck') {
       log('refreshMaterials message');
       refreshMaterials(relayMessages, sendResponse);

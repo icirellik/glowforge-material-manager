@@ -8,6 +8,10 @@ export type SynchronizedMaterials = {
   [key in SyncId]: SyncData;
 }
 
+export interface UISettings {
+  loadedDesignId: string | null;
+}
+
 export interface StorageLocal {
   // The Glowforge formatted materials.
   materials?: GFMaterial[];
@@ -18,6 +22,8 @@ export interface StorageLocal {
   // A material that was saved due to the popup window being dismissed without
   // clicking the save button.
   tempMaterial?: PluginMaterial | null;
+  // Different UI setttings that may or may not exist.
+  ui?: UISettings | null;
 }
 
 // Local Storage
@@ -160,6 +166,21 @@ export async function getShouldUpdate(): Promise<boolean> {
         resolve(result.shouldUpdate);
       } else {
         resolve(false);
+      }
+    });
+  });
+}
+
+/**
+ * Gets the UI Settings.
+ */
+export async function getUISettings(): Promise<UISettings | null> {
+  return new Promise(resolve => {
+    window.chrome.storage.local.get(null, (result: StorageLocal) => {
+      if (result && result.ui) {
+        resolve(result.ui);
+      } else {
+        resolve(null);
       }
     });
   });
