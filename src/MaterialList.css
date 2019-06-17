@@ -7,6 +7,10 @@
 }
 
 .materialList h3 {
+  padding-bottom: 4px;
+}
+
+.materialList a {
   padding-bottom: 24px;
 }
 
