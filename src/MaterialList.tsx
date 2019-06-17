@@ -14,6 +14,7 @@ type MaterialListProps = {
   materials: PluginMaterial[]
   cloneMaterial: CopyMaterial;
   editMaterial: ModeEdit;
+  rawSvg: string | null;
   removeMaterial: RemoveMaterial;
   selectMaterial: ModeSelect;
   setMaterial: SetMaterial;
@@ -41,9 +42,15 @@ export default function MaterialList (props: MaterialListProps) {
     );
   });
 
+  let svg = null;
+  if (props.rawSvg) {
+    svg = (<a href={props.rawSvg} target="_blank">View SVG</a>);
+  }
+
   return (
     <div className="materialList">
       <h3>Custom Materials</h3>
+      {svg}
       {materialElements.length > 0 ? (
         <div className="materialList__container">
           {materialElements}
