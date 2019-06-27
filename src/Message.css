@@ -1,6 +1,6 @@
 .message-box__container {
   display: flex;
-  background-color: #fdfd96;
+  background-color: #BCD3F4;
   border-top: 1px solid #000;
   bottom: 0;
   font-size: 16px;
@@ -10,7 +10,6 @@
   position: absolute;
   width: 100%;
 }
-
 
 .message-box__message {
   display: flex;

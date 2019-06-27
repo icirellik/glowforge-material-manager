@@ -20,7 +20,7 @@ export default function Message(props: MessageProps) {
       <div className="message-box__container" style={styles}>
         <span className="message-box__message">{props.message}</span>
         <div className="message-box__close">
-          <IconClear click={props.clearMessage} title="Close" />
+          <IconClear click={props.clearMessage} title="Dismiss" />
         </div>
       </div>
     );

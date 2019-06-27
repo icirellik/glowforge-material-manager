@@ -10,8 +10,9 @@
   padding-bottom: 4px;
 }
 
-.materialList a {
-  padding-bottom: 24px;
+.materialList input {
+  padding: 2px 4px;
+  margin-bottom: 24px;
 }
 
 .materialList__container {

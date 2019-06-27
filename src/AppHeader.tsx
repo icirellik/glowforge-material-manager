@@ -5,10 +5,10 @@ import logo from './logo.svg';
 import './AppHeader.css';
 
 interface AppHeaderProps {
+  cloudStorageBytesUsed: number;
   connected: boolean;
   forceSyncronize: any;
   synchronized: boolean;
-  cloudStorageBytesUsed: number;
 }
 
 export function AppHeader(props: AppHeaderProps) {
@@ -26,6 +26,7 @@ export function AppHeader(props: AppHeaderProps) {
           click={props.forceSyncronize}
           fill="#FFF"
           height="17px"
+          title="Synchronize with Glowforge UI"
           width="17px"
         />
       </div>
