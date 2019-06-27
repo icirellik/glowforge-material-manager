@@ -685,6 +685,11 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       </div>
     ) : null;
 
+    let svg = null;
+    if (this.state.rawSvg) {
+      svg = (<a className="buttonBar_download" href={this.state.rawSvg} target="_blank" rel="noopener noreferrer">Download Raw SVG/Trace</a>);
+    }
+
     return (
       <div className="App">
         <AppHeader
@@ -699,7 +704,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
               cloneMaterial={this.copyMaterial}
               editMaterial={this.setEditorModeEdit}
               materials={this.state.rawMaterials}
-              rawSvg={this.state.rawSvg}
               removeMaterial={this.removeMaterial}
               selectMaterial={this.setEditorModeSelect}
               setMaterial={this.setMaterial}
@@ -715,6 +719,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
                 editMaterial={this.editMaterial}
                 title={`${this.state.tempMaterial.thickName} ${this.state.tempMaterial.name}`}
               />
+              {svg}
             </div>
             <div className="col-contents">
               <div className="col-contents-container">

@@ -14,10 +14,13 @@ type MaterialListProps = {
   materials: PluginMaterial[]
   cloneMaterial: CopyMaterial;
   editMaterial: ModeEdit;
-  rawSvg: string | null;
   removeMaterial: RemoveMaterial;
   selectMaterial: ModeSelect;
   setMaterial: SetMaterial;
+}
+
+type MaterialListState = {
+  filter?: string;
 }
 
 function MaterialListNoElements() {
@@ -26,38 +29,65 @@ function MaterialListNoElements() {
   );
 }
 
-export default function MaterialList (props: MaterialListProps) {
-  const { materials } = props
+export default class MaterialList extends React.Component<MaterialListProps, MaterialListState> {
+  constructor(props: MaterialListProps) {
+    super(props);
 
-  const materialElements = materials.map(material => {
-    return (
-      <MaterialListItem
-        cloneMaterial={props.cloneMaterial}
-        editMaterial={props.editMaterial}
-        material={material}
-        removeMaterial={props.removeMaterial}
-        selectMaterial={props.selectMaterial}
-        setMaterial={props.setMaterial}
-      />
-    );
-  });
+    this.state = {
+      filter: undefined,
+    };
 
-  let svg = null;
-  if (props.rawSvg) {
-    svg = (<a href={props.rawSvg} target="_blank" rel="noopener noreferrer">Download Raw SVG/Trace</a>);
+    this.onFilterChange = this.onFilterChange.bind(this);
   }
 
-  return (
-    <div className="materialList">
-      <h3>Custom Materials</h3>
-      {svg}
-      {materialElements.length > 0 ? (
-        <div className="materialList__container">
-          {materialElements}
-        </div>
-      ) : (
-        <MaterialListNoElements />
-      )}
-    </div>
-  );
+  onFilterChange(event: React.ChangeEvent) {
+    if ((event.target as any).value) {
+      this.setState({
+        filter: (event.target as any).value,
+      });
+    } else {
+      this.setState({
+        filter: undefined,
+      });
+    }
+  }
+
+  render () {
+    const { materials } = this.props;
+
+    const materialElements = materials.filter(material => {
+      const title = `${material.thickName} ${material.name}`.toLowerCase();
+      return !this.state.filter || title.includes(this.state.filter.toLowerCase());
+    }).map(material => {
+      return (
+        <MaterialListItem
+          cloneMaterial={this.props.cloneMaterial}
+          editMaterial={this.props.editMaterial}
+          material={material}
+          removeMaterial={this.props.removeMaterial}
+          selectMaterial={this.props.selectMaterial}
+          setMaterial={this.props.setMaterial}
+        />
+      );
+    });
+
+    return (
+      <div className="materialList">
+        <h3>Custom Materials</h3>
+        <input
+          onChange={this.onFilterChange}
+          placeholder="Search"
+          type="text"
+          value={this.state.filter}
+        />
+        {materialElements.length > 0 ? (
+          <div className="materialList__container">
+            {materialElements}
+          </div>
+        ) : (
+          <MaterialListNoElements />
+        )}
+      </div>
+    );
+  }
 }

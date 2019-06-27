@@ -94,3 +94,9 @@
 .buttonBar button:not([disabled]):hover {
   background-color: #0D1C1E;
 }
+
+.buttonBar_download {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
