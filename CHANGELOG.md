@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.0
+
+* Added QR Codes
+* Added material selection
+* Added material adetection and autoselection.
+* Cleaned up the ui
+* Added trace / svg download
+* Added input validation
+* Added material search to the material list.
+
+* Converted to TypeScript
+
 ## Release 0.3.4
 
 * Fixes a bug where in certain cases the materials would keep trying to upgrade.

@@ -41,7 +41,18 @@ interface MaterialEditorProps {
   validationHandler: (id: string, isValid: boolean) => void;
 }
 
-function storeLocalMaterial(action: EditorMode, material: TempMaterial) {
+/**
+ * A simple function that saves the temporary material state so that it may be
+ * restored after accidentally closing the plugin window.
+ *
+ * This function saves state both onChange and onBlue of the input fields.
+ *
+ * TODO: Implement save onChange
+ *
+ * @param action
+ * @param material
+ */
+function saveTemporaryState(action: EditorMode, material: TempMaterial) {
   if (action === 'ADD') {
     storeTempMaterial(material);
   }
@@ -62,16 +73,16 @@ export default function MaterialEditor(props: MaterialEditorProps) {
       <MaterialSettings
         action={props.action}
         material={props.material}
-        storeLocalMaterial={() => {
-          storeLocalMaterial(action, material);
+        saveTemporaryState={() => {
+          saveTemporaryState(action, material);
         }}
         updateMaterial={props.updateMaterial}
         validationHandler={props.validationHandler}
       />
       <CutSettings
         cut={material.cut}
-        storeLocalMaterial={() => {
-          storeLocalMaterial(action, material);
+        saveTemporaryState={() => {
+          saveTemporaryState(action, material);
         }}
         updateCut={props.updateCut}
         validationHandler={props.validationHandler}
@@ -80,8 +91,8 @@ export default function MaterialEditor(props: MaterialEditorProps) {
         addScore={props.addScore}
         removeScore={props.removeScore}
         scores={props.material.scores}
-        storeLocalMaterial={() => {
-          storeLocalMaterial(action, material);
+        saveTemporaryState={() => {
+          saveTemporaryState(action, material);
         }}
         updateScore={props.updateScore}
         validationHandler={props.validationHandler}
@@ -89,8 +100,8 @@ export default function MaterialEditor(props: MaterialEditorProps) {
       <VectorEngraveSettings
         addVectorEngrave={props.addVectorEngrave}
         removeVectorEngrave={props.removeVectorEngrave}
-        storeLocalMaterial={() => {
-          storeLocalMaterial(action, material);
+        saveTemporaryState={() => {
+          saveTemporaryState(action, material);
         }}
         updateVectorEngrave={props.updateVectorEngrave}
         vectors={props.material.vectors}
@@ -100,8 +111,8 @@ export default function MaterialEditor(props: MaterialEditorProps) {
         addBitmapEngrave={props.addBitmapEngrave}
         bitmaps={props.material.bitmaps}
         removeBitmapEngrave={props.removeBitmapEngrave}
-        storeLocalMaterial={() => {
-          storeLocalMaterial(action, material);
+        saveTemporaryState={() => {
+          saveTemporaryState(action, material);
         }}
         updateBitmapEngrave={props.updateBitmapEngrave}
         validationHandler={props.validationHandler}

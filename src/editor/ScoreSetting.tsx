@@ -24,7 +24,7 @@ interface ScoreSettingProps {
   index: number;
   removeScore: Function;
   score: PluginScoreSetting;
-  storeLocalMaterial: React.FocusEventHandler<any>;
+  saveTemporaryState: () => void;
   updateScore: Function;
   validationHandler: (id: string, isValid: boolean) => void;
 }
@@ -60,7 +60,7 @@ export default class ScoreSetting extends React.Component<ScoreSettingProps> {
         </div>
         <InputText
           label="Name *"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('name', event.target.value) }
           value={this.props.score.name}
           validate={this.props.validationHandler}
@@ -69,7 +69,7 @@ export default class ScoreSetting extends React.Component<ScoreSettingProps> {
           label="Speed *"
           max="500"
           min="100"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('speed', toRealCutSpeed(asInteger(event.target.value))) }
           value={toDisplayCutSpeed(this.props.score.speed)}
           validate={this.props.validationHandler}
@@ -80,7 +80,7 @@ export default class ScoreSetting extends React.Component<ScoreSettingProps> {
           label="Power *"
           max="100"
           min="0"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('power', toRealPower(asInteger(event.target.value))) }
           onChecked={() => {
             const nextMaxPower = !maxPower;
@@ -91,13 +91,13 @@ export default class ScoreSetting extends React.Component<ScoreSettingProps> {
         />
         <InputNumber
           label="Passes"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('passes', asInteger(event.target.value)) }
           value={this.props.score.passes}
         />
         <InputNumber
           label="Focal Offset (mm)"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('focalOffset', precisionRound(asFloat(event.target.value), 3)) }
           value={this.props.score.focalOffset}
         />

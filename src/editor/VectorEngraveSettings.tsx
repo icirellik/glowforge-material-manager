@@ -7,7 +7,7 @@ import { AddVectorEngrave } from '../App';
 type VectorEngraveSettingsProps = {
   addVectorEngrave: AddVectorEngrave;
   removeVectorEngrave: Function;
-  storeLocalMaterial: React.FocusEventHandler<any>;
+  saveTemporaryState: () => void;
   updateVectorEngrave: Function;
   vectors: PluginVectorEngraveSetting[];
   validationHandler: (id: string, isValid: boolean) => void;
@@ -32,7 +32,7 @@ export default function VectorEngraveSettings(props: VectorEngraveSettingsProps)
           return (
             <VectorEngraveSetting
               index={index}
-              storeLocalMaterial={props.storeLocalMaterial}
+              saveTemporaryState={props.saveTemporaryState}
               removeVectorEngrave={props.removeVectorEngrave}
               updateVectorEngrave={props.updateVectorEngrave}
               vector={vector}

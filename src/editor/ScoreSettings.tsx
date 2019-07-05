@@ -8,7 +8,7 @@ type ScoreSettingsProps = {
   addScore: AddScore;
   removeScore: Function;
   scores: PluginScoreSetting[];
-  storeLocalMaterial: React.FocusEventHandler<any>;
+  saveTemporaryState: () => void;
   updateScore: Function;
   validationHandler: (id: string, isValid: boolean) => void;
 }
@@ -33,7 +33,7 @@ export default function ScoreSettings(props: ScoreSettingsProps) {
             <ScoreSetting
               index={index}
               score={score}
-              storeLocalMaterial={props.storeLocalMaterial}
+              saveTemporaryState={props.saveTemporaryState}
               removeScore={props.removeScore}
               updateScore={props.updateScore}
               validationHandler={props.validationHandler}

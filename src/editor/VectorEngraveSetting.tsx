@@ -24,7 +24,7 @@ import {
 interface VectorEngraveSettingProps {
   index: number;
   removeVectorEngrave: Function;
-  storeLocalMaterial: React.FocusEventHandler<any>;
+  saveTemporaryState: () => void;
   updateVectorEngrave: Function;
   vector: PluginVectorEngraveSetting;
   validationHandler: (id: string, isValid: boolean) => void;
@@ -61,7 +61,7 @@ export default class VectorEngraveSetting extends React.Component<VectorEngraveS
         </div>
         <InputText
           label="Name *"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('name', event.target.value) }
           value={this.props.vector.name}
           validate={this.props.validationHandler}
@@ -70,7 +70,7 @@ export default class VectorEngraveSetting extends React.Component<VectorEngraveS
           label="Speed *"
           max="1000"
           min="100"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('speed', toRealEngraveSpeed(asInteger(event.target.value))) }
           value={toDisplayEngraveSpeed(this.props.vector.speed)}
           validate={this.props.validationHandler}
@@ -81,7 +81,7 @@ export default class VectorEngraveSetting extends React.Component<VectorEngraveS
           label="Power *"
           max="100"
           min="0"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('power', toRealPower(asInteger(event.target.value))) }
           onChecked={() => {
             const nextMaxPower = !maxPower;
@@ -92,19 +92,19 @@ export default class VectorEngraveSetting extends React.Component<VectorEngraveS
         />
         <InputNumber
           label="Passes"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('passes', asInteger(event.target.value)) }
           value={this.props.vector.passes}
         />
         <InputNumber
           label="Focal Offset (mm)"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('focalOffset', precisionRound(asFloat(event.target.value), 3)) }
           value={this.props.vector.focalOffset}
         />
         <InputNumber
           label={`Scan Gap (LPI ${toDisplayLinesPerInch(this.props.vector.scanGap)}) *`}
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('scanGap', asInteger(event.target.value)) }
           value={this.props.vector.scanGap}
           validate={this.props.validationHandler}

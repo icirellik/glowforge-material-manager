@@ -20,13 +20,14 @@ import {
   InputNumber,
   InputNumberWithCheckbox,
 } from './Input';
+import { UpdateBitmapEngrave } from '../App';
 
 interface BitmapEngraveSettingProps {
   bitmap: PluginBitmapEngraveSetting;
   index: number;
   removeBitmapEngrave: Function;
-  storeLocalMaterial: React.FocusEventHandler<any>;
-  updateBitmapEngrave: Function;
+  saveTemporaryState: () => void;
+  updateBitmapEngrave: UpdateBitmapEngrave;
   validationHandler: (id: string, isValid: boolean) => void;
 }
 
@@ -61,7 +62,7 @@ export default class BitmapEngraveSetting extends React.Component<BitmapEngraveS
         </div>
         <InputText
           label="Name *"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('name', event.target.value) }
           value={this.props.bitmap.name}
           validate={this.props.validationHandler}
@@ -70,7 +71,7 @@ export default class BitmapEngraveSetting extends React.Component<BitmapEngraveS
           label="Speed *"
           max="1000"
           min="100"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('speed', toRealEngraveSpeed(asInteger(event.target.value))) }
           value={toDisplayEngraveSpeed(this.props.bitmap.speed)}
           validate={this.props.validationHandler}
@@ -81,7 +82,7 @@ export default class BitmapEngraveSetting extends React.Component<BitmapEngraveS
           label="Power *"
           max="100"
           min="0"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('power', toRealPower(asInteger(event.target.value))) }
           onChecked={() => {
             const nextMaxPower = !maxPower;
@@ -92,19 +93,19 @@ export default class BitmapEngraveSetting extends React.Component<BitmapEngraveS
         />
         <InputNumber
           label="Passes"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('passes', asInteger(event.target.value)) }
           value={this.props.bitmap.passes}
         />
         <InputNumber
           label="Focal Offset (mm)"
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('focalOffset', precisionRound(asFloat(event.target.value), 3)) }
           value={this.props.bitmap.focalOffset}
         />
         <InputNumber
           label={`Scan Gap (LPI ${toDisplayLinesPerInch(this.props.bitmap.scanGap)}) *`}
-          onBlur={this.props.storeLocalMaterial}
+          onBlur={this.props.saveTemporaryState}
           onChange={(event) => this.onChange('scanGap', asInteger(event.target.value)) }
           value={this.props.bitmap.scanGap}
           validate={this.props.validationHandler}
