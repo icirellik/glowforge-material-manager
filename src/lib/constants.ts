@@ -57,3 +57,24 @@ export const EMPTY_BITMAP_ENGRAVE: PluginBitmapEngraveSetting = {
   maximumGrayPercent: null,
   horizontalTiming: null,
 };
+
+/**
+ * The individual properies that may have multiple settings methods.
+ */
+
+export interface MultiSettings {
+  'bitmaps': typeof EMPTY_BITMAP_ENGRAVE;
+  'scores': typeof EMPTY_SCORE;
+  'vectors': typeof EMPTY_VECTOR_ENGRAVE;
+}
+
+export const MultiSettingsDefaults: MultiSettings = {
+  'bitmaps': EMPTY_BITMAP_ENGRAVE,
+  'scores': EMPTY_SCORE,
+  'vectors': EMPTY_VECTOR_ENGRAVE,
+};
+
+export type MultiSettingsEmpty =
+  typeof EMPTY_BITMAP_ENGRAVE |
+  typeof EMPTY_SCORE |
+  typeof EMPTY_VECTOR_ENGRAVE;

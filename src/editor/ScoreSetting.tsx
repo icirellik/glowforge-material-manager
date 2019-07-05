@@ -19,7 +19,10 @@ import {
   InputNumber,
   InputNumberWithCheckbox,
 } from './Input';
-import { RemoveScore, UpdateScore } from '../App';
+import {
+  RemoveScore,
+  UpdateScore,
+} from './ScoreSettings';
 
 interface ScoreSettingProps {
   index: number;

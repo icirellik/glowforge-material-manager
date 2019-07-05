@@ -20,7 +20,10 @@ import {
   InputNumber,
   InputNumberWithCheckbox,
 } from './Input';
-import { UpdateBitmapEngrave, RemoveBitmapEngrave } from '../App';
+import {
+  RemoveBitmapEngrave,
+  UpdateBitmapEngrave,
+} from './BitmapEngraveSettings';
 
 interface BitmapEngraveSettingProps {
   bitmap: PluginBitmapEngraveSetting;

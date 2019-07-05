@@ -20,7 +20,10 @@ import {
   InputNumber,
   InputNumberWithCheckbox,
 } from './Input';
-import { RemoveVectorEngrave, UpdateVectorEngrave } from '../App';
+import {
+  RemoveVectorEngrave,
+  UpdateVectorEngrave,
+} from './VectorEngraveSettings';
 
 interface VectorEngraveSettingProps {
   index: number;

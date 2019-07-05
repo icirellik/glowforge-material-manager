@@ -3,18 +3,12 @@ import {
   storeTempMaterial,
 } from './lib/chromeWrappers';
 import {
-  AddBitmapEngrave,
-  AddScore,
-  AddVectorEngrave,
   EditorMode,
-  RemoveBitmapEngrave,
-  RemoveScore,
-  RemoveVectorEngrave,
-  UpdateBitmapEngrave,
   UpdateCut,
   UpdateMaterial,
-  UpdateScore,
-  UpdateVectorEngrave,
+  AddSetting,
+  RemoveSetting,
+  UpdateSetting,
 } from './App';
 import BitmapEngraveSettings from './editor/BitmapEngraveSettings';
 import CutSettings from './editor/CutSettings';
@@ -26,18 +20,12 @@ import './MaterialEditor.css';
 
 interface MaterialEditorProps {
   action: EditorMode;
-  addBitmapEngrave: AddBitmapEngrave;
-  addScore: AddScore;
-  addVectorEngrave: AddVectorEngrave;
+  addSetting: AddSetting;
   material: TempMaterial;
-  removeScore: RemoveScore;
-  removeBitmapEngrave: RemoveBitmapEngrave;
-  removeVectorEngrave: RemoveVectorEngrave;
-  updateBitmapEngrave: UpdateBitmapEngrave;
+  removeSetting: RemoveSetting;
   updateCut: UpdateCut;
   updateMaterial: UpdateMaterial;
-  updateScore: UpdateScore;
-  updateVectorEngrave: UpdateVectorEngrave;
+  updateSetting: UpdateSetting;
   validationHandler: (id: string, isValid: boolean) => void;
 }
 
@@ -88,33 +76,51 @@ export default function MaterialEditor(props: MaterialEditorProps) {
         validationHandler={props.validationHandler}
       />
       <ScoreSettings
-        addScore={props.addScore}
-        removeScore={props.removeScore}
+        addScore={() => {
+          props.addSetting('scores');
+        }}
+        removeScore={(index) => {
+          props.removeSetting('scores', index);
+        }}
         scores={props.material.scores}
         saveTemporaryState={() => {
           saveTemporaryState(action, material);
         }}
-        updateScore={props.updateScore}
+        updateScore={(index, score) => {
+          props.updateSetting('scores', index, score);
+        }}
         validationHandler={props.validationHandler}
       />
       <VectorEngraveSettings
-        addVectorEngrave={props.addVectorEngrave}
-        removeVectorEngrave={props.removeVectorEngrave}
+        addVectorEngrave={() => {
+          props.addSetting('vectors');
+        }}
+        removeVectorEngrave={(index) => {
+          props.removeSetting('vectors', index);
+        }}
         saveTemporaryState={() => {
           saveTemporaryState(action, material);
         }}
-        updateVectorEngrave={props.updateVectorEngrave}
+        updateVectorEngrave={(index, vector) => {
+          props.updateSetting('vectors', index, vector);
+        }}
         vectors={props.material.vectors}
         validationHandler={props.validationHandler}
       />
       <BitmapEngraveSettings
-        addBitmapEngrave={props.addBitmapEngrave}
+        addBitmapEngrave={() => {
+          props.addSetting('bitmaps');
+        }}
         bitmaps={props.material.bitmaps}
-        removeBitmapEngrave={props.removeBitmapEngrave}
+        removeBitmapEngrave={(index) => {
+          props.removeSetting('bitmaps', index);
+        }}
         saveTemporaryState={() => {
           saveTemporaryState(action, material);
         }}
-        updateBitmapEngrave={props.updateBitmapEngrave}
+        updateBitmapEngrave={(index, bitmap) => {
+          props.updateSetting('bitmaps', index, bitmap);
+        }}
         validationHandler={props.validationHandler}
       />
     </>

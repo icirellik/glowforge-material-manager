@@ -1,8 +1,12 @@
 import React from 'react';
 import ScoreSetting from './ScoreSetting';
 import IconPlus from '../icons/IconPlus';
-import { AddScore, RemoveScore, UpdateScore } from '../App';
 import { PluginScoreSetting } from '../lib/materialRaw';
+
+// Score Methods
+export type AddScore = () => void;
+export type RemoveScore = (index: number) => void;
+export type UpdateScore = (index: number, score: PluginScoreSetting) => void;
 
 type ScoreSettingsProps = {
   addScore: AddScore;
