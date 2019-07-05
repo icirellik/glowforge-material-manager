@@ -27,6 +27,7 @@ interface BitmapEngraveSettingProps {
   removeBitmapEngrave: Function;
   storeLocalMaterial: React.FocusEventHandler<any>;
   updateBitmapEngrave: Function;
+  validationHandler: (id: string, isValid: boolean) => void;
 }
 
 export default class BitmapEngraveSetting extends React.Component<BitmapEngraveSettingProps> {
@@ -63,7 +64,7 @@ export default class BitmapEngraveSetting extends React.Component<BitmapEngraveS
           onBlur={this.props.storeLocalMaterial}
           onChange={(event) => this.onChange('name', event.target.value) }
           value={this.props.bitmap.name}
-          validate={() => {}}
+          validate={this.props.validationHandler}
         />
         <InputNumber
           label="Speed *"
@@ -72,7 +73,7 @@ export default class BitmapEngraveSetting extends React.Component<BitmapEngraveS
           onBlur={this.props.storeLocalMaterial}
           onChange={(event) => this.onChange('speed', toRealEngraveSpeed(asInteger(event.target.value))) }
           value={toDisplayEngraveSpeed(this.props.bitmap.speed)}
-          validate={() => {}}
+          validate={this.props.validationHandler}
         />
         <InputNumberWithCheckbox
           isChecked={maxPower}
@@ -87,7 +88,7 @@ export default class BitmapEngraveSetting extends React.Component<BitmapEngraveS
             this.onChange('power', (nextMaxPower) ? 100 : 99);
           }}
           value={toDisplayPower(this.props.bitmap.power)}
-          validate={() => {}}
+          validate={this.props.validationHandler}
         />
         <InputNumber
           label="Passes"
@@ -106,7 +107,7 @@ export default class BitmapEngraveSetting extends React.Component<BitmapEngraveS
           onBlur={this.props.storeLocalMaterial}
           onChange={(event) => this.onChange('scanGap', asInteger(event.target.value)) }
           value={this.props.bitmap.scanGap}
-          validate={() => {}}
+          validate={this.props.validationHandler}
         />
       </>
     );

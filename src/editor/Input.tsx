@@ -1,4 +1,5 @@
 import React from 'react';
+import uuid from 'uuid/v4';
 
 interface InputProps {
   isDisabled?: boolean;
@@ -7,7 +8,7 @@ interface InputProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
   // Is set then the field will be validated and this callback will be called.
-  validate?: (isValid: boolean) => void;
+  validate?: (id: string, isValid: boolean) => void;
 }
 
 interface InputNumberProps extends InputProps {
@@ -25,6 +26,9 @@ interface InputState {
 }
 
 export class InputText extends React.Component<InputProps, InputState> {
+
+  private id: string;
+
   constructor(props: InputProps) {
     super(props);
     this.state = {
@@ -33,11 +37,13 @@ export class InputText extends React.Component<InputProps, InputState> {
 
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
+
+    this.id = uuid();
   }
 
   onBlur(event: React.FocusEvent<HTMLInputElement>) {
     if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(!!event.target.value);
+      this.props.validate(this.id, !!event.target.value);
       this.setState({
         valid: !!event.target.value,
       });
@@ -47,7 +53,7 @@ export class InputText extends React.Component<InputProps, InputState> {
 
   onChange(event: React.FocusEvent<HTMLInputElement>) {
     if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(!!event.target.value);
+      this.props.validate(this.id, !!event.target.value);
       this.setState({
         valid: !!event.target.value,
       });
@@ -74,6 +80,9 @@ export class InputText extends React.Component<InputProps, InputState> {
 }
 
 export class InputNumber extends React.Component<InputNumberProps, InputState> {
+
+  private id: string;
+
   constructor(props: InputNumberProps) {
     super(props);
     this.state = {
@@ -82,11 +91,13 @@ export class InputNumber extends React.Component<InputNumberProps, InputState> {
 
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
+
+    this.id = uuid();
   }
 
   onBlur(event: React.FocusEvent<HTMLInputElement>) {
     if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(!!event.target.value);
+      this.props.validate(this.id, !!event.target.value);
       this.setState({
         valid: !!event.target.value,
       });
@@ -96,7 +107,7 @@ export class InputNumber extends React.Component<InputNumberProps, InputState> {
 
   onChange(event: React.FocusEvent<HTMLInputElement>) {
     if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(!!event.target.value);
+      this.props.validate(this.id, !!event.target.value);
       this.setState({
         valid: !!event.target.value,
       });
@@ -125,6 +136,9 @@ export class InputNumber extends React.Component<InputNumberProps, InputState> {
 }
 
 export class InputNumberWithCheckbox extends React.Component<InputNumberWithCheckBoxProps, InputState> {
+
+  private id: string;
+
   constructor(props: InputNumberWithCheckBoxProps) {
     super(props);
     this.state = {
@@ -134,11 +148,13 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onChecked = this.onChecked.bind(this);
+
+    this.id = uuid();
   }
 
   onBlur(event: React.FocusEvent<HTMLInputElement>) {
     if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(!!event.target.value);
+      this.props.validate(this.id, !!event.target.value);
       this.setState({
         valid: !!event.target.value,
       });
@@ -148,7 +164,7 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
 
   onChange(event: React.FocusEvent<HTMLInputElement>) {
     if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(!!event.target.value);
+      this.props.validate(this.id, !!event.target.value);
       this.setState({
         valid: !!event.target.value,
       });
@@ -158,7 +174,7 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
 
   onChecked(event: React.FocusEvent<HTMLInputElement>) {
     if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(!!event.target.value);
+      this.props.validate(this.id, !!event.target.value);
       this.setState({
         valid: !!event.target.value,
       });

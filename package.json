@@ -27,11 +27,13 @@
     "release": "yarn build && mkdir -p releases && cd build && sed -i '/\"key\"/d' manifest.json && zip -r glowforge-material-manager.zip . && mv -f *.zip ../releases && cd .."
   },
   "devDependencies": {
+    "@types/uuid": "^3.4.5",
     "eslint": "^5.3.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
-    "eslint-plugin-react": "^7.11.0"
+    "eslint-plugin-react": "^7.11.0",
+    "uuid": "^3.3.2"
   },
   "browserslist": {
     "production": [

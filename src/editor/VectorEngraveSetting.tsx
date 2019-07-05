@@ -27,6 +27,7 @@ interface VectorEngraveSettingProps {
   storeLocalMaterial: React.FocusEventHandler<any>;
   updateVectorEngrave: Function;
   vector: PluginVectorEngraveSetting;
+  validationHandler: (id: string, isValid: boolean) => void;
 }
 
 export default class VectorEngraveSetting extends React.Component<VectorEngraveSettingProps> {
@@ -63,7 +64,7 @@ export default class VectorEngraveSetting extends React.Component<VectorEngraveS
           onBlur={this.props.storeLocalMaterial}
           onChange={(event) => this.onChange('name', event.target.value) }
           value={this.props.vector.name}
-          validate={() => {}}
+          validate={this.props.validationHandler}
         />
          <InputNumber
           label="Speed *"
@@ -72,7 +73,7 @@ export default class VectorEngraveSetting extends React.Component<VectorEngraveS
           onBlur={this.props.storeLocalMaterial}
           onChange={(event) => this.onChange('speed', toRealEngraveSpeed(asInteger(event.target.value))) }
           value={toDisplayEngraveSpeed(this.props.vector.speed)}
-          validate={() => {}}
+          validate={this.props.validationHandler}
         />
         <InputNumberWithCheckbox
           isChecked={maxPower}
@@ -87,7 +88,7 @@ export default class VectorEngraveSetting extends React.Component<VectorEngraveS
             this.onChange('power', (nextMaxPower) ? 100 : 99);
           }}
           value={toDisplayPower(this.props.vector.power)}
-          validate={() => {}}
+          validate={this.props.validationHandler}
         />
         <InputNumber
           label="Passes"
@@ -106,7 +107,7 @@ export default class VectorEngraveSetting extends React.Component<VectorEngraveS
           onBlur={this.props.storeLocalMaterial}
           onChange={(event) => this.onChange('scanGap', asInteger(event.target.value)) }
           value={this.props.vector.scanGap}
-          validate={() => {}}
+          validate={this.props.validationHandler}
         />
       </>
     );

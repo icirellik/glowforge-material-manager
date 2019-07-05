@@ -16,14 +16,12 @@ import {
   UpdateScore,
   UpdateVectorEngrave,
 } from './App';
-import {
-  PluginMaterial,
-} from './lib/materialRaw';
 import BitmapEngraveSettings from './editor/BitmapEngraveSettings';
 import CutSettings from './editor/CutSettings';
 import MaterialSettings from './editor/MaterialSettings';
 import ScoreSettings from './editor/ScoreSettings';
 import VectorEngraveSettings from './editor/VectorEngraveSettings';
+import { TempMaterial } from './lib/constants';
 import './MaterialEditor.css';
 
 interface MaterialEditorProps {
@@ -31,7 +29,7 @@ interface MaterialEditorProps {
   addBitmapEngrave: AddBitmapEngrave;
   addScore: AddScore;
   addVectorEngrave: AddVectorEngrave;
-  material: PluginMaterial;
+  material: TempMaterial;
   removeScore: RemoveScore;
   removeBitmapEngrave: RemoveBitmapEngrave;
   removeVectorEngrave: RemoveVectorEngrave;
@@ -40,67 +38,74 @@ interface MaterialEditorProps {
   updateMaterial: UpdateMaterial;
   updateScore: UpdateScore;
   updateVectorEngrave: UpdateVectorEngrave;
+  validationHandler: (id: string, isValid: boolean) => void;
 }
 
-class MaterialEditor extends React.Component<MaterialEditorProps> {
-  constructor(props: MaterialEditorProps) {
-    super(props);
-    this.storeLocalMaterial = this.storeLocalMaterial.bind(this);
-  }
-
-  storeLocalMaterial(event: React.FocusEvent<any>) {
-    if (this.props.action === 'ADD') {
-      storeTempMaterial(this.props.material);
-    }
-  }
-
-  render() {
-    const {
-      action,
-      material,
-    } = this.props;
-
-    if (action !== 'ADD' && action !== 'EDIT') {
-      return null;
-    }
-
-    return (
-      <>
-        <MaterialSettings
-          action={this.props.action}
-          material={this.props.material}
-          storeLocalMaterial={this.storeLocalMaterial}
-          updateMaterial={this.props.updateMaterial}
-        />
-        <CutSettings
-          cut={material.cut}
-          storeLocalMaterial={this.storeLocalMaterial}
-          updateCut={this.props.updateCut}
-        />
-        <ScoreSettings
-          addScore={this.props.addScore}
-          removeScore={this.props.removeScore}
-          scores={this.props.material.scores}
-          storeLocalMaterial={this.storeLocalMaterial}
-          updateScore={this.props.updateScore}
-        />
-        <VectorEngraveSettings
-          addVectorEngrave={this.props.addVectorEngrave}
-          removeVectorEngrave={this.props.removeVectorEngrave}
-          storeLocalMaterial={this.storeLocalMaterial}
-          updateVectorEngrave={this.props.updateVectorEngrave}
-          vectors={this.props.material.vectors}
-        />
-        <BitmapEngraveSettings
-          addBitmapEngrave={this.props.addBitmapEngrave}
-          bitmaps={this.props.material.bitmaps}
-          removeBitmapEngrave={this.props.removeBitmapEngrave}
-          storeLocalMaterial={this.storeLocalMaterial}
-          updateBitmapEngrave={this.props.updateBitmapEngrave}
-        />
-      </>
-    );
+function storeLocalMaterial(action: EditorMode, material: TempMaterial) {
+  if (action === 'ADD') {
+    storeTempMaterial(material);
   }
 }
 
-export default MaterialEditor;
+export default function MaterialEditor(props: MaterialEditorProps) {
+  const {
+    action,
+    material,
+  } = props;
+
+  if (action !== 'ADD' && action !== 'EDIT') {
+    return null;
+  }
+
+  return (
+    <>
+      <MaterialSettings
+        action={props.action}
+        material={props.material}
+        storeLocalMaterial={() => {
+          storeLocalMaterial(action, material);
+        }}
+        updateMaterial={props.updateMaterial}
+        validationHandler={props.validationHandler}
+      />
+      <CutSettings
+        cut={material.cut}
+        storeLocalMaterial={() => {
+          storeLocalMaterial(action, material);
+        }}
+        updateCut={props.updateCut}
+        validationHandler={props.validationHandler}
+      />
+      <ScoreSettings
+        addScore={props.addScore}
+        removeScore={props.removeScore}
+        scores={props.material.scores}
+        storeLocalMaterial={() => {
+          storeLocalMaterial(action, material);
+        }}
+        updateScore={props.updateScore}
+        validationHandler={props.validationHandler}
+      />
+      <VectorEngraveSettings
+        addVectorEngrave={props.addVectorEngrave}
+        removeVectorEngrave={props.removeVectorEngrave}
+        storeLocalMaterial={() => {
+          storeLocalMaterial(action, material);
+        }}
+        updateVectorEngrave={props.updateVectorEngrave}
+        vectors={props.material.vectors}
+        validationHandler={props.validationHandler}
+      />
+      <BitmapEngraveSettings
+        addBitmapEngrave={props.addBitmapEngrave}
+        bitmaps={props.material.bitmaps}
+        removeBitmapEngrave={props.removeBitmapEngrave}
+        storeLocalMaterial={() => {
+          storeLocalMaterial(action, material);
+        }}
+        updateBitmapEngrave={props.updateBitmapEngrave}
+        validationHandler={props.validationHandler}
+      />
+    </>
+  );
+}

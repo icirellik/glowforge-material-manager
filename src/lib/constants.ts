@@ -5,7 +5,11 @@ import {
   PluginMaterial,
 } from './materialRaw';
 
-export type TempMaterial = PluginMaterial;
+export interface TempMaterial extends PluginMaterial {
+  propValidation: {
+    [key: string]: boolean,
+  };
+}
 
 export const EMPTY_MATERIAL: TempMaterial = {
   name: '',
@@ -20,6 +24,7 @@ export const EMPTY_MATERIAL: TempMaterial = {
   scores: [],
   vectors: [],
   bitmaps: [],
+  propValidation: {},
 };
 
 export const EMPTY_SCORE: PluginScoreSetting = {

@@ -22,6 +22,7 @@ interface CutSettingsProps {
   cut: PluginCutSetting;
   storeLocalMaterial: React.FocusEventHandler<any>;
   updateCut: Function;
+  validationHandler: (id: string, isValid: boolean) => void;
 }
 
 export default class CutSettings extends React.Component<CutSettingsProps> {
@@ -55,7 +56,7 @@ export default class CutSettings extends React.Component<CutSettingsProps> {
           onBlur={this.props.storeLocalMaterial}
           onChange={(event) => this.onChange('speed', toRealCutSpeed(asInteger(event.target.value))) }
           value={toDisplayCutSpeed(this.props.cut.speed)}
-          validate={() => {}}
+          validate={this.props.validationHandler}
         />
         <InputNumberWithCheckbox
           isChecked={maxPower}
@@ -70,7 +71,7 @@ export default class CutSettings extends React.Component<CutSettingsProps> {
             this.onChange('power', (nextMaxPower) ? 100 : 99);
           }}
           value={toDisplayPower(this.props.cut.power)}
-          validate={() => {}}
+          validate={this.props.validationHandler}
         />
         <InputNumber
           label="Passes"

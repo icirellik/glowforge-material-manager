@@ -26,6 +26,7 @@ interface ScoreSettingProps {
   score: PluginScoreSetting;
   storeLocalMaterial: React.FocusEventHandler<any>;
   updateScore: Function;
+  validationHandler: (id: string, isValid: boolean) => void;
 }
 
 export default class ScoreSetting extends React.Component<ScoreSettingProps> {
@@ -62,7 +63,7 @@ export default class ScoreSetting extends React.Component<ScoreSettingProps> {
           onBlur={this.props.storeLocalMaterial}
           onChange={(event) => this.onChange('name', event.target.value) }
           value={this.props.score.name}
-          validate={() => {}}
+          validate={this.props.validationHandler}
         />
         <InputNumber
           label="Speed *"
@@ -71,7 +72,7 @@ export default class ScoreSetting extends React.Component<ScoreSettingProps> {
           onBlur={this.props.storeLocalMaterial}
           onChange={(event) => this.onChange('speed', toRealCutSpeed(asInteger(event.target.value))) }
           value={toDisplayCutSpeed(this.props.score.speed)}
-          validate={() => {}}
+          validate={this.props.validationHandler}
         />
         <InputNumberWithCheckbox
           isChecked={maxPower}
@@ -86,7 +87,7 @@ export default class ScoreSetting extends React.Component<ScoreSettingProps> {
             this.onChange('power', (nextMaxPower) ? 100 : 99);
           }}
           value={toDisplayPower(this.props.score.power)}
-          validate={() => {}}
+          validate={this.props.validationHandler}
         />
         <InputNumber
           label="Passes"

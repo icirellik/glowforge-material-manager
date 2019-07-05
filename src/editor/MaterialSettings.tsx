@@ -9,6 +9,7 @@ type MaterialSettingsProps = {
   material: PluginMaterial;
   storeLocalMaterial: React.FocusEventHandler<any>;
   updateMaterial: Function;
+  validationHandler: (id: string, isValid: boolean) => void;
 }
 
 export default function MaterialSettings(props: MaterialSettingsProps) {
@@ -23,7 +24,7 @@ export default function MaterialSettings(props: MaterialSettingsProps) {
         onBlur={props.storeLocalMaterial}
         onChange={(event) => props.updateMaterial('thickName', event.target.value) }
         value={props.material.thickName}
-        validate={() => {}}
+        validate={props.validationHandler}
       />
       <InputText
         label="Material Name *"
@@ -31,14 +32,14 @@ export default function MaterialSettings(props: MaterialSettingsProps) {
         onBlur={props.storeLocalMaterial}
         onChange={(event) => props.updateMaterial('name', event.target.value) }
         value={props.material.name}
-        validate={() => {}}
+        validate={props.validationHandler}
       />
       <InputNumber
         label="Thickness (mm) *"
         onBlur={props.storeLocalMaterial}
         onChange={(event) => props.updateMaterial('thickness', asFloat(event.target.value)) }
         value={props.material.thickness}
-        validate={() => {}}
+        validate={props.validationHandler}
       />
     </>
   );
