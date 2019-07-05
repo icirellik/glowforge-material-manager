@@ -19,13 +19,14 @@ import {
   InputNumber,
   InputNumberWithCheckbox,
 } from './Input';
+import { RemoveScore, UpdateScore } from '../App';
 
 interface ScoreSettingProps {
   index: number;
-  removeScore: Function;
+  removeScore: RemoveScore;
   score: PluginScoreSetting;
   saveTemporaryState: () => void;
-  updateScore: Function;
+  updateScore: UpdateScore;
   validationHandler: (id: string, isValid: boolean) => void;
 }
 

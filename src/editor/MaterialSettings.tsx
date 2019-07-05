@@ -1,6 +1,6 @@
 import React from 'react';
 import { PluginMaterial } from '../lib/materialRaw';
-import { EditorMode } from '../App';
+import { EditorMode, UpdateMaterial } from '../App';
 import { InputText, InputNumber } from './Input';
 import { asFloat } from '../lib/utils';
 
@@ -8,7 +8,7 @@ type MaterialSettingsProps = {
   action: EditorMode;
   material: PluginMaterial;
   saveTemporaryState: () => void;
-  updateMaterial: Function;
+  updateMaterial: UpdateMaterial;
   validationHandler: (id: string, isValid: boolean) => void;
 }
 

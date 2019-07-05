@@ -1,15 +1,15 @@
 import React from 'react';
 import ScoreSetting from './ScoreSetting';
 import IconPlus from '../icons/IconPlus';
-import { AddScore } from '../App';
+import { AddScore, RemoveScore, UpdateScore } from '../App';
 import { PluginScoreSetting } from '../lib/materialRaw';
 
 type ScoreSettingsProps = {
   addScore: AddScore;
-  removeScore: Function;
+  removeScore: RemoveScore;
   scores: PluginScoreSetting[];
   saveTemporaryState: () => void;
-  updateScore: Function;
+  updateScore: UpdateScore;
   validationHandler: (id: string, isValid: boolean) => void;
 }
 

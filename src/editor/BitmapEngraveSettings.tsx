@@ -1,13 +1,13 @@
 import React from 'react';
 import IconPlus from '../icons/IconPlus';
 import BitmapEngraveSetting from './BitmapEngraveSetting';
-import { AddBitmapEngrave, UpdateBitmapEngrave } from '../App';
+import { AddBitmapEngrave, UpdateBitmapEngrave, RemoveBitmapEngrave } from '../App';
 import { PluginBitmapEngraveSetting } from '../lib/materialRaw';
 
 type BitmapEngraveSettingsProps = {
   addBitmapEngrave: AddBitmapEngrave;
   bitmaps: PluginBitmapEngraveSetting[];
-  removeBitmapEngrave: Function;
+  removeBitmapEngrave: RemoveBitmapEngrave;
   saveTemporaryState: () => void;
   updateBitmapEngrave: UpdateBitmapEngrave;
   validationHandler: (id: string, isValid: boolean) => void;

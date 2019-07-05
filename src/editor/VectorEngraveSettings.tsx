@@ -2,13 +2,13 @@ import React from 'react';
 import { PluginVectorEngraveSetting } from '../lib/materialRaw';
 import VectorEngraveSetting from './VectorEngraveSetting';
 import IconPlus from '../icons/IconPlus';
-import { AddVectorEngrave } from '../App';
+import { AddVectorEngrave, RemoveVectorEngrave, UpdateVectorEngrave } from '../App';
 
 type VectorEngraveSettingsProps = {
   addVectorEngrave: AddVectorEngrave;
-  removeVectorEngrave: Function;
+  removeVectorEngrave: RemoveVectorEngrave;
   saveTemporaryState: () => void;
-  updateVectorEngrave: Function;
+  updateVectorEngrave: UpdateVectorEngrave;
   vectors: PluginVectorEngraveSetting[];
   validationHandler: (id: string, isValid: boolean) => void;
 }

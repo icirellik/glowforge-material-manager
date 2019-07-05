@@ -17,11 +17,12 @@ import {
   InputNumber,
   InputNumberWithCheckbox,
 } from './Input';
+import { UpdateCut } from '../App';
 
 interface CutSettingsProps {
   cut: PluginCutSetting;
   saveTemporaryState: () => void;
-  updateCut: Function;
+  updateCut: UpdateCut;
   validationHandler: (id: string, isValid: boolean) => void;
 }
 

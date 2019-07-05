@@ -20,12 +20,13 @@ import {
   InputNumber,
   InputNumberWithCheckbox,
 } from './Input';
+import { RemoveVectorEngrave, UpdateVectorEngrave } from '../App';
 
 interface VectorEngraveSettingProps {
   index: number;
-  removeVectorEngrave: Function;
+  removeVectorEngrave: RemoveVectorEngrave;
   saveTemporaryState: () => void;
-  updateVectorEngrave: Function;
+  updateVectorEngrave: UpdateVectorEngrave;
   vector: PluginVectorEngraveSetting;
   validationHandler: (id: string, isValid: boolean) => void;
 }

@@ -322,12 +322,15 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
   }
 
+
   addScore() {
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        scores: [ ...this.state.tempMaterial.scores, EMPTY_SCORE ],
-      },
+    this.setState((state) => {
+      return {
+        tempMaterial: {
+          ...state.tempMaterial,
+          scores: [ ...state.tempMaterial.scores, EMPTY_SCORE ],
+        },
+      };
     });
   }
 
@@ -344,22 +347,26 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   }
 
   updateScore(index: number, score: PluginScoreSetting) {
-    const scores = this.state.tempMaterial.scores;
-    scores[index] = score;
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        scores: [...scores],
-      }
+    this.setState((state) => {
+      const scores = state.tempMaterial.scores;
+      scores[index] = score;
+      return {
+        tempMaterial: {
+          ...state.tempMaterial,
+          scores: [...scores],
+        },
+      };
     });
   }
 
   addVectorEngrave() {
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        vectors: [ ...this.state.tempMaterial.vectors, EMPTY_VECTOR_ENGRAVE ],
-      },
+    this.setState((state) => {
+      return {
+        tempMaterial: {
+          ...state.tempMaterial,
+          vectors: [ ...state.tempMaterial.vectors, EMPTY_VECTOR_ENGRAVE ],
+        },
+      };
     });
   }
 
@@ -376,22 +383,26 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   }
 
   updateVectorEngrave(index: number, vector: PluginVectorEngraveSetting) {
-    const vectors = this.state.tempMaterial.vectors;
-    vectors[index] = vector;
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        vectors: [...vectors],
-      }
+    this.setState((state) => {
+      const vectors = state.tempMaterial.vectors;
+      vectors[index] = vector;
+      return {
+        tempMaterial: {
+          ...state.tempMaterial,
+          vectors: [...vectors],
+        },
+      };
     });
   }
 
   addBitmapEngrave() {
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        bitmaps: [ ...this.state.tempMaterial.bitmaps, EMPTY_BITMAP_ENGRAVE ],
-      },
+    this.setState((state) => {
+      return {
+        tempMaterial: {
+          ...state.tempMaterial,
+          bitmaps: [ ...state.tempMaterial.bitmaps, EMPTY_BITMAP_ENGRAVE ],
+        },
+      };
     });
   }
 
@@ -408,13 +419,15 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   }
 
   updateBitmapEngrave(index: number, bitmap: PluginBitmapEngraveSetting) {
-    const bitmaps = this.state.tempMaterial.bitmaps;
-    bitmaps[index] = bitmap;
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        bitmaps: [...bitmaps],
-      }
+    this.setState((state) => {
+      const bitmaps = state.tempMaterial.bitmaps;
+      bitmaps[index] = bitmap;
+      return {
+        tempMaterial: {
+          ...state.tempMaterial,
+          bitmaps: [...bitmaps],
+        }
+      };
     });
   }
 

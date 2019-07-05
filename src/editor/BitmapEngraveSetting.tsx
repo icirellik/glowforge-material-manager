@@ -20,12 +20,12 @@ import {
   InputNumber,
   InputNumberWithCheckbox,
 } from './Input';
-import { UpdateBitmapEngrave } from '../App';
+import { UpdateBitmapEngrave, RemoveBitmapEngrave } from '../App';
 
 interface BitmapEngraveSettingProps {
   bitmap: PluginBitmapEngraveSetting;
   index: number;
-  removeBitmapEngrave: Function;
+  removeBitmapEngrave: RemoveBitmapEngrave;
   saveTemporaryState: () => void;
   updateBitmapEngrave: UpdateBitmapEngrave;
   validationHandler: (id: string, isValid: boolean) => void;
