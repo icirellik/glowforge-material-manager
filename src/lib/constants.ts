@@ -3,7 +3,7 @@ import {
   PluginScoreSetting,
   PluginVectorEngraveSetting,
   PluginMaterial,
-} from './materialRaw';
+} from '../material/materialPlugin';
 
 export interface TempMaterial extends PluginMaterial {
   propValidation: {
@@ -68,13 +68,12 @@ export interface MultiSettings {
   'vectors': typeof EMPTY_VECTOR_ENGRAVE;
 }
 
+/**
+ * The different default settings that are used when creating a new bitmap,
+ * score, or vector setting.
+ */
 export const MultiSettingsDefaults: MultiSettings = {
   'bitmaps': EMPTY_BITMAP_ENGRAVE,
   'scores': EMPTY_SCORE,
   'vectors': EMPTY_VECTOR_ENGRAVE,
 };
-
-export type MultiSettingsEmpty =
-  typeof EMPTY_BITMAP_ENGRAVE |
-  typeof EMPTY_SCORE |
-  typeof EMPTY_VECTOR_ENGRAVE;

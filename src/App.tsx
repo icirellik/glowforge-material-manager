@@ -9,7 +9,7 @@ import {
   removeRawMaterial,
   sendCloudMaterial,
   removeMaterialTitle,
-} from './lib/material';
+} from './material/material';
 import {
   clearTempMaterial,
   forceSync,
@@ -31,8 +31,8 @@ import './App.css';
 import {
   PluginCutSetting,
   PluginMaterial,
-} from './lib/materialRaw';
-import { GFMaterial } from './lib/materialGlowforge';
+} from './material/materialPlugin';
+import { GFMaterial } from './material/materialGlowforge';
 import { sha1 } from './lib/utils';
 import { readQrCode } from './lib/qrCode';
 import { AppHeader } from './AppHeader';

@@ -5,7 +5,7 @@ import IconOpen from './icons/IconOpen';
 import IconDeleteForever from './icons/IconDeleteForever';
 import IconCopy from './icons/IconCopy';
 import IconEdit from './icons/IconEdit';
-import { PluginMaterial } from './lib/materialRaw';
+import { PluginMaterial } from './material/materialPlugin';
 import {
   CopyMaterial,
   ModeEdit,

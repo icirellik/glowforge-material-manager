@@ -86,8 +86,11 @@ export default function MaterialEditor(props: MaterialEditorProps) {
         saveTemporaryState={() => {
           saveTemporaryState(action, material);
         }}
-        updateScore={(index, score) => {
-          props.updateSetting('scores', index, score);
+        updateScore={(index, prop, value) => {
+          props.updateSetting('scores', index, {
+            ...props.material.scores[index],
+            [prop]: value,
+          });
         }}
         validationHandler={props.validationHandler}
       />
@@ -101,8 +104,11 @@ export default function MaterialEditor(props: MaterialEditorProps) {
         saveTemporaryState={() => {
           saveTemporaryState(action, material);
         }}
-        updateVectorEngrave={(index, vector) => {
-          props.updateSetting('vectors', index, vector);
+        updateVectorEngrave={(index, prop, value) => {
+          props.updateSetting('vectors', index, {
+            ...props.material.vectors[index],
+            [prop]: value,
+          });
         }}
         vectors={props.material.vectors}
         validationHandler={props.validationHandler}
@@ -118,8 +124,11 @@ export default function MaterialEditor(props: MaterialEditorProps) {
         saveTemporaryState={() => {
           saveTemporaryState(action, material);
         }}
-        updateBitmapEngrave={(index, bitmap) => {
-          props.updateSetting('bitmaps', index, bitmap);
+        updateBitmapEngrave={(index, prop, value) => {
+          props.updateSetting('bitmaps', index, {
+            ...props.material.bitmaps[index],
+            [prop]: value,
+          });
         }}
         validationHandler={props.validationHandler}
       />

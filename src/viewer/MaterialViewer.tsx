@@ -1,6 +1,6 @@
 import React from 'react';
 import { EditorMode } from '../App';
-import { PluginMaterial } from '../lib/materialRaw';
+import { PluginMaterial } from '../material/materialPlugin';
 import MaterialBitmapEngravesViewer from './MaterialBitmapEngravesViewer';
 import MaterialCutViewer from './MaterialCutViewer';
 import MaterialScoresViewer from './MaterialScoresViewer';

@@ -13,7 +13,7 @@ import {
 } from '../lib/glowforgeUnits';
 import {
   PluginScoreSetting,
-} from '../lib/materialRaw';
+} from '../material/materialPlugin';
 import {
   InputText,
   InputNumber,
@@ -33,79 +33,73 @@ interface ScoreSettingProps {
   validationHandler: (id: string, isValid: boolean) => void;
 }
 
-export default class ScoreSetting extends React.Component<ScoreSettingProps> {
-  constructor(props: ScoreSettingProps) {
-    super(props);
-
-    this.onChange = this.onChange.bind(this);
-  }
-
-  onChange(
-    prop: keyof PluginScoreSetting,
-    value: string | number
-  ) {
-    this.props.updateScore(this.props.index, {
-      ...this.props.score,
-      [prop]: value,
-    });
-  }
-
-  render() {
-    const maxPower = (this.props.score.power >= 99.99);
-    return (
-      <>
-        <div className="form-sub-header">
-          <p>
-            {`Score ${this.props.index + 1}`}
-          </p>
-          <IconMinus click={() => {
-            this.props.removeScore(this.props.index);
-          }} height="16px" width="16px" />
-        </div>
-        <InputText
-          label="Name *"
-          onBlur={this.props.saveTemporaryState}
-          onChange={(event) => this.onChange('name', event.target.value) }
-          value={this.props.score.name}
-          validate={this.props.validationHandler}
-        />
-        <InputNumber
-          label="Speed *"
-          max="500"
-          min="100"
-          onBlur={this.props.saveTemporaryState}
-          onChange={(event) => this.onChange('speed', toRealCutSpeed(asInteger(event.target.value))) }
-          value={toDisplayCutSpeed(this.props.score.speed)}
-          validate={this.props.validationHandler}
-        />
-        <InputNumberWithCheckbox
-          isChecked={maxPower}
-          isDisabled={maxPower}
-          label="Power *"
-          max="100"
-          min="0"
-          onBlur={this.props.saveTemporaryState}
-          onChange={(event) => this.onChange('power', toRealPower(asInteger(event.target.value))) }
-          onChecked={() => {
-            const nextMaxPower = !maxPower;
-            this.onChange('power', (nextMaxPower) ? 100 : 99);
-          }}
-          value={toDisplayPower(this.props.score.power)}
-          validate={this.props.validationHandler}
-        />
-        <InputNumber
-          label="Passes"
-          onBlur={this.props.saveTemporaryState}
-          onChange={(event) => this.onChange('passes', asInteger(event.target.value)) }
-          value={this.props.score.passes}
-        />
-        <InputNumber
-          label="Focal Offset (mm)"
-          onBlur={this.props.saveTemporaryState}
-          onChange={(event) => this.onChange('focalOffset', precisionRound(asFloat(event.target.value), 3)) }
-          value={this.props.score.focalOffset}
-        />
-      </>
-    );
-  }
+export default function ScoreSetting(props: ScoreSettingProps) {
+  const maxPower = (props.score.power >= 99.99);
+  return (
+    <>
+      <div className="form-sub-header">
+        <p>
+          {`Score ${props.index + 1}`}
+        </p>
+        <IconMinus click={() => {
+          props.removeScore(props.index);
+        }} height="16px" width="16px" />
+      </div>
+      <InputText
+        label="Name *"
+        onBlur={props.saveTemporaryState}
+        onChange={(event) => props.updateScore(props.index, 'name', event.target.value) }
+        value={props.score.name}
+        validate={props.validationHandler}
+      />
+      <InputNumber
+        label="Speed *"
+        max="500"
+        min="100"
+        onBlur={props.saveTemporaryState}
+        onChange={(event) => {
+          const normalizedValue = toRealCutSpeed(asInteger(event.target.value));
+          props.updateScore(props.index, 'speed', normalizedValue);
+        }}
+        value={toDisplayCutSpeed(props.score.speed)}
+        validate={props.validationHandler}
+      />
+      <InputNumberWithCheckbox
+        isChecked={maxPower}
+        isDisabled={maxPower}
+        label="Power *"
+        max="100"
+        min="0"
+        onBlur={props.saveTemporaryState}
+        onChange={(event) => {
+          const normalizedValue = toRealPower(asInteger(event.target.value));
+          props.updateScore(props.index, 'power', normalizedValue);
+        }}
+        onChecked={() => {
+          const nextMaxPower = !maxPower;
+          props.updateScore(props.index,'power', (nextMaxPower) ? 100 : 99);
+        }}
+        value={toDisplayPower(props.score.power)}
+        validate={props.validationHandler}
+      />
+      <InputNumber
+        label="Passes"
+        onBlur={props.saveTemporaryState}
+        onChange={(event) => {
+          const normalizedValue = asInteger(event.target.value);
+          props.updateScore(props.index, 'passes', normalizedValue);
+        }}
+        value={props.score.passes}
+      />
+      <InputNumber
+        label="Focal Offset (mm)"
+        onBlur={props.saveTemporaryState}
+        onChange={(event) => {
+          const normalizedValue = precisionRound(asFloat(event.target.value), 3);
+          props.updateScore(props.index, 'focalOffset', normalizedValue);
+        }}
+        value={props.score.focalOffset}
+      />
+    </>
+  );
 }

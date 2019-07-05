@@ -7,14 +7,14 @@ import {
   storeGlowforgeMaterials,
   storeRawMaterials,
   storeSynchronizedMaterial,
-} from './chromeWrappers';
+} from '../lib/chromeWrappers';
 import {
   compress,
   decompress,
   hashMaterial,
   hashTitle,
   sha1,
-} from './utils';
+} from '../lib/utils';
 import {
   PluginBitmapEngraveSetting,
   PluginCutSetting,
@@ -22,7 +22,7 @@ import {
   PluginMaterialId,
   PluginScoreSetting,
   PluginVectorEngraveSetting,
-} from './materialRaw';
+} from './materialPlugin';
 import {
   GFBitmapEngraveSetting,
   GFCutSetting,

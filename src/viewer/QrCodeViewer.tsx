@@ -1,8 +1,8 @@
 import React from 'react';
-import { PluginMaterial } from '../lib/materialRaw';
+import { PluginMaterial } from '../material/materialPlugin';
 import { sha1 } from '../lib/utils';
 import { qrcodeAsDataUri, qrcodeAsSvg } from '../lib/qrCode';
-import { toTinyMaterial } from '../lib/material';
+import { toTinyMaterial } from '../material/material';
 import './Viewer.css';
 
 export interface QrCodeViewerProps {

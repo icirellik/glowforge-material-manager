@@ -12,7 +12,7 @@ import {
   fullSynchronizedMaterials,
   removeCloudMaterial,
   sendCloudMaterial,
-} from './lib/material';
+} from './material/material';
 import {
   sha1,
 } from './lib/utils';

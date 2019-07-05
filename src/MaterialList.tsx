@@ -1,6 +1,6 @@
 import React from 'react';
 import MaterialListItem from './MaterialListItem';
-import { PluginMaterial } from './lib/materialRaw';
+import { PluginMaterial } from './material/materialPlugin';
 import {
   CopyMaterial,
   ModeEdit,

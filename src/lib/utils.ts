@@ -2,8 +2,8 @@ import * as pako from 'pako';
 import {
   toFullMaterial,
   toTinyMaterial,
-} from './material';
-import { PluginMaterial } from './materialRaw';
+} from '../material/material';
+import { PluginMaterial } from '../material/materialPlugin';
 
 /**
  * A helper function that rounds to the nearest 5.

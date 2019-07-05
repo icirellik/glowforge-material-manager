@@ -1,12 +1,16 @@
 import React from 'react';
-import { PluginVectorEngraveSetting } from '../lib/materialRaw';
+import { PluginVectorEngraveSetting } from '../material/materialPlugin';
 import VectorEngraveSetting from './VectorEngraveSetting';
 import IconPlus from '../icons/IconPlus';
 
 // Vector Methods
 export type AddVectorEngrave = () => void;
 export type RemoveVectorEngrave = (index: number) => void;
-export type UpdateVectorEngrave = (index: number, vector: PluginVectorEngraveSetting) => void;
+export type UpdateVectorEngrave = (
+  index: number,
+  prop: keyof PluginVectorEngraveSetting,
+  value: number | string
+) => void;
 
 type VectorEngraveSettingsProps = {
   addVectorEngrave: AddVectorEngrave;

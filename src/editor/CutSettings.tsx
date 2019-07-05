@@ -12,7 +12,7 @@ import {
 } from '../lib/glowforgeUnits';
 import {
   PluginCutSetting,
-} from '../lib/materialRaw';
+} from '../material/materialPlugin';
 import {
   InputNumber,
   InputNumberWithCheckbox,

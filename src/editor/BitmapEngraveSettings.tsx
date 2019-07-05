@@ -1,12 +1,16 @@
 import React from 'react';
 import IconPlus from '../icons/IconPlus';
 import BitmapEngraveSetting from './BitmapEngraveSetting';
-import { PluginBitmapEngraveSetting } from '../lib/materialRaw';
+import { PluginBitmapEngraveSetting } from '../material/materialPlugin';
 
 // Bitmap Methods
 export type AddBitmapEngrave = () => void;
 export type RemoveBitmapEngrave = (index: number) => void;
-export type UpdateBitmapEngrave = (index: number, bitmap: PluginBitmapEngraveSetting) => void;
+export type UpdateBitmapEngrave = (
+  index: number,
+  prop: keyof PluginBitmapEngraveSetting,
+  value: number | string,
+) => void;
 
 type BitmapEngraveSettingsProps = {
   addBitmapEngrave: AddBitmapEngrave;
@@ -37,9 +41,9 @@ export default function BitmapEngraveSettings(props: BitmapEngraveSettingsProps)
             <BitmapEngraveSetting
               bitmap={bitmap}
               index={index}
-              removeBitmapEngrave={props.removeBitmapEngrave}
+              removeBitmap={props.removeBitmapEngrave}
               saveTemporaryState={props.saveTemporaryState}
-              updateBitmapEngrave={props.updateBitmapEngrave}
+              updateBitmap={props.updateBitmapEngrave}
               validationHandler={props.validationHandler}
             />
           );
