@@ -3,6 +3,7 @@ import './Message.css';
 import IconClear from './icons/IconClear';
 
 type MessageProps = {
+  backgroundColor?: string | null;
   clearMessage: (event: React.MouseEvent) => void;
   color?: string | null;
   message: string;
@@ -10,11 +11,12 @@ type MessageProps = {
 
 export default function Message(props: MessageProps) {
   if (props.message && props.message.length > 0) {
-    let styles;
+    let styles: any = {};
     if (props.color) {
-      styles = {
-        color: props.color,
-      };
+      styles.color = props.color;
+    }
+    if (props.backgroundColor) {
+      styles.backgroundColor = props.backgroundColor;
     }
     return (
       <div className="message-box__container" style={styles}>

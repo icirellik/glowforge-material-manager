@@ -41,9 +41,9 @@ export default function BitmapEngraveSettings(props: BitmapEngraveSettingsProps)
             <BitmapEngraveSetting
               bitmap={bitmap}
               index={index}
-              removeBitmap={props.removeBitmapEngrave}
+              removeBitmapEngrave={props.removeBitmapEngrave}
               saveTemporaryState={props.saveTemporaryState}
-              updateBitmap={props.updateBitmapEngrave}
+              updateBitmapEngrave={props.updateBitmapEngrave}
               validationHandler={props.validationHandler}
             />
           );

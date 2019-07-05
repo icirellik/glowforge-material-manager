@@ -91,8 +91,9 @@ interface AppProps {
 }
 
 interface AppMessage {
-  message: string;
+  backgroundColor?: string | null;
   color: string | null;
+  message: string;
 }
 
 interface AppState {
@@ -175,6 +176,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     const localStorage = await getLocalStorage();
 
     if (localStorage.tempMaterial) {
+      // Clear any old validations
+      localStorage.tempMaterial.propValidation = {};
       this.setState({
         action: 'ADD',
         cloudStorageBytesUsed,
@@ -345,7 +348,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }, true);
 
     if (!isValid) {
-      this.displayMessage('The material is invalid.', '#CF024E');
+      this.displayMessage('The material is invalid.', '#060606', '#DE6060');
       return;
     }
 
@@ -364,7 +367,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
 
     if (duplicate) {
-      this.displayMessage('A material with the same name already exists.');
+      this.displayMessage('A material with the same name already exists.', '#060606', '#DE6060');
       return;
     }
 
@@ -437,7 +440,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }, true);
 
     if (!isValid) {
-      this.displayMessage('The material is invalid.', '#CF024E');
+      this.displayMessage('The material is invalid.', '#060606', '#DE6060');
       return;
     }
 
@@ -446,7 +449,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
 
     if (duplicates.length !== 1) {
-      this.displayMessage('Could not update. A material with the same name already exists.');
+      this.displayMessage('Could not update. A material with the same name already exists.', '#060606', '#DE6060');
       return;
     }
 
@@ -543,11 +546,12 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   // Messaging
   //
 
-  displayMessage(message: string, color: string = '#CC3A4B') {
+  displayMessage(message: string, color: string = '#CC3A4B', background: string = '#BCD3F4') {
     this.setState({
       message: {
         message,
         color,
+        backgroundColor: background,
       },
     });
   }
