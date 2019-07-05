@@ -1,4 +1,5 @@
 import React from 'react';
+import IconMinus from '../icons/IconMinus';
 import {
   asFloat,
   asInteger,
@@ -11,135 +12,103 @@ import {
   toRealEngraveSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
-import { PluginBitmapEngraveSetting } from '../lib/materialRaw';
-import IconMinus from '../icons/IconMinus';
+import {
+  PluginBitmapEngraveSetting,
+} from '../lib/materialRaw';
+import {
+  InputText,
+  InputNumber,
+  InputNumberWithCheckbox,
+} from './Input';
 
 interface BitmapEngraveSettingProps {
   bitmap: PluginBitmapEngraveSetting;
   index: number;
   removeBitmapEngrave: Function;
-  storeLocalMaterial: Function;
+  storeLocalMaterial: React.FocusEventHandler<any>;
   updateBitmapEngrave: Function;
+  validationHandler: (id: string, isValid: boolean) => void;
 }
 
 export default class BitmapEngraveSetting extends React.Component<BitmapEngraveSettingProps> {
-  state = {
-    maxPower: (this.props.bitmap.power === 100),
+  constructor(props: BitmapEngraveSettingProps) {
+    super(props);
+
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange(
+    prop: keyof PluginBitmapEngraveSetting,
+    value: string | number
+  ) {
+    this.props.updateBitmapEngrave(this.props.index, {
+      ...this.props.bitmap,
+      [prop]: value,
+    });
   }
 
   render() {
-    const { index: id, bitmap } = this.props;
+    const maxPower = (this.props.bitmap.power >= 99.99);
     return (
       <>
-        <div style={{display: 'flex', marginBottom: '8px'}}>
-          <p style={{
-            display: 'flex',
-            alignItems: 'center',
-            height: '18px',
-            marginRight: '4px',
-          }}>
+        <div className="form-sub-header">
+          <p>
             {`Bitmap Engrave ${this.props.index + 1}`}
           </p>
           <IconMinus click={() => {
             this.props.removeBitmapEngrave(this.props.index);
           }} height="16px" width="16px" />
         </div>
-        <div className="form-field" style={(id !== 0) ? { marginTop: '20px' } : undefined}>
-          <label>Name *</label>
-          <input
-            type="text"
-            value={bitmap.name}
-            onChange={(event) => this.props.updateBitmapEngrave(id, {
-              ...bitmap,
-              name: event.target.value,
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <label>Speed *</label>
-          <input
-            type="number"
-            value={toDisplayEngraveSpeed(bitmap.speed)}
-            min="100"
-            max="1000"
-            onChange={(event) => this.props.updateBitmapEngrave(id, {
-              ...bitmap,
-              speed: toRealEngraveSpeed(asInteger(event.target.value)),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <div className="form-field-right">
-            <label>Power *</label>
-            <label className="label">Max Power</label>
-            <input
-              type="checkbox"
-              value={this.state.maxPower? 1 : 0}
-              checked={this.state.maxPower}
-              onChange={() => {
-                const nextMaxPower = !this.state.maxPower;
-                this.props.updateBitmapEngrave(id, {
-                  ...bitmap,
-                  power: (nextMaxPower) ? 100 : 99,
-                });
-                this.setState({
-                  maxPower: nextMaxPower,
-                });
-              }}
-              onBlur={() => this.props.storeLocalMaterial()}
-            />
-          </div>
-          <input
-            type="number"
-            disabled={this.state.maxPower}
-            value={toDisplayPower(bitmap.power)}
-            min="0"
-            max="100"
-            onChange={(event) => this.props.updateBitmapEngrave(id, {
-              ...bitmap,
-              power: toRealPower(asInteger(event.target.value)),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <label>Passes</label>
-          <input
-            type="number"
-            value={bitmap.passes}
-            onChange={(event) => this.props.updateBitmapEngrave(id, {
-              ...bitmap,
-              passes: asInteger(event.target.value),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <label>Focal Offset (mm)</label>
-          <input
-            type="number"
-            value={bitmap.focalOffset ? bitmap.focalOffset : undefined}
-            onChange={(event) => this.props.updateBitmapEngrave(id, {
-              ...bitmap,
-              focalOffset: precisionRound(asFloat(event.target.value), 3),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <label>Scan Gap (LPI {`${toDisplayLinesPerInch(bitmap.scanGap ? bitmap.scanGap : 0)}`}) *</label>
-          <input
-            type="number"
-            value={bitmap.scanGap ? bitmap.scanGap : undefined}
-            onChange={(event) => this.props.updateBitmapEngrave(id, {
-              ...bitmap,
-              scanGap: asInteger(event.target.value),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
+        <InputText
+          label="Name *"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('name', event.target.value) }
+          value={this.props.bitmap.name}
+          validate={this.props.validationHandler}
+        />
+        <InputNumber
+          label="Speed *"
+          max="1000"
+          min="100"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('speed', toRealEngraveSpeed(asInteger(event.target.value))) }
+          value={toDisplayEngraveSpeed(this.props.bitmap.speed)}
+          validate={this.props.validationHandler}
+        />
+        <InputNumberWithCheckbox
+          isChecked={maxPower}
+          isDisabled={maxPower}
+          label="Power *"
+          max="100"
+          min="0"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('power', toRealPower(asInteger(event.target.value))) }
+          onChecked={() => {
+            const nextMaxPower = !maxPower;
+            this.onChange('power', (nextMaxPower) ? 100 : 99);
+          }}
+          value={toDisplayPower(this.props.bitmap.power)}
+          validate={this.props.validationHandler}
+        />
+        <InputNumber
+          label="Passes"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('passes', asInteger(event.target.value)) }
+          value={this.props.bitmap.passes}
+        />
+        <InputNumber
+          label="Focal Offset (mm)"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('focalOffset', precisionRound(asFloat(event.target.value), 3)) }
+          value={this.props.bitmap.focalOffset}
+        />
+        <InputNumber
+          label={`Scan Gap (LPI ${toDisplayLinesPerInch(this.props.bitmap.scanGap)}) *`}
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('scanGap', asInteger(event.target.value)) }
+          value={this.props.bitmap.scanGap}
+          validate={this.props.validationHandler}
+        />
       </>
     );
   }

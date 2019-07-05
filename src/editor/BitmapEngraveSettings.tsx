@@ -8,8 +8,9 @@ type BitmapEngraveSettingsProps = {
   addBitmapEngrave: AddBitmapEngrave;
   bitmaps: PluginBitmapEngraveSetting[];
   removeBitmapEngrave: Function;
-  storeLocalMaterial: Function;
+  storeLocalMaterial: React.FocusEventHandler<any>;
   updateBitmapEngrave: Function;
+  validationHandler: (id: string, isValid: boolean) => void;
 }
 
 export default function BitmapEngraveSettings(props: BitmapEngraveSettingsProps) {
@@ -35,6 +36,7 @@ export default function BitmapEngraveSettings(props: BitmapEngraveSettingsProps)
               removeBitmapEngrave={props.removeBitmapEngrave}
               storeLocalMaterial={props.storeLocalMaterial}
               updateBitmapEngrave={props.updateBitmapEngrave}
+              validationHandler={props.validationHandler}
             />
           );
         })

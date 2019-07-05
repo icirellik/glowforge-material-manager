@@ -24,9 +24,22 @@
   justify-content: flex-end;
 }
 
+.form-sub-header {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.form-sub-header p {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  margin-right: 4px;
+}
+
 .form-field {
   display: flex;
   flex-direction: column;
+  position: relative;
   width: auto;
   margin-right: 14px;
   margin-bottom: 12px;
@@ -43,6 +56,10 @@
 .form-field input {
   padding: 2px 4px;
   height: 20px;
+}
+
+.form-field .invalid {
+  border-color: #CF024E;
 }
 
 .form-field-right {

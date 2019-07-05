@@ -1,5 +1,6 @@
 import { GFMaterial } from './materialGlowforge';
 import { PluginMaterial } from './materialRaw';
+import { TempMaterial } from './constants';
 
 export type SyncId = string;
 export type SyncData = string;
@@ -21,7 +22,7 @@ export interface StorageLocal {
   shouldUpdate?: boolean;
   // A material that was saved due to the popup window being dismissed without
   // clicking the save button.
-  tempMaterial?: PluginMaterial | null;
+  tempMaterial?: TempMaterial | null;
   // Different UI setttings that may or may not exist.
   ui?: UISettings | null;
 }

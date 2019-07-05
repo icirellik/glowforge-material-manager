@@ -7,9 +7,10 @@ import { AddVectorEngrave } from '../App';
 type VectorEngraveSettingsProps = {
   addVectorEngrave: AddVectorEngrave;
   removeVectorEngrave: Function;
-  storeLocalMaterial: Function;
+  storeLocalMaterial: React.FocusEventHandler<any>;
   updateVectorEngrave: Function;
   vectors: PluginVectorEngraveSetting[];
+  validationHandler: (id: string, isValid: boolean) => void;
 }
 
 export default function VectorEngraveSettings(props: VectorEngraveSettingsProps) {
@@ -35,6 +36,7 @@ export default function VectorEngraveSettings(props: VectorEngraveSettingsProps)
               removeVectorEngrave={props.removeVectorEngrave}
               updateVectorEngrave={props.updateVectorEngrave}
               vector={vector}
+              validationHandler={props.validationHandler}
             />
           );
         })

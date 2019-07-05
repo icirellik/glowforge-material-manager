@@ -10,98 +10,81 @@ import {
   toRealCutSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
-import { PluginCutSetting } from '../lib/materialRaw';
+import {
+  PluginCutSetting,
+} from '../lib/materialRaw';
+import {
+  InputNumber,
+  InputNumberWithCheckbox,
+} from './Input';
 
 interface CutSettingsProps {
   cut: PluginCutSetting;
-  storeLocalMaterial: Function;
+  storeLocalMaterial: React.FocusEventHandler<any>;
   updateCut: Function;
+  validationHandler: (id: string, isValid: boolean) => void;
 }
 
 export default class CutSettings extends React.Component<CutSettingsProps> {
-  state = {
-    maxPower: (this.props.cut.power === 100),
+  constructor(props: CutSettingsProps) {
+    super(props);
+
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange(
+    prop: keyof PluginCutSetting,
+    value: string | number
+  ) {
+    this.props.updateCut({
+      ...this.props.cut,
+      [prop]: value,
+    });
   }
 
   render() {
-    const { cut } = this.props;
+    const maxPower = (this.props.cut.power >= 99.99);
     return (
       <>
         <div className="form-header">
           <p>Cut Settings</p>
         </div>
-        <div className="form-field">
-          <label>Speed *</label>
-          <input
-            type="number"
-            value={toDisplayCutSpeed(cut.speed)}
-            min="100"
-            max="500"
-            onChange={(event) => this.props.updateCut({
-              ...cut,
-              speed: toRealCutSpeed(asInteger(event.target.value)),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <div className="form-field-right">
-            <label>Power *</label>
-            <label className="label">Max Power</label>
-            <input
-              type="checkbox"
-              value={this.state.maxPower? 1 : 0}
-              checked={this.state.maxPower}
-              onChange={() => {
-                const nextMaxPower = !this.state.maxPower;
-                this.props.updateCut({
-                  ...cut,
-                  power: (nextMaxPower) ? 100 : 99,
-                });
-                this.setState({
-                  maxPower: nextMaxPower,
-                });
-              }}
-              onBlur={() => this.props.storeLocalMaterial()}
-            />
-          </div>
-          <input
-            type="number"
-            disabled={this.state.maxPower}
-            value={toDisplayPower(cut.power)}
-            min="0"
-            max="100"
-            onChange={(event) => this.props.updateCut({
-              ...cut,
-              power: toRealPower(asInteger(event.target.value)),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <label>Passes</label>
-          <input
-            type="number"
-            value={cut.passes}
-            onChange={(event) => this.props.updateCut({
-              ...cut,
-              passes: asInteger(event.target.value),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <label>Focal Offset (mm)</label>
-          <input
-            type="number"
-            value={cut.focalOffset ? cut.focalOffset : undefined}
-            onChange={(event) => this.props.updateCut({
-              ...cut,
-              focalOffset: precisionRound(asFloat(event.target.value), 3),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
+        <InputNumber
+          label="Speed *"
+          max="500"
+          min="100"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('speed', toRealCutSpeed(asInteger(event.target.value))) }
+          value={toDisplayCutSpeed(this.props.cut.speed)}
+          validate={this.props.validationHandler}
+        />
+        <InputNumberWithCheckbox
+          isChecked={maxPower}
+          isDisabled={maxPower}
+          label="Power *"
+          max="100"
+          min="0"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('power', toRealPower(asInteger(event.target.value))) }
+          onChecked={() => {
+            const nextMaxPower = !maxPower;
+            this.onChange('power', (nextMaxPower) ? 100 : 99);
+          }}
+          value={toDisplayPower(this.props.cut.power)}
+          validate={this.props.validationHandler}
+        />
+        <InputNumber
+          label="Passes"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('passes', asInteger(event.target.value)) }
+          value={this.props.cut.passes}
+        />
+        <InputNumber
+          label="Focal Offset (mm)"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('focalOffset', precisionRound(asFloat(event.target.value), 3)) }
+          value={this.props.cut.focalOffset}
+        />
       </>
     );
   }

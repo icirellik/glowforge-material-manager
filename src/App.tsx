@@ -49,16 +49,20 @@ export type RemoveMaterial = (title: string) => Promise<void>;
 export type SetMaterial = (title: string) => Promise<void>;
 export type UpdateMaterial = (key: keyof TempMaterial, value: any) => void;
 
+// Cut Methods
 export type UpdateCut = (cut: PluginCutSetting) => void;
 
+// Score Methods
 export type AddScore = () => void;
 export type RemoveScore = (index: number) => void;
 export type UpdateScore = (index: number, score: PluginScoreSetting) => void;
 
+// Bitmap Methods
 export type AddBitmapEngrave = () => void;
 export type RemoveBitmapEngrave = (index: number) => void;
 export type UpdateBitmapEngrave = (index: number, bitmap: PluginBitmapEngraveSetting) => void;
 
+// Vector Methods
 export type AddVectorEngrave = () => void;
 export type RemoveVectorEngrave = (index: number) => void;
 export type UpdateVectorEngrave = (index: number, vector: PluginVectorEngraveSetting) => void;
@@ -187,6 +191,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // Synchronization
     this.forceSyncronize = this.forceSyncronize.bind(this)
+
+    // Validaton
+    this.validationHandler = this.validationHandler.bind(this);
   }
 
   async componentDidMount() {
@@ -418,6 +425,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    *
    */
   async addMaterial() {
+
+    const isValid = Object.keys(this.state.tempMaterial.propValidation).map((key) => {
+      return this.state.tempMaterial.propValidation[key];
+    }).reduce((prev, cur) => {
+      return prev && cur;
+    }, true);
+
+    if (!isValid) {
+      this.displayMessage('The material is invalid.', '#CF024E');
+      return;
+    }
+
     // Hash the title and take the first seven for the id.
     const { thickName, name } = this.state.tempMaterial;
     const title = `${thickName} ${name}`
@@ -487,6 +506,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         tempMaterial: {
           ...material,
           name: `${material.name} (${duplicates.length})`,
+          propValidation: {},
         },
       });
     }
@@ -497,6 +517,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * @param title
    */
   async editMaterial(title: string) {
+
+    const isValid = Object.keys(this.state.tempMaterial.propValidation).map((key) => {
+      return this.state.tempMaterial.propValidation[key];
+    }).reduce((prev, cur) => {
+      return prev && cur;
+    }, true);
+
+    if (!isValid) {
+      this.displayMessage('The material is invalid.', '#CF024E');
+      return;
+    }
+
     const duplicates = this.state.materials.filter(material => {
       return material.title === `${title}`;
     });
@@ -599,11 +631,11 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   // Messaging
   //
 
-  displayMessage(message: string) {
+  displayMessage(message: string, color: string = '#CC3A4B') {
     this.setState({
       message: {
         message,
-        color: '#CC3A4B',
+        color,
       },
     });
   }
@@ -624,7 +656,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * @param mode
    * @param material
    */
-  async changeEditorMode(mode: EditorMode, material = EMPTY_MATERIAL) {
+  async changeEditorMode(mode: EditorMode, material: TempMaterial = EMPTY_MATERIAL) {
     await clearTempMaterial();
 
     this.setState({
@@ -662,7 +694,10 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     const rawMaterial = this.state.rawMaterials.find(rawMaterial => {
       return `${rawMaterial.thickName} ${rawMaterial.name}` === title;
     });
-    await this.changeEditorMode('EDIT', rawMaterial);
+    await this.changeEditorMode('EDIT', {
+      ...rawMaterial!,
+      propValidation: {},
+    });
   }
 
   /**
@@ -675,7 +710,21 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     const rawMaterial = this.state.rawMaterials.find(rawMaterial => {
       return `${rawMaterial.thickName} ${rawMaterial.name}` === title;
     });
-    await this.changeEditorMode('SELECTED', rawMaterial);
+    await this.changeEditorMode('SELECTED', {
+      ...rawMaterial!,
+      propValidation: {},
+    });
+  }
+
+  validationHandler(id: string, isValid: boolean) {
+    const tempMaterial = {
+      ...this.state.tempMaterial,
+    };
+    tempMaterial.propValidation[id] = isValid;
+
+    this.setState({
+      tempMaterial,
+    });
   }
 
   render() {
@@ -742,6 +791,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
                   updateMaterial={this.updateMaterial}
                   updateScore={this.updateScore}
                   updateVectorEngrave={this.updateVectorEngrave}
+                  validationHandler={this.validationHandler}
                 />
               </div>
             </div>
