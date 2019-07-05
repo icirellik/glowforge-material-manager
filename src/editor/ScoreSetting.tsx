@@ -1,4 +1,5 @@
 import React from 'react';
+import IconMinus from '../icons/IconMinus';
 import {
   asFloat,
   asInteger,
@@ -10,131 +11,95 @@ import {
   toRealCutSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
-import { PluginScoreSetting } from '../lib/materialRaw';
-import IconMinus from '../icons/IconMinus';
+import {
+  PluginScoreSetting,
+} from '../lib/materialRaw';
+import {
+  InputText,
+  InputNumber,
+  InputNumberWithCheckbox,
+} from './Input';
 
 interface ScoreSettingProps {
   index: number;
   removeScore: Function;
   score: PluginScoreSetting;
-  storeLocalMaterial: Function;
+  storeLocalMaterial: React.FocusEventHandler<any>;
   updateScore: Function;
 }
 
 export default class ScoreSetting extends React.Component<ScoreSettingProps> {
   constructor(props: ScoreSettingProps) {
     super(props);
-    if (props.score.power === 100) {
-      this.setState({
-        maxPower: true,
-      });
-    }
+
+    this.onChange = this.onChange.bind(this);
   }
 
-  state = {
-    maxPower: false,
+  onChange(
+    prop: keyof PluginScoreSetting,
+    value: string | number
+  ) {
+    this.props.updateScore(this.props.index, {
+      ...this.props.score,
+      [prop]: value,
+    });
   }
 
   render() {
-    const { index: id, score } = this.props;
+    const maxPower = (this.props.score.power >= 99.99);
     return (
       <>
-        <div style={{display: 'flex', marginBottom: '8px'}}>
-          <p style={{
-            display: 'flex',
-            alignItems: 'center',
-            height: '18px',
-            marginRight: '4px',
-          }}>
+        <div className="form-sub-header">
+          <p>
             {`Score ${this.props.index + 1}`}
           </p>
           <IconMinus click={() => {
             this.props.removeScore(this.props.index);
           }} height="16px" width="16px" />
         </div>
-        <div className="form-field" style={(id !== 0) ? { marginTop: '20px' } : undefined}>
-          <label>Name *</label>
-          <input
-            type="text"
-            value={score.name}
-            onChange={(event) => this.props.updateScore(id, {
-              ...score,
-              name: event.target.value,
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <label>Speed *</label>
-          <input
-            type="number"
-            value={toDisplayCutSpeed(score.speed)}
-            min="100"
-            max="500"
-            onChange={(event) => this.props.updateScore(id, {
-              ...score,
-              speed: toRealCutSpeed(asInteger(event.target.value)),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <div className="form-field-right">
-            <label>Power *</label>
-            <label className="label">Max Power</label>
-            <input
-              type="checkbox"
-              value={this.state.maxPower? 1 : 0}
-              onChange={() => {
-                const nextMaxPower = !this.state.maxPower;
-                this.props.updateScore(id, {
-                  ...score,
-                  power: (nextMaxPower) ? 100 : 99,
-                });
-                this.setState({
-                  maxPower: nextMaxPower,
-                });
-              }}
-              onBlur={() => this.props.storeLocalMaterial()}
-            />
-          </div>
-          <input
-            type="number"
-            disabled={this.state.maxPower}
-            value={toDisplayPower(score.power)}
-            min="0"
-            max="100"
-            onChange={(event) => this.props.updateScore(id, {
-              ...score,
-              power: toRealPower(asInteger(event.target.value)),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <label>Passes</label>
-          <input
-            type="number"
-            value={score.passes}
-            onChange={(event) => this.props.updateScore(id, {
-              ...score,
-              passes: asInteger(event.target.value),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <label>Focal Offset (mm)</label>
-          <input
-            type="number"
-            value={score.focalOffset ? score.focalOffset : undefined}
-            onChange={(event) => this.props.updateScore(id, {
-              ...score,
-              focalOffset: precisionRound(asFloat(event.target.value), 3),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
+        <InputText
+          label="Name *"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('name', event.target.value) }
+          value={this.props.score.name}
+          validate={() => {}}
+        />
+        <InputNumber
+          label="Speed *"
+          max="500"
+          min="100"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('speed', toRealCutSpeed(asInteger(event.target.value))) }
+          value={toDisplayCutSpeed(this.props.score.speed)}
+          validate={() => {}}
+        />
+        <InputNumberWithCheckbox
+          isChecked={maxPower}
+          isDisabled={maxPower}
+          label="Power *"
+          max="100"
+          min="0"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('power', toRealPower(asInteger(event.target.value))) }
+          onChecked={() => {
+            const nextMaxPower = !maxPower;
+            this.onChange('power', (nextMaxPower) ? 100 : 99);
+          }}
+          value={toDisplayPower(this.props.score.power)}
+          validate={() => {}}
+        />
+        <InputNumber
+          label="Passes"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('passes', asInteger(event.target.value)) }
+          value={this.props.score.passes}
+        />
+        <InputNumber
+          label="Focal Offset (mm)"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('focalOffset', precisionRound(asFloat(event.target.value), 3)) }
+          value={this.props.score.focalOffset}
+        />
       </>
     );
   }

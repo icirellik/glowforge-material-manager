@@ -7,7 +7,7 @@ import { AddVectorEngrave } from '../App';
 type VectorEngraveSettingsProps = {
   addVectorEngrave: AddVectorEngrave;
   removeVectorEngrave: Function;
-  storeLocalMaterial: Function;
+  storeLocalMaterial: React.FocusEventHandler<any>;
   updateVectorEngrave: Function;
   vectors: PluginVectorEngraveSetting[];
 }

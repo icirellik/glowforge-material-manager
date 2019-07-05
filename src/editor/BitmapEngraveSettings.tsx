@@ -8,7 +8,7 @@ type BitmapEngraveSettingsProps = {
   addBitmapEngrave: AddBitmapEngrave;
   bitmaps: PluginBitmapEngraveSetting[];
   removeBitmapEngrave: Function;
-  storeLocalMaterial: Function;
+  storeLocalMaterial: React.FocusEventHandler<any>;
   updateBitmapEngrave: Function;
 }
 

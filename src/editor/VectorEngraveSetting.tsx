@@ -1,4 +1,5 @@
 import React from 'react';
+import IconMinus from '../icons/IconMinus';
 import {
   asFloat,
   asInteger,
@@ -11,135 +12,102 @@ import {
   toRealEngraveSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
-import { PluginVectorEngraveSetting } from '../lib/materialRaw';
-import IconMinus from '../icons/IconMinus';
+import {
+  PluginVectorEngraveSetting,
+} from '../lib/materialRaw';
+import {
+  InputText,
+  InputNumber,
+  InputNumberWithCheckbox,
+} from './Input';
 
 interface VectorEngraveSettingProps {
   index: number;
   removeVectorEngrave: Function;
-  storeLocalMaterial: Function;
+  storeLocalMaterial: React.FocusEventHandler<any>;
   updateVectorEngrave: Function;
   vector: PluginVectorEngraveSetting;
 }
 
 export default class VectorEngraveSetting extends React.Component<VectorEngraveSettingProps> {
-  state = {
-    maxPower: (this.props.vector.power === 100),
+  constructor(props: VectorEngraveSettingProps) {
+    super(props);
+
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange(
+    prop: keyof PluginVectorEngraveSetting,
+    value: string | number
+  ) {
+    this.props.updateVectorEngrave(this.props.index, {
+      ...this.props.vector,
+      [prop]: value,
+    });
   }
 
   render() {
-    const { index: id, vector } = this.props;
+    const maxPower = (this.props.vector.power >= 99.99);
     return (
       <>
-        <div style={{display: 'flex', marginBottom: '8px'}}>
-          <p style={{
-            display: 'flex',
-            alignItems: 'center',
-            height: '18px',
-            marginRight: '4px',
-          }}>
+        <div className="form-sub-header">
+          <p>
             {`Vector Engrave ${this.props.index + 1}`}
           </p>
           <IconMinus click={() => {
             this.props.removeVectorEngrave(this.props.index);
           }} height="16px" width="16px" />
         </div>
-        <div className="form-field" style={(id !== 0) ? { marginTop: '20px' } : undefined}>
-          <label>Name *</label>
-          <input
-            type="text"
-            value={vector.name}
-            onChange={(event) => this.props.updateVectorEngrave(id, {
-              ...vector,
-              name: event.target.value
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <label>Speed *</label>
-          <input
-            type="number"
-            value={toDisplayEngraveSpeed(vector.speed)}
-            min="100"
-            max="1000"
-            onChange={(event) => this.props.updateVectorEngrave(id, {
-              ...vector,
-              speed: toRealEngraveSpeed(asInteger(event.target.value)),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <div className="form-field-right">
-            <label>Power *</label>
-            <label className="label">Max Power</label>
-            <input
-              type="checkbox"
-              value={this.state.maxPower? 1 : 0}
-              checked={this.state.maxPower}
-              onChange={() => {
-                const nextMaxPower = !this.state.maxPower;
-                this.props.updateVectorEngrave(id, {
-                  ...vector,
-                  power: (nextMaxPower) ? 100 : 99,
-                });
-                this.setState({
-                  maxPower: nextMaxPower,
-                });
-              }}
-              onBlur={() => this.props.storeLocalMaterial()}
-            />
-          </div>
-          <input
-            type="number"
-            disabled={this.state.maxPower}
-            value={toDisplayPower(vector.power)}
-            min="0"
-            max="100"
-            onChange={(event) => this.props.updateVectorEngrave(id, {
-              ...vector,
-              power: toRealPower(asInteger(event.target.value)),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <label>Passes</label>
-          <input
-            type="number"
-            value={vector.passes}
-            onChange={(event) => this.props.updateVectorEngrave(id, {
-              ...vector,
-              passes: asInteger(event.target.value),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <label>Focal Offset (mm)</label>
-          <input
-            type="number"
-            value={vector.focalOffset ? vector.focalOffset : undefined}
-            onChange={(event) => this.props.updateVectorEngrave(id, {
-              ...vector,
-              focalOffset: precisionRound(asFloat(event.target.value), 3),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
-        <div className="form-field">
-          <label>Scan Gap (LPI {`${toDisplayLinesPerInch(vector.scanGap ? vector.scanGap : 0)}`}) *</label>
-          <input
-            type="number"
-            value={vector.scanGap ? vector.scanGap : undefined}
-            onChange={(event) => this.props.updateVectorEngrave(id, {
-              ...vector,
-              scanGap: asInteger(event.target.value),
-            })}
-            onBlur={() => this.props.storeLocalMaterial()}
-          />
-        </div>
+        <InputText
+          label="Name *"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('name', event.target.value) }
+          value={this.props.vector.name}
+          validate={() => {}}
+        />
+         <InputNumber
+          label="Speed *"
+          max="1000"
+          min="100"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('speed', toRealEngraveSpeed(asInteger(event.target.value))) }
+          value={toDisplayEngraveSpeed(this.props.vector.speed)}
+          validate={() => {}}
+        />
+        <InputNumberWithCheckbox
+          isChecked={maxPower}
+          isDisabled={maxPower}
+          label="Power *"
+          max="100"
+          min="0"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('power', toRealPower(asInteger(event.target.value))) }
+          onChecked={() => {
+            const nextMaxPower = !maxPower;
+            this.onChange('power', (nextMaxPower) ? 100 : 99);
+          }}
+          value={toDisplayPower(this.props.vector.power)}
+          validate={() => {}}
+        />
+        <InputNumber
+          label="Passes"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('passes', asInteger(event.target.value)) }
+          value={this.props.vector.passes}
+        />
+        <InputNumber
+          label="Focal Offset (mm)"
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('focalOffset', precisionRound(asFloat(event.target.value), 3)) }
+          value={this.props.vector.focalOffset}
+        />
+        <InputNumber
+          label={`Scan Gap (LPI ${toDisplayLinesPerInch(this.props.vector.scanGap)}) *`}
+          onBlur={this.props.storeLocalMaterial}
+          onChange={(event) => this.onChange('scanGap', asInteger(event.target.value)) }
+          value={this.props.vector.scanGap}
+          validate={() => {}}
+        />
       </>
     );
   }

@@ -1,58 +1,45 @@
 import React from 'react';
 import { PluginMaterial } from '../lib/materialRaw';
-import { asFloat } from '../lib/utils';
 import { EditorMode } from '../App';
+import { InputText, InputNumber } from './Input';
+import { asFloat } from '../lib/utils';
 
-type BaseSettingsProps = {
+type MaterialSettingsProps = {
   action: EditorMode;
   material: PluginMaterial;
   storeLocalMaterial: React.FocusEventHandler<any>;
   updateMaterial: Function;
 }
 
-export default class MaterialSettings extends React.Component<BaseSettingsProps> {
-  render() {
-    return (
-      <>
-        <div className="form-header">
-          <p>Material Settings</p>
-        </div>
-        <div className="form-field">
-          <label>Thickness Name *</label>
-          <input
-            disabled={this.props.action === 'EDIT'}
-            type="text"
-            value={this.props.material.thickName}
-            onChange={(event) => {
-              this.props.updateMaterial('thickName', event.target.value);
-            }}
-            onBlur={this.props.storeLocalMaterial}
-          />
-        </div>
-        <div className="form-field">
-          <label>Material Name *</label>
-          <input
-            disabled={this.props.action === 'EDIT'}
-            type="text"
-            value={this.props.material.name}
-            onChange={(event) => {
-              this.props.updateMaterial('name', event.target.value);
-            }}
-            onBlur={this.props.storeLocalMaterial}
-          />
-        </div>
-        <div className="form-field">
-          <label>Thickness (mm) *</label>
-          <input
-            type="number"
-            value={this.props.material.thickness}
-            onChange={(event) => {
-              this.props.updateMaterial('thickness', asFloat(event.target.value));
-            }}
-            onBlur={this.props.storeLocalMaterial}
-          />
-        </div>
-      </>
-    );
-  }
+export default function MaterialSettings(props: MaterialSettingsProps) {
+  return (
+    <>
+      <div className="form-header">
+        <p>Material Settings</p>
+      </div>
+      <InputText
+        label="Thickness Name *"
+        isDisabled={props.action === 'EDIT'}
+        onBlur={props.storeLocalMaterial}
+        onChange={(event) => props.updateMaterial('thickName', event.target.value) }
+        value={props.material.thickName}
+        validate={() => {}}
+      />
+      <InputText
+        label="Material Name *"
+        isDisabled={props.action === 'EDIT'}
+        onBlur={props.storeLocalMaterial}
+        onChange={(event) => props.updateMaterial('name', event.target.value) }
+        value={props.material.name}
+        validate={() => {}}
+      />
+      <InputNumber
+        label="Thickness (mm) *"
+        onBlur={props.storeLocalMaterial}
+        onChange={(event) => props.updateMaterial('thickness', asFloat(event.target.value)) }
+        value={props.material.thickness}
+        validate={() => {}}
+      />
+    </>
+  );
 }

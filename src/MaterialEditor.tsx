@@ -48,7 +48,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps> {
     this.storeLocalMaterial = this.storeLocalMaterial.bind(this);
   }
 
-  storeLocalMaterial() {
+  storeLocalMaterial(event: React.FocusEvent<any>) {
     if (this.props.action === 'ADD') {
       storeTempMaterial(this.props.material);
     }

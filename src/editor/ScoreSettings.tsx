@@ -8,7 +8,7 @@ type ScoreSettingsProps = {
   addScore: AddScore;
   removeScore: Function;
   scores: PluginScoreSetting[];
-  storeLocalMaterial: Function;
+  storeLocalMaterial: React.FocusEventHandler<any>;
   updateScore: Function;
 }
 
