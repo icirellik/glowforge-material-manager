@@ -3,7 +3,7 @@ import {
   PluginScoreSetting,
   PluginVectorEngraveSetting,
   PluginMaterial,
-} from './materialRaw';
+} from '../material/materialPlugin';
 
 export interface TempMaterial extends PluginMaterial {
   propValidation: {
@@ -56,4 +56,24 @@ export const EMPTY_BITMAP_ENGRAVE: PluginBitmapEngraveSetting = {
   minimumGrayPercent: null,
   maximumGrayPercent: null,
   horizontalTiming: null,
+};
+
+/**
+ * The individual properies that may have multiple settings methods.
+ */
+
+export interface MultiSettings {
+  'bitmaps': typeof EMPTY_BITMAP_ENGRAVE;
+  'scores': typeof EMPTY_SCORE;
+  'vectors': typeof EMPTY_VECTOR_ENGRAVE;
+}
+
+/**
+ * The different default settings that are used when creating a new bitmap,
+ * score, or vector setting.
+ */
+export const MultiSettingsDefaults: MultiSettings = {
+  'bitmaps': EMPTY_BITMAP_ENGRAVE,
+  'scores': EMPTY_SCORE,
+  'vectors': EMPTY_VECTOR_ENGRAVE,
 };

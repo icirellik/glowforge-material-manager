@@ -1,14 +1,14 @@
 import React from 'react';
-import { PluginMaterial } from '../lib/materialRaw';
-import { EditorMode } from '../App';
+import { PluginMaterial } from '../material/materialPlugin';
+import { EditorMode, UpdateMaterial } from '../App';
 import { InputText, InputNumber } from './Input';
 import { asFloat } from '../lib/utils';
 
 type MaterialSettingsProps = {
   action: EditorMode;
   material: PluginMaterial;
-  storeLocalMaterial: React.FocusEventHandler<any>;
-  updateMaterial: Function;
+  saveTemporaryState: () => void;
+  updateMaterial: UpdateMaterial;
   validationHandler: (id: string, isValid: boolean) => void;
 }
 
@@ -21,7 +21,7 @@ export default function MaterialSettings(props: MaterialSettingsProps) {
       <InputText
         label="Thickness Name *"
         isDisabled={props.action === 'EDIT'}
-        onBlur={props.storeLocalMaterial}
+        onBlur={props.saveTemporaryState}
         onChange={(event) => props.updateMaterial('thickName', event.target.value) }
         value={props.material.thickName}
         validate={props.validationHandler}
@@ -29,14 +29,14 @@ export default function MaterialSettings(props: MaterialSettingsProps) {
       <InputText
         label="Material Name *"
         isDisabled={props.action === 'EDIT'}
-        onBlur={props.storeLocalMaterial}
+        onBlur={props.saveTemporaryState}
         onChange={(event) => props.updateMaterial('name', event.target.value) }
         value={props.material.name}
         validate={props.validationHandler}
       />
       <InputNumber
         label="Thickness (mm) *"
-        onBlur={props.storeLocalMaterial}
+        onBlur={props.saveTemporaryState}
         onChange={(event) => props.updateMaterial('thickness', asFloat(event.target.value)) }
         value={props.material.thickness}
         validate={props.validationHandler}

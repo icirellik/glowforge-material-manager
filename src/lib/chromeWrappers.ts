@@ -1,5 +1,5 @@
-import { GFMaterial } from './materialGlowforge';
-import { PluginMaterial } from './materialRaw';
+import { GFMaterial } from '../material/materialGlowforge';
+import { PluginMaterial } from '../material/materialPlugin';
 import { TempMaterial } from './constants';
 
 export type SyncId = string;

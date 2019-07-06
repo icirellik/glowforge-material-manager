@@ -9,7 +9,7 @@ import {
   removeRawMaterial,
   sendCloudMaterial,
   removeMaterialTitle,
-} from './lib/material';
+} from './material/material';
 import {
   clearTempMaterial,
   forceSync,
@@ -22,21 +22,17 @@ import {
   getUISettings,
 } from './lib/chromeWrappers';
 import {
-  EMPTY_BITMAP_ENGRAVE,
   EMPTY_MATERIAL,
-  EMPTY_SCORE,
-  EMPTY_VECTOR_ENGRAVE,
   TempMaterial,
+  MultiSettings,
+  MultiSettingsDefaults,
 } from './lib/constants';
 import './App.css';
 import {
-  PluginBitmapEngraveSetting,
   PluginCutSetting,
-  PluginScoreSetting,
-  PluginVectorEngraveSetting,
   PluginMaterial,
-} from './lib/materialRaw';
-import { GFMaterial } from './lib/materialGlowforge';
+} from './material/materialPlugin';
+import { GFMaterial } from './material/materialGlowforge';
 import { sha1 } from './lib/utils';
 import { readQrCode } from './lib/qrCode';
 import { AppHeader } from './AppHeader';
@@ -52,20 +48,10 @@ export type UpdateMaterial = (key: keyof TempMaterial, value: any) => void;
 // Cut Methods
 export type UpdateCut = (cut: PluginCutSetting) => void;
 
-// Score Methods
-export type AddScore = () => void;
-export type RemoveScore = (index: number) => void;
-export type UpdateScore = (index: number, score: PluginScoreSetting) => void;
-
-// Bitmap Methods
-export type AddBitmapEngrave = () => void;
-export type RemoveBitmapEngrave = (index: number) => void;
-export type UpdateBitmapEngrave = (index: number, bitmap: PluginBitmapEngraveSetting) => void;
-
-// Vector Methods
-export type AddVectorEngrave = () => void;
-export type RemoveVectorEngrave = (index: number) => void;
-export type UpdateVectorEngrave = (index: number, vector: PluginVectorEngraveSetting) => void;
+// General Purpose MultiSetting Methods
+export type AddSetting = (prop: keyof MultiSettings) => void;
+export type RemoveSetting = <K extends keyof MultiSettings>(prop: K, index: number) => void;
+export type UpdateSetting = <K extends keyof MultiSettings>(prop: K, index: number, setting: MultiSettings[K]) => void;
 
 interface IMaterialEditor {
   addMaterial: AddMaterial;
@@ -77,17 +63,9 @@ interface IMaterialEditor {
 
   updateCut: UpdateCut;
 
-  addScore: AddScore;
-  removeScore: RemoveScore;
-  updateScore: UpdateScore;
-
-  addVectorEngrave: AddVectorEngrave;
-  removeVectorEngrave: RemoveVectorEngrave;
-  updateVectorEngrave: UpdateVectorEngrave;
-
-  addBitmapEngrave: AddBitmapEngrave;
-  removeBitmapEngrave: RemoveBitmapEngrave;
-  updateBitmapEngrave: UpdateBitmapEngrave;
+  addSetting: AddSetting;
+  removeSetting: RemoveSetting;
+  updateSetting: UpdateSetting;
 }
 
 export type ForceSyncronize = () => Promise<void>;
@@ -113,8 +91,9 @@ interface AppProps {
 }
 
 interface AppMessage {
-  message: string;
+  backgroundColor?: string | null;
   color: string | null;
+  message: string;
 }
 
 interface AppState {
@@ -173,17 +152,10 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     // Settings
     this.updateCut = this.updateCut.bind(this);
 
-    this.addScore = this.addScore.bind(this);
-    this.removeScore = this.removeScore.bind(this);
-    this.updateScore = this.updateScore.bind(this);
-
-    this.addBitmapEngrave = this.addBitmapEngrave.bind(this);
-    this.removeBitmapEngrave = this.removeBitmapEngrave.bind(this);
-    this.updateBitmapEngrave = this.updateBitmapEngrave.bind(this);
-
-    this.addVectorEngrave = this.addVectorEngrave.bind(this);
-    this.removeVectorEngrave = this.removeVectorEngrave.bind(this);
-    this.updateVectorEngrave = this.updateVectorEngrave.bind(this);
+    // MultiSettings
+    this.addSetting = this.addSetting.bind(this);
+    this.removeSetting = this.removeSetting.bind(this);
+    this.updateSetting = this.updateSetting.bind(this);
 
     // Messaging
     this.displayMessage = this.displayMessage.bind(this);
@@ -204,6 +176,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     const localStorage = await getLocalStorage();
 
     if (localStorage.tempMaterial) {
+      // Clear any old validations
+      localStorage.tempMaterial.propValidation = {};
       this.setState({
         action: 'ADD',
         cloudStorageBytesUsed,
@@ -322,99 +296,40 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
   }
 
-  addScore() {
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        scores: [ ...this.state.tempMaterial.scores, EMPTY_SCORE ],
-      },
-    });
-  }
-
-  removeScore(index: number) {
+  addSetting(prop: keyof MultiSettings) {
     this.setState((state) => {
-      state.tempMaterial.scores.splice(index, 1);
+      const emptySetting = MultiSettingsDefaults[prop];
       return {
         tempMaterial: {
           ...state.tempMaterial,
-          scores: [...state.tempMaterial.scores],
+          [prop]: [ ...state.tempMaterial[prop], emptySetting ],
         },
       };
     });
   }
 
-  updateScore(index: number, score: PluginScoreSetting) {
-    const scores = this.state.tempMaterial.scores;
-    scores[index] = score;
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        scores: [...scores],
-      }
-    });
-  }
-
-  addVectorEngrave() {
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        vectors: [ ...this.state.tempMaterial.vectors, EMPTY_VECTOR_ENGRAVE ],
-      },
-    });
-  }
-
-  removeVectorEngrave(index: number) {
+  removeSetting<K extends keyof MultiSettings>(prop: K, index: number) {
     this.setState((state) => {
-      state.tempMaterial.vectors.splice(index, 1);
+      state.tempMaterial[prop].splice(index, 1);
       return {
         tempMaterial: {
           ...state.tempMaterial,
-          vectors: [...state.tempMaterial.vectors],
+          [prop]: [...state.tempMaterial[prop]],
         },
       };
     });
   }
 
-  updateVectorEngrave(index: number, vector: PluginVectorEngraveSetting) {
-    const vectors = this.state.tempMaterial.vectors;
-    vectors[index] = vector;
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        vectors: [...vectors],
-      }
-    });
-  }
-
-  addBitmapEngrave() {
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        bitmaps: [ ...this.state.tempMaterial.bitmaps, EMPTY_BITMAP_ENGRAVE ],
-      },
-    });
-  }
-
-  removeBitmapEngrave(index: number) {
+  updateSetting<K extends keyof MultiSettings>(prop: K, index: number, setting: MultiSettings[K]) {
     this.setState((state) => {
-      state.tempMaterial.bitmaps.splice(index, 1);
+      const settings = state.tempMaterial[prop];
+      settings[index] = setting;
       return {
         tempMaterial: {
           ...state.tempMaterial,
-          bitmaps: [...state.tempMaterial.bitmaps],
+          [prop]: [...settings],
         },
       };
-    });
-  }
-
-  updateBitmapEngrave(index: number, bitmap: PluginBitmapEngraveSetting) {
-    const bitmaps = this.state.tempMaterial.bitmaps;
-    bitmaps[index] = bitmap;
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        bitmaps: [...bitmaps],
-      }
     });
   }
 
@@ -433,7 +348,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }, true);
 
     if (!isValid) {
-      this.displayMessage('The material is invalid.', '#CF024E');
+      this.displayMessage('The material is invalid.', '#060606', '#DE6060');
       return;
     }
 
@@ -452,7 +367,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
 
     if (duplicate) {
-      this.displayMessage('A material with the same name already exists.');
+      this.displayMessage('A material with the same name already exists.', '#060606', '#DE6060');
       return;
     }
 
@@ -525,7 +440,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }, true);
 
     if (!isValid) {
-      this.displayMessage('The material is invalid.', '#CF024E');
+      this.displayMessage('The material is invalid.', '#060606', '#DE6060');
       return;
     }
 
@@ -534,7 +449,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
 
     if (duplicates.length !== 1) {
-      this.displayMessage('Could not update. A material with the same name already exists.');
+      this.displayMessage('Could not update. A material with the same name already exists.', '#060606', '#DE6060');
       return;
     }
 
@@ -631,11 +546,12 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   // Messaging
   //
 
-  displayMessage(message: string, color: string = '#CC3A4B') {
+  displayMessage(message: string, color: string = '#CC3A4B', background: string = '#BCD3F4') {
     this.setState({
       message: {
         message,
         color,
+        backgroundColor: background,
       },
     });
   }
@@ -779,18 +695,12 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
                 />
                 <MaterialEditor
                   action={this.state.action}
-                  addBitmapEngrave={this.addBitmapEngrave}
-                  addScore={this.addScore}
-                  addVectorEngrave={this.addVectorEngrave}
+                  addSetting={this.addSetting}
+                  removeSetting={this.removeSetting}
+                  updateSetting={this.updateSetting}
                   material={this.state.tempMaterial}
-                  removeBitmapEngrave={this.removeBitmapEngrave}
-                  removeScore={this.removeScore}
-                  removeVectorEngrave={this.removeVectorEngrave}
-                  updateBitmapEngrave={this.updateBitmapEngrave}
                   updateCut={this.updateCut}
                   updateMaterial={this.updateMaterial}
-                  updateScore={this.updateScore}
-                  updateVectorEngrave={this.updateVectorEngrave}
                   validationHandler={this.validationHandler}
                 />
               </div>

@@ -3,7 +3,7 @@ import {
 } from './material';
 import {
   EMPTY_MATERIAL,
-} from './constants'
+} from '../lib/constants'
 
 describe('material', () => {
   const dataCallback = jest.fn();

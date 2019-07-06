@@ -1,14 +1,22 @@
 import React from 'react';
-import { PluginVectorEngraveSetting } from '../lib/materialRaw';
+import { PluginVectorEngraveSetting } from '../material/materialPlugin';
 import VectorEngraveSetting from './VectorEngraveSetting';
 import IconPlus from '../icons/IconPlus';
-import { AddVectorEngrave } from '../App';
+
+// Vector Methods
+export type AddVectorEngrave = () => void;
+export type RemoveVectorEngrave = (index: number) => void;
+export type UpdateVectorEngrave = (
+  index: number,
+  prop: keyof PluginVectorEngraveSetting,
+  value: number | string
+) => void;
 
 type VectorEngraveSettingsProps = {
   addVectorEngrave: AddVectorEngrave;
-  removeVectorEngrave: Function;
-  storeLocalMaterial: React.FocusEventHandler<any>;
-  updateVectorEngrave: Function;
+  removeVectorEngrave: RemoveVectorEngrave;
+  saveTemporaryState: () => void;
+  updateVectorEngrave: UpdateVectorEngrave;
   vectors: PluginVectorEngraveSetting[];
   validationHandler: (id: string, isValid: boolean) => void;
 }
@@ -32,7 +40,7 @@ export default function VectorEngraveSettings(props: VectorEngraveSettingsProps)
           return (
             <VectorEngraveSetting
               index={index}
-              storeLocalMaterial={props.storeLocalMaterial}
+              saveTemporaryState={props.saveTemporaryState}
               removeVectorEngrave={props.removeVectorEngrave}
               updateVectorEngrave={props.updateVectorEngrave}
               vector={vector}

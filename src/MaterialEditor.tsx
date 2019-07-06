@@ -3,18 +3,12 @@ import {
   storeTempMaterial,
 } from './lib/chromeWrappers';
 import {
-  AddBitmapEngrave,
-  AddScore,
-  AddVectorEngrave,
   EditorMode,
-  RemoveBitmapEngrave,
-  RemoveScore,
-  RemoveVectorEngrave,
-  UpdateBitmapEngrave,
   UpdateCut,
   UpdateMaterial,
-  UpdateScore,
-  UpdateVectorEngrave,
+  AddSetting,
+  RemoveSetting,
+  UpdateSetting,
 } from './App';
 import BitmapEngraveSettings from './editor/BitmapEngraveSettings';
 import CutSettings from './editor/CutSettings';
@@ -26,22 +20,27 @@ import './MaterialEditor.css';
 
 interface MaterialEditorProps {
   action: EditorMode;
-  addBitmapEngrave: AddBitmapEngrave;
-  addScore: AddScore;
-  addVectorEngrave: AddVectorEngrave;
+  addSetting: AddSetting;
   material: TempMaterial;
-  removeScore: RemoveScore;
-  removeBitmapEngrave: RemoveBitmapEngrave;
-  removeVectorEngrave: RemoveVectorEngrave;
-  updateBitmapEngrave: UpdateBitmapEngrave;
+  removeSetting: RemoveSetting;
   updateCut: UpdateCut;
   updateMaterial: UpdateMaterial;
-  updateScore: UpdateScore;
-  updateVectorEngrave: UpdateVectorEngrave;
+  updateSetting: UpdateSetting;
   validationHandler: (id: string, isValid: boolean) => void;
 }
 
-function storeLocalMaterial(action: EditorMode, material: TempMaterial) {
+/**
+ * A simple function that saves the temporary material state so that it may be
+ * restored after accidentally closing the plugin window.
+ *
+ * This function saves state both onChange and onBlue of the input fields.
+ *
+ * TODO: Implement save onChange
+ *
+ * @param action
+ * @param material
+ */
+function saveTemporaryState(action: EditorMode, material: TempMaterial) {
   if (action === 'ADD') {
     storeTempMaterial(material);
   }
@@ -62,48 +61,75 @@ export default function MaterialEditor(props: MaterialEditorProps) {
       <MaterialSettings
         action={props.action}
         material={props.material}
-        storeLocalMaterial={() => {
-          storeLocalMaterial(action, material);
+        saveTemporaryState={() => {
+          saveTemporaryState(action, material);
         }}
         updateMaterial={props.updateMaterial}
         validationHandler={props.validationHandler}
       />
       <CutSettings
         cut={material.cut}
-        storeLocalMaterial={() => {
-          storeLocalMaterial(action, material);
+        saveTemporaryState={() => {
+          saveTemporaryState(action, material);
         }}
         updateCut={props.updateCut}
         validationHandler={props.validationHandler}
       />
       <ScoreSettings
-        addScore={props.addScore}
-        removeScore={props.removeScore}
-        scores={props.material.scores}
-        storeLocalMaterial={() => {
-          storeLocalMaterial(action, material);
+        addScore={() => {
+          props.addSetting('scores');
         }}
-        updateScore={props.updateScore}
+        removeScore={(index) => {
+          props.removeSetting('scores', index);
+        }}
+        scores={props.material.scores}
+        saveTemporaryState={() => {
+          saveTemporaryState(action, material);
+        }}
+        updateScore={(index, prop, value) => {
+          props.updateSetting('scores', index, {
+            ...props.material.scores[index],
+            [prop]: value,
+          });
+        }}
         validationHandler={props.validationHandler}
       />
       <VectorEngraveSettings
-        addVectorEngrave={props.addVectorEngrave}
-        removeVectorEngrave={props.removeVectorEngrave}
-        storeLocalMaterial={() => {
-          storeLocalMaterial(action, material);
+        addVectorEngrave={() => {
+          props.addSetting('vectors');
         }}
-        updateVectorEngrave={props.updateVectorEngrave}
+        removeVectorEngrave={(index) => {
+          props.removeSetting('vectors', index);
+        }}
+        saveTemporaryState={() => {
+          saveTemporaryState(action, material);
+        }}
+        updateVectorEngrave={(index, prop, value) => {
+          props.updateSetting('vectors', index, {
+            ...props.material.vectors[index],
+            [prop]: value,
+          });
+        }}
         vectors={props.material.vectors}
         validationHandler={props.validationHandler}
       />
       <BitmapEngraveSettings
-        addBitmapEngrave={props.addBitmapEngrave}
-        bitmaps={props.material.bitmaps}
-        removeBitmapEngrave={props.removeBitmapEngrave}
-        storeLocalMaterial={() => {
-          storeLocalMaterial(action, material);
+        addBitmapEngrave={() => {
+          props.addSetting('bitmaps');
         }}
-        updateBitmapEngrave={props.updateBitmapEngrave}
+        bitmaps={props.material.bitmaps}
+        removeBitmapEngrave={(index) => {
+          props.removeSetting('bitmaps', index);
+        }}
+        saveTemporaryState={() => {
+          saveTemporaryState(action, material);
+        }}
+        updateBitmapEngrave={(index, prop, value) => {
+          props.updateSetting('bitmaps', index, {
+            ...props.material.bitmaps[index],
+            [prop]: value,
+          });
+        }}
         validationHandler={props.validationHandler}
       />
     </>

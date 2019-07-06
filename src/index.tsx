@@ -4,67 +4,15 @@ import App from './App';
 import {
   getPlatform,
   inGlowforgeTab,
-  storeGlowforgeMaterials,
-  storeRawMaterials,
-  StorageLocal,
 } from './lib/chromeWrappers';
 import {
   fullSynchronizedMaterials,
-  removeCloudMaterial,
-  sendCloudMaterial,
-} from './lib/material';
-import {
-  sha1,
-} from './lib/utils';
+} from './material/material';
 import './index.css';
+import {default as migration3 } from './migrations/3-update-ids';
 
-async function upgrade() {
-  return new Promise (resolve => {
-    window.chrome.storage.local.get(null, async (result: StorageLocal) => {
-      let upgraded = false;
-
-      // Apply any fixed material upgrades.
-      const _materials = [];
-      for (let i = 0; i < result.materials!.length; i += 1) {
-        // Update hashes
-        const material = result.materials![i];
-        const hash = await sha1(material.title);
-        const id = hash.substring(0, 7);
-
-        if (`Custom:${id}` !== material.id) {
-          upgraded = true;
-          _materials.push({
-            ...material,
-            id: `Custom:${id}`,
-          });
-        } else {
-          _materials.push(material);
-        }
-      }
-
-      // Apply any setting upgrades.
-      const _rawMaterials = [];
-      for (let i = 0; i < result.rawMaterials!.length; i += 1) {
-        const rawMaterial = result.rawMaterials![i];
-        _rawMaterials.push(rawMaterial);
-      }
-
-      if (upgraded) {
-        console.log('upgraded');
-        await storeGlowforgeMaterials(_materials);
-        await storeRawMaterials(_rawMaterials);
-
-        for (const rawMaterial of result.rawMaterials!) {
-          await removeCloudMaterial(rawMaterial);
-        }
-        for (const _rawMaterial of _rawMaterials) {
-          await sendCloudMaterial(_rawMaterial);
-        }
-      }
-
-      resolve();
-    });
-  });
+async function applyMigrations() {
+  await migration3();
 }
 
 (async () => {
@@ -75,7 +23,7 @@ async function upgrade() {
   const platform = await getPlatform();
 
   // Attempt to run any ugrade scripts.
-  await upgrade();
+  await applyMigrations();
 
   // Run a full syncronization with remote storage. This is kept fast because
   // chrome caches this data locally is it hasn't changed.

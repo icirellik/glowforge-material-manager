@@ -1,4 +1,22 @@
+/**
+ * This file contains the type information that conforms to the matieral shape
+ * that Glowforge uses in their UI.
+ */
+
+/**
+ * Assumed to be the production environment that the material is available in.
+ *
+ * Known values:
+ *  production
+ *  test
+ */
 export type GFMaterialEnvironment = 'production';
+
+/**
+ * The different tube types that the material will work with.
+ *
+ * TODO: Is there a `plus` tube type.
+ */
 export type GFMaterialTubeType = 'basic' | 'pro';
 
 export type GFMaterial = {

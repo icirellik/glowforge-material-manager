@@ -3,7 +3,7 @@ import {
   toDisplayCutSpeed,
   toDisplayPowerWords,
 } from '../lib/glowforgeUnits';
-import { PluginMaterial } from '../lib/materialRaw';
+import { PluginMaterial } from '../material/materialPlugin';
 import { precisionRound } from '../lib/utils';
 import './Viewer.css';
 

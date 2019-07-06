@@ -10,7 +10,7 @@ export type PluginMaterial = {
 };
 
 // Glowforge Redux Material Shape
-export type PluginMaterialId = any;
+export type PluginMaterialId = string;
 
 export type PluginCutSetting = {
   focalOffset: number | null;
