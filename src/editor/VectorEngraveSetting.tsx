@@ -35,7 +35,7 @@ interface VectorEngraveSettingProps {
 }
 
 export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
-  const maxPower = (props.vector.power >= 99.99);
+  const maxPower = (props.vector.power === 99.99);
   return (
     <>
       <div className="form-sub-header">

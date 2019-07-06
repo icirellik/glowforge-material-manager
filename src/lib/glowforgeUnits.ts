@@ -14,6 +14,22 @@ const MAX_POWER = 100;
 const MIN_POWER = 1;
 
 /**
+ * A simple helper function to clamp a value into a fixed range.
+ *
+ * @param value The value to clamp.
+ * @param min The min value.
+ * @param max The max value.
+ */
+function clamp(value: number, min: number, max: number) {
+  if (value > max) {
+    return max;
+  } else if (value < min) {
+    return min;
+  }
+  return value;
+}
+
+/**
  * Best guess is that this is the maximum vertical rampup speed. It makes sense
  * that this value could be higher for emgraves as there is no y axis motion
  */
@@ -21,23 +37,23 @@ function getMaxVRSpeed(minSpeed: number, maxSpeed: number) {
   const speedDifference = maxSpeed - minSpeed;
   const uiSpeedRange = MAX_UI_SPEED - MIN_UI_SPEED
   const vrSpeed = speedDifference / MAX_MOTOR_SPEED * uiSpeedRange + MIN_UI_SPEED;
-  return 100 * Math.round(vrSpeed / 100)
+  return clamp(100 * Math.round(vrSpeed / 100), minSpeed, maxSpeed);
 }
 
 /**
  * Converts a Glowforge internal speed to the GFUI Speed.
  */
-export function toDisplaySpeed(rawSpeed: number, minSpeed: number, maxSpeed: number) {
+function toDisplaySpeed(rawSpeed: number, minSpeed: number, maxSpeed: number) {
   const maxVRSpeed = getMaxVRSpeed(minSpeed, maxSpeed) - MIN_UI_SPEED;
   const speed = (rawSpeed - minSpeed) / (maxSpeed - minSpeed) * maxVRSpeed + MIN_UI_SPEED;
-  return Math.round(speed)
+  return clamp(Math.round(speed), minSpeed, maxSpeed);
 }
 
 /**
  * Converts a Glowforge UI speed to a Glowforge internal speed.
  */
-export function toRealSpeed(displaySpeed: number, minSpeed: number, maxSpeed: number) {
-  return (displaySpeed - minSpeed) / (getMaxVRSpeed(minSpeed, maxSpeed) - MIN_UI_SPEED) * (maxSpeed - minSpeed) + minSpeed
+function toRealSpeed(displaySpeed: number, minSpeed: number, maxSpeed: number) {
+  return clamp((displaySpeed - minSpeed) / (getMaxVRSpeed(minSpeed, maxSpeed) - MIN_UI_SPEED) * (maxSpeed - minSpeed) + minSpeed, minSpeed, maxSpeed);
 }
 
 // Engrave conversion settings.

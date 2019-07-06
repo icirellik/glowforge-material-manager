@@ -6,11 +6,9 @@ import IconPlus from '../icons/IconPlus';
 // Vector Methods
 export type AddVectorEngrave = () => void;
 export type RemoveVectorEngrave = (index: number) => void;
-export type UpdateVectorEngrave = (
-  index: number,
-  prop: keyof PluginVectorEngraveSetting,
-  value: number | string
-) => void;
+export type UpdateVectorEngrave =
+  <K extends keyof PluginVectorEngraveSetting>(index: number,
+    prop: K, value: PluginVectorEngraveSetting[K]) => void;
 
 type VectorEngraveSettingsProps = {
   addVectorEngrave: AddVectorEngrave;

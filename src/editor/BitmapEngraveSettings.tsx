@@ -6,11 +6,9 @@ import { PluginBitmapEngraveSetting } from '../material/materialPlugin';
 // Bitmap Methods
 export type AddBitmapEngrave = () => void;
 export type RemoveBitmapEngrave = (index: number) => void;
-export type UpdateBitmapEngrave = (
-  index: number,
-  prop: keyof PluginBitmapEngraveSetting,
-  value: number | string,
-) => void;
+export type UpdateBitmapEngrave =
+  <K extends keyof PluginBitmapEngraveSetting>(index: number,
+    prop: K, value: PluginBitmapEngraveSetting[K]) => void;
 
 type BitmapEngraveSettingsProps = {
   addBitmapEngrave: AddBitmapEngrave;

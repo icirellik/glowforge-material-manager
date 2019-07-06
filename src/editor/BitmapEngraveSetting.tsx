@@ -35,7 +35,7 @@ interface BitmapEngraveSettingProps {
 }
 
 export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
-  const maxPower = (props.bitmap.power >= 99.99);
+  const maxPower = (props.bitmap.power === 99.99);
   return (
     <>
       <div className="form-sub-header">

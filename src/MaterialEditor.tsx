@@ -3,19 +3,18 @@ import {
   storeTempMaterial,
 } from './lib/chromeWrappers';
 import {
-  EditorMode,
-  UpdateCut,
-  UpdateMaterial,
   AddSetting,
+  EditorMode,
   RemoveSetting,
+  UpdateMaterial,
   UpdateSetting,
 } from './App';
+import { TempMaterial } from './lib/constants';
 import BitmapEngraveSettings from './editor/BitmapEngraveSettings';
 import CutSettings from './editor/CutSettings';
 import MaterialSettings from './editor/MaterialSettings';
 import ScoreSettings from './editor/ScoreSettings';
 import VectorEngraveSettings from './editor/VectorEngraveSettings';
-import { TempMaterial } from './lib/constants';
 import './MaterialEditor.css';
 
 interface MaterialEditorProps {
@@ -23,7 +22,6 @@ interface MaterialEditorProps {
   addSetting: AddSetting;
   material: TempMaterial;
   removeSetting: RemoveSetting;
-  updateCut: UpdateCut;
   updateMaterial: UpdateMaterial;
   updateSetting: UpdateSetting;
   validationHandler: (id: string, isValid: boolean) => void;
@@ -72,7 +70,12 @@ export default function MaterialEditor(props: MaterialEditorProps) {
         saveTemporaryState={() => {
           saveTemporaryState(action, material);
         }}
-        updateCut={props.updateCut}
+        updateCut={(prop, value) => {
+          props.updateMaterial('cut', {
+            ...props.material.cut,
+            [prop]: value,
+          });
+        }}
         validationHandler={props.validationHandler}
       />
       <ScoreSettings

@@ -34,7 +34,7 @@ interface ScoreSettingProps {
 }
 
 export default function ScoreSetting(props: ScoreSettingProps) {
-  const maxPower = (props.score.power >= 99.99);
+  const maxPower = (props.score.power === 99.99);
   return (
     <>
       <div className="form-sub-header">

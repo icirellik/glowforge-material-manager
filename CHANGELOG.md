@@ -2,15 +2,26 @@
 
 ## 0.4.0
 
-* Added QR Codes
-* Added material selection
-* Added material adetection and autoselection.
-* Cleaned up the ui
-* Added trace / svg download
-* Added input validation
-* Added material search to the material list.
+### QR Codes
 
+* Added support for scannable QR code to create your own homemade "Proofgrade"
+like material.
+* Added QR codes that contain your full settings for sharing.
+* TODO: Implement automatic importing.
+
+### UI Enhancements
+
+* Added the ability to set a material from the UI.
+* Increase the syncronization speed.
+* Added the ability to download your traces / svgs.
+* Added a search filter to the materials list to make finding a material easier.
+* Added some input validation, more to come.
+
+### Internal Tweaks
+
+* Added unique material ids
 * Converted to TypeScript
+* Overhaulded the UI.
 
 ## Release 0.3.4
 

@@ -6,11 +6,9 @@ import { PluginScoreSetting } from '../material/materialPlugin';
 // Score Methods
 export type AddScore = () => void;
 export type RemoveScore = (index: number) => void;
-export type UpdateScore = (
-  index: number,
-  prop: keyof PluginScoreSetting,
-  value: number | string
-) => void;
+export type UpdateScore =
+  <K extends keyof PluginScoreSetting>(index: number,
+    prop: K, value: PluginScoreSetting[K]) => void;
 
 type ScoreSettingsProps = {
   addScore: AddScore;
