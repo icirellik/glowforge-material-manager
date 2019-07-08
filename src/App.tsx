@@ -65,14 +65,14 @@ export type ForceSyncronize = () => Promise<void>;
 export type EditorMode =  'DISPLAY' | 'ADD' | 'EDIT' | 'SELECTED';
 export type EditorModeChange = (mode: EditorMode, material: TempMaterial) => Promise<void>;
 export type ModeAdd = () => Promise<void>;
-export type ModeCancel = () => Promise<void>;
+export type ModeDefault = () => Promise<void>;
 export type ModeEdit = (title: string) => Promise<void>;
 export type ModeSelect = (title: string) => Promise<void>;
 
 interface IEditorMode {
   changeEditorMode: EditorModeChange;
   setEditorModeAdd: ModeAdd;
-  setEditorModeCancel: ModeCancel
+  setEditorModeDefault: ModeDefault
   setEditorModeEdit: ModeEdit;
   setEditorModeSelect: ModeSelect;
 }
@@ -129,7 +129,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // Modes
     this.setEditorModeAdd = this.setEditorModeAdd.bind(this);
-    this.setEditorModeCancel = this.setEditorModeCancel.bind(this);
+    this.setEditorModeDefault = this.setEditorModeDefault.bind(this);
     this.setEditorModeEdit = this.setEditorModeEdit.bind(this)
     this.setEditorModeSelect = this.setEditorModeSelect.bind(this)
 
@@ -200,7 +200,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       const uiSettings = await getUISettings();
       const rawSvg = (uiSettings && uiSettings.loadedDesignId) ? `https://storage.googleapis.com/glowforge-files/designs/${uiSettings.loadedDesignId}/svgf/svgf_file.gzip.svg` : null;
 
-      // Update teh state.
+      // Update thr state.
       if (this.state.synchronized === shouldUpdate) {
         this.setState({
           cloudStorageBytesUsed,
@@ -362,13 +362,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     await sendCloudMaterial(this.state.tempMaterial);
 
     // Update the application state.
-    this.setState({
-      action: 'DISPLAY',
-      tempMaterial: { ...EMPTY_MATERIAL },
-      materials: newMaterials,
-      message: null,
-      rawMaterials: newRawMaterials,
-      synchronized: false,
+    this.setState((state) => {
+      return {
+        action: 'SELECTED',
+        tempMaterial: {
+          ...state.tempMaterial!,
+          propValidation: {},
+        },
+        materials: newMaterials,
+        message: null,
+        rawMaterials: newRawMaterials,
+        synchronized: false,
+      };
     });
   }
 
@@ -576,7 +581,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * Cancels the current input mode, resetting the materiall state and clearing
    * any system messages.
    */
-  async setEditorModeCancel() {
+  async setEditorModeDefault() {
     await this.changeEditorMode('DISPLAY');
   }
 
@@ -657,11 +662,14 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
           <div className="column__right">
             <div className="buttonBar">
               <MaterialButtonBar
-                editorMode={this.state.action}
                 addMaterial={this.addMaterial}
-                newMaterial={this.setEditorModeAdd}
-                cancelMaterial={this.setEditorModeCancel}
+                copyMaterial={this.copyMaterial}
                 editMaterial={this.editMaterial}
+                editorMode={this.state.action}
+                setEditorModeAdd={this.setEditorModeAdd}
+                setEditorModeDefault={this.setEditorModeDefault}
+                setEditorModeEdit={this.setEditorModeEdit}
+                setMaterial={this.setMaterial}
                 title={`${this.state.tempMaterial.thickName} ${this.state.tempMaterial.name}`}
               />
               {svg}

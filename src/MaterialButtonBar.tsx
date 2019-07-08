@@ -1,54 +1,53 @@
 import React from 'react';
-import { AddMaterial, ModeCancel, EditMaterial, EditorMode, ModeAdd } from './App';
+import { AddMaterial, ModeDefault, EditMaterial, EditorMode, ModeAdd, SetMaterial, CopyMaterial, ModeEdit } from './App';
 import './MaterialButtonBar.css';
 
 interface MaterialButtonBarProps {
   addMaterial: AddMaterial;
-  cancelMaterial: ModeCancel;
+  copyMaterial: CopyMaterial;
   editMaterial: EditMaterial;
   editorMode: EditorMode;
-  newMaterial: ModeAdd;
+  setEditorModeAdd: ModeAdd;
+  setEditorModeDefault: ModeDefault;
+  setEditorModeEdit: ModeEdit;
+  setMaterial: SetMaterial;
   title: string;
 }
 
-class MaterialButtonBar extends React.Component<MaterialButtonBarProps> {
-  render() {
-    switch (this.props.editorMode) {
-      case 'ADD':
-        return (
-          <div className="Material-buttons">
-            <button onClick={this.props.addMaterial}>Create</button>
-            <button onClick={this.props.cancelMaterial}>Cancel</button>
-          </div>
-        );
-      case 'EDIT':
-        if (!this.props.editMaterial || !this.props.title) {
-          return null;
-        }
-        return (
-          <div className="Material-buttons">
-            <button onClick={() => this.props.editMaterial!(this.props.title!)}>Update</button>
-            <button onClick={this.props.cancelMaterial}>Cancel</button>
-          </div>
-        );
-      case 'SELECTED':
-        return (
-          <div className="Material-buttons">
-            <button onClick={this.props.cancelMaterial}>Set</button>
-            <button onClick={this.props.cancelMaterial}>Edit</button>
-            <button onClick={this.props.cancelMaterial}>Duplicate</button>
-            <button onClick={this.props.cancelMaterial}>Close</button>
-          </div>
-        );
-      case 'DISPLAY':
-      default:
-        return (
-          <div className="Material-buttons">
-            <button onClick={this.props.newMaterial}>New</button>
-          </div>
-        );
-    }
+export default function MaterialButtonBar(props: MaterialButtonBarProps) {
+  switch (props.editorMode) {
+    case 'ADD':
+      return (
+        <div className="Material-buttons">
+          <button onClick={props.addMaterial}>Create</button>
+          <button onClick={props.setEditorModeDefault}>Cancel</button>
+        </div>
+      );
+    case 'EDIT':
+      if (!props.editMaterial || !props.title) {
+        return null;
+      }
+      return (
+        <div className="Material-buttons">
+          <button onClick={() => props.editMaterial!(props.title!)}>Update</button>
+          <button onClick={props.setEditorModeDefault}>Cancel</button>
+        </div>
+      );
+    case 'SELECTED':
+      return (
+        <div className="Material-buttons">
+          <button onClick={() => { props.setMaterial(props.title); }}>Set</button>
+          <button onClick={() => { props.setEditorModeEdit(props.title); }}>Edit</button>
+          <button onClick={() => { props.copyMaterial(props.title); }}>Duplicate</button>
+          <button onClick={props.setEditorModeDefault}>Close</button>
+        </div>
+      );
+    case 'DISPLAY':
+    default:
+      return (
+        <div className="Material-buttons">
+          <button onClick={props.setEditorModeAdd}>New</button>
+        </div>
+      );
   }
 }
-
-export default MaterialButtonBar;

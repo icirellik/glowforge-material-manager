@@ -25,6 +25,10 @@ export default function MaterialViewer(props: MaterialViewerProps) {
 
   return (
     <div className="viewer__column">
+      <div className="viewer__name">
+        {`${material.thickName} ${material.name}`}
+      </div>
+
       <div className="viewer__headerRow">
         <p>General Settings</p>
       </div>

@@ -5,11 +5,11 @@ import { qrcodeAsDataUri, qrcodeAsSvg } from '../lib/qrCode';
 import { toTinyMaterial } from '../material/material';
 import './Viewer.css';
 
-export interface QrCodeViewerProps {
+interface QrCodeViewerProps {
   material: PluginMaterial;
 }
 
-export interface QrCodeViewerState {
+interface QrCodeViewerState {
   title: string;
   materialIdImageUri: string;
   materialIdSvgData: string;
