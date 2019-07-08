@@ -3,10 +3,10 @@ import { AddMaterial, ModeCancel, EditMaterial, EditorMode, ModeAdd } from './Ap
 import './MaterialButtonBar.css';
 
 interface MaterialButtonBarProps {
-  editorMode: EditorMode;
   addMaterial: AddMaterial;
   cancelMaterial: ModeCancel;
   editMaterial: EditMaterial;
+  editorMode: EditorMode;
   newMaterial: ModeAdd;
   title: string;
 }
@@ -34,7 +34,10 @@ class MaterialButtonBar extends React.Component<MaterialButtonBarProps> {
       case 'SELECTED':
         return (
           <div className="Material-buttons">
-            <button onClick={this.props.cancelMaterial}>Cancel</button>
+            <button onClick={this.props.cancelMaterial}>Set</button>
+            <button onClick={this.props.cancelMaterial}>Edit</button>
+            <button onClick={this.props.cancelMaterial}>Duplicate</button>
+            <button onClick={this.props.cancelMaterial}>Close</button>
           </div>
         );
       case 'DISPLAY':

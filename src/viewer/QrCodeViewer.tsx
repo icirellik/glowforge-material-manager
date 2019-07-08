@@ -39,8 +39,31 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
     return true;
   }
 
+  async componentDidMount() {
+    const { thickName, name } = this.props.material;
+    const title = `${thickName} ${name}`;
+    const hash = await sha1(title);
+    const id = hash.substring(0, 7);
+
+    const materialId = `Custom:${id}`;
+    const materialData = JSON.stringify(toTinyMaterial(this.props.material));
+
+    const materialIdImageUri = await qrcodeAsDataUri(materialId);
+    const materialIdSvgData = await qrcodeAsSvg(materialId);
+    const materialImageUri = await qrcodeAsDataUri(`${materialId}|${materialData}`);
+    const materialSvgData = await qrcodeAsSvg(`${materialId}|${materialData}`);
+
+    this.setState({
+      title,
+      materialIdImageUri,
+      materialIdSvgData,
+      materialImageUri,
+      materialSvgData,
+    });
+  }
+
   async componentDidUpdate() {
-    const  { thickName, name } = this.props.material;
+    const { thickName, name } = this.props.material;
     const title = `${thickName} ${name}`;
     const hash = await sha1(title);
     const id = hash.substring(0, 7);
@@ -75,26 +98,24 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
           width: 'fit-content',
         }} src={this.state.materialIdImageUri} alt="qrcode" />
 
-        <div className="viewer__headerRow">
-          <p>Download SVG</p>
-        </div>
         <div style={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'left',
+          marginTop: '20px',
         }}>
           <a
             download={`${title}.svg`}
             href={`data:image/svg+xml;base64,${window.btoa(this.state.materialIdSvgData!)}`}
             target="_blank"
             rel="noopener noreferrer"
-          >Material Id</a>
+          >Download Material Id</a>
           <a
             download={`${title}.svg`}
             href={`data:image/svg+xml;base64,${window.btoa(this.state.materialSvgData!)}`}
             target="_blank"
             rel="noopener noreferrer"
-          >Material Id + Settings</a>
+          >Download Material Id + Settings</a>
         </div>
       </>
     );

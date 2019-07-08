@@ -207,7 +207,10 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
           rawSvg,
           synchronized: !shouldUpdate,
         });
-      } else {
+      } else if (
+        cloudStorageBytesUsed !== this.state.cloudStorageBytesUsed ||
+        rawSvg !== this.state.rawSvg
+      ) {
         this.setState({
           cloudStorageBytesUsed,
           rawSvg,
