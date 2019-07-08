@@ -34,7 +34,7 @@ interface ScoreSettingProps {
 }
 
 export default function ScoreSetting(props: ScoreSettingProps) {
-  const maxPower = (props.score.power === 99.99);
+  const maxPower = (props.score.power === 99.99 || props.score.power === 100);
   return (
     <>
       <div className="form-sub-header">
@@ -53,7 +53,7 @@ export default function ScoreSetting(props: ScoreSettingProps) {
         validate={props.validationHandler}
       />
       <InputNumber
-        label="Speed *"
+        label="Speed * (100 - 500)"
         max="500"
         min="100"
         onBlur={props.saveTemporaryState}
@@ -67,7 +67,7 @@ export default function ScoreSetting(props: ScoreSettingProps) {
       <InputNumberWithCheckbox
         isChecked={maxPower}
         isDisabled={maxPower}
-        label="Power *"
+        label="Power * (0 - 100)"
         max="100"
         min="0"
         onBlur={props.saveTemporaryState}
@@ -84,6 +84,7 @@ export default function ScoreSetting(props: ScoreSettingProps) {
       />
       <InputNumber
         label="Passes"
+        min="1"
         onBlur={props.saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = asInteger(event.target.value);
