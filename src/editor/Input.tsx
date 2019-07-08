@@ -187,16 +187,16 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
     return (
       <div className="form-field">
         <div className="form-field-right">
-            <label>props.label</label>
-            <label className="label">Max Power</label>
-            <input
-              type="checkbox"
-              value={this.props.isChecked? 1 : 0}
-              checked={this.props.isChecked}
-              onChange={this.onChecked}
-              onBlur={this.onBlur}
-            />
-          </div>
+          <label>{props.label}</label>
+          <label className="label">Max Power</label>
+          <input
+            type="checkbox"
+            value={this.props.isChecked? 1 : 0}
+            checked={this.props.isChecked}
+            onChange={this.onChecked}
+            onBlur={this.onBlur}
+          />
+        </div>
         <input
           className={(!this.state.valid) ? "invalid" : undefined}
           disabled={props.isDisabled}

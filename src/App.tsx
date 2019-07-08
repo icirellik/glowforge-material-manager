@@ -28,10 +28,7 @@ import {
   MultiSettingsDefaults,
 } from './lib/constants';
 import './App.css';
-import {
-  PluginCutSetting,
-  PluginMaterial,
-} from './material/materialPlugin';
+import { PluginMaterial } from './material/materialPlugin';
 import { GFMaterial } from './material/materialGlowforge';
 import { sha1 } from './lib/utils';
 import { readQrCode } from './lib/qrCode';
@@ -43,10 +40,7 @@ export type CopyMaterial = (title: string) => Promise<void>;
 export type EditMaterial = (title: string) => Promise<void>;
 export type RemoveMaterial = (title: string) => Promise<void>;
 export type SetMaterial = (title: string) => Promise<void>;
-export type UpdateMaterial = (key: keyof TempMaterial, value: any) => void;
-
-// Cut Methods
-export type UpdateCut = (cut: PluginCutSetting) => void;
+export type UpdateMaterial = <K extends keyof TempMaterial>(key: K, value: TempMaterial[K]) => void;
 
 // General Purpose MultiSetting Methods
 export type AddSetting = (prop: keyof MultiSettings) => void;
@@ -60,8 +54,6 @@ interface IMaterialEditor {
   removeMaterial: RemoveMaterial;
   setMaterial: SetMaterial;
   updateMaterial: UpdateMaterial;
-
-  updateCut: UpdateCut;
 
   addSetting: AddSetting;
   removeSetting: RemoveSetting;
@@ -91,8 +83,8 @@ interface AppProps {
 }
 
 interface AppMessage {
-  backgroundColor?: string | null;
-  color: string | null;
+  backgroundColor?: string;
+  color?: string;
   message: string;
 }
 
@@ -149,9 +141,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     this.setMaterial = this.setMaterial.bind(this);
     this.updateMaterial = this.updateMaterial.bind(this);
 
-    // Settings
-    this.updateCut = this.updateCut.bind(this);
-
     // MultiSettings
     this.addSetting = this.addSetting.bind(this);
     this.removeSetting = this.removeSetting.bind(this);
@@ -184,7 +173,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         materials: localStorage.materials!,
         message: {
           message: 'Material settings were automatically restored from a previous session.',
-          color: null,
         },
         rawMaterials: localStorage.rawMaterials!,
         synchronized: !localStorage.shouldUpdate,
@@ -248,7 +236,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
                     this.setState({
                       message: {
                         message: 'Proofgrade material detected.',
-                        color: null,
                       },
                     });
                   } else if (qrCodeData && qrCodeData.startsWith('Custom')) {
@@ -259,7 +246,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
                     this.setState({
                       message: {
                         message: 'Custom material detected.',
-                        color: null,
                       },
                     });
                   }
@@ -278,20 +264,11 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   /**
    * Updates the base material properties: thickName, name, thickness
    */
-  updateMaterial(key: keyof TempMaterial, value: string | number) {
+  updateMaterial<K extends keyof TempMaterial>(key: K, value: TempMaterial[K]) {
     this.setState({
       tempMaterial: {
         ...this.state.tempMaterial,
         [key]: value,
-      },
-    });
-  }
-
-  updateCut(cut: PluginCutSetting) {
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        cut,
       },
     });
   }
@@ -348,7 +325,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }, true);
 
     if (!isValid) {
-      this.displayMessage('The material is invalid.', '#060606', '#DE6060');
+      this.displayMessage('A material property is invalid.', '#060606', '#DE6060');
       return;
     }
 
@@ -440,7 +417,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }, true);
 
     if (!isValid) {
-      this.displayMessage('The material is invalid.', '#060606', '#DE6060');
+      this.displayMessage('A material property is invalid.', '#060606', '#DE6060');
       return;
     }
 
@@ -699,7 +676,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
                   removeSetting={this.removeSetting}
                   updateSetting={this.updateSetting}
                   material={this.state.tempMaterial}
-                  updateCut={this.updateCut}
                   updateMaterial={this.updateMaterial}
                   validationHandler={this.validationHandler}
                 />

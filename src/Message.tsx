@@ -1,17 +1,22 @@
 import React from 'react';
-import './Message.css';
 import IconClear from './icons/IconClear';
+import './Message.css';
 
 type MessageProps = {
-  backgroundColor?: string | null;
+  backgroundColor?: string;
   clearMessage: (event: React.MouseEvent) => void;
-  color?: string | null;
+  color?: string;
   message: string;
+}
+
+interface MessageStyle {
+  backgroundColor?: string;
+  color?: string;
 }
 
 export default function Message(props: MessageProps) {
   if (props.message && props.message.length > 0) {
-    let styles: any = {};
+    let styles: MessageStyle = {};
     if (props.color) {
       styles.color = props.color;
     }
