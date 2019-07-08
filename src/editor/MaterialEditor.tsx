@@ -1,25 +1,25 @@
 import React from 'react';
 import {
   storeTempMaterial,
-} from './lib/chromeWrappers';
+} from '../lib/chromeWrappers';
 import {
   AddSetting,
   EditorMode,
   RemoveSetting,
   UpdateMaterial,
   UpdateSetting,
-} from './App';
-import { TempMaterial } from './lib/constants';
-import BitmapEngraveSettings from './editor/BitmapEngraveSettings';
-import CutSettings from './editor/CutSettings';
-import MaterialSettings from './editor/MaterialSettings';
-import ScoreSettings from './editor/ScoreSettings';
-import VectorEngraveSettings from './editor/VectorEngraveSettings';
+} from '../App';
+import { TempMaterial } from '../lib/constants';
+import BitmapEngraveSettings from './BitmapEngraveSettings';
+import CutSettings from './CutSettings';
+import MaterialSettings from './MaterialSettings';
+import ScoreSettings from './ScoreSettings';
+import VectorEngraveSettings from './VectorEngraveSettings';
 import './MaterialEditor.css';
 
 interface MaterialEditorProps {
-  action: EditorMode;
   addSetting: AddSetting;
+  editorMode: EditorMode;
   material: TempMaterial;
   removeSetting: RemoveSetting;
   updateMaterial: UpdateMaterial;
@@ -35,32 +35,32 @@ interface MaterialEditorProps {
  *
  * TODO: Implement save onChange
  *
- * @param action
+ * @param editorMode
  * @param material
  */
-function saveTemporaryState(action: EditorMode, material: TempMaterial) {
-  if (action === 'ADD') {
+function saveTemporaryState(editorMode: EditorMode, material: TempMaterial) {
+  if (editorMode === 'ADD') {
     storeTempMaterial(material);
   }
 }
 
 export default function MaterialEditor(props: MaterialEditorProps) {
   const {
-    action,
+    editorMode,
     material,
   } = props;
 
-  if (action !== 'ADD' && action !== 'EDIT') {
+  if (editorMode !== 'ADD' && editorMode !== 'EDIT') {
     return null;
   }
 
   return (
     <>
       <MaterialSettings
-        action={props.action}
+        action={props.editorMode}
         material={props.material}
         saveTemporaryState={() => {
-          saveTemporaryState(action, material);
+          saveTemporaryState(editorMode, material);
         }}
         updateMaterial={props.updateMaterial}
         validationHandler={props.validationHandler}
@@ -68,7 +68,7 @@ export default function MaterialEditor(props: MaterialEditorProps) {
       <CutSettings
         cut={material.cut}
         saveTemporaryState={() => {
-          saveTemporaryState(action, material);
+          saveTemporaryState(editorMode, material);
         }}
         updateCut={(prop, value) => {
           props.updateMaterial('cut', {
@@ -87,7 +87,7 @@ export default function MaterialEditor(props: MaterialEditorProps) {
         }}
         scores={props.material.scores}
         saveTemporaryState={() => {
-          saveTemporaryState(action, material);
+          saveTemporaryState(editorMode, material);
         }}
         updateScore={(index, prop, value) => {
           props.updateSetting('scores', index, {
@@ -105,7 +105,7 @@ export default function MaterialEditor(props: MaterialEditorProps) {
           props.removeSetting('vectors', index);
         }}
         saveTemporaryState={() => {
-          saveTemporaryState(action, material);
+          saveTemporaryState(editorMode, material);
         }}
         updateVectorEngrave={(index, prop, value) => {
           props.updateSetting('vectors', index, {
@@ -125,7 +125,7 @@ export default function MaterialEditor(props: MaterialEditorProps) {
           props.removeSetting('bitmaps', index);
         }}
         saveTemporaryState={() => {
-          saveTemporaryState(action, material);
+          saveTemporaryState(editorMode, material);
         }}
         updateBitmapEngrave={(index, prop, value) => {
           props.updateSetting('bitmaps', index, {

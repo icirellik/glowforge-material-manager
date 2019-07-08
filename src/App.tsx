@@ -1,5 +1,5 @@
 import React from 'react';
-import MaterialEditor from './MaterialEditor';
+import MaterialEditor from './editor/MaterialEditor';
 import MaterialList from './MaterialList';
 import MaterialViewer from './viewer/MaterialViewer';
 import Message from './Message';
@@ -34,6 +34,7 @@ import { sha1 } from './lib/utils';
 import { readQrCode } from './lib/qrCode';
 import { AppHeader } from './AppHeader';
 import MaterialButtonBar from './MaterialButtonBar';
+import MaterialHome from './MaterialHome';
 
 export type AddMaterial = () => Promise<void>;
 export type CopyMaterial = (title: string) => Promise<void>;
@@ -629,12 +630,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   }
 
   render() {
-    const intro = (this.state.materials.length === 0) ? (
-      <div className="intro">
-        <p>Add your own custom material settings here.</p>
-      </div>
-    ) : null;
-
     let svg = null;
     if (this.state.rawSvg) {
       svg = (<a className="buttonBar_download" href={this.state.rawSvg} target="_blank" rel="noopener noreferrer">Download Raw SVG/Trace</a>);
@@ -676,13 +671,16 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
             </div>
             <div className="col-contents">
               <div className="col-contents-container">
-                {intro}
+                <MaterialHome
+                  editorMode={this.state.action}
+                  materials={this.state.rawMaterials}
+                />
                 <MaterialViewer
                   editorMode={this.state.action}
                   material={this.state.tempMaterial}
                 />
                 <MaterialEditor
-                  action={this.state.action}
+                  editorMode={this.state.action}
                   addSetting={this.addSetting}
                   removeSetting={this.removeSetting}
                   updateSetting={this.updateSetting}

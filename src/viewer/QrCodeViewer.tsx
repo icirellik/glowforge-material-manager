@@ -3,7 +3,7 @@ import { PluginMaterial } from '../material/materialPlugin';
 import { sha1 } from '../lib/utils';
 import { qrcodeAsDataUri, qrcodeAsSvg } from '../lib/qrCode';
 import { toTinyMaterial } from '../material/material';
-import './Viewer.css';
+import './MaterialViewer.css';
 
 interface QrCodeViewerProps {
   material: PluginMaterial;

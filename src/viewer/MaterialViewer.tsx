@@ -6,7 +6,7 @@ import MaterialCutViewer from './MaterialCutViewer';
 import MaterialScoresViewer from './MaterialScoresViewer';
 import MaterialVectorEngravesViewer from './MaterialVectorEngravesViewer';
 import QrCodeViewer from './QrCodeViewer';
-import './Viewer.css';
+import './MaterialViewer.css';
 
 export type MaterialViewerProps = {
   editorMode: EditorMode;
