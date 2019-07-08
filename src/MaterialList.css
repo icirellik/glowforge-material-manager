@@ -25,6 +25,23 @@
   margin-bottom: 12px;
 }
 
+.materialList__item:hover {
+  background-color: #efefef;
+  margin: -6px -16px 6px;
+}
+
+.materialList__item:hover .materialList__itemName {
+  margin-left: 16px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.materialList__item:hover .materialList__itemMenu {
+  margin-right: 16px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
 .materialList__item:last-child {
   margin-bottom: 0;
 }

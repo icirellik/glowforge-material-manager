@@ -22,6 +22,7 @@ interface InputNumberWithCheckBoxProps extends InputNumberProps {
 }
 
 interface InputState {
+  firstRender: boolean;
   valid: boolean;
 }
 
@@ -31,34 +32,46 @@ export class InputText extends React.Component<InputProps, InputState> {
 
   constructor(props: InputProps) {
     super(props);
+
+    this.id = uuid();
+
+    let valid = true;
+    if (this.props.validate) {
+      valid = !!props.value;
+      this.props.validate(this.id, !!props.value);
+    }
+
     this.state = {
-      valid: true,
+      firstRender: true,
+      valid,
     };
 
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
-
-    this.id = uuid();
   }
 
   onBlur(event: React.FocusEvent<HTMLInputElement>) {
-    if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(this.id, !!event.target.value);
-      this.setState({
-        valid: !!event.target.value,
-      });
-    }
+    this.validate(event.target.value);
     this.props.onBlur(event);
   }
 
   onChange(event: React.FocusEvent<HTMLInputElement>) {
-    if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(this.id, !!event.target.value);
+    this.validate(event.target.value);
+    this.props.onChange(event);
+  }
+
+  validate(value: any) {
+    if (this.props.validate && this.state.valid !== !!value) {
+      this.props.validate(this.id, !!value);
       this.setState({
-        valid: !!event.target.value,
+        firstRender: false,
+        valid: !!value,
+      });
+    } else {
+      this.setState({
+        firstRender: false,
       });
     }
-    this.props.onChange(event);
   }
 
   render() {
@@ -67,7 +80,7 @@ export class InputText extends React.Component<InputProps, InputState> {
       <div className="form-field">
         <label>{props.label}</label>
         <input
-          className={(!this.state.valid) ? "invalid" : undefined}
+          className={(!this.state.valid && !this.state.firstRender) ? "invalid" : undefined}
           disabled={props.isDisabled}
           onBlur={this.onBlur}
           onChange={this.onChange}
@@ -85,34 +98,46 @@ export class InputNumber extends React.Component<InputNumberProps, InputState> {
 
   constructor(props: InputNumberProps) {
     super(props);
+
+    this.id = uuid();
+
+    let valid = true;
+    if (this.props.validate) {
+      valid = !!props.value;
+      this.props.validate(this.id, !!props.value);
+    }
+
     this.state = {
-      valid: true,
+      firstRender: true,
+      valid,
     };
 
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
-
-    this.id = uuid();
   }
 
   onBlur(event: React.FocusEvent<HTMLInputElement>) {
-    if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(this.id, !!event.target.value);
-      this.setState({
-        valid: !!event.target.value,
-      });
-    }
+    this.validate(event.target.value);
     this.props.onBlur(event);
   }
 
   onChange(event: React.FocusEvent<HTMLInputElement>) {
-    if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(this.id, !!event.target.value);
+    this.validate(event.target.value);
+    this.props.onChange(event);
+  }
+
+  validate(value: any) {
+    if (this.props.validate && this.state.valid !== !!value) {
+      this.props.validate(this.id, !!value);
       this.setState({
-        valid: !!event.target.value,
+        firstRender: false,
+        valid: !!value,
+      });
+    } else {
+      this.setState({
+        firstRender: false,
       });
     }
-    this.props.onChange(event);
   }
 
   render() {
@@ -121,7 +146,7 @@ export class InputNumber extends React.Component<InputNumberProps, InputState> {
       <div className="form-field">
         <label>{props.label}</label>
         <input
-          className={(!this.state.valid) ? "invalid" : undefined}
+          className={(!this.state.valid && !this.state.firstRender) ? "invalid" : undefined}
           disabled={props.isDisabled}
           max={props.max}
           min={props.min}
@@ -141,45 +166,52 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
 
   constructor(props: InputNumberWithCheckBoxProps) {
     super(props);
+
+    this.id = uuid();
+
+    let valid = true;
+    if (this.props.validate) {
+      valid = !!props.value;
+      this.props.validate(this.id, !!props.value);
+    }
+
     this.state = {
-      valid: true,
+      firstRender: true,
+      valid,
     };
 
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onChecked = this.onChecked.bind(this);
-
-    this.id = uuid();
   }
 
   onBlur(event: React.FocusEvent<HTMLInputElement>) {
-    if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(this.id, !!event.target.value);
-      this.setState({
-        valid: !!event.target.value,
-      });
-    }
+    this.validate(event.target.value);
     this.props.onBlur(event);
   }
 
   onChange(event: React.FocusEvent<HTMLInputElement>) {
-    if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(this.id, !!event.target.value);
-      this.setState({
-        valid: !!event.target.value,
-      });
-    }
+    this.validate(event.target.value);
     this.props.onChange(event);
   }
 
   onChecked(event: React.FocusEvent<HTMLInputElement>) {
-    if (this.props.validate && this.state.valid !== !!event.target.value) {
-      this.props.validate(this.id, !!event.target.value);
+    this.validate(event.target.value);
+    this.props.onChecked(event);
+  }
+
+  validate(value: any) {
+    if (this.props.validate && this.state.valid !== !!value) {
+      this.props.validate(this.id, !!value);
       this.setState({
-        valid: !!event.target.value,
+        firstRender: false,
+        valid: !!value,
+      });
+    } else {
+      this.setState({
+        firstRender: false,
       });
     }
-    this.props.onChecked(event);
   }
 
   render() {
@@ -198,7 +230,7 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
           />
         </div>
         <input
-          className={(!this.state.valid) ? "invalid" : undefined}
+          className={(!this.state.valid && !this.state.firstRender) ? "invalid" : undefined}
           disabled={props.isDisabled}
           max={props.max}
           min={props.min}
