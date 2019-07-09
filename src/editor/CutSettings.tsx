@@ -28,14 +28,14 @@ interface CutSettingsProps {
 }
 
 export default function CutSettings(props: CutSettingsProps) {
-  const maxPower = (props.cut.power === 99.99);
+  const maxPower = (props.cut.power === 99.99 || props.cut.power === 100);
   return (
     <>
       <div className="form-header">
         <p>Cut Settings</p>
       </div>
       <InputNumber
-        label="Speed *"
+        label="Speed * (100 - 500)"
         max="500"
         min="100"
         onBlur={props.saveTemporaryState}
@@ -46,7 +46,7 @@ export default function CutSettings(props: CutSettingsProps) {
       <InputNumberWithCheckbox
         isChecked={maxPower}
         isDisabled={maxPower}
-        label="Power *"
+        label="Power * (0 - 100)"
         max="100"
         min="0"
         onBlur={props.saveTemporaryState}
@@ -60,6 +60,7 @@ export default function CutSettings(props: CutSettingsProps) {
       />
       <InputNumber
         label="Passes"
+        min="1"
         onBlur={props.saveTemporaryState}
         onChange={(event) => props.updateCut('passes', asInteger(event.target.value)) }
         value={props.cut.passes}

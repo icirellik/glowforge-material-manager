@@ -35,7 +35,7 @@ interface BitmapEngraveSettingProps {
 }
 
 export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
-  const maxPower = (props.bitmap.power === 99.99);
+  const maxPower = (props.bitmap.power === 99.99 || props.bitmap.power === 100);
   return (
     <>
       <div className="form-sub-header">
@@ -54,7 +54,7 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
         validate={props.validationHandler}
       />
       <InputNumber
-        label="Speed *"
+        label="Speed * (100 - 1000)"
         max="1000"
         min="100"
         onBlur={props.saveTemporaryState}
@@ -68,7 +68,7 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
       <InputNumberWithCheckbox
         isChecked={maxPower}
         isDisabled={maxPower}
-        label="Power *"
+        label="Power * (0 - 100)"
         max="100"
         min="0"
         onBlur={props.saveTemporaryState}
@@ -85,6 +85,7 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
       />
       <InputNumber
         label="Passes"
+        min="1"
         onBlur={props.saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = asInteger(event.target.value);

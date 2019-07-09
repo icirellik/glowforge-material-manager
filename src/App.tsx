@@ -1,5 +1,5 @@
 import React from 'react';
-import MaterialEditor from './MaterialEditor';
+import MaterialEditor from './editor/MaterialEditor';
 import MaterialList from './MaterialList';
 import MaterialViewer from './viewer/MaterialViewer';
 import Message from './Message';
@@ -22,10 +22,10 @@ import {
   getUISettings,
 } from './lib/chromeWrappers';
 import {
-  EMPTY_MATERIAL,
   TempMaterial,
   MultiSettings,
-  MultiSettingsDefaults,
+  createEmptyMaterial,
+  MultiSettingFunctionsDefaults,
 } from './lib/constants';
 import './App.css';
 import { PluginMaterial } from './material/materialPlugin';
@@ -34,6 +34,7 @@ import { sha1 } from './lib/utils';
 import { readQrCode } from './lib/qrCode';
 import { AppHeader } from './AppHeader';
 import MaterialButtonBar from './MaterialButtonBar';
+import MaterialHome from './MaterialHome';
 
 export type AddMaterial = () => Promise<void>;
 export type CopyMaterial = (title: string) => Promise<void>;
@@ -65,14 +66,14 @@ export type ForceSyncronize = () => Promise<void>;
 export type EditorMode =  'DISPLAY' | 'ADD' | 'EDIT' | 'SELECTED';
 export type EditorModeChange = (mode: EditorMode, material: TempMaterial) => Promise<void>;
 export type ModeAdd = () => Promise<void>;
-export type ModeCancel = () => Promise<void>;
+export type ModeDefault = () => Promise<void>;
 export type ModeEdit = (title: string) => Promise<void>;
 export type ModeSelect = (title: string) => Promise<void>;
 
 interface IEditorMode {
   changeEditorMode: EditorModeChange;
   setEditorModeAdd: ModeAdd;
-  setEditorModeCancel: ModeCancel
+  setEditorModeDefault: ModeDefault
   setEditorModeEdit: ModeEdit;
   setEditorModeSelect: ModeSelect;
 }
@@ -119,7 +120,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       cloudStorageBytesUsed: 0,
       message: null,
       tempMaterial: {
-        ...EMPTY_MATERIAL,
+        ...createEmptyMaterial(),
       },
       materials: [],
       rawMaterials: [],
@@ -129,7 +130,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // Modes
     this.setEditorModeAdd = this.setEditorModeAdd.bind(this);
-    this.setEditorModeCancel = this.setEditorModeCancel.bind(this);
+    this.setEditorModeDefault = this.setEditorModeDefault.bind(this);
     this.setEditorModeEdit = this.setEditorModeEdit.bind(this)
     this.setEditorModeSelect = this.setEditorModeSelect.bind(this)
 
@@ -156,6 +157,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     // Validaton
     this.validationHandler = this.validationHandler.bind(this);
   }
+
+  private displayRef: React.RefObject<HTMLDivElement> = React.createRef();
 
   async componentDidMount() {
     // Track the bytes used.
@@ -200,14 +203,17 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       const uiSettings = await getUISettings();
       const rawSvg = (uiSettings && uiSettings.loadedDesignId) ? `https://storage.googleapis.com/glowforge-files/designs/${uiSettings.loadedDesignId}/svgf/svgf_file.gzip.svg` : null;
 
-      // Update teh state.
+      // Update thr state.
       if (this.state.synchronized === shouldUpdate) {
         this.setState({
           cloudStorageBytesUsed,
           rawSvg,
           synchronized: !shouldUpdate,
         });
-      } else {
+      } else if (
+        cloudStorageBytesUsed !== this.state.cloudStorageBytesUsed ||
+        rawSvg !== this.state.rawSvg
+      ) {
         this.setState({
           cloudStorageBytesUsed,
           rawSvg,
@@ -258,6 +264,12 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }, 750);
   }
 
+  componentDidUpdate() {
+    if(this.displayRef) {
+      (this.displayRef.current as any).scrollTop = 0;
+    }
+  }
+
   // Temporary Material State
   // =================================================================
 
@@ -275,11 +287,11 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
   addSetting(prop: keyof MultiSettings) {
     this.setState((state) => {
-      const emptySetting = MultiSettingsDefaults[prop];
+      const emptySetting = MultiSettingFunctionsDefaults[prop];
       return {
         tempMaterial: {
           ...state.tempMaterial,
-          [prop]: [ ...state.tempMaterial[prop], emptySetting ],
+          [prop]: [ ...state.tempMaterial[prop], emptySetting() ],
         },
       };
     });
@@ -359,13 +371,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     await sendCloudMaterial(this.state.tempMaterial);
 
     // Update the application state.
-    this.setState({
-      action: 'DISPLAY',
-      tempMaterial: { ...EMPTY_MATERIAL },
-      materials: newMaterials,
-      message: null,
-      rawMaterials: newRawMaterials,
-      synchronized: false,
+    this.setState((state) => {
+      return {
+        action: 'SELECTED',
+        tempMaterial: {
+          ...state.tempMaterial!,
+          propValidation: {},
+        },
+        materials: newMaterials,
+        message: null,
+        rawMaterials: newRawMaterials,
+        synchronized: false,
+      };
     });
   }
 
@@ -457,13 +474,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     await sendCloudMaterial(this.state.tempMaterial);
 
     // Update the application state.
-    this.setState({
-      action: 'DISPLAY',
-      tempMaterial: { ...EMPTY_MATERIAL },
-      materials: newMaterials,
-      message: null,
-      rawMaterials: newRawMaterials,
-      synchronized: false,
+    this.setState((state) => {
+      return {
+        action: 'SELECTED',
+        tempMaterial: {
+          ...state.tempMaterial!,
+          propValidation: {},
+        },
+        materials: newMaterials,
+        message: null,
+        rawMaterials: newRawMaterials,
+        synchronized: false,
+      };
     });
   }
 
@@ -486,7 +508,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     // Update the application state.
     this.setState({
       action: 'DISPLAY',
-      tempMaterial: { ...EMPTY_MATERIAL },
+      tempMaterial: { ...createEmptyMaterial() },
       materials,
       rawMaterials,
       synchronized: false,
@@ -549,13 +571,13 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * @param mode
    * @param material
    */
-  async changeEditorMode(mode: EditorMode, material: TempMaterial = EMPTY_MATERIAL) {
+  async changeEditorMode(mode: EditorMode, material: TempMaterial | null = null) {
     await clearTempMaterial();
 
     this.setState({
       action: mode,
       tempMaterial: {
-        ...material,
+        ...(material === null) ? createEmptyMaterial() : material,
       },
       message: null,
     });
@@ -573,7 +595,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * Cancels the current input mode, resetting the materiall state and clearing
    * any system messages.
    */
-  async setEditorModeCancel() {
+  async setEditorModeDefault() {
     await this.changeEditorMode('DISPLAY');
   }
 
@@ -621,15 +643,41 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   }
 
   render() {
-    const intro = (this.state.materials.length === 0) ? (
-      <div className="intro">
-        <p>Add your own custom material settings here.</p>
-      </div>
-    ) : null;
-
     let svg = null;
     if (this.state.rawSvg) {
       svg = (<a className="buttonBar_download" href={this.state.rawSvg} target="_blank" rel="noopener noreferrer">Download Raw SVG/Trace</a>);
+    }
+
+    let displayPanel: JSX.Element | null = null;
+    switch (this.state.action) {
+      default:
+      case 'DISPLAY':
+          displayPanel = (
+          <MaterialHome
+            materials={this.state.rawMaterials}
+          />
+        );
+        break;
+      case 'SELECTED':
+          displayPanel = (
+          <MaterialViewer
+            material={this.state.tempMaterial}
+          />
+        );
+        break;
+      case 'ADD':
+      case 'EDIT':
+        displayPanel = (
+          <MaterialEditor
+            editorMode={this.state.action}
+            addSetting={this.addSetting}
+            removeSetting={this.removeSetting}
+            updateSetting={this.updateSetting}
+            material={this.state.tempMaterial}
+            updateMaterial={this.updateMaterial}
+            validationHandler={this.validationHandler}
+          />
+        );
     }
 
     return (
@@ -654,31 +702,21 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
           <div className="column__right">
             <div className="buttonBar">
               <MaterialButtonBar
-                editorMode={this.state.action}
                 addMaterial={this.addMaterial}
-                newMaterial={this.setEditorModeAdd}
-                cancelMaterial={this.setEditorModeCancel}
+                copyMaterial={this.copyMaterial}
                 editMaterial={this.editMaterial}
+                editorMode={this.state.action}
+                setEditorModeAdd={this.setEditorModeAdd}
+                setEditorModeDefault={this.setEditorModeDefault}
+                setEditorModeEdit={this.setEditorModeEdit}
+                setMaterial={this.setMaterial}
                 title={`${this.state.tempMaterial.thickName} ${this.state.tempMaterial.name}`}
               />
               {svg}
             </div>
-            <div className="col-contents">
+            <div className="col-contents" ref={this.displayRef}>
               <div className="col-contents-container">
-                {intro}
-                <MaterialViewer
-                  editorMode={this.state.action}
-                  material={this.state.tempMaterial}
-                />
-                <MaterialEditor
-                  action={this.state.action}
-                  addSetting={this.addSetting}
-                  removeSetting={this.removeSetting}
-                  updateSetting={this.updateSetting}
-                  material={this.state.tempMaterial}
-                  updateMaterial={this.updateMaterial}
-                  validationHandler={this.validationHandler}
-                />
+                {displayPanel}
               </div>
             </div>
           </div>

@@ -5,7 +5,7 @@ import {
 } from '../lib/glowforgeUnits';
 import { PluginMaterial } from '../material/materialPlugin';
 import { precisionRound } from '../lib/utils';
-import './Viewer.css';
+import './MaterialViewer.css';
 
 export type MaterialCutViewerProps = {
   cut: PluginMaterial['cut'];

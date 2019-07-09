@@ -2,7 +2,7 @@ import {
   createMaterial,
 } from './material';
 import {
-  EMPTY_MATERIAL,
+  createEmptyMaterial, createEmptyScore, createEmptyBitmapEngrave, createEmptyVectorEngrave,
 } from '../lib/constants'
 
 describe('material', () => {
@@ -19,9 +19,21 @@ describe('material', () => {
 
     const id = 4;
     const rawMaterial = {
-      ...EMPTY_MATERIAL,
+      ...createEmptyMaterial(),
     };
 
     expect(createMaterial(rawMaterial, id)).toMatchSnapshot();
+  });
+
+  it('creates a new score', () => {
+    expect(createEmptyScore()).toMatchSnapshot();
+  });
+
+  it('creates a new bitmap engrave', () => {
+    expect(createEmptyBitmapEngrave()).toMatchSnapshot();
+  });
+
+  it('creates a new vector engrave', () => {
+    expect(createEmptyVectorEngrave()).toMatchSnapshot();
   });
 });
