@@ -75,6 +75,7 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
       <div className="materialList">
         <h3>Custom Materials</h3>
         <input
+          className="materialList__search"
           onChange={this.onFilterChange}
           placeholder="Search"
           type="text"

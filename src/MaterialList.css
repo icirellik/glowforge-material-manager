@@ -3,14 +3,14 @@
   flex-direction: column;
   flex-grow: 1;
   border-right: #efefef 1px solid;
-  padding: 16px;
 }
 
 .materialList h3 {
-  padding-bottom: 4px;
+  margin: 16px 16px 8px 16px;
 }
 
-.materialList input {
+.materialList__search {
+  margin: 0 16px;
   padding: 2px 4px;
   margin-bottom: 24px;
 }
@@ -22,24 +22,12 @@
 
 .materialList__item {
   display: flex;
-  margin-bottom: 12px;
+  height: 30px;
+  padding: 0 16px;
 }
 
 .materialList__item:hover {
   background-color: #efefef;
-  margin: -6px -16px 6px;
-}
-
-.materialList__item:hover .materialList__itemName {
-  margin-left: 16px;
-  margin-top: 6px;
-  margin-bottom: 6px;
-}
-
-.materialList__item:hover .materialList__itemMenu {
-  margin-right: 16px;
-  margin-top: 6px;
-  margin-bottom: 6px;
 }
 
 .materialList__item:last-child {
@@ -47,16 +35,14 @@
 }
 
 .materialList__itemName {
-  display: block;
+  display: flex;
   align-items: center;
-  margin-right: 10px;
 
   width: 175px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 
-  height: 18px;
   line-height: 18px;
 }
 
@@ -64,5 +50,6 @@
   display: flex;
   flex-grow: 1;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
+  width: 30px;
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import { EditorMode } from '../App';
 import { PluginMaterial } from '../material/materialPlugin';
 import MaterialBitmapEngravesViewer from './MaterialBitmapEngravesViewer';
 import MaterialCutViewer from './MaterialCutViewer';
@@ -9,19 +8,13 @@ import QrCodeViewer from './QrCodeViewer';
 import './MaterialViewer.css';
 
 export type MaterialViewerProps = {
-  editorMode: EditorMode;
   material: PluginMaterial;
 }
 
 export default function MaterialViewer(props: MaterialViewerProps) {
   const {
-    editorMode,
     material,
   } = props;
-
-  if (editorMode !== 'SELECTED') {
-    return null;
-  }
 
   return (
     <div className="viewer__column">

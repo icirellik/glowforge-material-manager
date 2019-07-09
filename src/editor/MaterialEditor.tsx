@@ -50,10 +50,6 @@ export default function MaterialEditor(props: MaterialEditorProps) {
     material,
   } = props;
 
-  if (editorMode !== 'ADD' && editorMode !== 'EDIT') {
-    return null;
-  }
-
   return (
     <>
       <MaterialSettings

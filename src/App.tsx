@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import MaterialEditor from './editor/MaterialEditor';
 import MaterialList from './MaterialList';
 import MaterialViewer from './viewer/MaterialViewer';
@@ -649,6 +648,38 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       svg = (<a className="buttonBar_download" href={this.state.rawSvg} target="_blank" rel="noopener noreferrer">Download Raw SVG/Trace</a>);
     }
 
+    let displayPanel: JSX.Element | null = null;
+    switch (this.state.action) {
+      default:
+      case 'DISPLAY':
+          displayPanel = (
+          <MaterialHome
+            materials={this.state.rawMaterials}
+          />
+        );
+        break;
+      case 'SELECTED':
+          displayPanel = (
+          <MaterialViewer
+            material={this.state.tempMaterial}
+          />
+        );
+        break;
+      case 'ADD':
+      case 'EDIT':
+        displayPanel = (
+          <MaterialEditor
+            editorMode={this.state.action}
+            addSetting={this.addSetting}
+            removeSetting={this.removeSetting}
+            updateSetting={this.updateSetting}
+            material={this.state.tempMaterial}
+            updateMaterial={this.updateMaterial}
+            validationHandler={this.validationHandler}
+          />
+        );
+    }
+
     return (
       <div className="App">
         <AppHeader
@@ -685,23 +716,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
             </div>
             <div className="col-contents" ref={this.displayRef}>
               <div className="col-contents-container">
-                <MaterialHome
-                  editorMode={this.state.action}
-                  materials={this.state.rawMaterials}
-                />
-                <MaterialViewer
-                  editorMode={this.state.action}
-                  material={this.state.tempMaterial}
-                />
-                <MaterialEditor
-                  editorMode={this.state.action}
-                  addSetting={this.addSetting}
-                  removeSetting={this.removeSetting}
-                  updateSetting={this.updateSetting}
-                  material={this.state.tempMaterial}
-                  updateMaterial={this.updateMaterial}
-                  validationHandler={this.validationHandler}
-                />
+                {displayPanel}
               </div>
             </div>
           </div>
