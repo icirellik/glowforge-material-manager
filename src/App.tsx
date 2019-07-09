@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import MaterialEditor from './editor/MaterialEditor';
 import MaterialList from './MaterialList';
 import MaterialViewer from './viewer/MaterialViewer';
@@ -158,6 +159,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     this.validationHandler = this.validationHandler.bind(this);
   }
 
+  private displayRef: React.RefObject<HTMLDivElement> = React.createRef();
+
   async componentDidMount() {
     // Track the bytes used.
     const cloudStorageBytesUsed = await getBytesInUse();
@@ -260,6 +263,12 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         }
       });
     }, 750);
+  }
+
+  componentDidUpdate() {
+    if(this.displayRef) {
+      (this.displayRef.current as any).scrollTop = 0;
+    }
   }
 
   // Temporary Material State
@@ -466,13 +475,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     await sendCloudMaterial(this.state.tempMaterial);
 
     // Update the application state.
-    this.setState({
-      action: 'DISPLAY',
-      tempMaterial: { ...createEmptyMaterial() },
-      materials: newMaterials,
-      message: null,
-      rawMaterials: newRawMaterials,
-      synchronized: false,
+    this.setState((state) => {
+      return {
+        action: 'SELECTED',
+        tempMaterial: {
+          ...state.tempMaterial!,
+          propValidation: {},
+        },
+        materials: newMaterials,
+        message: null,
+        rawMaterials: newRawMaterials,
+        synchronized: false,
+      };
     });
   }
 
@@ -669,7 +683,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
               />
               {svg}
             </div>
-            <div className="col-contents">
+            <div className="col-contents" ref={this.displayRef}>
               <div className="col-contents-container">
                 <MaterialHome
                   editorMode={this.state.action}
