@@ -9,6 +9,7 @@ import {
   SetMaterial,
 } from './App';
 import './MaterialList.css';
+import IconClear from './icons/IconClear';
 
 type MaterialListProps = {
   materials: PluginMaterial[]
@@ -25,7 +26,7 @@ type MaterialListState = {
 
 function MaterialListNoElements() {
   return (
-    <p>Materials you create appear here.</p>
+    <p className="materialList__empty">Materials you create appear here.</p>
   );
 }
 
@@ -37,7 +38,14 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
       filter: undefined,
     };
 
+    this.clearFilter = this.clearFilter.bind(this);
     this.onFilterChange = this.onFilterChange.bind(this);
+  }
+
+  clearFilter() {
+    this.setState({
+      filter: '',
+    });
   }
 
   onFilterChange(event: React.ChangeEvent) {
@@ -74,13 +82,21 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
     return (
       <div className="materialList">
         <h3>Custom Materials</h3>
-        <input
-          className="materialList__search"
-          onChange={this.onFilterChange}
-          placeholder="Search"
-          type="text"
-          value={this.state.filter}
-        />
+        <div className="materialList__search">
+          <input
+            className="materialList__search__input"
+            onChange={this.onFilterChange}
+            placeholder="Search"
+            type="text"
+            value={this.state.filter}
+          />
+          <IconClear
+            className="materialList__search__clear"
+            click={this.clearFilter}
+            height="18px"
+            width="18px"
+          />
+        </div>
         {materialElements.length > 0 ? (
           <div className="materialList__container">
             {materialElements}

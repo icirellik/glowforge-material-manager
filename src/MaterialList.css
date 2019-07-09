@@ -10,9 +10,13 @@
 }
 
 .materialList__search {
-  margin: 0 16px;
+  display: flex;
+  margin: 0 16px 24px;
+}
+
+.materialList__search__input {
+  display: flex;
   padding: 2px 4px;
-  margin-bottom: 24px;
 }
 
 .materialList__container {
@@ -31,7 +35,7 @@
 }
 
 .materialList__item:last-child {
-  margin-bottom: 0;
+  margin-bottom: 16px;
 }
 
 .materialList__itemName {
@@ -52,4 +56,8 @@
   align-items: center;
   justify-content: center;
   width: 30px;
+}
+
+.materialList__empty {
+  margin: 0 16px;
 }
