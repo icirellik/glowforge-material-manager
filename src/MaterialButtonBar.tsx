@@ -19,8 +19,8 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
     case 'ADD':
       return (
         <div className="Material-buttons">
-          <button onClick={props.addMaterial}>Create</button>
-          <button onClick={props.setEditorModeDefault}>Cancel</button>
+          <button onClick={() => { props.addMaterial(); }}>Create</button>
+          <button onClick={() => { props.setEditorModeDefault(); }}>Cancel</button>
         </div>
       );
     case 'EDIT':
@@ -29,8 +29,8 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
       }
       return (
         <div className="Material-buttons">
-          <button onClick={() => props.editMaterial!(props.title!)}>Update</button>
-          <button onClick={props.setEditorModeDefault}>Cancel</button>
+          <button onClick={() => { props.editMaterial!(props.title!) }}>Update</button>
+          <button onClick={() => { props.setEditorModeDefault(); }}>Cancel</button>
         </div>
       );
     case 'SELECTED':
@@ -39,14 +39,14 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
           <button onClick={() => { props.setMaterial(props.title); }}>Set</button>
           <button onClick={() => { props.setEditorModeEdit(props.title); }}>Edit</button>
           <button onClick={() => { props.copyMaterial(props.title); }}>Duplicate</button>
-          <button onClick={props.setEditorModeDefault}>Close</button>
+          <button onClick={() => { props.setEditorModeDefault(); }}>Close</button>
         </div>
       );
     case 'DISPLAY':
     default:
       return (
         <div className="Material-buttons">
-          <button onClick={props.setEditorModeAdd}>New</button>
+          <button onClick={() => { props.setEditorModeAdd(); }}>New</button>
         </div>
       );
   }

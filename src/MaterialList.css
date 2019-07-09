@@ -58,6 +58,11 @@
   width: 30px;
 }
 
+.materialList__create,
 .materialList__empty {
   margin: 0 16px;
+}
+
+.materialList__create span {
+  color: blue;
 }
