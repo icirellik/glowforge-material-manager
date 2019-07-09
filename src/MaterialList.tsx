@@ -3,6 +3,7 @@ import MaterialListItem from './MaterialListItem';
 import { PluginMaterial } from './material/materialPlugin';
 import {
   CopyMaterial,
+  ModeAdd,
   ModeEdit,
   ModeSelect,
   RemoveMaterial,
@@ -10,18 +11,44 @@ import {
 } from './App';
 import './MaterialList.css';
 import IconClear from './icons/IconClear';
+import { createEmptyMaterial } from './lib/constants';
 
 type MaterialListProps = {
-  materials: PluginMaterial[]
   cloneMaterial: CopyMaterial;
   editMaterial: ModeEdit;
+  materials: PluginMaterial[]
   removeMaterial: RemoveMaterial;
   selectMaterial: ModeSelect;
+  setEditorModeAdd: ModeAdd;
   setMaterial: SetMaterial;
 }
 
 type MaterialListState = {
   filter?: string;
+}
+
+interface MaterialListCreateFromSearchProps {
+  name?: string;
+  setEditorModeAdd: ModeAdd;
+}
+
+function MaterialListCreateFromSearch(props: MaterialListCreateFromSearchProps) {
+  return (
+    <p className="materialList__create" onClick={() => {
+      const material = createEmptyMaterial();
+      let nameParts: string[] = [];
+      if (props.name) {
+        nameParts = props.name.split(' ');
+      }
+      if (nameParts.length > 1) {
+        material.name = nameParts.slice(1).join(' ');
+        material.thickName = nameParts[0];
+      } else {
+        material.name = nameParts.join(' ');
+      }
+      props.setEditorModeAdd(material);
+    }}>Create "<span>{props.name}</span>"</p>
+  );
 }
 
 function MaterialListNoElements() {
@@ -79,6 +106,26 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
       );
     });
 
+    let materialList: JSX.Element | null = null;
+    if (materialElements.length > 0) {
+      materialList = (
+        <div className="materialList__container">
+          {materialElements}
+        </div>
+      );
+    } else if (materialElements.length === 0 && this.state.filter) {
+      materialList = (
+        <MaterialListCreateFromSearch
+          name={this.state.filter}
+          setEditorModeAdd={this.props.setEditorModeAdd}
+        />
+      );
+    } else {
+      materialList = (
+        <MaterialListNoElements />
+      );
+    }
+
     return (
       <div className="materialList">
         <h3>Custom Materials</h3>
@@ -97,13 +144,7 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
             width="18px"
           />
         </div>
-        {materialElements.length > 0 ? (
-          <div className="materialList__container">
-            {materialElements}
-          </div>
-        ) : (
-          <MaterialListNoElements />
-        )}
+        {materialList}
       </div>
     );
   }

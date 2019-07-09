@@ -65,7 +65,7 @@ export type ForceSyncronize = () => Promise<void>;
 
 export type EditorMode =  'DISPLAY' | 'ADD' | 'EDIT' | 'SELECTED';
 export type EditorModeChange = (mode: EditorMode, material: TempMaterial) => Promise<void>;
-export type ModeAdd = () => Promise<void>;
+export type ModeAdd = (material?: TempMaterial) => Promise<void>;
 export type ModeDefault = () => Promise<void>;
 export type ModeEdit = (title: string) => Promise<void>;
 export type ModeSelect = (title: string) => Promise<void>;
@@ -587,8 +587,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * Switches to `add material` mode and resets the current material state to
    * a blank material.
    */
-  async setEditorModeAdd() {
-    await this.changeEditorMode('ADD');
+  async setEditorModeAdd(material: TempMaterial | null = null) {
+    await this.changeEditorMode('ADD', material);
   }
 
   /**
@@ -696,6 +696,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
               materials={this.state.rawMaterials}
               removeMaterial={this.removeMaterial}
               selectMaterial={this.setEditorModeSelect}
+              setEditorModeAdd={this.setEditorModeAdd}
               setMaterial={this.setMaterial}
             />
           </div>
