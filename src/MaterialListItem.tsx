@@ -44,12 +44,14 @@ class MaterialListItem extends React.Component<MaterialProps> {
         >
           {title}
         </span>
+        <IconCheck
+          click={() => setMaterial(title)}
+          title={"Set"}
+          height="18px"
+          width="18px"
+        />
         <span className="materialList__itemMenu">
           <Menu>
-            <div onClick={() => setMaterial(title)}>
-              <span>Set</span>
-              <IconCheck height="18px" width="18px" />
-            </div>
             <div onClick={() => selectMaterial(title)}>
               <span>View</span>
               <IconOpen height="18px" width="18px" />
