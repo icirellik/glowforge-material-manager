@@ -41,8 +41,8 @@
 .materialList__itemName {
   display: flex;
   align-items: center;
+  flex-grow: 1;
 
-  width: 175px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -52,7 +52,6 @@
 
 .materialList__itemMenu {
   display: flex;
-  flex-grow: 1;
   align-items: center;
   justify-content: center;
   width: 30px;
