@@ -22,10 +22,10 @@ import {
   getUISettings,
 } from './lib/chromeWrappers';
 import {
-  EMPTY_MATERIAL,
   TempMaterial,
   MultiSettings,
-  MultiSettingsDefaults,
+  createEmptyMaterial,
+  MultiSettingFunctionsDefaults,
 } from './lib/constants';
 import './App.css';
 import { PluginMaterial } from './material/materialPlugin';
@@ -120,7 +120,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       cloudStorageBytesUsed: 0,
       message: null,
       tempMaterial: {
-        ...EMPTY_MATERIAL,
+        ...createEmptyMaterial(),
       },
       materials: [],
       rawMaterials: [],
@@ -279,11 +279,11 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
   addSetting(prop: keyof MultiSettings) {
     this.setState((state) => {
-      const emptySetting = MultiSettingsDefaults[prop];
+      const emptySetting = MultiSettingFunctionsDefaults[prop];
       return {
         tempMaterial: {
           ...state.tempMaterial,
-          [prop]: [ ...state.tempMaterial[prop], emptySetting ],
+          [prop]: [ ...state.tempMaterial[prop], emptySetting() ],
         },
       };
     });
@@ -468,7 +468,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     // Update the application state.
     this.setState({
       action: 'DISPLAY',
-      tempMaterial: { ...EMPTY_MATERIAL },
+      tempMaterial: { ...createEmptyMaterial() },
       materials: newMaterials,
       message: null,
       rawMaterials: newRawMaterials,
@@ -495,7 +495,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     // Update the application state.
     this.setState({
       action: 'DISPLAY',
-      tempMaterial: { ...EMPTY_MATERIAL },
+      tempMaterial: { ...createEmptyMaterial() },
       materials,
       rawMaterials,
       synchronized: false,
@@ -558,13 +558,13 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * @param mode
    * @param material
    */
-  async changeEditorMode(mode: EditorMode, material: TempMaterial = EMPTY_MATERIAL) {
+  async changeEditorMode(mode: EditorMode, material: TempMaterial | null = null) {
     await clearTempMaterial();
 
     this.setState({
       action: mode,
       tempMaterial: {
-        ...material,
+        ...(material === null) ? createEmptyMaterial() : material,
       },
       message: null,
     });

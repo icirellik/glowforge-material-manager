@@ -54,3 +54,40 @@ Object {
   },
 }
 `;
+
+exports[`material creates a new bitmap engrave 1`] = `
+Object {
+  "focalOffset": null,
+  "horizontalTiming": null,
+  "maximumGrayPercent": null,
+  "minimumGrayPercent": null,
+  "name": "",
+  "passes": 1,
+  "power": 99,
+  "renderMethod": null,
+  "rescaleMethod": "LagrangeFilter",
+  "scanGap": 3,
+  "speed": 100,
+}
+`;
+
+exports[`material creates a new score 1`] = `
+Object {
+  "focalOffset": null,
+  "name": "",
+  "passes": 1,
+  "power": 99,
+  "speed": 100,
+}
+`;
+
+exports[`material creates a new vector engrave 1`] = `
+Object {
+  "focalOffset": null,
+  "name": "",
+  "passes": 1,
+  "power": 99,
+  "scanGap": 3,
+  "speed": 100,
+}
+`;

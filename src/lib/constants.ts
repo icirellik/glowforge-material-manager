@@ -11,69 +11,81 @@ export interface TempMaterial extends PluginMaterial {
   };
 }
 
-export const EMPTY_MATERIAL: TempMaterial = {
-  name: '',
-  thickName: '',
-  thickness: null,
-  cut: {
+export function createEmptyMaterial(): TempMaterial {
+  return {
+    name: '',
+    thickName: '',
+    thickness: null,
+    cut: {
+      power: 99,
+      speed: 100,
+      passes: 1,
+      focalOffset: null,
+    },
+    scores: [],
+    vectors: [],
+    bitmaps: [],
+    propValidation: {},
+  };
+}
+
+export function createEmptyScore():PluginScoreSetting {
+  return {
+    name: '',
     power: 99,
     speed: 100,
     passes: 1,
     focalOffset: null,
-  },
-  scores: [],
-  vectors: [],
-  bitmaps: [],
-  propValidation: {},
-};
+  };
+}
 
-export const EMPTY_SCORE: PluginScoreSetting = {
-  name: '',
-  power: 99,
-  speed: 100,
-  passes: 1,
-  focalOffset: null,
-};
+export function createEmptyVectorEngrave(): PluginVectorEngraveSetting {
+  return {
+    name: '',
+    power: 99,
+    speed: 100,
+    passes: 1,
+    focalOffset: null,
+    scanGap: 3,
+  };
+}
 
-export const EMPTY_VECTOR_ENGRAVE: PluginVectorEngraveSetting = {
-  name: '',
-  power: 99,
-  speed: 100,
-  passes: 1,
-  focalOffset: null,
-  scanGap: 3,
-};
 
-export const EMPTY_BITMAP_ENGRAVE: PluginBitmapEngraveSetting = {
-  name: '',
-  power: 99,
-  speed: 100,
-  passes: 1,
-  focalOffset: null,
-  scanGap: 3,
-  renderMethod: null,
-  rescaleMethod: 'LagrangeFilter',
-  minimumGrayPercent: null,
-  maximumGrayPercent: null,
-  horizontalTiming: null,
-};
+
+export function createEmptyBitmapEngrave(): PluginBitmapEngraveSetting {
+  return {
+    name: '',
+    power: 99,
+    speed: 100,
+    passes: 1,
+    focalOffset: null,
+    scanGap: 3,
+    renderMethod: null,
+    rescaleMethod: 'LagrangeFilter',
+    minimumGrayPercent: null,
+    maximumGrayPercent: null,
+    horizontalTiming: null,
+  };
+}
 
 /**
  * The individual properies that may have multiple settings methods.
  */
 
 export interface MultiSettings {
-  'bitmaps': typeof EMPTY_BITMAP_ENGRAVE;
-  'scores': typeof EMPTY_SCORE;
-  'vectors': typeof EMPTY_VECTOR_ENGRAVE;
+  'bitmaps': PluginBitmapEngraveSetting;
+  'scores': PluginScoreSetting;
+  'vectors': PluginVectorEngraveSetting;
 }
 
-/**
- * The different default settings that are used when creating a new bitmap,
- * score, or vector setting.
- */
-export const MultiSettingsDefaults: MultiSettings = {
-  'bitmaps': EMPTY_BITMAP_ENGRAVE,
-  'scores': EMPTY_SCORE,
-  'vectors': EMPTY_VECTOR_ENGRAVE,
+export interface MultiSettingFunctions {
+  'bitmaps': typeof createEmptyBitmapEngrave;
+  'scores': typeof createEmptyScore;
+  'vectors': typeof createEmptyVectorEngrave;
+}
+
+export const MultiSettingFunctionsDefaults: MultiSettingFunctions = {
+  'bitmaps': createEmptyBitmapEngrave,
+  'scores': createEmptyScore,
+  'vectors': createEmptyVectorEngrave,
 };
