@@ -50,6 +50,12 @@ export class InputText extends React.Component<InputProps, InputState> {
     this.onChange = this.onChange.bind(this);
   }
 
+  componentWillUnmount() {
+    if (this.props.validate) {
+      this.props.validate(this.id, true);
+    }
+  }
+
   onBlur(event: React.FocusEvent<HTMLInputElement>) {
     this.validate(event.target.value);
     this.props.onBlur(event);
@@ -114,6 +120,12 @@ export class InputNumber extends React.Component<InputNumberProps, InputState> {
 
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
+  }
+
+  componentWillUnmount() {
+    if (this.props.validate) {
+      this.props.validate(this.id, true);
+    }
   }
 
   onBlur(event: React.FocusEvent<HTMLInputElement>) {
@@ -183,6 +195,12 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onChecked = this.onChecked.bind(this);
+  }
+
+  componentWillUnmount() {
+    if (this.props.validate) {
+      this.props.validate(this.id, true);
+    }
   }
 
   onBlur(event: React.FocusEvent<HTMLInputElement>) {
