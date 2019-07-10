@@ -1,5 +1,5 @@
 import React from 'react';
-import IconMenu from './icons/IconMenu';
+import IconHamburgerMenu from './icons/IconHamburgerMenu';
 import './Menu.css';
 
 interface MenuState {
@@ -37,7 +37,12 @@ class Menu extends React.Component<{}, MenuState>  {
   render() {
     return (
       <div className="dropdown">
-        <IconMenu click={this.showMenu} height="18px" width="18px" />
+        <IconHamburgerMenu
+          click={this.showMenu}
+          className="materialList__iconHover"
+          height="18px"
+          width="18px"
+        />
         {
           this.state.showMenu ? (
             <div

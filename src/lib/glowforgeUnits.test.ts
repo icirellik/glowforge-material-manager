@@ -1,5 +1,5 @@
 import {
-  toRealPower, toRealCutSpeed,
+  toRealPower, toRealCutSpeed, clamp,
 } from './glowforgeUnits';
 
 describe('Glowforge Unit Helpers', () => {
@@ -14,12 +14,12 @@ describe('Glowforge Unit Helpers', () => {
   });
 
   it('toRealCutSpeed', () => {
-    expect(toRealCutSpeed(1000)).toEqual(4000);
-    expect(toRealCutSpeed(501)).toEqual(4000);
+    expect(clamp(toRealCutSpeed(1000), 100, 4000)).toEqual(4000);
+    expect(clamp(toRealCutSpeed(501), 100, 4000)).toEqual(4000);
     expect(toRealCutSpeed(500)).toEqual(4000);
     expect(toRealCutSpeed(100)).toEqual(100);
-    expect(toRealCutSpeed(99)).toEqual(100);
-    expect(toRealCutSpeed(1)).toEqual(100);
+    expect(clamp(toRealCutSpeed(99), 100, 4000)).toEqual(100);
+    expect(clamp(toRealCutSpeed(1), 100, 4000)).toEqual(100);
   });
 
 });

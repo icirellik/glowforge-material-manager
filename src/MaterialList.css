@@ -34,8 +34,20 @@
   background-color: #efefef;
 }
 
+.materialList__item:hover .materialList__iconHover {
+  opacity: 1;
+}
+
 .materialList__item:last-child {
   margin-bottom: 16px;
+}
+
+.materialList__item__selected {
+  background-color: #dedede;
+}
+
+.materialList__item__selected:hover {
+  background-color: #dedede;
 }
 
 .materialList__itemName {
@@ -55,6 +67,14 @@
   align-items: center;
   justify-content: center;
   width: 30px;
+}
+
+.materialList__iconHover {
+  opacity: 0;
+}
+
+.materialList__iconHover:hover {
+  color: blue;
 }
 
 .materialList__create,

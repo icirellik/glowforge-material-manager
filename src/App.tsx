@@ -264,8 +264,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }, 750);
   }
 
-  componentDidUpdate() {
-    if(this.displayRef) {
+  componentDidUpdate(prevProps: AppProps, prevState: AppState) {
+    if(this.displayRef && prevState.action !== this.state.action) {
       (this.displayRef.current as any).scrollTop = 0;
     }
   }
@@ -698,6 +698,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
               selectMaterial={this.setEditorModeSelect}
               setEditorModeAdd={this.setEditorModeAdd}
               setMaterial={this.setMaterial}
+              tempMaterial={this.state.tempMaterial}
             />
           </div>
           <div className="column__right">

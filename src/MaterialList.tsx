@@ -9,9 +9,12 @@ import {
   RemoveMaterial,
   SetMaterial,
 } from './App';
+import {
+  createEmptyMaterial,
+  TempMaterial,
+} from './lib/constants';
 import './MaterialList.css';
 import IconClear from './icons/IconClear';
-import { createEmptyMaterial } from './lib/constants';
 
 type MaterialListProps = {
   cloneMaterial: CopyMaterial;
@@ -21,6 +24,7 @@ type MaterialListProps = {
   selectMaterial: ModeSelect;
   setEditorModeAdd: ModeAdd;
   setMaterial: SetMaterial;
+  tempMaterial: TempMaterial;
 }
 
 type MaterialListState = {
@@ -100,6 +104,7 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
           editMaterial={this.props.editMaterial}
           material={material}
           removeMaterial={this.props.removeMaterial}
+          selected={`${material.thickName} ${material.name}` === `${this.props.tempMaterial.thickName} ${this.props.tempMaterial.name}`}
           selectMaterial={this.props.selectMaterial}
           setMaterial={this.props.setMaterial}
         />
@@ -117,7 +122,10 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
       materialList = (
         <MaterialListCreateFromSearch
           name={this.state.filter}
-          setEditorModeAdd={this.props.setEditorModeAdd}
+          setEditorModeAdd={async (material) => {
+            this.props.setEditorModeAdd(material);
+            this.clearFilter();
+          }}
         />
       );
     } else {

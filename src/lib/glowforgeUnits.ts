@@ -20,7 +20,7 @@ const MIN_POWER = 1;
  * @param min The min value.
  * @param max The max value.
  */
-function clamp(value: number, min: number, max: number) {
+export function clamp(value: number, min: number, max: number) {
   if (value > max) {
     return max;
   } else if (value < min) {
@@ -37,7 +37,7 @@ function getMaxVRSpeed(minSpeed: number, maxSpeed: number) {
   const speedDifference = maxSpeed - minSpeed;
   const uiSpeedRange = MAX_UI_SPEED - MIN_UI_SPEED
   const vrSpeed = speedDifference / MAX_MOTOR_SPEED * uiSpeedRange + MIN_UI_SPEED;
-  return clamp(100 * Math.round(vrSpeed / 100), minSpeed, maxSpeed);
+  return 100 * Math.round(vrSpeed / 100);
 }
 
 /**
@@ -46,14 +46,14 @@ function getMaxVRSpeed(minSpeed: number, maxSpeed: number) {
 function toDisplaySpeed(rawSpeed: number, minSpeed: number, maxSpeed: number) {
   const maxVRSpeed = getMaxVRSpeed(minSpeed, maxSpeed) - MIN_UI_SPEED;
   const speed = (rawSpeed - minSpeed) / (maxSpeed - minSpeed) * maxVRSpeed + MIN_UI_SPEED;
-  return clamp(Math.round(speed), minSpeed, maxSpeed);
+  return Math.round(speed);
 }
 
 /**
  * Converts a Glowforge UI speed to a Glowforge internal speed.
  */
 function toRealSpeed(displaySpeed: number, minSpeed: number, maxSpeed: number) {
-  return clamp((displaySpeed - minSpeed) / (getMaxVRSpeed(minSpeed, maxSpeed) - MIN_UI_SPEED) * (maxSpeed - minSpeed) + minSpeed, minSpeed, maxSpeed);
+  return (displaySpeed - minSpeed) / (getMaxVRSpeed(minSpeed, maxSpeed) - MIN_UI_SPEED) * (maxSpeed - minSpeed) + minSpeed;
 }
 
 // Engrave conversion settings.
