@@ -1,10 +1,10 @@
 import React from 'react';
 import Menu from './Menu';
-import IconCheck from './icons/IconCheck';
-import IconOpen from './icons/IconOpen';
-import IconDeleteForever from './icons/IconDeleteForever';
 import IconCopy from './icons/IconCopy';
+import IconDeleteForever from './icons/IconDeleteForever';
 import IconEdit from './icons/IconEdit';
+import IconOpen from './icons/IconOpen';
+import IconOpenInBrowser from './icons/IconOpenInBrowser';
 import { PluginMaterial } from './material/materialPlugin';
 import {
   CopyMaterial,
@@ -20,6 +20,7 @@ interface MaterialProps {
   editMaterial: ModeEdit;
   material: PluginMaterial;
   removeMaterial: RemoveMaterial;
+  selected: boolean;
   selectMaterial: ModeSelect;
   setMaterial: SetMaterial;
 }
@@ -36,7 +37,7 @@ class MaterialListItem extends React.Component<MaterialProps> {
     } = this.props
     const title = `${material.thickName} ${material.name}`;
     return (
-      <div className="materialList__item">
+      <div className={`materialList__item ${(this.props.selected) ? 'materialList__item__selected' : ''}`}>
         <span
           onClick={() => selectMaterial(title)}
           className="materialList__itemName"
@@ -44,9 +45,10 @@ class MaterialListItem extends React.Component<MaterialProps> {
         >
           {title}
         </span>
-        <IconCheck
+        <IconOpenInBrowser
           click={() => setMaterial(title)}
-          title={"Set"}
+          className="materialList__iconHover"
+          title="Set in browser"
           height="18px"
           width="18px"
         />
