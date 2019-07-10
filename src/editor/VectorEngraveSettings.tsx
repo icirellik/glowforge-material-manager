@@ -27,6 +27,7 @@ export default function VectorEngraveSettings(props: VectorEngraveSettingsProps)
         <div>
           <IconPlus
             click={props.addVectorEngrave}
+            className="icon-button-add"
             fill="#001f23"
             height="18px"
             width="18px"
