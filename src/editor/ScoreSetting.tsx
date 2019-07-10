@@ -43,7 +43,7 @@ export default function ScoreSetting(props: ScoreSettingProps) {
         </p>
         <IconMinus click={() => {
           props.removeScore(props.index);
-        }} height="16px" width="16px" />
+        }} className="icon-button-add" height="16px" width="16px" />
       </div>
       <InputText
         label="Name *"

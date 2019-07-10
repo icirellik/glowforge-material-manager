@@ -44,7 +44,7 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
         </p>
         <IconMinus click={() => {
           props.removeBitmapEngrave(props.index);
-        }} height="16px" width="16px" />
+        }} className="icon-button-add" height="16px" width="16px" />
       </div>
       <InputText
         label="Name *"
