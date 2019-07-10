@@ -1,5 +1,6 @@
 import React from 'react';
 import uuid from 'uuid/v4';
+import { asInteger } from '../lib/utils';
 
 interface InputProps {
   isDisabled?: boolean;
@@ -139,11 +140,21 @@ export class InputNumber extends React.Component<InputNumberProps, InputState> {
   }
 
   validate(value: any) {
-    if (this.props.validate && this.state.valid !== !!value) {
-      this.props.validate(this.id, !!value);
+    if (this.props.validate) {
+      let isValid = !!value;
+
+      if (this.props.min && this.props.max) {
+        isValid = asInteger(this.props.min) <= asInteger(value) && asInteger(this.props.max) >= asInteger(value);
+      } else if (this.props.min) {
+        isValid = asInteger(this.props.min) <= asInteger(value);
+      } else if (this.props.max) {
+        isValid = asInteger(this.props.max) >= asInteger(value);
+      }
+
+      this.props.validate(this.id, isValid);
       this.setState({
         firstRender: false,
-        valid: !!value,
+        valid: isValid,
       });
     } else {
       this.setState({
@@ -219,11 +230,21 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
   }
 
   validate(value: any) {
-    if (this.props.validate && this.state.valid !== !!value) {
-      this.props.validate(this.id, !!value);
+    if (this.props.validate) {
+      let isValid = !!value;
+
+      if (this.props.min && this.props.max) {
+        isValid = asInteger(this.props.min) <= asInteger(value) && asInteger(this.props.max) >= asInteger(value);
+      } else if (this.props.min) {
+        isValid = asInteger(this.props.min) <= asInteger(value);
+      } else if (this.props.max) {
+        isValid = asInteger(this.props.max) >= asInteger(value);
+      }
+
+      this.props.validate(this.id, isValid);
       this.setState({
         firstRender: false,
-        valid: !!value,
+        valid: isValid,
       });
     } else {
       this.setState({
