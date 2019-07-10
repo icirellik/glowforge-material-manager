@@ -112,13 +112,32 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
     });
 
     let materialList: JSX.Element | null = null;
-    if (materialElements.length > 0) {
+    if (this.state.filter &&
+        materials.map(material => `${material.thickName} ${material.name}`.toLowerCase())
+          .indexOf(this.state.filter) === -1 &&
+        materialElements.length > 0
+      ) {
+        materialList = (
+          <>
+            <div className="materialList__container">
+              {materialElements}
+            </div>
+            <MaterialListCreateFromSearch
+              name={this.state.filter}
+              setEditorModeAdd={async (material) => {
+                this.props.setEditorModeAdd(material);
+                this.clearFilter();
+              }}
+            />
+          </>
+        );
+    } else if (materialElements.length > 0) {
       materialList = (
         <div className="materialList__container">
           {materialElements}
         </div>
       );
-    } else if (materialElements.length === 0 && this.state.filter) {
+    } else if (this.state.filter && materialElements.length === 0) {
       materialList = (
         <MaterialListCreateFromSearch
           name={this.state.filter}

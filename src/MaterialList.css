@@ -84,4 +84,5 @@
 
 .materialList__create span {
   color: blue;
+  cursor: default;
 }
