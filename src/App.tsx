@@ -643,11 +643,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   }
 
   render() {
-    let svg = null;
-    if (this.state.rawSvg) {
-      svg = (<a className="buttonBar_download" href={this.state.rawSvg} target="_blank" rel="noopener noreferrer">Download Raw SVG/Trace</a>);
-    }
-
     let displayPanel: JSX.Element | null = null;
     switch (this.state.action) {
       default:
@@ -655,6 +650,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
           displayPanel = (
           <MaterialHome
             materials={this.state.rawMaterials}
+            rawSvg={this.state.rawSvg}
+            setEditorModeAdd={this.setEditorModeAdd}
           />
         );
         break;
@@ -713,7 +710,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
                 setMaterial={this.setMaterial}
                 title={`${this.state.tempMaterial.thickName} ${this.state.tempMaterial.name}`}
               />
-              {svg}
             </div>
             <div className="col-contents" ref={this.displayRef}>
               <div className="col-contents-container">

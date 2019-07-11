@@ -1,0 +1,39 @@
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  padding-right: 16px;
+  padding-bottom: 16px;
+}
+
+.intro p {
+  display: flex;
+  flex-grow: 2;
+  font-size: 13px;
+}
+
+.intro h3 {
+  margin: 24px 0 8px;
+  border-bottom: 1px solid #dedede;
+}
+
+.intro ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.intro li {
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.materialHome__menuItem {
+  cursor: pointer;
+  color: black;
+  text-decoration: none;
+}
+
+.materialHome__menuItem:hover {
+  color: blue;
+}
