@@ -2,11 +2,8 @@ import React from 'react';
 import MaterialListItem from './MaterialListItem';
 import { PluginMaterial } from './material/materialPlugin';
 import {
-  CopyMaterial,
   ModeAdd,
-  ModeEdit,
   ModeSelect,
-  RemoveMaterial,
   SetMaterial,
 } from './App';
 import {
@@ -17,10 +14,7 @@ import './MaterialList.css';
 import IconClear from './icons/IconClear';
 
 type MaterialListProps = {
-  cloneMaterial: CopyMaterial;
-  editMaterial: ModeEdit;
   materials: PluginMaterial[]
-  removeMaterial: RemoveMaterial;
   selectMaterial: ModeSelect;
   setEditorModeAdd: ModeAdd;
   setMaterial: SetMaterial;
@@ -100,10 +94,7 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
     }).map(material => {
       return (
         <MaterialListItem
-          cloneMaterial={this.props.cloneMaterial}
-          editMaterial={this.props.editMaterial}
           material={material}
-          removeMaterial={this.props.removeMaterial}
           selected={`${material.thickName} ${material.name}` === `${this.props.tempMaterial.thickName} ${this.props.tempMaterial.name}`}
           selectMaterial={this.props.selectMaterial}
           setMaterial={this.props.setMaterial}

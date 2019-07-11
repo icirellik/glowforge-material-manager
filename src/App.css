@@ -16,8 +16,11 @@
 
 .columns .col-materials {
   display: flex;
-  width: 240px;
   background-color: #fbfbfb;
+  height: 498px;
+  width: 240px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .columns .col-contents {
@@ -25,6 +28,7 @@
   flex-direction: column;
   flex-grow: 1;
   height: 469px;
+  width: 510px;
   overflow-y: auto;
 }
 

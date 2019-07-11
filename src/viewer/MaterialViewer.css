@@ -41,3 +41,63 @@
   align-items: center;
   height: 18px;
 }
+
+.viewer__destructiveActions {
+  display: flex;
+  width: 500px;
+  height: 28px;
+  border-top: 1px solid #dedede;
+  margin-top: 24px;
+  padding-top: 16px;
+}
+
+.viewer__destructiveActions button {
+  padding: 0 16px;
+  height: 28px;
+  justify-content: center;
+
+  background-color: red;
+  color: white;
+
+  text-align: center;
+  font-weight: 500;
+  line-height: 28px;
+  font-size: 14px;
+
+  border: 0;
+}
+
+.viewer__destructiveActions button:hover {
+    box-shadow: none;
+}
+
+.viewer__destructiveActions button:focus {
+    box-shadow: none;
+}
+
+.viewer__destructiveActions button:disabled {
+    opacity: 0.3;
+}
+
+.viewer__destructiveActions button:not([disabled]):hover {
+  background-color: rgb(201, 0, 0);
+  color: white;
+}
+
+.viewer__destructiveActions button.materialButtons__delete {
+  background-color: red;
+  color: white;
+  display: flex;
+  margin-right: 20px;
+}
+
+.viewer__destructiveActions .materialButtons__delete__icon {
+  background-color: red;
+  color: white;
+  align-self: center;
+}
+
+.viewer__destructiveActions button:not([disabled]):hover .materialButtons__delete__icon {
+  background-color: rgb(201, 0, 0);
+  color: white;
+}

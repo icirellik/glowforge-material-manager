@@ -662,6 +662,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
           displayPanel = (
           <MaterialViewer
             material={this.state.tempMaterial}
+            removeMaterial={this.removeMaterial}
           />
         );
         break;
@@ -691,10 +692,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         <div className={`columns ${(this.props.platform === 'mac') ? 'osx' : ''}`}>
           <div className="col-materials">
             <MaterialList
-              cloneMaterial={this.copyMaterial}
-              editMaterial={this.setEditorModeEdit}
               materials={this.state.rawMaterials}
-              removeMaterial={this.removeMaterial}
               selectMaterial={this.setEditorModeSelect}
               setEditorModeAdd={this.setEditorModeAdd}
               setMaterial={this.setMaterial}

@@ -74,6 +74,7 @@
 
 .materialList__iconHover {
   opacity: 0;
+  margin-left: 4px;
 }
 
 .materialList__iconHover:hover {
