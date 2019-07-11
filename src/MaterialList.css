@@ -19,6 +19,10 @@
   padding: 2px 4px;
 }
 
+.materialList__search__clear {
+  cursor: pointer;
+}
+
 .materialList__container {
   display: flex;
   flex-direction: column;
@@ -75,6 +79,7 @@
 .materialList__iconHover {
   opacity: 0;
   margin-left: 4px;
+  cursor: pointer;
 }
 
 .materialList__iconHover:hover {
@@ -88,5 +93,5 @@
 
 .materialList__create span {
   color: blue;
-  cursor: default;
+  cursor: pointer;
 }

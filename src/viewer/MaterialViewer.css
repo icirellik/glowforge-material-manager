@@ -44,7 +44,6 @@
 
 .viewer__destructiveActions {
   display: flex;
-  width: 500px;
   height: 28px;
   border-top: 1px solid #dedede;
   margin-top: 24px;

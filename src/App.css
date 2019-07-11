@@ -40,25 +40,6 @@
   padding: 16px 16px 16px 24px;
 }
 
-.intro {
-  display: flex;
-  font-size: 14px;
-  padding-bottom: 16px;
-}
-
-.intro p {
-  display: flex;
-  flex-grow: 2;
-  align-items: center;
-}
-
-.intro div {
-  display: flex;
-  flex-grow: 1;
-  align-items: center;
-  justify-content: flex-end;
-}
-
 .buttonBar {
   display: flex;
   width: 500px;
@@ -97,10 +78,4 @@
 
 .buttonBar button:not([disabled]):hover {
   background-color: #0D1C1E;
-}
-
-.buttonBar_download {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
