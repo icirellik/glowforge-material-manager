@@ -1,5 +1,15 @@
 import React from 'react';
-import { AddMaterial, ModeDefault, EditMaterial, EditorMode, ModeAdd, SetMaterial, CopyMaterial, ModeEdit } from './App';
+import {
+  AddMaterial,
+  CopyMaterial,
+  EditMaterial,
+  EditorMode,
+  ModeAdd,
+  ModeDefault,
+  ModeEdit,
+  ModeSelect,
+  SetMaterial,
+} from './App';
 import './MaterialButtonBar.css';
 
 interface MaterialButtonBarProps {
@@ -10,6 +20,7 @@ interface MaterialButtonBarProps {
   setEditorModeAdd: ModeAdd;
   setEditorModeDefault: ModeDefault;
   setEditorModeEdit: ModeEdit;
+  setEditorModeSelect: ModeSelect;
   setMaterial: SetMaterial;
   title: string;
 }
@@ -30,7 +41,7 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
       return (
         <div className="Material-buttons">
           <button onClick={() => { props.editMaterial!(props.title!) }}>Update</button>
-          <button onClick={() => { props.setEditorModeDefault(); }}>Cancel</button>
+          <button onClick={() => { props.setEditorModeSelect(props.title); }}>Cancel</button>
         </div>
       );
     case 'SELECTED':

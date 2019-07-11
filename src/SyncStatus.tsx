@@ -9,7 +9,7 @@ export interface SyncStatusProps {
   synchronized: boolean;
 }
 
-function SyncStatus(props: SyncStatusProps) {
+export default function SyncStatus(props: SyncStatusProps) {
   let title: string = 'Status: Unknown';
   if (props.synchronized) {
     title = 'Status: Synchronized';
@@ -30,5 +30,3 @@ function SyncStatus(props: SyncStatusProps) {
     </div>
   );
 }
-
-export default SyncStatus;

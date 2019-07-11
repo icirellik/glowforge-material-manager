@@ -711,6 +711,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
                 setEditorModeAdd={this.setEditorModeAdd}
                 setEditorModeDefault={this.setEditorModeDefault}
                 setEditorModeEdit={this.setEditorModeEdit}
+                setEditorModeSelect={this.setEditorModeSelect}
                 setMaterial={this.setMaterial}
                 title={`${this.state.tempMaterial.thickName} ${this.state.tempMaterial.name}`}
               />

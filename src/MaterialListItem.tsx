@@ -25,56 +25,53 @@ interface MaterialProps {
   setMaterial: SetMaterial;
 }
 
-class MaterialListItem extends React.Component<MaterialProps> {
-  render() {
-    const {
-      cloneMaterial,
-      editMaterial,
-      material,
-      removeMaterial,
-      selectMaterial,
-      setMaterial,
-    } = this.props
-    const title = `${material.thickName} ${material.name}`;
-    return (
-      <div className={`materialList__item ${(this.props.selected) ? 'materialList__item__selected' : ''}`}>
-        <span
-          onClick={() => selectMaterial(title)}
-          className="materialList__itemName"
-          title={title}
-        >
-          {title}
-        </span>
-        <IconOpenInBrowser
-          click={() => setMaterial(title)}
-          className="materialList__iconHover"
-          title="Set in browser"
-          height="18px"
-          width="18px"
-        />
-        <span className="materialList__itemMenu">
-          <Menu>
-            <div onClick={() => selectMaterial(title)}>
-              <span>View</span>
-              <IconOpen height="18px" width="18px" />
-            </div>
-            <div onClick={() => editMaterial(title)}>
-              <span>Edit</span>
-              <IconEdit height="18px" width="18px" />
-            </div>
-            <div onClick={() => cloneMaterial(title)}>
-              <span>Copy</span>
-              <IconCopy height="18px" width="18px" />
-            </div>
-            <div onClick={() => removeMaterial(title)}>
-              <span>Delete</span>
-              <IconDeleteForever height="18px" width="18px" />
-            </div>
-          </Menu>
-        </span>
-      </div>
-    );
-  }
-}
+export default function MaterialListItem(props: MaterialProps) {
+  const {
+    cloneMaterial,
+    editMaterial,
+    material,
+    removeMaterial,
+    selectMaterial,
+    setMaterial,
+  } = props
+  const title = `${material.thickName} ${material.name}`;
+  return (
+    <div className={`materialList__item ${(props.selected) ? 'materialList__item__selected' : ''}`}>
+      <span
+        onClick={() => selectMaterial(title)}
+        className="materialList__itemName"
+        title={title}
+      >
+        <span className="materialList__itemName__ellipsis">{title}</span>
 
-export default MaterialListItem;
+      </span>
+      <IconOpenInBrowser
+        click={() => setMaterial(title)}
+        className="materialList__iconHover"
+        title="Set in browser"
+        height="18px"
+        width="18px"
+      />
+      <span className="materialList__itemMenu">
+        <Menu>
+          <div onClick={() => selectMaterial(title)}>
+            <span>View</span>
+            <IconOpen height="18px" width="18px" />
+          </div>
+          <div onClick={() => editMaterial(title)}>
+            <span>Edit</span>
+            <IconEdit height="18px" width="18px" />
+          </div>
+          <div onClick={() => cloneMaterial(title)}>
+            <span>Copy</span>
+            <IconCopy height="18px" width="18px" />
+          </div>
+          <div onClick={() => removeMaterial(title)}>
+            <span>Delete</span>
+            <IconDeleteForever height="18px" width="18px" />
+          </div>
+        </Menu>
+      </span>
+    </div>
+  );
+}
