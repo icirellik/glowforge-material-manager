@@ -88,7 +88,18 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
   render () {
     const { materials } = this.props;
 
-    const materialElements = materials.filter(material => {
+    const materialElements = materials.sort((mat1, mat2) => {
+      const mat1Title = `${mat1.thickName} ${mat1.name}`;
+      const mat2Title = `${mat2.thickName} ${mat2.name}`;
+
+      if (mat1Title < mat2Title) {
+        return -1;
+      }
+      if (mat1Title > mat2Title) {
+        return 1;
+      }
+      return 0;
+    }).filter(material => {
       const title = `${material.thickName} ${material.name}`.toLowerCase();
       return !this.state.filter || title.includes(this.state.filter.toLowerCase());
     }).map(material => {
