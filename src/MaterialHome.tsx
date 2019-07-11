@@ -23,7 +23,7 @@ export default function MaterialHome(props: MaterialHomeProps) {
           has implemented as they automatically populate all the settings you need
           when a material is selected.
         </p>
-        <h3>Actons</h3>
+        <h3>Actions</h3>
         <ul>
           <li className="materialHome__menuItem" onClick={() => {props.setEditorModeAdd(); }}>New Material</li>
           <li>{svg}</li>

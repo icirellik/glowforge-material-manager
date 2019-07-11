@@ -38,6 +38,7 @@ import {
   TinyScoreSetting,
   TinyVectorEngraveSetting,
 } from './materialTiny';
+import { clamp } from '../lib/glowforgeUnits';
 
 /**
  *
@@ -269,8 +270,8 @@ function createSettings(material: PluginMaterial, tubeType: GFMaterialTubeType):
  */
 function createCutSettings(cut: PluginCutSetting): GFCutSetting {
   return {
-    power: cut.power,
-    speed: cut.speed,
+    power: clamp(cut.power, 0, 100),
+    speed: clamp(cut.speed, 100, 4000),
     passes: cut.passes,
     focal_offset: cut.focalOffset,
   };
@@ -281,8 +282,8 @@ function createCutSettings(cut: PluginCutSetting): GFCutSetting {
  */
 function createScoreSettings(score: PluginScoreSetting): GFScoreSetting {
   return {
-    power: score.power,
-    speed: score.speed,
+    power: clamp(score.power, 0, 100),
+    speed: clamp(score.speed, 100, 4000),
     passes: score.passes,
     focal_offset: score.focalOffset,
     uses: null,
@@ -299,8 +300,8 @@ function createScoreSettings(score: PluginScoreSetting): GFScoreSetting {
  */
 function createVectorEngraveSettings(vectorEngrave: PluginVectorEngraveSetting): GFEngraveSetting {
   return {
-    power: vectorEngrave.power,
-    speed: vectorEngrave.speed,
+    power: clamp(vectorEngrave.power, 0, 100),
+    speed: clamp(vectorEngrave.speed, 100, 8500),
     passes: vectorEngrave.passes,
     focal_offset: vectorEngrave.focalOffset,
     scangap: vectorEngrave.scanGap,
@@ -318,8 +319,8 @@ function createVectorEngraveSettings(vectorEngrave: PluginVectorEngraveSetting):
  */
 function createBitmapEngraveSettings(bitmapEngrave: PluginBitmapEngraveSetting): GFBitmapEngraveSetting {
   return {
-    power: bitmapEngrave.power,
-    speed: bitmapEngrave.speed,
+    power: clamp(bitmapEngrave.power, 0, 100),
+    speed: clamp(bitmapEngrave.speed, 100, 8500),
     passes: bitmapEngrave.passes,
     focal_offset: bitmapEngrave.focalOffset,
     scangap: bitmapEngrave.scanGap,
