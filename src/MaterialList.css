@@ -55,11 +55,14 @@
   align-items: center;
   flex-grow: 1;
 
+  max-width: 159px;
+  line-height: 18px;
+}
+
+.materialList__itemName__ellipsis {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-
-  line-height: 18px;
 }
 
 .materialList__itemMenu {
