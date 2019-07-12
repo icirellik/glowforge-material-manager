@@ -36,6 +36,7 @@ import { AppHeader } from './AppHeader';
 import MaterialButtonBar from './MaterialButtonBar';
 import MaterialHome from './MaterialHome';
 
+// General Material Management Methoods
 export type AddMaterial = () => Promise<void>;
 export type CopyMaterial = (title: string) => Promise<void>;
 export type EditMaterial = (title: string) => Promise<void>;
@@ -61,9 +62,25 @@ interface IMaterialEditor {
   updateSetting: UpdateSetting;
 }
 
+// Messaging Methods
+export type ClearMessage = () => void;
+export type DisplayMessage = (message: IMessage) => void;
+
+interface IMessage {
+  backgroundColor?: string;
+  color?: string;
+  message: string;
+}
+
+interface IMessenger {
+  clearMessage: ClearMessage;
+  displayMessage: DisplayMessage;
+}
+
 export type ForceSyncronize = () => Promise<void>;
 
-export type EditorMode =  'DISPLAY' | 'ADD' | 'EDIT' | 'SELECTED';
+// Editor Modes
+export type EditorMode =  'DISPLAY' | 'ADD' | 'EDIT' | 'DUPLICATE' | 'SELECTED';
 export type EditorModeChange = (mode: EditorMode, material: TempMaterial) => Promise<void>;
 export type ModeAdd = (material?: TempMaterial) => Promise<void>;
 export type ModeDefault = () => Promise<void>;
@@ -78,25 +95,21 @@ interface IEditorMode {
   setEditorModeSelect: ModeSelect;
 }
 
+// App Props + State
 interface AppProps {
   connected: boolean;
   platform: string;
-}
-
-interface AppMessage {
-  backgroundColor?: string;
-  color?: string;
-  message: string;
 }
 
 interface AppState {
   action: EditorMode;
   cloudStorageBytesUsed: number;
   materials: GFMaterial[];
-  message: AppMessage | null;
+  message: IMessage | null;
+  previousTitle: string | null;
   rawMaterials: PluginMaterial[];
-  synchronized: boolean;
   rawSvg: string | null;
+  synchronized: boolean;
   tempMaterial: TempMaterial;
 }
 
@@ -112,7 +125,23 @@ function sendMessage(message: object) {
   });
 }
 
-class App extends React.Component<AppProps, AppState> implements IEditorMode, IMaterialEditor {
+function defaultMessage(message: string): IMessage {
+  return {
+    backgroundColor: '#BCD3F4',
+    color: '#CC3A4B',
+    message,
+  };
+}
+
+function errorMessage(message: string): IMessage {
+  return {
+    backgroundColor: '#DE6060',
+    color: '#060606',
+    message,
+  };
+}
+
+class App extends React.Component<AppProps, AppState> implements IEditorMode, IMaterialEditor, IMessenger {
   constructor(props: AppProps) {
     super(props);
     this.state = {
@@ -123,6 +152,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         ...createEmptyMaterial(),
       },
       materials: [],
+      previousTitle: null,
       rawMaterials: [],
       rawSvg: null,
       synchronized: true,
@@ -337,7 +367,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }, true);
 
     if (!isValid) {
-      this.displayMessage('A material property is invalid.', '#060606', '#DE6060');
+      this.displayMessage(errorMessage('A material property is invalid.'));
       return;
     }
 
@@ -356,7 +386,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
 
     if (duplicate) {
-      this.displayMessage('A material with the same name already exists.', '#060606', '#DE6060');
+      this.displayMessage(errorMessage('A material with the same name already exists.'));
       return;
     }
 
@@ -371,19 +401,14 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     await sendCloudMaterial(this.state.tempMaterial);
 
     // Update the application state.
-    this.setState((state) => {
-      return {
-        action: 'SELECTED',
-        tempMaterial: {
-          ...state.tempMaterial!,
-          propValidation: {},
-        },
-        materials: newMaterials,
-        message: null,
-        rawMaterials: newRawMaterials,
-        synchronized: false,
-      };
+    this.setState({
+      materials: newMaterials,
+      message: null,
+      rawMaterials: newRawMaterials,
+      synchronized: false,
     });
+
+    this.setEditorModeSelect(title);
   }
 
   /**
@@ -399,7 +424,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // There should be at least one since we are cloning.
     if (duplicates.length < 1) {
-      this.displayMessage('Could not clone the source material was removed.');
+      this.displayMessage(defaultMessage('Could not clone the source material was removed.'));
       return;
     }
 
@@ -410,14 +435,13 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // Update the application state.
     if (material) {
-      this.setState({
-        action: 'ADD',
-        tempMaterial: {
-          ...material,
-          name: `${material.name} (${duplicates.length})`,
-          propValidation: {},
-        },
+      this.setEditorModeDuplicate({
+        ...material,
+        name: `${material.name} (${duplicates.length})`,
+        propValidation: {},
       });
+    } else {
+      // TOOD: Error message copy failed;
     }
   }
 
@@ -434,7 +458,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }, true);
 
     if (!isValid) {
-      this.displayMessage('A material property is invalid.', '#060606', '#DE6060');
+      this.displayMessage(errorMessage('A material property is invalid.'));
       return;
     }
 
@@ -443,7 +467,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
 
     if (duplicates.length !== 1) {
-      this.displayMessage('Could not update. A material with the same name already exists.', '#060606', '#DE6060');
+      this.displayMessage(errorMessage('Could not update. A material with the same name already exists.'));
       return;
     }
 
@@ -474,19 +498,14 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     await sendCloudMaterial(this.state.tempMaterial);
 
     // Update the application state.
-    this.setState((state) => {
-      return {
-        action: 'SELECTED',
-        tempMaterial: {
-          ...state.tempMaterial!,
-          propValidation: {},
-        },
-        materials: newMaterials,
-        message: null,
-        rawMaterials: newRawMaterials,
-        synchronized: false,
-      };
+    this.setState({
+      materials: newMaterials,
+      message: null,
+      rawMaterials: newRawMaterials,
+      synchronized: false,
     });
+
+    this.setEditorModeSelect(title);
   }
 
   async removeMaterial(title: string) {
@@ -507,12 +526,12 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // Update the application state.
     this.setState({
-      action: 'DISPLAY',
-      tempMaterial: { ...createEmptyMaterial() },
       materials,
       rawMaterials,
       synchronized: false,
     });
+
+    this.setEditorModeDefault();
 
     // Reload the tab to ensure everything is up to date.
     // TOOD: Do we need this.
@@ -545,13 +564,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   // Messaging
   //
 
-  displayMessage(message: string, color: string = '#CC3A4B', background: string = '#BCD3F4') {
+  displayMessage(message: IMessage) {
     this.setState({
-      message: {
-        message,
-        color,
-        backgroundColor: background,
-      },
+      message,
     });
   }
 
@@ -572,14 +587,16 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * @param material
    */
   async changeEditorMode(mode: EditorMode, material: TempMaterial | null = null) {
+    const previousTitle = `${this.state.tempMaterial.thickName} ${this.state.tempMaterial.name}`;
+
     await clearTempMaterial();
 
     this.setState({
       action: mode,
+      previousTitle,
       tempMaterial: {
         ...(material === null) ? createEmptyMaterial() : material,
       },
-      message: null,
     });
   }
 
@@ -592,11 +609,20 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   }
 
   /**
-   * Cancels the current input mode, resetting the materiall state and clearing
+   * Cancels the current input mode, resetting the material state and clearing
    * any system messages.
    */
   async setEditorModeDefault() {
     await this.changeEditorMode('DISPLAY');
+  }
+
+  /**
+   * Chenges the editor mode to duplication.
+   *
+   * @param material The duplicate material.
+   */
+  async setEditorModeDuplicate(material: TempMaterial) {
+    await this.changeEditorMode('DUPLICATE', material);
   }
 
   /**
@@ -625,8 +651,15 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     const rawMaterial = this.state.rawMaterials.find(rawMaterial => {
       return `${rawMaterial.thickName} ${rawMaterial.name}` === title;
     });
+
+    if (!rawMaterial) {
+      this.displayMessage(defaultMessage('The selected material could not be found.'));
+      await this.setEditorModeDefault();
+      return;
+    }
+
     await this.changeEditorMode('SELECTED', {
-      ...rawMaterial!,
+      ...rawMaterial,
       propValidation: {},
     });
   }
@@ -664,6 +697,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         );
         break;
       case 'ADD':
+      case 'DUPLICATE':
       case 'EDIT':
         displayPanel = (
           <MaterialEditor
@@ -703,6 +737,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
                 copyMaterial={this.copyMaterial}
                 editMaterial={this.editMaterial}
                 editorMode={this.state.action}
+                previousTitle={this.state.previousTitle}
                 setEditorModeAdd={this.setEditorModeAdd}
                 setEditorModeDefault={this.setEditorModeDefault}
                 setEditorModeEdit={this.setEditorModeEdit}

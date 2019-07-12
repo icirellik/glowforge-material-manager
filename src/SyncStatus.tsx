@@ -3,7 +3,7 @@ import IconStatus from './icons/IconStatus';
 import { ForceSyncronize } from './App';
 import './SyncStatus.css';
 
-export interface SyncStatusProps {
+interface SyncStatusProps {
   connected: boolean;
   forceSync: ForceSyncronize;
   synchronized: boolean;
