@@ -16,12 +16,15 @@ interface MaterialButtonBarProps {
   addMaterial: AddMaterial;
   copyMaterial: CopyMaterial;
   editMaterial: EditMaterial;
-  editorMode: EditorMode;
+  setMaterial: SetMaterial;
+
   setEditorModeAdd: ModeAdd;
   setEditorModeDefault: ModeDefault;
   setEditorModeEdit: ModeEdit;
   setEditorModeSelect: ModeSelect;
-  setMaterial: SetMaterial;
+
+  editorMode: EditorMode;
+  previousTitle: string | null;
   title: string;
 }
 
@@ -34,14 +37,30 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
           <button onClick={() => { props.setEditorModeDefault(); }}>Cancel</button>
         </div>
       );
-    case 'EDIT':
-      if (!props.editMaterial || !props.title) {
-        return null;
-      }
+    case 'DUPLICATE':
       return (
         <div className="materialButtons">
-          <button onClick={() => { props.editMaterial!(props.title!) }}>Update</button>
-          <button onClick={() => { props.setEditorModeSelect(props.title); }}>Cancel</button>
+          <button onClick={() => { props.addMaterial(); }}>Create</button>
+          <button onClick={() => {
+            if (!props.previousTitle) {
+              props.setEditorModeDefault();
+            } else {
+              props.setEditorModeSelect(props.previousTitle);
+            }
+          }}>Cancel</button>
+        </div>
+      );
+    case 'EDIT':
+      return (
+        <div className="materialButtons">
+          <button onClick={() => { props.editMaterial(props.title); }}>Update</button>
+          <button onClick={() => {
+            if (!props.previousTitle) {
+              props.setEditorModeDefault();
+            } else {
+              props.setEditorModeSelect(props.previousTitle);
+            }
+          }}>Cancel</button>
         </div>
       );
     case 'SELECTED':
