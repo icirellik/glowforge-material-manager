@@ -10,9 +10,11 @@ import {
 } from './material/material';
 import './index.css';
 import {default as migration3 } from './migrations/3-update-ids';
+import {default as migration4 } from './migrations/4-add-sync-property';
 
 async function applyMigrations() {
   await migration3();
+  await migration4();
 }
 
 (async () => {

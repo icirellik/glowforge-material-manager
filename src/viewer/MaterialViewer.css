@@ -12,10 +12,16 @@
 }
 
 .viewer__name {
+  display: flex;
   font-weight: 600;
   margin: 4px 48px 0 0;
   padding-bottom: 4px;
   font-size: 24px;
+}
+
+.viewer__name span {
+  display: flex;
+  flex-grow: 1;
 }
 
 .viewer__headerRow {
@@ -99,4 +105,16 @@
 .viewer__destructiveActions button:not([disabled]):hover .materialButtons__delete__icon {
   background-color: rgb(201, 0, 0);
   color: white;
+}
+
+.viewer__syncOn {
+  color: #2541B2;
+  height: 30px !important;
+  width: 30px !important;
+}
+
+.viewer__syncOff {
+  color: black;
+  height: 30px !important;
+  width: 30px !important;
 }

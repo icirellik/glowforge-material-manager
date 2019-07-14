@@ -83,7 +83,7 @@
 }
 
 .materialList__iconHover:hover {
-  color: blue;
+  color: #2541B2;
 }
 
 .materialList__create,
@@ -92,6 +92,6 @@
 }
 
 .materialList__create span {
-  color: blue;
+  color: #2541B2;
   cursor: pointer;
 }
