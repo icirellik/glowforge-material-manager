@@ -20,6 +20,7 @@ import {
   storeGlowforgeMaterials,
   storeRawMaterials,
   getUISettings,
+  storeTempMaterial,
 } from './lib/chromeWrappers';
 import {
   TempMaterial,
@@ -127,7 +128,7 @@ function sendMessage(message: object) {
 
 function defaultMessage(message: string): IMessage {
   return {
-    backgroundColor: '#BCD3F4',
+    backgroundColor: '#2541B2',
     color: '#CC3A4B',
     message,
   };
@@ -182,7 +183,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     this.clearMessage = this.clearMessage.bind(this);
 
     // Synchronization
-    this.forceSyncronize = this.forceSyncronize.bind(this)
+    this.forceSyncronize = this.forceSyncronize.bind(this);
+    this.toggleCloundSync = this.toggleCloundSync.bind(this);
 
     // Validaton
     this.validationHandler = this.validationHandler.bind(this);
@@ -554,6 +556,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
   }
 
+  // Cloud Sync
+  // =================================================================
+
   async forceSyncronize() {
     await forceSync();
     this.setState({
@@ -561,8 +566,56 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
   }
 
+  async toggleCloundSync(material: TempMaterial) {
+    const title = getMaterialTitle(material);
+
+    const updatedMaterial = {
+      ...material,
+      sync: !material.sync,
+    };
+
+    if (material.sync) {
+      // Update the current material.
+      const pluginMaterials = this.state.rawMaterials.filter(material => {
+        return getMaterialTitle(material) !== title;
+      });
+      pluginMaterials.push(updatedMaterial);
+
+      await storeRawMaterials(pluginMaterials);
+      await storeTempMaterial(updatedMaterial);
+      await removeCloudMaterial(updatedMaterial);
+
+      // Update the application state.
+      this.setState({
+        message: null,
+        rawMaterials: pluginMaterials,
+        tempMaterial: updatedMaterial,
+        synchronized: false,
+      });
+
+    } else {
+      // Update the current material.
+      const pluginMaterials = this.state.rawMaterials.filter(material => {
+        return getMaterialTitle(material) !== title;
+      });
+      pluginMaterials.push(updatedMaterial);
+
+      await storeRawMaterials(pluginMaterials);
+      await storeTempMaterial(updatedMaterial);
+      await sendCloudMaterial(updatedMaterial);
+
+      // Update the application state.
+      this.setState({
+        message: null,
+        rawMaterials: pluginMaterials,
+        tempMaterial: updatedMaterial,
+        synchronized: false,
+      });
+    }
+  }
+
   // Messaging
-  //
+  // =================================================================
 
   displayMessage(message: IMessage) {
     this.setState({
@@ -693,6 +746,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
           <MaterialViewer
             material={this.state.tempMaterial}
             removeMaterial={this.removeMaterial}
+            toggleCloundSync={this.toggleCloundSync}
           />
         );
         break;
@@ -763,3 +817,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 }
 
 export default App;
+
+function getMaterialTitle(material: PluginMaterial) {
+  return `${material.thickName} ${material.name}`;
+}

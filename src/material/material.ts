@@ -87,6 +87,10 @@ export async function removeRawMaterial(title: string) {
  * @param material The material to syncronize with the cloud.
  */
 export async function sendCloudMaterial(material: PluginMaterial) {
+  if (!material.sync) {
+    return;
+  }
+
   const hash = await hashTitle(material);
   const compressed = compress(toTinyMaterial(material));
 
@@ -369,6 +373,7 @@ export function toFullMaterial(tinyMaterial: TinyMaterial): PluginMaterial {
     scores: tinyMaterial.s.map(score => toFullScore(score)),
     vectors: tinyMaterial.v.map(vector => toFullVectorEngrave(vector)),
     bitmaps: tinyMaterial.b.map(bitmap => toFullBitmapEngrave(bitmap)),
+    sync: true,
   };
 }
 

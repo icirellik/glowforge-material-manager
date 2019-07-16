@@ -7,6 +7,7 @@ export type PluginMaterial = {
   cut: PluginCutSetting;
   scores: PluginScoreSetting[];
   vectors: PluginVectorEngraveSetting[];
+  sync: boolean;
 };
 
 // Glowforge Redux Material Shape

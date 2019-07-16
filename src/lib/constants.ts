@@ -26,6 +26,7 @@ export function createEmptyMaterial(): TempMaterial {
     vectors: [],
     bitmaps: [],
     propValidation: {},
+    sync: true,
   };
 }
 
