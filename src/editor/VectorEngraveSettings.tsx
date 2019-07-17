@@ -26,10 +26,11 @@ export default function VectorEngraveSettings(props: VectorEngraveSettingsProps)
         <p>Vector Engrave Settings</p>
         <div>
           <IconPlus
-            click={props.addVectorEngrave}
             className="icon-button-add"
+            click={props.addVectorEngrave}
             fill="#001f23"
             height="18px"
+            title="Add Vector Engrave"
             width="18px"
           />
         </div>

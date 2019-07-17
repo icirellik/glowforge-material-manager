@@ -41,9 +41,15 @@ export default function ScoreSetting(props: ScoreSettingProps) {
         <p>
           {`Score ${props.index + 1}`}
         </p>
-        <IconMinus click={() => {
-          props.removeScore(props.index);
-        }} className="icon-button-add" height="16px" width="16px" />
+        <IconMinus
+          className="icon-button-add"
+          click={() => {
+            props.removeScore(props.index);
+          }}
+          height="16px"
+          title={`Remove Score ${props.index + 1}`}
+          width="16px"
+        />
       </div>
       <InputText
         label="Name *"

@@ -26,10 +26,11 @@ export default function BitmapEngraveSettings(props: BitmapEngraveSettingsProps)
         <p>Bitmap Engrave Settings</p>
         <div>
           <IconPlus
-            click={props.addBitmapEngrave}
             className="icon-button-add"
+            click={props.addBitmapEngrave}
             fill="#001f23"
             height="18px"
+            title="Add Bitmap Engrave"
             width="18px"
           />
         </div>

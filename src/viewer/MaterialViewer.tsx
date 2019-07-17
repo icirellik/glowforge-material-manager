@@ -70,7 +70,7 @@ export default function MaterialViewer(props: MaterialViewerProps) {
           className="materialButtons__delete__icon"
           click={() => props.removeMaterial(title)}
           height="18px"
-          text="Delete"
+          text="Delete Permanently"
           width="18px"
         />
       </div>
