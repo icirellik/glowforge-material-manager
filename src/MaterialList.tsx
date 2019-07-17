@@ -170,6 +170,7 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
             className="materialList__search__clear"
             click={this.clearFilter}
             height="18px"
+            title="Clear Search"
             width="18px"
           />
         </div>

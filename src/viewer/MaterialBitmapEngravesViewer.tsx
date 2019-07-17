@@ -43,7 +43,7 @@ export default function MaterialBitmapEngravesViewer(props: MaterialBitmapEngrav
                 <p className="viewer__value">{bitmap.passes}</p>
               </div>
               <div className="viewer__row">
-                <p className="viewer__label">Focal Offset</p>
+                <p className="viewer__label">Focal Offset (mm)</p>
                 <p className="viewer__value">{bitmap.focalOffset}</p>
               </div>
               <div className="viewer__row" style={{marginBottom: '10px'}}>

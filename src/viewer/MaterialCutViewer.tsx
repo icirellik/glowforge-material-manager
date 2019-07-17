@@ -30,7 +30,7 @@ export default function MaterialCutViewer(props: MaterialCutViewerProps) {
         <p className="viewer__value">{props.cut.passes}</p>
       </div>
       <div className="viewer__row">
-        <p className="viewer__label">Focal Offset</p>
+        <p className="viewer__label">Focal Offset (mm)</p>
         <p className="viewer__value">{props.cut.focalOffset}</p>
       </div>
     </>

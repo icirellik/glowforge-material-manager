@@ -42,7 +42,7 @@ export default function MaterialScoresViewer(props: MaterialScoresViewerProps) {
                 <p className="viewer__value">{score.passes}</p>
               </div>
               <div className="viewer__row" style={{marginBottom: '10px'}}>
-                <p className="viewer__label">Focal Offset</p>
+                <p className="viewer__label">Focal Offset (mm)</p>
                 <p className="viewer__value">{score.focalOffset}</p>
               </div>
               {(props.scores.length > 1 && index !== props.scores.length - 1) ? <hr /> : null}

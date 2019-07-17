@@ -26,10 +26,11 @@ export default function ScoreSettings(props: ScoreSettingsProps) {
         <p>Score Settings</p>
         <div>
           <IconPlus
-            click={props.addScore}
             className="icon-button-add"
+            click={props.addScore}
             fill="#001f23"
             height="18px"
+            title="Add Score"
             width="18px"
           />
         </div>
