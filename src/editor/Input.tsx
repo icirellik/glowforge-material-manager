@@ -1,9 +1,11 @@
 import React from 'react';
 import uuid from 'uuid/v4';
 import { asInteger } from '../lib/utils';
+import IconHelp from '../icons/IconHelp';
 
 interface InputProps {
   isDisabled?: boolean;
+  help?: string;
   label: string;
   value: any;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -165,9 +167,14 @@ export class InputNumber extends React.Component<InputNumberProps, InputState> {
 
   render() {
     const props = this.props;
+
+    let help: React.ReactElement | null = null;
+    if (props.help) {
+      help = (<IconHelp className="form-field__help" height="16" width="16" title={props.help} />);
+    }
     return (
       <div className="form-field">
-        <label>{props.label}</label>
+        <label>{props.label}{help}</label>
         <input
           className={(!this.state.valid && !this.state.firstRender) ? "invalid" : undefined}
           disabled={props.isDisabled}

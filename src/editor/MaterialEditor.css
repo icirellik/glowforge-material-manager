@@ -46,8 +46,9 @@
 }
 
 .form-field label {
-  display: block;
-  margin-bottom: 8px;
+  display: flex;
+  margin-bottom: 4px;
+  align-items: center;
 
   font-size: 10px;
   color: #404246;
@@ -78,7 +79,7 @@
   flex-grow: 1;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 
   font-size: 10px;
   color: #404246;
@@ -91,4 +92,8 @@
   height: 12px;
   width: 12px;
   margin-bottom: 8px;
+}
+
+.form-field__help {
+  margin-left: 4px;
 }

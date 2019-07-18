@@ -3,7 +3,7 @@ import {
 } from './material';
 import {
   createEmptyMaterial, createEmptyScore, createEmptyBitmapEngrave, createEmptyVectorEngrave,
-} from '../lib/constants'
+} from '../lib/materialHelpers'
 
 describe('material', () => {
   const dataCallback = jest.fn();

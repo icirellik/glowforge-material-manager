@@ -106,6 +106,20 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
         value={props.vector.focalOffset}
       />
       <InputNumber
+        help={"Scap Gap mapping to Glowforge UI \n " +
+          "1 = 1355 \n " +
+          "2 = 675 \n " +
+          "3 = 450 \n " +
+          "4 = 340 \n " +
+          "5 = 270 \n " +
+          "6 = 225 \n " +
+          "7 = 195 \n " +
+          "8 = 170 \n " +
+          "11 = 125 \n " +
+          "18 = 75 \n " +
+          "39 = 35 \n " +
+          "136 = 10"
+        }
         label={`Scan Gap (LPI ${toDisplayLinesPerInch(props.vector.scanGap)}) *`}
         onBlur={props.saveTemporaryState}
         onChange={(event) => {
