@@ -5,6 +5,7 @@
     "node": true
   },
   "globals": {
-    "chrome": true
+    "chrome": true,
+    "jsQR": true
   }
 }

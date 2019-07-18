@@ -65,7 +65,7 @@ function addMaterials(materials) {
 /**
  * Leverage the redux actions to inject custom materials.
  */
-function handleMaterialCheck(response) {
+function handleMessages(response) {
   if (!response || !response.messages) {
     return;
   }
@@ -76,33 +76,25 @@ function handleMaterialCheck(response) {
       return;
     }
 
-    if (message.type === 'setMaterials') {
-      log('updating materials');
+    if (message.type === 'addMaterials') {
+      log('adding custom materials');
       addMaterials(message.materials);
-    } else if (message.type === 'setMaterial') {
-      log('updating material');
+    } else if (message.type === 'addMaterial') {
+      log('adding custom material');
       addMaterial(message.material);
     } else if (message.type === 'clone') {
-      log('clonding design');
+      log('cloning design');
+      // TODO: Clone design
     } else if (message.type === 'toggleUnits') {
       log('toggle units');
       setUnits(message.unitType);
     } else if (message.type === 'selectMaterial') {
-      log('select material');
+      log('setting the selected material');
       setMaterial(message.materialId);
     } else {
       log('unknown message');
     }
   }
-
-  // Clone Design
-}
-
-/**
- * Additional tasks to execute after the first refresh.
- */
-function handleForceRefresh() {
-  log('force refresh response');
 }
 
 /**
@@ -135,11 +127,11 @@ function sendBackgroundMessage(message, callback) {
  * Request the materials created by the user in the extension.
  */
 setInterval(() => {
+  log('message - checkMessages');
   sendBackgroundMessage({
-    type: 'materialCheck',
-  },
-  (response) => {
-    handleMaterialCheck(response);
+    type: 'checkMessages',
+  }, (response) => {
+    handleMessages(response);
     checkLastRuntimeError();
   });
 }, 750);
@@ -150,34 +142,44 @@ setInterval(() => {
  * Sets shouldUpdate to true.
  */
 setTimeout(() => {
+  log('message - forceRefresh');
   sendBackgroundMessage({
     type: 'forceRefresh',
-  },
-  (response) => {
-    handleForceRefresh(response);
+  }, () => {
+    log('force refresh response');
     checkLastRuntimeError();
   });
 }, 0);
 
 /**
  * Checks if the lid image has changed and if so, informs the app.
+ *
+ * Always check when the page loads, then only check when the image bed is
+ * invalidated.
  */
 let prevPreloadedLidImage = null;
-function checkLidImage(preloadedLidImage) {
+let lidImageFirstLoad = true;
+function checkLidImage(preloadedLidImage, isInvalidated) {
+  if (!lidImageFirstLoad && !isInvalidated) {
+    prevPreloadedLidImage = null;
+    return;
+  }
   if (!preloadedLidImage) {
     prevPreloadedLidImage = null;
     return;
   }
 
   if (preloadedLidImage !== prevPreloadedLidImage) {
-    // do something new.
+    log('message - lidImage');
     sendBackgroundMessage({
       type: 'lidImage',
       image: preloadedLidImage,
     }, () => {
       log('lidImage - success');
+      checkLastRuntimeError();
     });
     prevPreloadedLidImage = preloadedLidImage;
+    lidImageFirstLoad = false;
   }
 }
 
@@ -196,6 +198,7 @@ function checkLoadedDesignIds(loadedDesignIds) {
     for (let i = 0; i < loadedDesignIds.length; i += 1) {
       if (loadedDesignIds[i] !== prevLoadedDesignIds[i]) {
         diff = true;
+        break;
       }
     }
   } else {
@@ -203,12 +206,13 @@ function checkLoadedDesignIds(loadedDesignIds) {
   }
 
   if (diff) {
-    // do something new.
+    log('message - loadedDesignIds');
     sendBackgroundMessage({
       type: 'loadedDesignIds',
       designIds: loadedDesignIds,
     }, () => {
       log('loadedDesignIds - success');
+      checkLastRuntimeError();
     });
     prevLoadedDesignIds = Array.from(loadedDesignIds);
   }
@@ -220,23 +224,17 @@ function checkLoadedDesignIds(loadedDesignIds) {
 window.store.subscribe(() => {
   const state = window.store.getState().toJSON();
 
+  // If there is at least on machine attempt to detect a QR code in the bed.s
   if (Object.keys(state.machines.machineMap).length > 0) {
-    const { preloadedLidImage } = state.machines.machineMap[Object.keys(state.machines.machineMap)];
-    checkLidImage(preloadedLidImage);
+    const { preloadedLidImage, bedImage } = state.machines.machineMap[Object.keys(state.machines.machineMap)];
+    checkLidImage(preloadedLidImage, bedImage.isInvalidated);
   }
 
+  // Track the different loaded designs so that we can download the trace.
   if (state.workspace.present) {
     const present = state.workspace.present.toJSON();
     if (present.loadedDesignIds.length > 0) {
       checkLoadedDesignIds(present.loadedDesignIds);
     }
   }
-
-  // Send image to plugin.
-
-  // Check for qr code
-
-  // Send set material command back.
-
-  // console.log('State changed.');
 });

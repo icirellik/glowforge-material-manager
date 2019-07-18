@@ -278,3 +278,258 @@
     tubeType: 'pro'
   }
 }
+
+
+Make adding multiple engrave/score settings easier
+Make + and - icons have proper hover titles.
+
+
+
+
+{
+  type: 'RESET_PAGER',
+  key: 'designs'
+}
+
+{
+  type: 'GET_PAGE',
+  id: 'app-designs-list'
+}
+
+{
+  type: 'CHANGE_VISIBLE_DESIGN_COUNT',
+  total: 28
+}
+
+{
+  type: 'ADD_PAGE',
+  key: 'designs',
+  cursor: 'eyJ1cGRhdGVkX2F0IjoiMjAxOS0wNS0yNCAwNzo0MjozNSAtMDcwMCIsImlkIjozOTA2NzQxfQ==',
+  data: [
+    {
+      created_at: '2019-07-12T12:24:36.000-07:00',
+      updated_at: '2019-07-12T12:24:36.000-07:00',
+      id: '8Pyl4Qn1',
+      display_name: 'jenga blocks',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/8Pyl4Qn1/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/8Pyl4Qn1/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-06-12T10:44:22.000-07:00',
+      updated_at: '2019-06-12T10:44:22.000-07:00',
+      id: 'MJ5yk3K1',
+      display_name: 'trace',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/MJ5yk3K1/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/MJ5yk3K1/svgf/svgf_file.gzip.svg',
+      source: 'trace'
+    },
+    {
+      created_at: '2019-05-24T11:41:37.000-07:00',
+      updated_at: '2019-05-24T11:41:37.000-07:00',
+      id: 'aKPPdgL8',
+      display_name: 'box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/aKPPdgL8/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/aKPPdgL8/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T11:41:29.000-07:00',
+      updated_at: '2019-05-24T11:41:29.000-07:00',
+      id: 'MJ55WZK1',
+      display_name: 'box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/MJ55WZK1/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/MJ55WZK1/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T11:38:56.000-07:00',
+      updated_at: '2019-05-24T11:38:56.000-07:00',
+      id: 'adXXEeka',
+      display_name: 'box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/adXXEeka/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/adXXEeka/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T11:32:35.000-07:00',
+      updated_at: '2019-05-24T11:32:35.000-07:00',
+      id: '8kKKPmr8',
+      display_name: 'box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/8kKKPmr8/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/8kKKPmr8/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:38.000-07:00',
+      updated_at: '2019-05-24T07:42:38.000-07:00',
+      id: '1qJJ74WM',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/1qJJ74WM/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/1qJJ74WM/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:38.000-07:00',
+      updated_at: '2019-05-24T07:42:38.000-07:00',
+      id: '8oqqb0ZM',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/8oqqb0ZM/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/8oqqb0ZM/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:38.000-07:00',
+      updated_at: '2019-05-24T07:42:38.000-07:00',
+      id: '1GddVJJM',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/1GddVJJM/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/1GddVJJM/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:38.000-07:00',
+      updated_at: '2019-05-24T07:42:38.000-07:00',
+      id: 'aX33PknM',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/aX33PknM/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/aX33PknM/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:38.000-07:00',
+      updated_at: '2019-05-24T07:42:38.000-07:00',
+      id: 'MZmm3QO1',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/MZmm3QO1/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/MZmm3QO1/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:37.000-07:00',
+      updated_at: '2019-05-24T07:42:37.000-07:00',
+      id: '1jJJB2x1',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/1jJJB2x1/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/1jJJB2x1/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:37.000-07:00',
+      updated_at: '2019-05-24T07:42:37.000-07:00',
+      id: 'Mr77wY2a',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/Mr77wY2a/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/Mr77wY2a/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:37.000-07:00',
+      updated_at: '2019-05-24T07:42:37.000-07:00',
+      id: '8ODDVnz1',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/8ODDVnz1/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/8ODDVnz1/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:37.000-07:00',
+      updated_at: '2019-05-24T07:42:37.000-07:00',
+      id: '1W22xNx8',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/1W22xNx8/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/1W22xNx8/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:37.000-07:00',
+      updated_at: '2019-05-24T07:42:37.000-07:00',
+      id: 'adXXZq0a',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/adXXZq0a/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/adXXZq0a/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:36.000-07:00',
+      updated_at: '2019-05-24T07:42:36.000-07:00',
+      id: 'MmWW4Am8',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/MmWW4Am8/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/MmWW4Am8/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:36.000-07:00',
+      updated_at: '2019-05-24T07:42:36.000-07:00',
+      id: 'aQ22VxB8',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/aQ22VxB8/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/aQ22VxB8/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:36.000-07:00',
+      updated_at: '2019-05-24T07:42:36.000-07:00',
+      id: '1633VjWM',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/1633VjWM/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/1633VjWM/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:36.000-07:00',
+      updated_at: '2019-05-24T07:42:36.000-07:00',
+      id: '8PyyV521',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/8PyyV521/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/8PyyV521/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:36.000-07:00',
+      updated_at: '2019-05-24T07:42:36.000-07:00',
+      id: 'avppyw21',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/avppyw21/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/avppyw21/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:36.000-07:00',
+      updated_at: '2019-05-24T07:42:36.000-07:00',
+      id: '1355VPba',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/1355VPba/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/1355VPba/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:35.000-07:00',
+      updated_at: '2019-05-24T07:42:35.000-07:00',
+      id: 'MN55VDb1',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/MN55VDb1/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/MN55VDb1/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:35.000-07:00',
+      updated_at: '2019-05-24T07:42:35.000-07:00',
+      id: '8kKK0el8',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/8kKK0el8/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/8kKK0el8/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    },
+    {
+      created_at: '2019-05-24T07:42:35.000-07:00',
+      updated_at: '2019-05-24T07:42:35.000-07:00',
+      id: '8VxxQlGM',
+      display_name: 'Copy of Copy of box',
+      thumbnail_url: 'https://storage.googleapis.com/glowforge-files/designs/8VxxQlGM/thumbnail/big/svgf_file_thumbnail.png',
+      svgf_file_url: 'https://storage.googleapis.com/glowforge-files/designs/8VxxQlGM/svgf/svgf_file.gzip.svg',
+      source: 'api_upload'
+    }
+  ]
+}

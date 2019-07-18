@@ -1,8 +1,9 @@
 /**
  * Only log messages in development mode.
  */
+const PROD_MODE = ('update_url' in chrome.runtime.getManifest());
 function log(message) {
-  if (!('update_url' in chrome.runtime.getManifest())) {
+  if (!PROD_MODE) {
     console.log(message);
   }
 }
@@ -10,7 +11,7 @@ function log(message) {
 /**
  * Helper function to store data in local storage.
  */
-function store(data, cb) {
+function store(data, cb = null) {
   chrome.storage.local.set(data, cb);
 }
 
@@ -36,7 +37,7 @@ function storeUISettings(settings) {
       const ui = {
         ...results.ui,
         ...settings,
-      }
+      };
       store({
         ui,
       }, () => {
@@ -56,7 +57,7 @@ function asFloat(number) {
 /**
  * Used to convert old floats stored as a string to real floats.
  *
- * Deprecated.
+ * TODO: Deprecated can be removed one 0.4.x is released.
  */
 function verifyTypes(material) {
   return Object.assign({}, material, {
@@ -64,33 +65,81 @@ function verifyTypes(material) {
   });
 }
 
+
+// QR Code
+// ===================================================================
+const QR_IMAGE_SCALES = [1, 0.75, 0.5, 0.25, 0.1];
+
+/**
+ * Takes an image url and converts it to an image data at a 0.25 scale.
+ *
+ * @param imageUrl The image url to load.
+ */
+async function urlToImageData(imageUrl, scale) {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    const image = new Image();
+
+    image.addEventListener('load', () => {
+      canvas.width = image.naturalWidth * scale;
+      canvas.height = image.naturalHeight * scale;
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      resolve(context.getImageData(0, 0, canvas.width, canvas.height));
+    }, false);
+    image.src = imageUrl;
+  });
+}
+
+/**
+ * Try to read a QR code from an image.
+ *
+ * @param imageUrl  The image url to scan.
+ */
+async function readQrCode(imageUrl) {
+  return new Promise(async (resolve) => {
+    // Worst QR Library ever.
+    const imageDataPromises = QR_IMAGE_SCALES.map(scale => Promise.resolve()
+      .then(() => urlToImageData(imageUrl, scale))
+      .then(imageData => jsQR(imageData.data, imageData.width, imageData.height)));
+
+    const resolvedCodes = await Promise.all(imageDataPromises);
+    log(resolvedCodes);
+
+    const code = resolvedCodes.reduce((prev, cur) => ((prev !== null) ? prev : cur), null);
+    log(code);
+    if (code) {
+      resolve(code.data);
+    }
+  });
+}
+
+// Message Handlers
+// ===================================================================
+
 /**
  * Gets the materials from local storage and sends them the to UI for
  * installation.
  */
-function refreshMaterials(relayMessages, callback) {
-  chrome.storage.local.get(null, (result) => {
-    const response = {
-      messages: relayMessages,
-    };
+function refreshMaterials() {
+  load(result => {
     if (result && result.materials && result.shouldUpdate) {
-      const message = {
-        type: 'setMaterials',
-        materials: result.materials.map(verifyTypes),
-      };
-      response.messages.push(message);
-      chrome.storage.local.set({
+      store({
         shouldUpdate: false,
+      }, () => {
+        const message = {
+          type: 'addMaterials',
+          materials: result.materials.map(verifyTypes),
+        };
+
+        window.inboundQueue.push(message);
+        log(`sending materials: total ${message.materials.length}`);
       });
-      log(`sending materials: ${message.materials.length}`);
     } else if (result && result.shouldUpdate) {
       log('clearing shouldUpdate');
-      chrome.storage.local.set({
+      store({
         shouldUpdate: false,
       });
-    }
-    if (callback) {
-      callback(response);
     }
   });
 }
@@ -99,76 +148,112 @@ function refreshMaterials(relayMessages, callback) {
  * Forces the should update flag to be true, creates a one time refresh.
  */
 function forceRefresh() {
-  // Set a one time refresh on content injection. New tabs, refreshes.
-  chrome.storage.local.set({
+  store({
     shouldUpdate: true,
   });
 }
 
 /**
+ * Updates the list of design ids in local storage.
+ */
+function handleDesignIdsMessage(message) {
+  if (message.designIds && message.designIds.length > 0) {
+    storeUISettings({
+      loadedDesignId: message.designIds[0],
+    });
+  } else {
+    storeUISettings({
+      loadedDesignId: null,
+    });
+  }
+}
+
+/**
+ * Check to see if there is a QR Code in the current image and queues a message
+ * that will set the materil if one is detected.
+ */
+async function checkForQRCode(message) {
+  const image = `https://app.glowforge.com${message.image}`;
+
+  const qrCodeData = await readQrCode(image);
+  log('QR Code Results');
+  log(qrCodeData);
+
+  if (qrCodeData && qrCodeData.startsWith('Glowforge')) {
+    log('PG Material detected');
+  } else if (qrCodeData && qrCodeData.startsWith('Custom')) {
+    log('Custom Material detected');
+    window.inboundQueue.push({
+      type: 'selectMaterial',
+      materialId: qrCodeData,
+    });
+  }
+}
+
+/**
  * Handle messaging with the Glowforge UI.
+ *
+ * If you need to return data from an async method then you must
+ * return true from this handler and manually call `sendResponse` with
+ * the results.
+ *
+ * lidImage - Inbound
+ * loadedDesignIds - Inbound
+ * forceRefresh - Inbound
+ *
+ * checkMessages - pulls messages from inboundQueu
  */
 chrome.runtime.onMessageExternal.addListener(
   (request, sender, sendResponse) => {
-    const relayMessages = window.inboundQueue.splice(0);
-
+    let data = undefined;
+    log(`message: ${request.type}`);
     if (request.type === 'lidImage') {
-      log('lidImage message');
-      window.outboundQueue.push(request);
+      checkForQRCode(request);
     } else if (request.type === 'loadedDesignIds') {
-      log('loadedDesignIds message');
-      if (request.designIds && request.designIds.length > 0) {
-        storeUISettings({
-          loadedDesignId: request.designIds[0],
-        });
-      } else {
-        storeUISettings({
-          loadedDesignId: null,
-        });
+      handleDesignIdsMessage(request);
+    } else if (request.type === 'checkMessages') {
+      // One check messages call refresh materials to see if we need to queue a
+      // material sync message.
+      refreshMaterials();
+
+      // Only when checking messages should we relay and inbound message to the
+      // GFUI, the other handlers will not nescisarilly respect the response.
+      const relayMessages = window.inboundQueue.splice(0);
+      if (relayMessages.length > 0) {
+        data = {
+          messages: relayMessages,
+        };
       }
-    } else if (request.type === 'materialCheck') {
-      log('refreshMaterials message');
-      refreshMaterials(relayMessages, sendResponse);
-      return true;
     } else if (request.type === 'forceRefresh') {
-      log('forceRefresh message');
       forceRefresh();
-    } else {
-      log('unknown message');
     }
 
-    if (relayMessages.length > 0) {
-      sendResponse({
-        messages: relayMessages,
-      });
-    } else {
-      sendResponse();
-    }
+    // Always call send response
+    sendResponse(data);
     return false;
   },
 );
 
 /**
- * Initialize the background process and local storage.
+ * Initialize the background process and local storage. If local
+ * storage has already been initialized then we set `shouldUpdate` to
+ * true to force UI sync.
  */
-chrome.storage.local.get(null, (result) => {
+load((result) => {
+  log('verifying local storage.');
   if (result && result.materials) {
-    // Set a one time load refresh on browser restart.
-    chrome.storage.local.set({
-      shouldUpdate: true,
-    });
-    log('Storage already initialized.');
+    log('local storage previously initialized.');
+    forceRefresh();
   } else {
-    log('Initalizing storage.');
-    chrome.storage.local.set({
+    log('initalizing local storage.');
+    store({
       materials: [],
       rawMaterials: [],
       shouldUpdate: false,
     }, () => {
-      log('Storage is initialized.');
+      log('local storage is initialized.');
     });
   }
-  log('Storage loaded.');
 });
 
 // Handle messaging with the react app.

@@ -20,7 +20,8 @@
   ],
   "background": {
     "scripts": [
-      "background.js"
+      "background.js",
+      "jsqr.dist.js"
     ]
   },
   "externally_connectable": {
