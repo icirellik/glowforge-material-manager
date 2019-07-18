@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.1
+
+* QR Code detection enhancements.
+* Added a cloud sync toggle, only sync what you want.
+* Added the ability to create a new material from search.
+* Added better navigation between edit and display screens.
+* Sorted the material list.
+* Better input validation detection.
+* Help text everywhere.
+
+Plus an assortment of other minor UI/UX tweaks.
+
 ## 0.4.0
 
 ### QR Codes
