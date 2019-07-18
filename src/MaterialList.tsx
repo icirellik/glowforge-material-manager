@@ -9,7 +9,7 @@ import {
 import {
   createEmptyMaterial,
   TempMaterial,
-} from './lib/constants';
+} from './lib/materialHelpers';
 import './MaterialList.css';
 import IconClear from './icons/IconClear';
 

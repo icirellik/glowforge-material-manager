@@ -28,7 +28,7 @@ import {
   MultiSettings,
   createEmptyMaterial,
   MultiSettingFunctionsDefaults,
-} from './lib/constants';
+} from './lib/materialHelpers';
 import './App.css';
 import { PluginMaterial } from './material/materialPlugin';
 import { GFMaterial } from './material/materialGlowforge';

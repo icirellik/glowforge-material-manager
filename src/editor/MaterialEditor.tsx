@@ -9,7 +9,7 @@ import {
   UpdateMaterial,
   UpdateSetting,
 } from '../App';
-import { TempMaterial } from '../lib/constants';
+import { TempMaterial } from '../lib/materialHelpers';
 import BitmapEngraveSettings from './BitmapEngraveSettings';
 import CutSettings from './CutSettings';
 import MaterialSettings from './MaterialSettings';

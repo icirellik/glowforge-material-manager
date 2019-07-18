@@ -51,8 +51,6 @@ export function createEmptyVectorEngrave(): PluginVectorEngraveSetting {
   };
 }
 
-
-
 export function createEmptyBitmapEngrave(): PluginBitmapEngraveSetting {
   return {
     name: '',
