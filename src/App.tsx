@@ -21,6 +21,7 @@ import {
   storeRawMaterials,
   getUISettings,
   storeTempMaterial,
+  sendMessage,
 } from './lib/chromeWrappers';
 import {
   TempMaterial,
@@ -32,7 +33,6 @@ import './App.css';
 import { PluginMaterial } from './material/materialPlugin';
 import { GFMaterial } from './material/materialGlowforge';
 import { sha1 } from './lib/utils';
-import { readQrCode } from './lib/qrCode';
 import { AppHeader } from './AppHeader';
 import MaterialButtonBar from './MaterialButtonBar';
 import MaterialHome from './MaterialHome';
@@ -112,18 +112,6 @@ interface AppState {
   rawSvg: string | null;
   synchronized: boolean;
   tempMaterial: TempMaterial;
-}
-
-function sendMessage(message: object) {
-  // Forward the request to the GFUI
-  window.chrome.runtime.getBackgroundPage((window) => {
-    if (window) {
-      if (!(window as any).inboundQueue) {
-        (window as any).inboundQueue = [];
-      }
-      (window as any).inboundQueue.push(message);
-    }
-  });
 }
 
 function defaultMessage(message: string): IMessage {
@@ -252,43 +240,25 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         });
       }
 
-      // Check background threads for messages.
+      // Check background thread for messages.
       window.chrome.runtime.getBackgroundPage(async (window) => {
-        if (window) {
-          const outboundQueue = (window as any).outboundQueue;
-
-          if (outboundQueue.length > 0) {
-            const messages = outboundQueue.splice(0);
-
-            for (let i = 0; i < messages.length; i += 1) {
-
-              const message = messages[i];
-              switch (message.type) {
-                case 'lidImage':
-                  const image = `https://app.glowforge.com${message.image}`;
-
-                  const qrCodeData = await readQrCode(image);
-                  console.log(qrCodeData);
-
-                  if (qrCodeData && qrCodeData.startsWith('Glowforge')) {
-                    this.setState({
-                      message: {
-                        message: 'Proofgrade material detected.',
-                      },
-                    });
-                  } else if (qrCodeData && qrCodeData.startsWith('Custom')) {
-                    sendMessage({
-                      type: 'selectMaterial',
-                      materialId: qrCodeData,
-                    });
-                    this.setState({
-                      message: {
-                        message: 'Custom material detected.',
-                      },
-                    });
-                  }
-                  break;
-              }
+        if (!window) {
+          return;
+        }
+        const outboundQueue = (window as any).outboundQueue;
+        if (outboundQueue.length > 0) {
+          const messages = outboundQueue.splice(0);
+          for (let i = 0; i < messages.length; i += 1) {
+            const message = messages[i];
+            switch (message.type) {
+              default:
+                console.log('inbound message');
+                // Example: Send message back.
+                // sendMessage({
+                //   type: 'selectMaterial',
+                //   materialId: qrCodeData,
+                // });
+                break;
             }
           }
         }

@@ -329,3 +329,20 @@ export async function getPlatform(): Promise<string> {
     });
   });
 }
+
+/**
+ * Sends an message to the background process.
+ *
+ * @param message The message to queue.
+ */
+export function sendMessage(message: object) {
+  // Forward the request to the GFUI
+  window.chrome.runtime.getBackgroundPage((window) => {
+    if (window) {
+      if (!(window as any).inboundQueue) {
+        (window as any).inboundQueue = [];
+      }
+      (window as any).inboundQueue.push(message);
+    }
+  });
+}

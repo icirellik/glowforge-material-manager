@@ -1,7 +1,7 @@
 import QRCode from 'qrcode';
 import jsQR from 'jsqr';
 
-const QR_IMAGE_SCALES = [ 1, 0.75, 0.5, 0.25, 0.1 ];
+const QR_IMAGE_SCALES = [1, 0.75, 0.5, 0.25, 0.1];
 
 /**
  * Takes an image url and converts it to an image data at a 0.25 scale.
@@ -14,7 +14,7 @@ async function urlToImageData(imageUrl: string, scale: number): Promise<ImageDat
     const context = canvas.getContext('2d');
     const image = new Image();
 
-    image.addEventListener('load', function() {
+    image.addEventListener('load', () => {
       canvas.width = image.naturalWidth * scale;
       canvas.height = image.naturalHeight * scale;
       context!.drawImage(image, 0, 0, canvas.width, canvas.height);
@@ -30,8 +30,7 @@ async function urlToImageData(imageUrl: string, scale: number): Promise<ImageDat
  * @param imageUrl  The image url to scan.
  */
 export async function readQrCode(imageUrl: string): Promise<string> {
-  return new Promise(async (resolve, reject) => {
-    // Worst QR Library ever.
+  return new Promise(async resolve => {
     const imageDataPromises = QR_IMAGE_SCALES.map(scale => {
       return Promise.resolve()
         .then(() => {
@@ -42,15 +41,14 @@ export async function readQrCode(imageUrl: string): Promise<string> {
     });
 
     const resolvedCodes = await Promise.all(imageDataPromises);
-    console.log(resolvedCodes);
 
     const code = resolvedCodes.reduce((prev, cur) => {
       return (prev !== null) ? prev : cur;
-    }, null)
-    console.log(code);
+    }, null);
+
     if (code) {
       resolve(code.data);
-    };
+    }
   });
 }
 
