@@ -10,7 +10,7 @@ interface MaterialHomeProps {
 }
 
 export default function MaterialHome(props: MaterialHomeProps) {
-  let svg = null;
+  let svg = (<span>Download Raw SVG/Trace (Refresh Page for link)</span>);
   if (props.rawSvg) {
     svg = (<a className="materialHome__menuItem" href={props.rawSvg} target="_blank" rel="noopener noreferrer">Download Raw SVG/Trace</a>);
   }

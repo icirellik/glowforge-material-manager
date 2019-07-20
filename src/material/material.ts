@@ -1,7 +1,6 @@
 import {
   getGlowforgeMaterials,
   getRawMaterials,
-  getSynchronizedMaterials,
   getUrl,
   removeSynchronizedMaterial,
   storeGlowforgeMaterials,
@@ -10,10 +9,7 @@ import {
 } from '../lib/chromeWrappers';
 import {
   compress,
-  decompress,
-  hashMaterial,
   hashTitle,
-  sha1,
 } from '../lib/utils';
 import {
   PluginBitmapEngraveSetting,
@@ -49,7 +45,6 @@ export async function removeMaterial(materialId: PluginMaterialId) {
   const newMaterials = await storeGlowforgeMaterials(
     materials.filter(material => material.id !== materialId)
   );
-  console.log(`Material removed ${materialId}`);
   return newMaterials;
 }
 
@@ -63,7 +58,6 @@ export async function removeMaterialTitle(title: string) {
   const newMaterials = await storeGlowforgeMaterials(
     materials.filter(material => material.title !== title)
   );
-  console.log(`Material removed ${title}`);
   return newMaterials;
 }
 
@@ -77,7 +71,6 @@ export async function removeRawMaterial(title: string) {
   const newRawMaterials = await storeRawMaterials(
     rawMaterials.filter(material => `${material.thickName} ${material.name}` !== title)
   );
-  console.log(`Raw material removed ${title}`);
   return newRawMaterials;
 }
 
@@ -105,118 +98,6 @@ export async function sendCloudMaterial(material: PluginMaterial) {
 export async function removeCloudMaterial(material: PluginMaterial) {
   const hash = await hashTitle(material);
   return await removeSynchronizedMaterial(hash);
-}
-
-export async function fullSynchronizedMaterials(remove=false) {
-  console.log(`Synchronizing Full ${remove}`);
-  const synchronizedMaterials = await getSynchronizedMaterials();
-  const rawMaterials = await getRawMaterials();
-
-  console.log(synchronizedMaterials);
-  const currentTitleHashes: string[] = [];
-  const currentDataHashes = [];
-  const rawMaterialTitleMap: any = {};
-  const rawMaterialDataMap: any = {};
-  for (let i = 0; i < rawMaterials.length; i++) {
-    const material = rawMaterials[i];
-    const titleHash = await hashTitle(material);
-    const dataHash = await hashMaterial(material);
-    currentTitleHashes.push(titleHash);
-    currentDataHashes.push(dataHash);
-    rawMaterialTitleMap[titleHash] = material;
-    rawMaterialDataMap[dataHash] = material;
-  }
-
-  console.log('Current:');
-  console.log(currentTitleHashes);
-  console.log(currentDataHashes);
-  console.log(rawMaterialTitleMap);
-  console.log(rawMaterialDataMap);
-
-  const removeableHashes = currentTitleHashes.filter(hash => {
-    return !synchronizedMaterials.hasOwnProperty(hash);
-  });
-  console.log('Removeable:');
-  console.log(removeableHashes);
-
-  const newHashes = Object.keys(synchronizedMaterials).filter(hash => {
-    return currentTitleHashes.indexOf(hash) === -1;
-  });
-  console.log('Added:');
-  console.log(newHashes);
-
-  const possiblyUpdatedHashes = currentTitleHashes.filter(hash => {
-    return synchronizedMaterials.hasOwnProperty(hash);
-  });
-  console.log('Existing:');
-  console.log(possiblyUpdatedHashes);
-
-  // Remove old.
-  if (remove) {
-    const removable = removeableHashes.map(hash => {
-      return rawMaterialTitleMap[hash];
-    });
-    console.log(removable)
-    for (let i = 0; i < removable.length; i++) {
-      const material = await removable[i];
-      const title = `${material.thickName} ${material.name}`;
-      console.log(`Will remove ${title}`);
-      await removeMaterialTitle(title);
-      await removeRawMaterial(title);
-    }
-  }
-
-  // Create new.
-  for (let i = 0; i < newHashes.length; i++) {
-    const hash = newHashes[i];
-    const binaryData = synchronizedMaterials[hash];
-    const json = toFullMaterial(decompress(binaryData));
-    console.log(`Adding ${json.thickName} ${json.name}`);
-
-    // Hash the title and take the first seven for the id.
-    const { thickName, name } = json;
-    const title = `${thickName} ${name}`
-    const titleHash = await sha1(title);
-    const id = `Custom:${titleHash.substring(0, 7)}`;
-
-    const full = await getGlowforgeMaterials();
-    const raw = await getRawMaterials();
-    const newMaterial = await createMaterial(json, id);
-
-    await storeGlowforgeMaterials([...full, newMaterial]);
-    await storeRawMaterials([...raw, json]);
-  }
-
-  // Update existing.
-  for (let i = 0; i < possiblyUpdatedHashes.length; i++) {
-    const hash = possiblyUpdatedHashes[i];
-    const binaryData = synchronizedMaterials[hash];
-    const json = toFullMaterial(decompress(binaryData));
-    const dataHash = await hashMaterial(json);
-    console.log(`Updating ${hash} -> ${dataHash}`);
-
-    if (!rawMaterialDataMap.hasOwnProperty(dataHash)) {
-      // Remove
-      const title = `${json.thickName} ${json.name}`;
-      await removeMaterialTitle(title);
-      await removeRawMaterial(title);
-
-      // Hash the title and take the first seven for the id.
-      const titleHash = await sha1(title);
-      const id = `Custom:${titleHash.substring(0, 7)}`;
-
-      // Replace
-      const full = await getGlowforgeMaterials();
-      const raw = await getRawMaterials();
-      const newMaterial = await createMaterial(json, id);
-
-      await storeGlowforgeMaterials([...full, newMaterial]);
-      await storeRawMaterials([...raw, json]);
-
-      console.log('Modified');
-    }
-  }
-  console.log('Synchronized');
 }
 
 /**

@@ -1,6 +1,6 @@
 import React from 'react';
 import { PluginMaterial } from '../material/materialPlugin';
-import { sha1 } from '../lib/utils';
+import { sha1 } from '../lib/crypto';
 import { qrcodeAsDataUri, qrcodeAsSvg } from '../lib/qrCode';
 import { toTinyMaterial } from '../material/material';
 import './MaterialViewer.css';

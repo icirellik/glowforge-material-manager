@@ -6,8 +6,8 @@ import {
   inGlowforgeTab,
 } from './lib/chromeWrappers';
 import {
-  fullSynchronizedMaterials,
-} from './material/material';
+  syncronizeMaterials,
+} from './material/material.sync';
 import './index.css';
 import {default as migration3 } from './migrations/3-update-ids';
 import {default as migration4 } from './migrations/4-add-sync-property';
@@ -29,7 +29,7 @@ async function applyMigrations() {
 
   // Run a full syncronization with remote storage. This is kept fast because
   // chrome caches this data locally is it hasn't changed.
-  await fullSynchronizedMaterials();
+  await syncronizeMaterials();
 
   ReactDOM.render(<App
     connected={glowforgeConnected}
