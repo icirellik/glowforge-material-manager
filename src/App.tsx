@@ -22,6 +22,8 @@ import {
   getUISettings,
   storeTempMaterial,
   sendMessage,
+  getRawMaterials,
+  getGlowforgeMaterials,
 } from './lib/chromeWrappers';
 import {
   TempMaterial,
@@ -32,10 +34,11 @@ import {
 import './App.css';
 import { PluginMaterial } from './material/materialPlugin';
 import { GFMaterial } from './material/materialGlowforge';
-import { sha1 } from './lib/utils';
+import { sha1 } from './lib/crypto';
 import { AppHeader } from './AppHeader';
 import MaterialButtonBar from './MaterialButtonBar';
 import MaterialHome from './MaterialHome';
+import { syncronizeMaterials } from './material/material.sync';
 
 // General Material Management Methoods
 export type AddMaterial = () => Promise<void>;
@@ -103,13 +106,18 @@ interface AppProps {
 }
 
 interface AppState {
+  // The current editor mode.
   action: EditorMode;
+  // The number of cloud bytes that are currently being used.
   cloudStorageBytesUsed: number;
+  // The last time a cloud sync modified the local data.
+  lastCloudSync: number | null;
   materials: GFMaterial[];
   message: IMessage | null;
   previousTitle: string | null;
   rawMaterials: PluginMaterial[];
   rawSvg: string | null;
+  // Is the plugin in sync wit the GFUI.
   synchronized: boolean;
   tempMaterial: TempMaterial;
 }
@@ -136,6 +144,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     this.state = {
       action: 'DISPLAY',
       cloudStorageBytesUsed: 0,
+      lastCloudSync: null,
       message: null,
       tempMaterial: {
         ...createEmptyMaterial(),
@@ -214,30 +223,68 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
      * Start an interval to handle messaging with the background process.
      */
     setInterval(async () => {
+      let stateUpdates: Partial<AppState> = {};
+
       // Refresh the cloud storage in use
       const cloudStorageBytesUsed = await getBytesInUse();
 
       // Refresh the sync status.
       const shouldUpdate = await getShouldUpdate();
 
+      // Synchronize and materials.
+      // TODO: should we run this on every loop.
+      const updated = await syncronizeMaterials();
+      if (updated) {
+        const pluginMaterials = await getRawMaterials();
+        const glowforgeMaterials = await getGlowforgeMaterials();
+
+        let tempMaterial: PluginMaterial | undefined;
+        if (this.state.tempMaterial) {
+          tempMaterial = pluginMaterials.find(pluginMaterial => {
+            const tempMaterialTitle =
+              `${this.state.tempMaterial.thickName} ${this.state.tempMaterial.name}`;
+            const pluginMaterialTitle =
+              `${pluginMaterial.thickName} ${pluginMaterial.name}`;
+            return pluginMaterialTitle === tempMaterialTitle;
+          });
+        };
+
+        stateUpdates = {
+          ...stateUpdates,
+          lastCloudSync: +new Date(),
+          materials: glowforgeMaterials,
+          rawMaterials: pluginMaterials,
+          tempMaterial: {
+            ...createEmptyMaterial(),
+            ...tempMaterial,
+          }
+        };
+      }
+
       const uiSettings = await getUISettings();
       const rawSvg = (uiSettings && uiSettings.loadedDesignId) ? `https://storage.googleapis.com/glowforge-files/designs/${uiSettings.loadedDesignId}/svgf/svgf_file.gzip.svg` : null;
 
       // Update thr state.
       if (this.state.synchronized === shouldUpdate) {
-        this.setState({
+        stateUpdates = {
+          ...stateUpdates,
           cloudStorageBytesUsed,
           rawSvg,
           synchronized: !shouldUpdate,
-        });
+        };
       } else if (
         cloudStorageBytesUsed !== this.state.cloudStorageBytesUsed ||
         rawSvg !== this.state.rawSvg
       ) {
-        this.setState({
+        stateUpdates = {
+          ...stateUpdates,
           cloudStorageBytesUsed,
           rawSvg,
-        });
+        };
+      }
+
+      if (Object.keys(stateUpdates).length > 0) {
+        this.setState(stateUpdates as AppState);
       }
 
       // Check background thread for messages.

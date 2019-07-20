@@ -109,19 +109,19 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
         value={props.bitmap.focalOffset}
       />
       <InputNumber
-        help={"Scap Gap mapping to Glowforge UI \n " +
-          "1 = 1355 \n " +
-          "2 = 675 \n " +
-          "3 = 450 \n " +
-          "4 = 340 \n " +
-          "5 = 270 \n " +
-          "6 = 225 \n " +
-          "7 = 195 \n " +
-          "8 = 170 \n " +
-          "11 = 125 \n " +
-          "18 = 75 \n " +
-          "39 = 35 \n " +
-          "136 = 10"
+        help={"Scan Gap mapping to Glowforge UI \n " +
+          "1 = 1355 LPI \n " +
+          "2 = 675 LPI \n " +
+          "3 = 450 LPI \n " +
+          "4 = 340 LPI \n " +
+          "5 = 270 LPI \n " +
+          "6 = 225 LPI \n " +
+          "7 = 195 LPI \n " +
+          "8 = 170 LPI \n " +
+          "11 = 125 LPI \n " +
+          "18 = 75 LPI \n " +
+          "39 = 35 LPI \n " +
+          "136 = 10 LPI"
         }
         label={`Scan Gap (LPI ${toDisplayLinesPerInch(props.bitmap.scanGap)}) *`}
         onBlur={props.saveTemporaryState}

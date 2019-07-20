@@ -1,5 +1,5 @@
 import { getLocalStorage, storeGlowforgeMaterials } from '../lib/chromeWrappers';
-import { sha1 } from '../lib/utils';
+import { sha1 } from '../lib/crypto';
 
 /**
  * Upgrades any legacy ids to the latest revision.

@@ -122,7 +122,7 @@ async function readQrCode(imageUrl) {
  * installation.
  */
 function refreshMaterials() {
-  load(result => {
+  load((result) => {
     if (result && result.materials && result.shouldUpdate) {
       store({
         shouldUpdate: false,
@@ -205,7 +205,7 @@ async function checkForQRCode(message) {
  */
 chrome.runtime.onMessageExternal.addListener(
   (request, sender, sendResponse) => {
-    let data = undefined;
+    let data;
     log(`message: ${request.type}`);
     if (request.type === 'lidImage') {
       checkForQRCode(request);
