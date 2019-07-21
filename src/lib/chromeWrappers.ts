@@ -14,6 +14,8 @@ export interface UISettings {
 }
 
 export interface StorageLocal {
+  // Stores material backups by version number before a major release occurs.
+  backup?: {[key: string]: StorageLocal};
   // The Glowforge formatted materials.
   materials?: GFMaterial[];
   // The raw material data that is used to generated Glowforge materials.
@@ -43,6 +45,45 @@ export async function getLocalStorage(): Promise<StorageLocal> {
         result.rawMaterials = [];
       }
       resolve(result);
+    });
+  });
+}
+
+/**
+ * Gets a backup from local storage.
+ *
+ * @param backupName
+ */
+export async function getBackup(backupName: string): Promise<StorageLocal | undefined> {
+  return new Promise(resolve => {
+    window.chrome.storage.local.get(null, (result: StorageLocal) => {
+      if (result && result.backup && result.backup[backupName]) {
+        resolve(result.backup[backupName]);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+/**
+ * Saves a copy of the current local storage as a backup.
+ *
+ * @param backupName
+ * @param backup
+ */
+export async function storeBackup(backupName: string, backup: StorageLocal): Promise<boolean> {
+  return new Promise(resolve => {
+    window.chrome.storage.local.get(null, (results: StorageLocal) => {
+      let previousBackups = results.backup;
+      window.chrome.storage.local.set({
+        'backup': {
+          ...previousBackups,
+          [backupName]: backup,
+        },
+      }, () => {
+        resolve(true);
+      });
     });
   });
 }

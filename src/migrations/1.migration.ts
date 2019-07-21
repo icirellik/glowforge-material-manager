@@ -9,7 +9,7 @@ import { asFloat } from '../lib/utils';
 import { removeCloudMaterial, sendCloudMaterial } from '../material/material';
 
 /**
- * Original migrations, #1 and #2. Deprecated.
+ * Original migrations, #1 and #2. Deprecated and Disabled.
  */
 export default async function migrate(): Promise<boolean> {
   let upgraded = false;

@@ -71,6 +71,7 @@ export default function MaterialViewer(props: MaterialViewerProps) {
           click={() => props.removeMaterial(title)}
           height="18px"
           text="Delete Permanently"
+          title="Delete Permanently"
           width="18px"
         />
       </div>
