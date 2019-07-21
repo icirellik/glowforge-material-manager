@@ -27,11 +27,12 @@ import {
 
 interface VectorEngraveSettingProps {
   index: number;
+  propValidation?: {[key: string]: boolean | null};
   removeVectorEngrave: RemoveVectorEngrave;
   saveTemporaryState: () => void;
   updateVectorEngrave: UpdateVectorEngrave;
   vector: PluginVectorEngraveSetting;
-  validationHandler: (id: string, isValid: boolean) => void;
+  validationHandler: (id: string, isValid: boolean | null) => void;
 }
 
 export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
@@ -56,6 +57,7 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
         label="Name *"
         onBlur={props.saveTemporaryState}
         onChange={(event) => props.updateVectorEngrave(props.index, 'name', event.target.value) }
+        propValidation={props.propValidation}
         value={props.vector.name}
         validate={props.validationHandler}
       />
@@ -68,6 +70,7 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
           const normalizedValue = toRealEngraveSpeed(asInteger(event.target.value));
           props.updateVectorEngrave(props.index, 'speed', normalizedValue);
         }}
+        propValidation={props.propValidation}
         value={toDisplayEngraveSpeed(props.vector.speed)}
         validate={props.validationHandler}
       />
@@ -83,6 +86,7 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
           const nextMaxPower = !maxPower;
           props.updateVectorEngrave(props.index, 'power', (nextMaxPower) ? 100 : 99);
         }}
+        propValidation={props.propValidation}
         value={toDisplayPower(props.vector.power)}
         validate={props.validationHandler}
       />
@@ -94,6 +98,7 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
           const normalizedValue = asInteger(event.target.value);
           props.updateVectorEngrave(props.index, 'passes', normalizedValue);
         }}
+        propValidation={props.propValidation}
         value={props.vector.passes}
       />
       <InputNumber
@@ -103,6 +108,7 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
           const normalizedValue = precisionRound(asFloat(event.target.value), 3);
           props.updateVectorEngrave(props.index, 'focalOffset', normalizedValue);
         }}
+        propValidation={props.propValidation}
         value={props.vector.focalOffset}
       />
       <InputNumber
@@ -126,6 +132,7 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
           const normalizedValue = asInteger(event.target.value);
           props.updateVectorEngrave(props.index, 'scanGap', normalizedValue);
         }}
+        propValidation={props.propValidation}
         value={props.vector.scanGap}
         validate={props.validationHandler}
       />

@@ -16,6 +16,7 @@ import MaterialSettings from './MaterialSettings';
 import ScoreSettings from './ScoreSettings';
 import VectorEngraveSettings from './VectorEngraveSettings';
 import './MaterialEditor.css';
+import { isEquivalentObject } from '../lib/utils';
 
 interface MaterialEditorProps {
   addSetting: AddSetting;
@@ -24,7 +25,7 @@ interface MaterialEditorProps {
   removeSetting: RemoveSetting;
   updateMaterial: UpdateMaterial;
   updateSetting: UpdateSetting;
-  validationHandler: (id: string, isValid: boolean) => void;
+  validationHandler: (id: string, isValid: boolean | null) => void;
 }
 
 /**
@@ -44,93 +45,122 @@ function saveTemporaryState(editorMode: EditorMode, material: TempMaterial) {
   }
 }
 
-export default function MaterialEditor(props: MaterialEditorProps) {
-  const {
-    editorMode,
-    material,
-  } = props;
+export default class MaterialEditor extends React.Component<MaterialEditorProps> {
 
-  return (
-    <>
-      <MaterialSettings
-        action={props.editorMode}
-        material={props.material}
-        saveTemporaryState={() => {
-          saveTemporaryState(editorMode, material);
-        }}
-        updateMaterial={props.updateMaterial}
-        validationHandler={props.validationHandler}
-      />
-      <CutSettings
-        cut={material.cut}
-        saveTemporaryState={() => {
-          saveTemporaryState(editorMode, material);
-        }}
-        updateCut={(prop, value) => {
-          props.updateMaterial('cut', {
-            ...props.material.cut,
-            [prop]: value,
-          });
-        }}
-        validationHandler={props.validationHandler}
-      />
-      <ScoreSettings
-        addScore={() => {
-          props.addSetting('scores');
-        }}
-        removeScore={(index) => {
-          props.removeSetting('scores', index);
-        }}
-        scores={props.material.scores}
-        saveTemporaryState={() => {
-          saveTemporaryState(editorMode, material);
-        }}
-        updateScore={(index, prop, value) => {
-          props.updateSetting('scores', index, {
-            ...props.material.scores[index],
-            [prop]: value,
-          });
-        }}
-        validationHandler={props.validationHandler}
-      />
-      <VectorEngraveSettings
-        addVectorEngrave={() => {
-          props.addSetting('vectors');
-        }}
-        removeVectorEngrave={(index) => {
-          props.removeSetting('vectors', index);
-        }}
-        saveTemporaryState={() => {
-          saveTemporaryState(editorMode, material);
-        }}
-        updateVectorEngrave={(index, prop, value) => {
-          props.updateSetting('vectors', index, {
-            ...props.material.vectors[index],
-            [prop]: value,
-          });
-        }}
-        vectors={props.material.vectors}
-        validationHandler={props.validationHandler}
-      />
-      <BitmapEngraveSettings
-        addBitmapEngrave={() => {
-          props.addSetting('bitmaps');
-        }}
-        bitmaps={props.material.bitmaps}
-        removeBitmapEngrave={(index) => {
-          props.removeSetting('bitmaps', index);
-        }}
-        saveTemporaryState={() => {
-          saveTemporaryState(editorMode, material);
-        }}
-        updateBitmapEngrave={(index, prop, value) => {
-          props.updateSetting('bitmaps', index, {
-            ...props.material.bitmaps[index],
-            [prop]: value,
-          });
-        }}
-        validationHandler={props.validationHandler}
-      />
-    </>
-  );
+  // This is a giant hack to work around the validators forcing rendering to
+  // occur twice.
+  shouldComponentUpdate(prevProps: MaterialEditorProps) {
+    let result = true;
+    for (let key of Object.keys(this.props)) {
+      const val: any = (this.props as any)[key];
+      if (key === 'editorMode') {
+        if (((prevProps as any)[key] !== val)) {
+          result = true;
+          break;
+        }
+      } else if (key === 'material') {
+        if ((prevProps as any)[key] !== val) {
+          if (isEquivalentObject((prevProps as any)[key], val as any)) {
+            result = false;
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  render() {
+    const {
+      editorMode,
+      material,
+    } = this.props;
+    return (
+      <>
+        <MaterialSettings
+          action={this.props.editorMode}
+          material={this.props.material}
+          propValidation={this.props.material.propValidation}
+          saveTemporaryState={() => {
+            saveTemporaryState(editorMode, material);
+          }}
+          updateMaterial={this.props.updateMaterial}
+          validationHandler={this.props.validationHandler}
+        />
+        <CutSettings
+          cut={material.cut}
+          propValidation={this.props.material.propValidation}
+          saveTemporaryState={() => {
+            saveTemporaryState(editorMode, material);
+          }}
+          updateCut={(prop, value) => {
+            this.props.updateMaterial('cut', {
+              ...this.props.material.cut,
+              [prop]: value,
+            });
+          }}
+          validationHandler={this.props.validationHandler}
+        />
+        <ScoreSettings
+          addScore={() => {
+            this.props.addSetting('scores');
+          }}
+          propValidation={this.props.material.propValidation}
+          removeScore={(index) => {
+            this.props.removeSetting('scores', index);
+          }}
+          scores={this.props.material.scores}
+          saveTemporaryState={() => {
+            saveTemporaryState(editorMode, material);
+          }}
+          updateScore={(index, prop, value) => {
+            this.props.updateSetting('scores', index, {
+              ...this.props.material.scores[index],
+              [prop]: value,
+            });
+          }}
+          validationHandler={this.props.validationHandler}
+        />
+        <VectorEngraveSettings
+          addVectorEngrave={() => {
+            this.props.addSetting('vectors');
+          }}
+          propValidation={this.props.material.propValidation}
+          removeVectorEngrave={(index) => {
+            this.props.removeSetting('vectors', index);
+          }}
+          saveTemporaryState={() => {
+            saveTemporaryState(editorMode, material);
+          }}
+          updateVectorEngrave={(index, prop, value) => {
+            this.props.updateSetting('vectors', index, {
+              ...this.props.material.vectors[index],
+              [prop]: value,
+            });
+          }}
+          vectors={this.props.material.vectors}
+          validationHandler={this.props.validationHandler}
+        />
+        <BitmapEngraveSettings
+          addBitmapEngrave={() => {
+            this.props.addSetting('bitmaps');
+          }}
+          bitmaps={this.props.material.bitmaps}
+          propValidation={this.props.material.propValidation}
+          removeBitmapEngrave={(index) => {
+            this.props.removeSetting('bitmaps', index);
+          }}
+          saveTemporaryState={() => {
+            saveTemporaryState(editorMode, material);
+          }}
+          updateBitmapEngrave={(index, prop, value) => {
+            this.props.updateSetting('bitmaps', index, {
+              ...this.props.material.bitmaps[index],
+              [prop]: value,
+            });
+          }}
+          validationHandler={this.props.validationHandler}
+        />
+      </>
+    );
+  }
 }

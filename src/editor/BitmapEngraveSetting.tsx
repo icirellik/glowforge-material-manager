@@ -28,10 +28,11 @@ import {
 interface BitmapEngraveSettingProps {
   bitmap: PluginBitmapEngraveSetting;
   index: number;
+  propValidation?: {[key: string]: boolean | null};
   removeBitmapEngrave: RemoveBitmapEngrave;
   saveTemporaryState: () => void;
   updateBitmapEngrave: UpdateBitmapEngrave;
-  validationHandler: (id: string, isValid: boolean) => void;
+  validationHandler: (id: string, isValid: boolean | null) => void;
 }
 
 export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
@@ -56,6 +57,7 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
         label="Name *"
         onBlur={props.saveTemporaryState}
         onChange={(event) => props.updateBitmapEngrave(props.index, 'name', event.target.value) }
+        propValidation={props.propValidation}
         value={props.bitmap.name}
         validate={props.validationHandler}
       />
@@ -68,6 +70,7 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
           const normalizedValue = toRealEngraveSpeed(asInteger(event.target.value));
           props.updateBitmapEngrave(props.index, 'speed', normalizedValue);
         }}
+        propValidation={props.propValidation}
         value={toDisplayEngraveSpeed(props.bitmap.speed)}
         validate={props.validationHandler}
       />
@@ -86,6 +89,7 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
           const nextMaxPower = !maxPower;
           props.updateBitmapEngrave(props.index, 'power', (nextMaxPower) ? 100 : 99);
         }}
+        propValidation={props.propValidation}
         value={toDisplayPower(props.bitmap.power)}
         validate={props.validationHandler}
       />
@@ -97,6 +101,7 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
           const normalizedValue = asInteger(event.target.value);
           props.updateBitmapEngrave(props.index, 'passes', normalizedValue);
         }}
+        propValidation={props.propValidation}
         value={props.bitmap.passes}
       />
       <InputNumber
@@ -106,6 +111,7 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
           const normalizedValue = precisionRound(asFloat(event.target.value), 3);
           props.updateBitmapEngrave(props.index, 'focalOffset', normalizedValue);
         }}
+        propValidation={props.propValidation}
         value={props.bitmap.focalOffset}
       />
       <InputNumber
@@ -129,6 +135,7 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
           const normalizedValue = asInteger(event.target.value);
           props.updateBitmapEngrave(props.index, 'scanGap', normalizedValue);
         }}
+        propValidation={props.propValidation}
         value={props.bitmap.scanGap}
         validate={props.validationHandler}
       />

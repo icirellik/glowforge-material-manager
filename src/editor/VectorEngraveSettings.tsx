@@ -12,11 +12,12 @@ export type UpdateVectorEngrave =
 
 type VectorEngraveSettingsProps = {
   addVectorEngrave: AddVectorEngrave;
+  propValidation?: {[key: string]: boolean | null};
   removeVectorEngrave: RemoveVectorEngrave;
   saveTemporaryState: () => void;
   updateVectorEngrave: UpdateVectorEngrave;
   vectors: PluginVectorEngraveSetting[];
-  validationHandler: (id: string, isValid: boolean) => void;
+  validationHandler: (id: string, isValid: boolean | null) => void;
 }
 
 export default function VectorEngraveSettings(props: VectorEngraveSettingsProps) {
@@ -40,6 +41,7 @@ export default function VectorEngraveSettings(props: VectorEngraveSettingsProps)
           return (
             <VectorEngraveSetting
               index={index}
+              propValidation={props.propValidation}
               saveTemporaryState={props.saveTemporaryState}
               removeVectorEngrave={props.removeVectorEngrave}
               updateVectorEngrave={props.updateVectorEngrave}

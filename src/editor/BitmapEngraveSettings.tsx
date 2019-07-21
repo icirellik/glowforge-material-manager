@@ -13,10 +13,11 @@ export type UpdateBitmapEngrave =
 type BitmapEngraveSettingsProps = {
   addBitmapEngrave: AddBitmapEngrave;
   bitmaps: PluginBitmapEngraveSetting[];
+  propValidation?: {[key: string]: boolean | null};
   removeBitmapEngrave: RemoveBitmapEngrave;
   saveTemporaryState: () => void;
   updateBitmapEngrave: UpdateBitmapEngrave;
-  validationHandler: (id: string, isValid: boolean) => void;
+  validationHandler: (id: string, isValid: boolean | null) => void;
 }
 
 export default function BitmapEngraveSettings(props: BitmapEngraveSettingsProps) {
@@ -41,6 +42,7 @@ export default function BitmapEngraveSettings(props: BitmapEngraveSettingsProps)
             <BitmapEngraveSetting
               bitmap={bitmap}
               index={index}
+              propValidation={props.propValidation}
               removeBitmapEngrave={props.removeBitmapEngrave}
               saveTemporaryState={props.saveTemporaryState}
               updateBitmapEngrave={props.updateBitmapEngrave}

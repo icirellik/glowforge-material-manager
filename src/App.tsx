@@ -317,6 +317,13 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     if(this.displayRef && prevState.action !== this.state.action) {
       (this.displayRef.current as any).scrollTop = 0;
     }
+
+    // Object.entries(this.props).forEach(([key, val]) =>
+    //   (prevProps as any)[key] !== val && console.log(`Prop '${key}' changed`)
+    // );
+    // Object.entries(this.state).forEach(([key, val]) =>
+    //   (prevState as any)[key] !== val && console.log(`State '${key}' changed \n${JSON.stringify((prevState as any)[key])}\n${JSON.stringify(val)}`)
+    // );
   }
 
   // Temporary Material State
@@ -326,11 +333,13 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * Updates the base material properties: thickName, name, thickness
    */
   updateMaterial<K extends keyof TempMaterial>(key: K, value: TempMaterial[K]) {
-    this.setState({
-      tempMaterial: {
-        ...this.state.tempMaterial,
-        [key]: value,
-      },
+    this.setState((state) => {
+      return {
+        tempMaterial: {
+          ...state.tempMaterial,
+          [key]: value,
+        },
+      };
     });
   }
 
@@ -378,7 +387,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    *
    */
   async addMaterial() {
-
     const isValid = Object.keys(this.state.tempMaterial.propValidation).map((key) => {
       return this.state.tempMaterial.propValidation[key];
     }).reduce((prev, cur) => {
@@ -387,6 +395,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     if (!isValid) {
       this.displayMessage(errorMessage('A material property is invalid.'));
+      this.setState((state) => {
+        const updateValidation: {[key: string]: boolean | null} = {};
+        for (let key of Object.keys(state.tempMaterial.propValidation)) {
+          updateValidation[key] = (state.tempMaterial.propValidation[key] === null) ? false : state.tempMaterial.propValidation[key];
+        }
+        return {
+          tempMaterial: {
+            ...state.tempMaterial,
+            propValidation: updateValidation,
+          }
+        };
+      });
       return;
     }
 
@@ -469,7 +489,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * @param title
    */
   async editMaterial(title: string) {
-
     const isValid = Object.keys(this.state.tempMaterial.propValidation).map((key) => {
       return this.state.tempMaterial.propValidation[key];
     }).reduce((prev, cur) => {
@@ -478,6 +497,18 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     if (!isValid) {
       this.displayMessage(errorMessage('A material property is invalid.'));
+      this.setState((state) => {
+        const updateValidation: {[key: string]: boolean | null} = {};
+        for (let key of Object.keys(state.tempMaterial.propValidation)) {
+          updateValidation[key] = (state.tempMaterial.propValidation[key] === null) ? false : state.tempMaterial.propValidation[key];
+        }
+        return {
+          tempMaterial: {
+            ...state.tempMaterial,
+            propValidation: updateValidation,
+          }
+        };
+      });
       return;
     }
 
@@ -734,14 +765,17 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
   }
 
-  validationHandler(id: string, isValid: boolean) {
-    const tempMaterial = {
-      ...this.state.tempMaterial,
-    };
-    tempMaterial.propValidation[id] = isValid;
-
-    this.setState({
-      tempMaterial,
+  validationHandler(id: string, isValid: boolean | null) {
+    this.setState((state) => {
+      const tempMaterial = {
+        ...state.tempMaterial,
+      };
+      tempMaterial.propValidation[id] = isValid;
+      return {
+        tempMaterial: {
+          ...tempMaterial,
+        }
+      };
     });
   }
 

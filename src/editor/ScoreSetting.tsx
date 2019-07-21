@@ -26,11 +26,12 @@ import {
 
 interface ScoreSettingProps {
   index: number;
+  propValidation?: {[key: string]: boolean | null};
   removeScore: RemoveScore;
   score: PluginScoreSetting;
   saveTemporaryState: () => void;
   updateScore: UpdateScore;
-  validationHandler: (id: string, isValid: boolean) => void;
+  validationHandler: (id: string, isValid: boolean | null) => void;
 }
 
 export default function ScoreSetting(props: ScoreSettingProps) {
@@ -55,6 +56,7 @@ export default function ScoreSetting(props: ScoreSettingProps) {
         label="Name *"
         onBlur={props.saveTemporaryState}
         onChange={(event) => props.updateScore(props.index, 'name', event.target.value) }
+        propValidation={props.propValidation}
         value={props.score.name}
         validate={props.validationHandler}
       />
@@ -67,6 +69,7 @@ export default function ScoreSetting(props: ScoreSettingProps) {
           const normalizedValue = toRealCutSpeed(asInteger(event.target.value));
           props.updateScore(props.index, 'speed', normalizedValue);
         }}
+        propValidation={props.propValidation}
         value={toDisplayCutSpeed(props.score.speed)}
         validate={props.validationHandler}
       />
@@ -85,6 +88,7 @@ export default function ScoreSetting(props: ScoreSettingProps) {
           const nextMaxPower = !maxPower;
           props.updateScore(props.index,'power', (nextMaxPower) ? 100 : 99);
         }}
+        propValidation={props.propValidation}
         value={toDisplayPower(props.score.power)}
         validate={props.validationHandler}
       />
@@ -96,6 +100,7 @@ export default function ScoreSetting(props: ScoreSettingProps) {
           const normalizedValue = asInteger(event.target.value);
           props.updateScore(props.index, 'passes', normalizedValue);
         }}
+        propValidation={props.propValidation}
         value={props.score.passes}
       />
       <InputNumber
@@ -105,6 +110,7 @@ export default function ScoreSetting(props: ScoreSettingProps) {
           const normalizedValue = precisionRound(asFloat(event.target.value), 3);
           props.updateScore(props.index, 'focalOffset', normalizedValue);
         }}
+        propValidation={props.propValidation}
         value={props.score.focalOffset}
       />
     </>

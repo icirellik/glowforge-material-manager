@@ -7,9 +7,10 @@ import { asFloat } from '../lib/utils';
 type MaterialSettingsProps = {
   action: EditorMode;
   material: PluginMaterial;
+  propValidation?: {[key: string]: boolean | null};
   saveTemporaryState: () => void;
   updateMaterial: UpdateMaterial;
-  validationHandler: (id: string, isValid: boolean) => void;
+  validationHandler: (id: string, isValid: boolean | null) => void;
 }
 
 export default function MaterialSettings(props: MaterialSettingsProps) {
@@ -23,6 +24,7 @@ export default function MaterialSettings(props: MaterialSettingsProps) {
         isDisabled={props.action === 'EDIT'}
         onBlur={props.saveTemporaryState}
         onChange={(event) => props.updateMaterial('thickName', event.target.value) }
+        propValidation={props.propValidation}
         value={props.material.thickName}
         validate={props.validationHandler}
       />
@@ -31,6 +33,7 @@ export default function MaterialSettings(props: MaterialSettingsProps) {
         isDisabled={props.action === 'EDIT'}
         onBlur={props.saveTemporaryState}
         onChange={(event) => props.updateMaterial('name', event.target.value) }
+        propValidation={props.propValidation}
         value={props.material.name}
         validate={props.validationHandler}
       />
@@ -38,6 +41,7 @@ export default function MaterialSettings(props: MaterialSettingsProps) {
         label="Thickness (mm) *"
         onBlur={props.saveTemporaryState}
         onChange={(event) => props.updateMaterial('thickness', asFloat(event.target.value)) }
+        propValidation={props.propValidation}
         value={props.material.thickness}
         validate={props.validationHandler}
       />
