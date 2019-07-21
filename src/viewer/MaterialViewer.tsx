@@ -49,7 +49,7 @@ export default function MaterialViewer(props: MaterialViewerProps) {
         <p className="viewer__value">{material.thickName}</p>
       </div>
       <div className="viewer__row">
-        <p className="viewer__label">Material Name:</p>
+        <p className="viewer__label">Material Name</p>
         <p className="viewer__value">{material.name}</p>
       </div>
       <div className="viewer__row">

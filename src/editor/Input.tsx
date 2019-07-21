@@ -10,8 +10,9 @@ interface InputProps {
   value: any;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  propValidation?: {[key: string]: boolean | null};
   // Is set then the field will be validated and this callback will be called.
-  validate?: (id: string, isValid: boolean) => void;
+  validate?: (id: string, isValid: boolean | null) => void;
 }
 
 interface InputNumberProps extends InputProps {
@@ -24,12 +25,7 @@ interface InputNumberWithCheckBoxProps extends InputNumberProps {
   onChecked: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-interface InputState {
-  firstRender: boolean;
-  valid: boolean;
-}
-
-export class InputText extends React.Component<InputProps, InputState> {
+export class InputText extends React.Component<InputProps> {
 
   private id: string;
 
@@ -38,16 +34,11 @@ export class InputText extends React.Component<InputProps, InputState> {
 
     this.id = uuid();
 
-    let valid = true;
-    if (this.props.validate) {
-      valid = !!props.value;
-      this.props.validate(this.id, !!props.value);
+    if (this.props.validate && props.value) {
+      this.validate(props.value);
+    } else if (this.props.validate) {
+      this.props.validate(this.id, null);
     }
-
-    this.state = {
-      firstRender: true,
-      valid,
-    };
 
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -70,26 +61,26 @@ export class InputText extends React.Component<InputProps, InputState> {
   }
 
   validate(value: any) {
-    if (this.props.validate && this.state.valid !== !!value) {
+    if (this.props.validate) {
       this.props.validate(this.id, !!value);
-      this.setState({
-        firstRender: false,
-        valid: !!value,
-      });
-    } else {
-      this.setState({
-        firstRender: false,
-      });
     }
   }
 
   render() {
     const props = this.props;
+    let className: string | undefined;
+    if (
+      props.validate && props.propValidation &&
+      props.propValidation[this.id] !== null &&
+      props.propValidation[this.id] !== undefined
+    ) {
+      className = (!props.propValidation[this.id]) ? 'invalid' : undefined;
+    }
     return (
       <div className="form-field">
         <label>{props.label}</label>
         <input
-          className={(!this.state.valid && !this.state.firstRender) ? "invalid" : undefined}
+          className={className}
           disabled={props.isDisabled}
           onBlur={this.onBlur}
           onChange={this.onChange}
@@ -101,7 +92,7 @@ export class InputText extends React.Component<InputProps, InputState> {
   }
 }
 
-export class InputNumber extends React.Component<InputNumberProps, InputState> {
+export class InputNumber extends React.Component<InputNumberProps> {
 
   private id: string;
 
@@ -110,16 +101,11 @@ export class InputNumber extends React.Component<InputNumberProps, InputState> {
 
     this.id = uuid();
 
-    let valid = true;
-    if (this.props.validate) {
-      valid = !!props.value;
-      this.props.validate(this.id, !!props.value);
+    if (this.props.validate && props.value) {
+      this.validate(props.value);
+    } else if (this.props.validate) {
+      this.props.validate(this.id, null);
     }
-
-    this.state = {
-      firstRender: true,
-      valid,
-    };
 
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -167,6 +153,14 @@ export class InputNumber extends React.Component<InputNumberProps, InputState> {
 
   render() {
     const props = this.props;
+    let className: string | undefined;
+    if (
+      props.validate && props.propValidation &&
+      props.propValidation[this.id] !== null &&
+      props.propValidation[this.id] !== undefined
+    ) {
+      className = (!props.propValidation[this.id]) ? "invalid" : undefined
+    }
 
     let help: React.ReactElement | null = null;
     if (props.help) {
@@ -176,7 +170,7 @@ export class InputNumber extends React.Component<InputNumberProps, InputState> {
       <div className="form-field">
         <label>{props.label}{help}</label>
         <input
-          className={(!this.state.valid && !this.state.firstRender) ? "invalid" : undefined}
+          className={className}
           disabled={props.isDisabled}
           max={props.max}
           min={props.min}
@@ -190,7 +184,7 @@ export class InputNumber extends React.Component<InputNumberProps, InputState> {
   }
 }
 
-export class InputNumberWithCheckbox extends React.Component<InputNumberWithCheckBoxProps, InputState> {
+export class InputNumberWithCheckbox extends React.Component<InputNumberWithCheckBoxProps> {
 
   private id: string;
 
@@ -199,16 +193,11 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
 
     this.id = uuid();
 
-    let valid = true;
-    if (this.props.validate) {
-      valid = !!props.value;
-      this.props.validate(this.id, !!props.value);
+    if (this.props.validate && props.value) {
+      this.validate(props.value);
+    } else if (this.props.validate) {
+      this.props.validate(this.id, null);
     }
-
-    this.state = {
-      firstRender: true,
-      valid,
-    };
 
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -262,6 +251,14 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
 
   render() {
     const props = this.props;
+    let className: string | undefined;
+    if (
+      props.validate && props.propValidation &&
+      props.propValidation[this.id] !== null &&
+      props.propValidation[this.id] !== undefined
+    ) {
+      className = (!props.propValidation[this.id]) ? "invalid" : undefined
+    }
     return (
       <div className="form-field">
         <div className="form-field-right">
@@ -276,7 +273,7 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
           />
         </div>
         <input
-          className={(!this.state.valid && !this.state.firstRender) ? "invalid" : undefined}
+          className={className}
           disabled={props.isDisabled}
           max={props.max}
           min={props.min}

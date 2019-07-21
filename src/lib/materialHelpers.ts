@@ -7,7 +7,7 @@ import {
 
 export interface TempMaterial extends PluginMaterial {
   propValidation: {
-    [key: string]: boolean,
+    [key: string]: boolean | null,
   };
 }
 

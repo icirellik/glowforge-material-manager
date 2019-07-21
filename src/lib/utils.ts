@@ -85,3 +85,32 @@ export async function hashTitle(material: PluginMaterial) {
 export async function hashMaterial(material: PluginMaterial) {
   return await sha1(JSON.stringify(toFullMaterial(toTinyMaterial(material))));
 }
+
+/**
+ * Checks to see if two objects are equivalant.
+ */
+export function isEquivalentObject(obj1: {[key: string]: unknown}, obj2: {[key: string]: unknown}): boolean {
+  // Create arrays of property names
+  const obj1Props = Object.getOwnPropertyNames(obj1);
+  const obj2Props = Object.getOwnPropertyNames(obj2);
+
+  // If number of properties is different,
+  // objects are not equivalent
+  if (obj1Props.length !== obj2Props.length) {
+    return false;
+  }
+
+  for (let i = 0; i < obj1Props.length; i++) {
+    const propName = obj1Props[i];
+
+    // If values of same property are not equal,
+    // objects are not equivalent
+    if (obj1[propName] !== obj2[propName]) {
+      return false;
+    }
+  }
+
+  // If we made it this far, objects
+  // are considered equivalent
+  return true;
+}

@@ -12,11 +12,12 @@ export type UpdateScore =
 
 type ScoreSettingsProps = {
   addScore: AddScore;
+  propValidation?: {[key: string]: boolean | null};
   removeScore: RemoveScore;
   scores: PluginScoreSetting[];
   saveTemporaryState: () => void;
   updateScore: UpdateScore;
-  validationHandler: (id: string, isValid: boolean) => void;
+  validationHandler: (id: string, isValid: boolean | null) => void;
 }
 
 export default function ScoreSettings(props: ScoreSettingsProps) {
@@ -40,6 +41,7 @@ export default function ScoreSettings(props: ScoreSettingsProps) {
           return (
             <ScoreSetting
               index={index}
+              propValidation={props.propValidation}
               score={score}
               saveTemporaryState={props.saveTemporaryState}
               removeScore={props.removeScore}

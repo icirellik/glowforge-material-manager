@@ -22,9 +22,10 @@ export type UpdateCut = <K extends keyof PluginCutSetting>(prop: K, value: Plugi
 
 interface CutSettingsProps {
   cut: PluginCutSetting;
+  propValidation?: {[key: string]: boolean | null};
   saveTemporaryState: () => void;
   updateCut: UpdateCut;
-  validationHandler: (id: string, isValid: boolean) => void;
+  validationHandler: (id: string, isValid: boolean | null) => void;
 }
 
 export default function CutSettings(props: CutSettingsProps) {
@@ -40,6 +41,7 @@ export default function CutSettings(props: CutSettingsProps) {
         min="100"
         onBlur={props.saveTemporaryState}
         onChange={(event) => props.updateCut('speed', toRealCutSpeed(asInteger(event.target.value))) }
+        propValidation={props.propValidation}
         value={toDisplayCutSpeed(props.cut.speed)}
         validate={props.validationHandler}
       />
@@ -55,6 +57,7 @@ export default function CutSettings(props: CutSettingsProps) {
           const nextMaxPower = !maxPower;
           props.updateCut('power', (nextMaxPower) ? 100 : 99);
         }}
+        propValidation={props.propValidation}
         value={toDisplayPower(props.cut.power)}
         validate={props.validationHandler}
       />
@@ -63,12 +66,14 @@ export default function CutSettings(props: CutSettingsProps) {
         min="1"
         onBlur={props.saveTemporaryState}
         onChange={(event) => props.updateCut('passes', asInteger(event.target.value)) }
+        propValidation={props.propValidation}
         value={props.cut.passes}
       />
       <InputNumber
         label="Focal Offset (mm)"
         onBlur={props.saveTemporaryState}
         onChange={(event) => props.updateCut('focalOffset', precisionRound(asFloat(event.target.value), 3)) }
+        propValidation={props.propValidation}
         value={props.cut.focalOffset}
       />
     </>
