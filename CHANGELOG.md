@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.2
+
+* Fixes several quirks with synchronizing materials.
+* Enables validation on form submit.
+
 ## 0.4.1
 
 * QR Code detection enhancements.
