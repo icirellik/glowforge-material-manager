@@ -19,10 +19,18 @@ export default function MaterialHome(props: MaterialHomeProps) {
   return (
     <>
       <div className="intro">
-        <p>The Glowforge material manager allows you to create custom materials
-          for your Glowforge. These differ from the custom settings that Glowforge
-          has implemented as they automatically populate all the settings you need
-          when a material is selected.
+        <p>
+          The Glowforge Material Manager allows you to create custom materials
+          for your Glowforge. These are different from the custom settings that
+          Glowforge has implemented as they will populate Cut, Score, and Engrave
+          settings automatically when you select one. Just like Proofgrade
+          materials would.
+        </p>
+        <p>
+          The material manager also create printable, engravable, whateverable
+          QR codes for each material that you create. If these QR codes are
+          detected in your Glowforge then the settings will be set automatically
+          for you.
         </p>
         <h3>Actions</h3>
         <ul>
