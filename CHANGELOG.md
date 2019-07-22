@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.3
+
+* Add quick backup management solution.
+* Add backup task before migrating to `0.4.x`.
+* Better QR Code detection.
+
 ## 0.4.2
 
 * Fixes several quirks with synchronizing materials.
