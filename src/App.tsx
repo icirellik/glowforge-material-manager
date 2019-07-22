@@ -1,5 +1,7 @@
 import React from 'react';
+import MaterialButtonBar from './MaterialButtonBar';
 import MaterialEditor from './editor/MaterialEditor';
+import MaterialHome from './MaterialHome';
 import MaterialList from './MaterialList';
 import MaterialViewer from './viewer/MaterialViewer';
 import Message from './Message';
@@ -24,6 +26,9 @@ import {
   sendMessage,
   getRawMaterials,
   getGlowforgeMaterials,
+  StorageLocal,
+  getBackups,
+  storeBackup,
 } from './lib/chromeWrappers';
 import {
   TempMaterial,
@@ -31,14 +36,13 @@ import {
   createEmptyMaterial,
   MultiSettingFunctionsDefaults,
 } from './lib/materialHelpers';
-import './App.css';
-import { PluginMaterial } from './material/materialPlugin';
-import { GFMaterial } from './material/materialGlowforge';
-import { sha1 } from './lib/crypto';
 import { AppHeader } from './AppHeader';
-import MaterialButtonBar from './MaterialButtonBar';
-import MaterialHome from './MaterialHome';
+import { BackupViewer } from './BackupViewer';
+import { GFMaterial } from './material/materialGlowforge';
+import { PluginMaterial } from './material/materialPlugin';
+import { sha1 } from './lib/crypto';
 import { syncronizeMaterials } from './material/material.sync';
+import './App.css';
 
 // General Material Management Methoods
 export type AddMaterial = () => Promise<void>;
@@ -84,9 +88,10 @@ interface IMessenger {
 export type ForceSyncronize = () => Promise<void>;
 
 // Editor Modes
-export type EditorMode =  'DISPLAY' | 'ADD' | 'EDIT' | 'DUPLICATE' | 'SELECTED';
+export type EditorMode =  'BACKUP' | 'DISPLAY' | 'ADD' | 'EDIT' | 'DUPLICATE' | 'SELECTED';
 export type EditorModeChange = (mode: EditorMode, material: TempMaterial) => Promise<void>;
 export type ModeAdd = (material?: TempMaterial) => Promise<void>;
+export type ModeBackup = () => Promise<void>;
 export type ModeDefault = () => Promise<void>;
 export type ModeEdit = (title: string) => Promise<void>;
 export type ModeSelect = (title: string) => Promise<void>;
@@ -94,10 +99,14 @@ export type ModeSelect = (title: string) => Promise<void>;
 interface IEditorMode {
   changeEditorMode: EditorModeChange;
   setEditorModeAdd: ModeAdd;
+  setEditorModeBackup: ModeBackup;
   setEditorModeDefault: ModeDefault
   setEditorModeEdit: ModeEdit;
   setEditorModeSelect: ModeSelect;
 }
+
+// Backups
+export type CreateBackup = () => void;
 
 // App Props + State
 interface AppProps {
@@ -108,6 +117,8 @@ interface AppProps {
 interface AppState {
   // The current editor mode.
   action: EditorMode;
+  // Tracks all the backups that have been taken.
+  backups: {[key: string]: StorageLocal};
   // The number of cloud bytes that are currently being used.
   cloudStorageBytesUsed: number;
   // The last time a cloud sync modified the local data.
@@ -143,6 +154,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     super(props);
     this.state = {
       action: 'DISPLAY',
+      backups: {},
       cloudStorageBytesUsed: 0,
       lastCloudSync: null,
       message: null,
@@ -158,6 +170,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // Modes
     this.setEditorModeAdd = this.setEditorModeAdd.bind(this);
+    this.setEditorModeBackup = this.setEditorModeBackup.bind(this);
     this.setEditorModeDefault = this.setEditorModeDefault.bind(this);
     this.setEditorModeEdit = this.setEditorModeEdit.bind(this)
     this.setEditorModeSelect = this.setEditorModeSelect.bind(this)
@@ -185,6 +198,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // Validaton
     this.validationHandler = this.validationHandler.bind(this);
+
+    // Backups
+    this.createBackup = this.createBackup.bind(this);
   }
 
   private displayRef: React.RefObject<HTMLDivElement> = React.createRef();
@@ -196,11 +212,15 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     // Get the initial state from local storage.
     const localStorage = await getLocalStorage();
 
+    // Check for any backuos.
+    const backups = await getBackups();
+
     if (localStorage.tempMaterial) {
       // Clear any old validations
       localStorage.tempMaterial.propValidation = {};
       this.setState({
         action: 'ADD',
+        backups,
         cloudStorageBytesUsed,
         materials: localStorage.materials!,
         message: {
@@ -213,6 +233,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     } else {
       this.setState({
         cloudStorageBytesUsed,
+        backups,
         materials: localStorage.materials!,
         rawMaterials: localStorage.rawMaterials!,
         synchronized: !localStorage.shouldUpdate,
@@ -710,6 +731,13 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   }
 
   /**
+   * Sets the editor mode to backup.
+   */
+  async setEditorModeBackup() {
+    await this.changeEditorMode('BACKUP');
+  }
+
+  /**
    * Cancels the current input mode, resetting the material state and clearing
    * any system messages.
    */
@@ -718,7 +746,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   }
 
   /**
-   * Chenges the editor mode to duplication.
+   * Changes the editor mode to duplication.
    *
    * @param material The duplicate material.
    */
@@ -779,6 +807,19 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     });
   }
 
+  // Backups
+  // =================================================================
+  async createBackup() {
+    const backupName: string = `${(new Date()).toISOString()}`;
+    const backup = await getLocalStorage();
+    await storeBackup(backupName, backup);
+    const backups = await getBackups();
+
+    this.setState({
+      backups,
+    });
+  }
+
   render() {
     let displayPanel: JSX.Element | null = null;
     switch (this.state.action) {
@@ -789,6 +830,14 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
             materials={this.state.rawMaterials}
             rawSvg={this.state.rawSvg}
             setEditorModeAdd={this.setEditorModeAdd}
+            setEditorModeBackup={this.setEditorModeBackup}
+          />
+        );
+        break;
+      case 'BACKUP':
+        displayPanel = (
+          <BackupViewer
+            backups={this.state.backups}
           />
         );
         break;
@@ -840,6 +889,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
               <MaterialButtonBar
                 addMaterial={this.addMaterial}
                 copyMaterial={this.copyMaterial}
+                createBackup={this.createBackup}
                 editMaterial={this.editMaterial}
                 editorMode={this.state.action}
                 previousTitle={this.state.previousTitle}

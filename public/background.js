@@ -68,7 +68,7 @@ function verifyTypes(material) {
 
 // QR Code
 // ===================================================================
-const QR_IMAGE_SCALES = [1, 0.75, 0.5, 0.25, 0.1];
+const QR_IMAGE_SCALES = [1, 0.9, 0.87, 0.75, 0.6, 0.5, 0.4, 0.25, 0.2, 0.1, 0.05];
 
 /**
  * Takes an image url and converts it to an image data at a 0.25 scale.

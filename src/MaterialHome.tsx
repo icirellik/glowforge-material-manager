@@ -1,12 +1,13 @@
 import React from 'react';
 import { PluginMaterial } from './material/materialPlugin';
 import './MaterialHome.css'
-import { ModeAdd } from './App';
+import { ModeAdd, ModeBackup } from './App';
 
 interface MaterialHomeProps {
   materials: PluginMaterial[],
   rawSvg: string | null;
   setEditorModeAdd: ModeAdd;
+  setEditorModeBackup: ModeBackup;
 }
 
 export default function MaterialHome(props: MaterialHomeProps) {
@@ -25,8 +26,9 @@ export default function MaterialHome(props: MaterialHomeProps) {
         </p>
         <h3>Actions</h3>
         <ul>
-          <li className="materialHome__menuItem" onClick={() => {props.setEditorModeAdd(); }}>New Material</li>
+          <li className="materialHome__menuItem" onClick={() => { props.setEditorModeAdd(); }}>New Material</li>
           <li>{svg}</li>
+          <li className="materialHome__menuItem" onClick={() => { props.setEditorModeBackup(); }}>Manage Backups</li>
         </ul>
       </div>
     </>

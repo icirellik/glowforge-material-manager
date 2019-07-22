@@ -1,6 +1,6 @@
 import { getLocalStorage, storeBackup } from "../lib/chromeWrappers";
 
-const BACKUP_NAME = '0.3.x';
+const BACKUP_NAME = '0.3.x-migration';
 
 /**
  * Backs up the 0.3.x materials before running the 0.4.x migrations
