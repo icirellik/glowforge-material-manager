@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.4
+
+* Updating some of the copy-text.
+
 ## 0.4.3
 
 * Add quick backup management solution.
