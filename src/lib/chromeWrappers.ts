@@ -50,6 +50,21 @@ export async function getLocalStorage(): Promise<StorageLocal> {
 }
 
 /**
+ * Gets all the backups.
+ */
+export async function getBackups(): Promise<{[key: string]: StorageLocal}> {
+  return new Promise(resolve => {
+    window.chrome.storage.local.get(null, (result: StorageLocal) => {
+      if (result && result.backup) {
+        resolve(result.backup);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+/**
  * Gets a backup from local storage.
  *
  * @param backupName
@@ -75,12 +90,16 @@ export async function getBackup(backupName: string): Promise<StorageLocal | unde
 export async function storeBackup(backupName: string, backup: StorageLocal): Promise<boolean> {
   return new Promise(resolve => {
     window.chrome.storage.local.get(null, (results: StorageLocal) => {
-      let previousBackups = results.backup;
+      const previousBackups = results.backup;
+      delete backup.backup;
+
+      const backups = {
+        ...previousBackups,
+        [backupName]: backup,
+      };
+      console.log(backups)
       window.chrome.storage.local.set({
-        'backup': {
-          ...previousBackups,
-          [backupName]: backup,
-        },
+        backup: backups,
       }, () => {
         resolve(true);
       });

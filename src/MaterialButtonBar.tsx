@@ -2,6 +2,7 @@ import React from 'react';
 import {
   AddMaterial,
   CopyMaterial,
+  CreateBackup,
   EditMaterial,
   EditorMode,
   ModeAdd,
@@ -13,16 +14,22 @@ import {
 import './MaterialButtonBar.css';
 
 interface MaterialButtonBarProps {
+  // Material editing
   addMaterial: AddMaterial;
   copyMaterial: CopyMaterial;
   editMaterial: EditMaterial;
   setMaterial: SetMaterial;
 
+  // Mode changes
   setEditorModeAdd: ModeAdd;
   setEditorModeDefault: ModeDefault;
   setEditorModeEdit: ModeEdit;
   setEditorModeSelect: ModeSelect;
 
+  // Backup editing
+  createBackup: CreateBackup;
+
+  // Current props
   editorMode: EditorMode;
   previousTitle: string | null;
   title: string;
@@ -41,6 +48,19 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
             onClick={() => { props.setEditorModeDefault(); }}
             title="Cancel"
           >Cancel</button>
+        </div>
+      );
+    case 'BACKUP':
+      return (
+        <div className="materialButtons">
+          <button
+            onClick={() => { props.setEditorModeDefault(); }}
+            title="Home"
+          >Home</button>
+          <button
+            onClick={async () => { props.createBackup(); }}
+            title="Creates a new backup of all your materials."
+          >Take Backup</button>
         </div>
       );
     case 'DUPLICATE':
