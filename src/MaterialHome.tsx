@@ -20,16 +20,17 @@ export default function MaterialHome(props: MaterialHomeProps) {
     <>
       <div className="intro">
         <p>
-          The Glowforge Material Manager allows you to manager custom materials
+          The Glowforge Material Manager allows you to manage custom materials
           for your Glowforge. These are different from the custom settings that
           Glowforge has implemented as they will populate the Cut, Score, and
           Engrave settings automatically when you select one. In the same way
           that Proofgrade materials would.
         </p>
+        <br/>
         <p>
           The material manager also creates a unique QR Code for each material.
           You can download the QR code and print, engrave, or even order your
-          own custom stickers and if one of these QR codes is detected in your
+          own custom stickers. And, if one of these QR codes is detected in your
           Glowforge then the material will automatically be set for you, just
           like it would with Proofgrade materials.
         </p>
