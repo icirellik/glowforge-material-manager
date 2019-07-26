@@ -3,6 +3,7 @@
   flex-direction: column;
   flex-grow: 1;
   border-right: #efefef 1px solid;
+  max-width: 224px;
 }
 
 .materialList h3 {
@@ -59,7 +60,7 @@
   align-items: center;
   flex-grow: 1;
 
-  max-width: 159px;
+  max-width: 145px;
   line-height: 18px;
 }
 
