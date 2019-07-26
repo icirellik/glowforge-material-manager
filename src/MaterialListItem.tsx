@@ -13,6 +13,7 @@ interface MaterialProps {
   selected: boolean;
   selectMaterial: ModeSelect;
   setMaterial: SetMaterial;
+  styles: any;
 }
 
 export default function MaterialListItem(props: MaterialProps) {
@@ -20,17 +21,18 @@ export default function MaterialListItem(props: MaterialProps) {
     material,
     selectMaterial,
     setMaterial,
+    styles,
   } = props
   const title = `${material.thickName} ${material.name}`;
   return (
     <div className={`materialList__item ${(props.selected) ? 'materialList__item__selected' : ''}`}>
       <span
+        style={styles}
         onClick={() => selectMaterial(title)}
         className="materialList__itemName"
         title={title}
       >
         <span className="materialList__itemName__ellipsis">{title}</span>
-
       </span>
       <IconOpenInBrowser
         click={() => setMaterial(title)}
