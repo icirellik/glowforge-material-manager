@@ -32,11 +32,13 @@ export default function MaterialVectorEngravesViewer(props: MaterialVectorEngrav
               </div>
               <div className="viewer__row">
                 <p className="viewer__label">Speed</p>
-                <p className="viewer__value">{toDisplayEngraveSpeed(vector.speed)} ({precisionRound(vector.speed, 2)})</p>
+                <p className="viewer__value">{toDisplayEngraveSpeed(vector.speed)}</p>
+                <p className="viewer__glowforge">{precisionRound(vector.speed, 2)}</p>
               </div>
               <div className="viewer__row">
                 <p className="viewer__label">Power</p>
-                <p className="viewer__value">{toDisplayPowerWords(vector.power)} ({precisionRound(vector.power, 2)})</p>
+                <p className="viewer__value">{toDisplayPowerWords(vector.power)}</p>
+                <p className="viewer__glowforge">{precisionRound(vector.power, 2)}</p>
               </div>
               <div className="viewer__row">
                 <p className="viewer__label">Passes</p>
@@ -48,7 +50,8 @@ export default function MaterialVectorEngravesViewer(props: MaterialVectorEngrav
               </div>
               <div className="viewer__row" style={{marginBottom: '10px'}}>
                 <p className="viewer__label">Scan Gap</p>
-                <p className="viewer__value">{vector.scanGap}, LPI {toDisplayLinesPerInch(vector.scanGap)}</p>
+                <p className="viewer__value">{toDisplayLinesPerInch(vector.scanGap)} LPI</p>
+                <p className="viewer__glowforge">{vector.scanGap}</p>
               </div>
               {(props.vectors.length > 1 && index !== props.vectors.length - 1) ? <hr /> : null}
             </>

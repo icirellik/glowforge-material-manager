@@ -32,11 +32,13 @@ export default function MaterialBitmapEngravesViewer(props: MaterialBitmapEngrav
               </div>
               <div className="viewer__row">
                 <p className="viewer__label">Speed</p>
-                <p className="viewer__value">{toDisplayEngraveSpeed(bitmap.speed)} ({precisionRound(bitmap.speed, 2)})</p>
+                <p className="viewer__value">{toDisplayEngraveSpeed(bitmap.speed)}</p>
+                <p className="viewer__glowforge">{precisionRound(bitmap.speed, 2)}</p>
               </div>
               <div className="viewer__row">
                 <p className="viewer__label">Power</p>
-                <p className="viewer__value">{toDisplayPowerWords(bitmap.power)} ({precisionRound(bitmap.power, 2)})</p>
+                <p className="viewer__value">{toDisplayPowerWords(bitmap.power)}</p>
+                <p className="viewer__glowforge">{precisionRound(bitmap.power, 2)}</p>
               </div>
               <div className="viewer__row">
                 <p className="viewer__label">Passes</p>
@@ -48,7 +50,8 @@ export default function MaterialBitmapEngravesViewer(props: MaterialBitmapEngrav
               </div>
               <div className="viewer__row" style={{marginBottom: '10px'}}>
                 <p className="viewer__label">Scan Gap</p>
-                <p className="viewer__value">{bitmap.scanGap}, LPI {toDisplayLinesPerInch(bitmap.scanGap)}</p>
+                <p className="viewer__value">{toDisplayLinesPerInch(bitmap.scanGap)} LPI</p>
+                <p className="viewer__glowforge">{bitmap.scanGap}</p>
               </div>
               {(props.bitmaps.length > 1 && index !== props.bitmaps.length - 1) ? <hr /> : null}
             </>
