@@ -3,11 +3,10 @@
   flex-direction: column;
   flex-grow: 1;
   border-right: #efefef 1px solid;
-  max-width: 224px;
 }
 
 .materialList h3 {
-  margin: 16px 16px 8px 16px;
+  margin: 16px 16px 12px 16px;
 }
 
 .materialList__search {
@@ -27,6 +26,15 @@
 .materialList__container {
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 404px;
+}
+
+.materialList__containerScroll {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .materialList__item {
@@ -60,7 +68,7 @@
   align-items: center;
   flex-grow: 1;
 
-  max-width: 145px;
+  max-width: 159px;
   line-height: 18px;
 }
 

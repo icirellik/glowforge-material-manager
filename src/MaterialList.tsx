@@ -30,6 +30,8 @@ interface MaterialListCreateFromSearchProps {
   setEditorModeAdd: ModeAdd;
 }
 
+const SCROLL_BAR_APPEARS = 13;
+
 function MaterialListCreateFromSearch(props: MaterialListCreateFromSearchProps) {
   return (
     <p className="materialList__create" onClick={() => {
@@ -105,6 +107,7 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
     }).map(material => {
       return (
         <MaterialListItem
+          styles={materials.length < SCROLL_BAR_APPEARS ? { maxWidth: '159px'} : undefined}
           material={material}
           selected={`${material.thickName} ${material.name}` === `${this.props.tempMaterial.thickName} ${this.props.tempMaterial.name}`}
           selectMaterial={this.props.selectMaterial}
@@ -122,7 +125,12 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
         materialList = (
           <>
             <div className="materialList__container">
-              {materialElements}
+              <div
+                className="materialList__containerScroll"
+                style={materials.length > SCROLL_BAR_APPEARS ? { maxWidth: '224px'} : undefined}
+              >
+                {materialElements}
+              </div>
             </div>
             <MaterialListCreateFromSearch
               name={this.state.filter}
@@ -136,7 +144,12 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
     } else if (materialElements.length > 0) {
       materialList = (
         <div className="materialList__container">
-          {materialElements}
+          <div
+            className="materialList__containerScroll"
+            style={materials.length > SCROLL_BAR_APPEARS ? { maxWidth: '224px'} : undefined}
+          >
+            {materialElements}
+          </div>
         </div>
       );
     } else if (this.state.filter && materialElements.length === 0) {
@@ -157,22 +170,24 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
 
     return (
       <div className="materialList">
-        <h3>Custom Materials</h3>
-        <div className="materialList__search">
-          <input
-            className="materialList__search__input"
-            onChange={this.onFilterChange}
-            placeholder="Search"
-            type="text"
-            value={this.state.filter}
-          />
-          <IconClear
-            className="materialList__search__clear"
-            click={this.clearFilter}
-            height="18px"
-            title="Clear Search"
-            width="18px"
-          />
+        <div style={{height: '94px'}}>
+          <h3>Custom Materials</h3>
+          <div className="materialList__search">
+            <input
+              className="materialList__search__input"
+              onChange={this.onFilterChange}
+              placeholder="Search"
+              type="text"
+              value={this.state.filter}
+            />
+            <IconClear
+              className="materialList__search__clear"
+              click={this.clearFilter}
+              height="18px"
+              title="Clear Search"
+              width="18px"
+            />
+          </div>
         </div>
         {materialList}
       </div>
