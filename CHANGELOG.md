@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.7
+
+* Eat redux store errors.
+* Don't scroll the search box.
+
 ## 0.4.4-0.4.6
 
 * Updating some of the copy-text.
