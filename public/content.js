@@ -222,19 +222,24 @@ function checkLoadedDesignIds(loadedDesignIds) {
  * Subscribe to redux store changes.
  */
 window.store.subscribe(() => {
-  const state = window.store.getState().toJSON();
+  try {
+    const state = window.store.getState().toJSON();
 
-  // If there is at least on machine attempt to detect a QR code in the bed.s
-  if (Object.keys(state.machines.machineMap).length > 0) {
-    const { preloadedLidImage, bedImage } = state.machines.machineMap[Object.keys(state.machines.machineMap)];
-    checkLidImage(preloadedLidImage, bedImage.isInvalidated);
-  }
-
-  // Track the different loaded designs so that we can download the trace.
-  if (state.workspace.present) {
-    const present = state.workspace.present.toJSON();
-    if (present.loadedDesignIds.length > 0) {
-      checkLoadedDesignIds(present.loadedDesignIds);
+    // If there is at least on machine attempt to detect a QR code in the bed.s
+    if (Object.keys(state.machines.machineMap).length > 0) {
+      const { preloadedLidImage, bedImage } = state.machines.machineMap[Object.keys(state.machines.machineMap)];
+      checkLidImage(preloadedLidImage, bedImage.isInvalidated);
     }
+
+    // Track the different loaded designs so that we can download the trace.
+    if (state.workspace.present) {
+      const present = state.workspace.present.toJSON();
+      if (present.loadedDesignIds.length > 0) {
+        checkLoadedDesignIds(present.loadedDesignIds);
+      }
+    }
+  } catch (e) {
+    // Don't send my errors to GlowForge.
+    log(`store error: ${e}`);
   }
 });
