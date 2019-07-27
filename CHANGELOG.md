@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.9
+
+* Update the material search to display create material first.
+
 ## 0.4.8
 
 * Properly use the selected machine when multiple machines are present.
