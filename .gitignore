@@ -29,3 +29,5 @@ releases
 
 *.crx
 *.pem
+
+dispatch-actions/
