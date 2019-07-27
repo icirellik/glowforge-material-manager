@@ -4,6 +4,7 @@
 const PROD_MODE = ('update_url' in chrome.runtime.getManifest());
 function log(message) {
   if (!PROD_MODE) {
+    // eslint-disable-next-line
     console.log(message);
   }
 }
@@ -154,6 +155,21 @@ function forceRefresh() {
 }
 
 /**
+ * Updates the currently selected machine.
+ */
+function handleMachineSerial(message) {
+  if (message.serial) {
+    storeUISettings({
+      serial: message.serial,
+    });
+  } else {
+    storeUISettings({
+      serial: null,
+    });
+  }
+}
+
+/**
  * Updates the list of design ids in local storage.
  */
 function handleDesignIdsMessage(message) {
@@ -209,6 +225,8 @@ chrome.runtime.onMessageExternal.addListener(
     log(`message: ${request.type}`);
     if (request.type === 'lidImage') {
       checkForQRCode(request);
+    } else if (request.type === 'machineSerial') {
+      handleMachineSerial(request);
     } else if (request.type === 'loadedDesignIds') {
       handleDesignIdsMessage(request);
     } else if (request.type === 'checkMessages') {

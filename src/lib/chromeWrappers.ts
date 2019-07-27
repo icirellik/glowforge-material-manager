@@ -11,6 +11,7 @@ export type SynchronizedMaterials = {
 
 export interface UISettings {
   loadedDesignId: string | null;
+  serial: string | null;
 }
 
 export interface StorageLocal {

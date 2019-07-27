@@ -1,13 +1,14 @@
 import React from 'react';
 import SyncStatus from './SyncStatus';
-import IconRefresh from './icons/IconRefresh';
 import logo from './logo.svg';
+import { ForceSyncronize } from './App';
 import './AppHeader.css';
 
 interface AppHeaderProps {
   cloudStorageBytesUsed: number;
   connected: boolean;
-  forceSyncronize: any;
+  forceSyncronize: ForceSyncronize;
+  serial: string | null;
   synchronized: boolean;
 }
 
@@ -16,18 +17,11 @@ export function AppHeader(props: AppHeaderProps) {
     <header className="header">
       <div className="header__headline">
         <img src={logo} className="header__logo" alt="logo" />
-        <h1 className="header__title">Glowforge Material Manager</h1>
+        <h1 className="header__title">Glowforge Material Manager{props.serial ? ` - ${props.serial}` : undefined}</h1>
         <SyncStatus
           connected={props.connected}
           forceSync={props.forceSyncronize}
           synchronized={props.synchronized}
-        />
-        <IconRefresh
-          click={props.forceSyncronize}
-          fill="#FFF"
-          height="17px"
-          title="Synchronize with Glowforge UI"
-          width="17px"
         />
       </div>
       <div className="header_subline">

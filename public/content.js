@@ -1,3 +1,12 @@
+/** @typedef {import("./types").ReduxStore} ReduxStore */
+/** @typedef {import("./types").Window} WindowExt */
+/** @typedef {Window & WindowExt} ExtendedWindow */
+
+/**
+ * @type {ExtendedWindow}
+ */
+const localWindow = (window);
+
 // Develop:
 // Automatically set using your the runtime.
 //
@@ -6,10 +15,11 @@
 //
 // Webstore Prod:
 // const extensionId = 'adabmafjmdcjnihkmggljljeopjfghii';
-const { extensionId } = window;
+const { extensionId } = localWindow;
 
 function log(message) {
-  if (window.extensionDevMode) {
+  if (localWindow.extensionDevMode) {
+    // eslint-disable-next-line
     console.log(message);
   }
 }
@@ -20,7 +30,7 @@ function log(message) {
  * @param unitType Either `METRIC` or `IMPERIAL`
  */
 function setUnits(unitType) {
-  window.store.dispatch({
+  localWindow.store.dispatch({
     type: 'SET_UNITS',
     unitType,
   });
@@ -32,7 +42,7 @@ function setUnits(unitType) {
  * @param materialId The material id.
  */
 function setMaterial(materialId) {
-  window.store.dispatch({
+  localWindow.store.dispatch({
     type: 'SET_MATERIAL',
     id: materialId,
   });
@@ -44,7 +54,7 @@ function setMaterial(materialId) {
  * @param material The material to add.
  */
 function addMaterial(material) {
-  window.store.dispatch({
+  localWindow.store.dispatch({
     type: 'ADD_MATERIAL',
     material,
   });
@@ -56,7 +66,7 @@ function addMaterial(material) {
  * @param materials An array of materials to add.
  */
 function addMaterials(materials) {
-  window.store.dispatch({
+  localWindow.store.dispatch({
     type: 'ADD_MATERIALS',
     materials,
   });
@@ -152,6 +162,29 @@ setTimeout(() => {
 }, 0);
 
 /**
+ *
+ */
+let prevMachineSerial = null;
+function checkMachineSerial(machineSerial) {
+  if (!machineSerial) {
+    prevMachineSerial = null;
+    return;
+  }
+
+  if (machineSerial !== prevMachineSerial) {
+    log('message - machineSerial');
+    sendBackgroundMessage({
+      type: 'machineSerial',
+      serial: machineSerial,
+    }, () => {
+      log('machineSerial - success');
+      checkLastRuntimeError();
+    });
+    prevMachineSerial = machineSerial;
+  }
+}
+
+/**
  * Checks if the lid image has changed and if so, informs the app.
  *
  * Always check when the page loads, then only check when the image bed is
@@ -218,21 +251,35 @@ function checkLoadedDesignIds(loadedDesignIds) {
   }
 }
 
-/**
- * Subscribe to redux store changes.
- */
-window.store.subscribe(() => {
-  try {
-    const state = window.store.getState().toJSON();
 
-    // If there is at least on machine attempt to detect a QR code in the bed.s
-    if (Object.keys(state.machines.machineMap).length > 0) {
-      const { preloadedLidImage, bedImage } = state.machines.machineMap[Object.keys(state.machines.machineMap)];
+function storeListener() {
+  try {
+    const state = localWindow.store.getState().toJSON();
+
+    // Detect selected machine changes.
+    if (
+      state.machines
+      && state.machines.selectedMachineSerial
+    ) {
+      checkMachineSerial(state.machines.selectedMachineSerial);
+    }
+
+    // If there is at least on machine attempt to detect a QR code in the bed.
+    if (
+      state.machines
+      && state.machines.selectedMachineSerial
+      && Object.keys(state.machines.machineMap).length > 0
+    ) {
+      const { selectedMachineSerial } = state.machines;
+      const { preloadedLidImage, bedImage } = state.machines.machineMap[selectedMachineSerial];
       checkLidImage(preloadedLidImage, bedImage.isInvalidated);
     }
 
     // Track the different loaded designs so that we can download the trace.
-    if (state.workspace.present) {
+    if (
+      state.workspace
+      && state.workspace.present
+    ) {
       const present = state.workspace.present.toJSON();
       if (present.loadedDesignIds.length > 0) {
         checkLoadedDesignIds(present.loadedDesignIds);
@@ -242,4 +289,9 @@ window.store.subscribe(() => {
     // Don't send my errors to GlowForge.
     log(`store error: ${e}`);
   }
-});
+}
+
+/**
+ * Subscribe to redux store changes.
+ */
+localWindow.store.subscribe(storeListener);
