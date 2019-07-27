@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.8
+
+* Properly use the selected machine when multiple machines are present.
+* Add some typedefs to the `js` side of things.
+
 ## 0.4.7
 
 * Eat redux store errors.
