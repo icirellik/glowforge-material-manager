@@ -90,7 +90,7 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
   render () {
     const { materials } = this.props;
 
-    const materialElements = materials.sort((mat1, mat2) => {
+    const filteredMaterialElements = materials.sort((mat1, mat2) => {
       const mat1Title = `${mat1.thickName} ${mat1.name}`;
       const mat2Title = `${mat2.thickName} ${mat2.name}`;
 
@@ -104,10 +104,13 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
     }).filter(material => {
       const title = `${material.thickName} ${material.name}`.toLowerCase();
       return !this.state.filter || title.includes(this.state.filter.toLowerCase());
-    }).map(material => {
+    })
+
+    const hasScrollbar = filteredMaterialElements.length > SCROLL_BAR_APPEARS;
+    const materialElements = filteredMaterialElements.map(material => {
       return (
         <MaterialListItem
-          styles={materials.length < SCROLL_BAR_APPEARS ? { maxWidth: '159px'} : undefined}
+          styles={!hasScrollbar ? { maxWidth: '159px'} : undefined}
           material={material}
           selected={`${material.thickName} ${material.name}` === `${this.props.tempMaterial.thickName} ${this.props.tempMaterial.name}`}
           selectMaterial={this.props.selectMaterial}
@@ -127,18 +130,18 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
             <div className="materialList__container">
               <div
                 className="materialList__containerScroll"
-                style={materials.length > SCROLL_BAR_APPEARS ? { maxWidth: '224px'} : undefined}
+                style={hasScrollbar ? { maxWidth: '224px'} : undefined}
               >
+                <MaterialListCreateFromSearch
+                  name={this.state.filter}
+                  setEditorModeAdd={async (material) => {
+                    this.props.setEditorModeAdd(material);
+                    this.clearFilter();
+                  }}
+                />
                 {materialElements}
               </div>
             </div>
-            <MaterialListCreateFromSearch
-              name={this.state.filter}
-              setEditorModeAdd={async (material) => {
-                this.props.setEditorModeAdd(material);
-                this.clearFilter();
-              }}
-            />
           </>
         );
     } else if (materialElements.length > 0) {
@@ -146,7 +149,7 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
         <div className="materialList__container">
           <div
             className="materialList__containerScroll"
-            style={materials.length > SCROLL_BAR_APPEARS ? { maxWidth: '224px'} : undefined}
+            style={hasScrollbar ? { maxWidth: '224px'} : undefined}
           >
             {materialElements}
           </div>

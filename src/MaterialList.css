@@ -97,7 +97,7 @@
 
 .materialList__create,
 .materialList__empty {
-  margin: 0 16px;
+  margin: 0 16px 8px;
 }
 
 .materialList__create span {
