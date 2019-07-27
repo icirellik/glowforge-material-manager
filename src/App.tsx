@@ -128,6 +128,7 @@ interface AppState {
   previousTitle: string | null;
   rawMaterials: PluginMaterial[];
   rawSvg: string | null;
+  serial: string | null;
   // Is the plugin in sync wit the GFUI.
   synchronized: boolean;
   tempMaterial: TempMaterial;
@@ -165,6 +166,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       previousTitle: null,
       rawMaterials: [],
       rawSvg: null,
+      serial: null,
       synchronized: true,
     };
 
@@ -284,6 +286,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
       const uiSettings = await getUISettings();
       const rawSvg = (uiSettings && uiSettings.loadedDesignId) ? `https://storage.googleapis.com/glowforge-files/designs/${uiSettings.loadedDesignId}/svgf/svgf_file.gzip.svg` : null;
+      const serial = (uiSettings && uiSettings.serial) ? uiSettings.serial : null;
 
       // Update thr state.
       if (this.state.synchronized === shouldUpdate) {
@@ -295,12 +298,14 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         };
       } else if (
         cloudStorageBytesUsed !== this.state.cloudStorageBytesUsed ||
-        rawSvg !== this.state.rawSvg
+        rawSvg !== this.state.rawSvg ||
+        serial !== this.state.serial
       ) {
         stateUpdates = {
           ...stateUpdates,
           cloudStorageBytesUsed,
           rawSvg,
+          serial,
         };
       }
 
@@ -827,6 +832,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       case 'DISPLAY':
           displayPanel = (
           <MaterialHome
+            forceSyncronize={this.forceSyncronize}
             materials={this.state.rawMaterials}
             rawSvg={this.state.rawSvg}
             setEditorModeAdd={this.setEditorModeAdd}
@@ -869,10 +875,11 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     return (
       <div className="App">
         <AppHeader
+          cloudStorageBytesUsed={this.state.cloudStorageBytesUsed}
           connected={this.props.connected}
           forceSyncronize={this.forceSyncronize}
+          serial={this.state.serial}
           synchronized={this.state.synchronized}
-          cloudStorageBytesUsed={this.state.cloudStorageBytesUsed}
         />
         <div className={`columns ${(this.props.platform === 'mac') ? 'osx' : ''}`}>
           <div className="col-materials">

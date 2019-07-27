@@ -1,9 +1,10 @@
 import React from 'react';
 import { PluginMaterial } from './material/materialPlugin';
+import { ModeAdd, ModeBackup, ForceSyncronize } from './App';
 import './MaterialHome.css'
-import { ModeAdd, ModeBackup } from './App';
 
 interface MaterialHomeProps {
+  forceSyncronize: ForceSyncronize;
   materials: PluginMaterial[],
   rawSvg: string | null;
   setEditorModeAdd: ModeAdd;
@@ -39,6 +40,7 @@ export default function MaterialHome(props: MaterialHomeProps) {
           <li className="materialHome__menuItem" onClick={() => { props.setEditorModeAdd(); }}>New Material</li>
           <li>{svg}</li>
           <li className="materialHome__menuItem" onClick={() => { props.setEditorModeBackup(); }}>Manage Backups</li>
+          <li className="materialHome__menuItem" onClick={() => { props.forceSyncronize(); }}>Force Synchronize with GFUI</li>
         </ul>
       </div>
     </>
