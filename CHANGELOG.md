@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.10
+
+* Try a new QR code generator.
+* Enhance the display for GF raw values.
+
 ## 0.4.9
 
 * Update the material search to display create material first.
