@@ -1,3 +1,6 @@
+import QrScanner from './qr-scanner.min.js';
+QrScanner.WORKER_PATH = './qr-scanner-worker.min.js';
+
 /**
  * Only log messages in development mode.
  */
@@ -86,7 +89,7 @@ async function urlToImageData(imageUrl, scale) {
       canvas.width = image.naturalWidth * scale;
       canvas.height = image.naturalHeight * scale;
       context.drawImage(image, 0, 0, canvas.width, canvas.height);
-      resolve(context.getImageData(0, 0, canvas.width, canvas.height));
+      resolve(canvas);
     }, false);
     image.src = imageUrl;
   });
@@ -102,7 +105,8 @@ async function readQrCode(imageUrl) {
     // Worst QR Library ever.
     const imageDataPromises = QR_IMAGE_SCALES.map(scale => Promise.resolve()
       .then(() => urlToImageData(imageUrl, scale))
-      .then(imageData => jsQR(imageData.data, imageData.width, imageData.height)));
+      .then(imageData => QrScanner.scanImage(imageData))
+      .catch(error => console.log(error || 'No QR code found.')));
 
     const resolvedCodes = await Promise.all(imageDataPromises);
     log(resolvedCodes);
@@ -110,7 +114,7 @@ async function readQrCode(imageUrl) {
     const code = resolvedCodes.reduce((prev, cur) => ((prev !== null) ? prev : cur), null);
     log(code);
     if (code) {
-      resolve(code.data);
+      resolve(code);
     }
   });
 }

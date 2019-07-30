@@ -19,10 +19,7 @@
     "*://app.glowforge.com/*"
   ],
   "background": {
-    "scripts": [
-      "background.js",
-      "jsqr.dist.js"
-    ]
+    "page": "background.html"
   },
   "externally_connectable": {
     "matches": [
