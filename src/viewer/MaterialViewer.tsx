@@ -44,7 +44,7 @@ export default function MaterialViewer(props: MaterialViewerProps) {
       <div className="viewer__headerRow">
         <p className="viewer__label">General Settings</p>
         <p className="viewer__value">Display</p>
-        <p className="viewer__glowforge">Raw</p>
+        <p className="viewer__glowforge">GF Raw</p>
       </div>
       <div className="viewer__row">
         <p className="viewer__label">Thickness Name</p>

@@ -70,12 +70,15 @@
 .viewer__headerRow .viewer__value {
   display: flex;
   flex-grow: 1;
+  max-width: 130px;
+  justify-content: flex-end;
 }
 
 .viewer__headerRow .viewer__glowforge {
   display: flex;
   flex-grow: 1;
-  min-width: 160px;
+  max-width: 130px;
+  justify-content: flex-end;
 }
 
 .viewer__destructiveActions {
