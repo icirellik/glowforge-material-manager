@@ -25,6 +25,8 @@
 }
 
 .viewer__headerRow {
+  display: flex;
+  flex-direction: row;
   font-weight: 600;
   margin: 20px 48px 12px 0;
   padding-bottom: 4px;
@@ -35,17 +37,48 @@
   display: flex;
 }
 
-.viewer__label {
+.viewer__row .viewer__label {
   display: flex;
   align-items: center;
   height: 18px;
   width: 150px;
 }
 
-.viewer__value {
+.viewer__row .viewer__value {
   display: flex;
+  flex-grow: 1;
   align-items: center;
   height: 18px;
+  max-width: 130px;
+  justify-content: flex-end;
+}
+
+.viewer__row .viewer__glowforge {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  height: 18px;
+  max-width: 130px;
+  justify-content: flex-end;
+}
+
+.viewer__headerRow .viewer__label {
+  display: flex;
+  width: 150px;
+}
+
+.viewer__headerRow .viewer__value {
+  display: flex;
+  flex-grow: 1;
+  max-width: 130px;
+  justify-content: flex-end;
+}
+
+.viewer__headerRow .viewer__glowforge {
+  display: flex;
+  flex-grow: 1;
+  max-width: 130px;
+  justify-content: flex-end;
 }
 
 .viewer__destructiveActions {

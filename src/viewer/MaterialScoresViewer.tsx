@@ -31,11 +31,13 @@ export default function MaterialScoresViewer(props: MaterialScoresViewerProps) {
               </div>
               <div className="viewer__row">
                 <p className="viewer__label">Speed</p>
-                <p className="viewer__value">{toDisplayCutSpeed(score.speed)} ({precisionRound(score.speed, 2)})</p>
+                <p className="viewer__value">{toDisplayCutSpeed(score.speed)}</p>
+                <p className="viewer__glowforge">{precisionRound(score.speed, 2)}</p>
               </div>
               <div className="viewer__row">
                 <p className="viewer__label">Power</p>
-                <p className="viewer__value">{toDisplayPowerWords(score.power)} ({precisionRound(score.power, 2)})</p>
+                <p className="viewer__value">{toDisplayPowerWords(score.power)}</p>
+                <p className="viewer__glowforge">{precisionRound(score.power, 2)}</p>
               </div>
               <div className="viewer__row">
                 <p className="viewer__label">Passes</p>

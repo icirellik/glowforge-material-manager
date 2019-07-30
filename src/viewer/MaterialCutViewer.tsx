@@ -19,11 +19,13 @@ export default function MaterialCutViewer(props: MaterialCutViewerProps) {
       </div>
       <div className="viewer__row">
         <p className="viewer__label">Speed</p>
-        <p className="viewer__value">{toDisplayCutSpeed(props.cut.speed)} ({precisionRound(props.cut.speed, 2)})</p>
+        <p className="viewer__value">{toDisplayCutSpeed(props.cut.speed)}</p>
+        <p className="viewer__glowforge">{precisionRound(props.cut.speed, 2)}</p>
       </div>
       <div className="viewer__row">
         <p className="viewer__label">Power</p>
-        <p className="viewer__value">{toDisplayPowerWords(props.cut.power)} ({precisionRound(props.cut.power, 2)})</p>
+        <p className="viewer__value">{toDisplayPowerWords(props.cut.power)}</p>
+        <p className="viewer__glowforge">{precisionRound(props.cut.power, 2)}</p>
       </div>
       <div className="viewer__row">
         <p className="viewer__label">Passes</p>
