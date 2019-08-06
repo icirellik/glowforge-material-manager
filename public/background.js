@@ -73,11 +73,18 @@ function verifyTypes(material) {
 // QR Code
 // ===================================================================
 const QR_IMAGE_SCALES = [1, 0.9, 0.87, 0.75, 0.6, 0.5, 0.4, 0.25, 0.2, 0.1, 0.05];
+// const QR_IMAGE_ROTATIONS = [
+//   15, 30, 45, 60, 75, 90,
+//   105, 120, 135, 150, 165, 180,
+//   195, 210, 225, 240, 255, 270,
+//   285, 300, 315, 330, 345, 360,
+// ];
 
 /**
  * Takes an image url and converts it to an image data at a 0.25 scale.
  *
- * @param imageUrl The image url to load.
+ * @param {string} imageUrl The image url to load.
+ * @param {number} scale
  */
 async function urlToImageData(imageUrl, scale) {
   return new Promise((resolve) => {
@@ -98,20 +105,34 @@ async function urlToImageData(imageUrl, scale) {
 /**
  * Try to read a QR code from an image.
  *
- * @param imageUrl  The image url to scan.
+ * @param {string} imageUrl The image url to scan.
  */
 async function readQrCode(imageUrl) {
   return new Promise(async (resolve) => {
     // Worst QR Library ever.
-    const imageDataPromises = QR_IMAGE_SCALES.map(scale => Promise.resolve()
-      .then(() => urlToImageData(imageUrl, scale))
-      .then(imageData => QrScanner.scanImage(imageData))
-      .catch(error => console.log(error || 'No QR code found.')));
-
+    let code = null;
+    const imageDataPromises = [];
+    for (let i = 0; i < QR_IMAGE_SCALES.length; i += 1) {
+      const scale = QR_IMAGE_SCALES[i];
+      imageDataPromises.push(Promise.resolve()
+        .then(() => urlToImageData(imageUrl, scale))
+        .then(imageData => QrScanner.scanImage(imageData))
+        .catch(error => log(error || 'No QR code found.')));
+    }
     const resolvedCodes = await Promise.all(imageDataPromises);
     log(resolvedCodes);
+    if (code === null) {
+      code = resolvedCodes.reduce((prev, cur) => {
+        if (prev) {
+          return prev;
+        }
+        if (cur) {
+          return cur;
+        }
+        return null;
+      });
+    }
 
-    const code = resolvedCodes.reduce((prev, cur) => ((prev !== null) ? prev : cur), null);
     log(code);
     if (code) {
       resolve(code);
