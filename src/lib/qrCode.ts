@@ -2,7 +2,7 @@ import QRCode from 'qrcode';
 // import * as QrScanner from 'qr-scanner';
 import jsQR from 'jsqr';
 // import { reject } from 'q';
-import fs from 'fs';
+// import fs from 'fs';
 import { BrowserQRCodeReader } from '@zxing/library';
 
 const QR_IMAGE_SCALES = [1, 0.9, 0.87, 0.75, 0.6, 0.5, 0.4, 0.25, 0.2, 0.1, 0.05];
@@ -66,6 +66,7 @@ async function urlToImageData(imageUrl: string, scale: number): Promise<ImageDat
     }
   });
 }
+
 
 /**
  * Try to read a QR code from an image.
