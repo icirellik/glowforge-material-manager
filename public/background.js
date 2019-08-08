@@ -103,6 +103,17 @@ async function urlToImageData(imageUrl, scale) {
 }
 
 /**
+ *
+ * @param {string} imageUrl
+ */
+async function readQrCodeZx(imageUrl) {
+  const codeReader = new ZXing.BrowserQRCodeReader();
+  return codeReader
+    .decodeFromImage(undefined, imageUrl)
+    .then(result => result.getText());
+}
+
+/**
  * Try to read a QR code from an image.
  *
  * @param {string} imageUrl The image url to scan.
@@ -130,7 +141,7 @@ async function readQrCode(imageUrl) {
           return cur;
         }
         return null;
-      });
+      }, null);
     }
 
     log(code);
@@ -214,9 +225,15 @@ function handleDesignIdsMessage(message) {
  * that will set the materil if one is detected.
  */
 async function checkForQRCode(message) {
-  const image = `https://app.glowforge.com${message.image}`;
+  const imageUrl = `https://app.glowforge.com${message.image}`;
 
-  const qrCodeData = await readQrCode(image);
+  // Try zxing first
+  let qrCodeData = await readQrCodeZx(imageUrl);
+
+  if (!qrCodeData) {
+    // Fallback to jsqr
+    qrCodeData = await readQrCode(imageUrl);
+  }
   log('QR Code Results');
   log(qrCodeData);
 
