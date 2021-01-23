@@ -1,5 +1,5 @@
-import { readQrCode, zx } from './qrCode';
 import path from 'path';
+import { readQrCode, zx } from './qrCode';
 
 const currentPath = path.dirname(__dirname);
 const IMAGE_PATH_CUSTOM_1 = path.join(currentPath, '..', 'test-images', 'Custom:3f77f07.jpg');

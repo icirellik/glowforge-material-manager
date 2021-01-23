@@ -7,7 +7,7 @@ const MIN_UI_SPEED = 100;
 const MAX_UI_SPEED = 1000;
 
 const MILLIMETERS_IN_INCH = 25.4;
-const STEP_SIZE = .01875;
+const STEP_SIZE = 0.01875;
 const STANDARD_SCAN_GAP_INCHES = STEP_SIZE / MILLIMETERS_IN_INCH;
 
 const MAX_POWER = 100;
@@ -23,7 +23,7 @@ const MIN_POWER = 1;
 export function clamp(value: number, min: number, max: number) {
   if (value > max) {
     return max;
-  } else if (value < min) {
+  } if (value < min) {
     return min;
   }
   return value;
@@ -35,7 +35,7 @@ export function clamp(value: number, min: number, max: number) {
  */
 function getMaxVRSpeed(minSpeed: number, maxSpeed: number) {
   const speedDifference = maxSpeed - minSpeed;
-  const uiSpeedRange = MAX_UI_SPEED - MIN_UI_SPEED
+  const uiSpeedRange = MAX_UI_SPEED - MIN_UI_SPEED;
   const vrSpeed = speedDifference / MAX_MOTOR_SPEED * uiSpeedRange + MIN_UI_SPEED;
   return 100 * Math.round(vrSpeed / 100);
 }
@@ -88,15 +88,15 @@ export function toDisplayLinesPerInch(scanGap: number) {
   if (!scanGap || scanGap < 0) {
     return 0;
   }
-  return roundToNearest5(1 / (scanGap * STANDARD_SCAN_GAP_INCHES))
+  return roundToNearest5(1 / (scanGap * STANDARD_SCAN_GAP_INCHES));
 }
 
 export function toRealLinesPerInch(scanGap: number) {
-  return Math.round(1 / (scanGap * STANDARD_SCAN_GAP_INCHES))
+  return Math.round(1 / (scanGap * STANDARD_SCAN_GAP_INCHES));
 }
 
 export function toSteps(linesPerInch: number) {
-  return Math.round(1 / linesPerInch / STANDARD_SCAN_GAP_INCHES)
+  return Math.round(1 / linesPerInch / STANDARD_SCAN_GAP_INCHES);
 }
 
 export function toDisplayPowerWords(power: number) {

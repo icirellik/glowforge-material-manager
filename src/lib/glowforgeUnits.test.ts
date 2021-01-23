@@ -3,14 +3,13 @@ import {
 } from './glowforgeUnits';
 
 describe('Glowforge Unit Helpers', () => {
-
   it('toRealPower', () => {
-    expect(toRealPower(101)).toEqual(99.99);    // GF uses 100
+    expect(toRealPower(101)).toEqual(99.99); // GF uses 100
     expect(toRealPower(100)).toEqual(99);
     expect(toRealPower(75)).toEqual(74.25);
     expect(toRealPower(50)).toEqual(49.5);
     expect(toRealPower(25)).toEqual(24.75);
-    expect(toRealPower(1)).toEqual(0.99);     // TODO: GF uses 1
+    expect(toRealPower(1)).toEqual(0.99); // TODO: GF uses 1
   });
 
   it('toRealCutSpeed', () => {
@@ -21,5 +20,4 @@ describe('Glowforge Unit Helpers', () => {
     expect(clamp(toRealCutSpeed(99), 100, 4000)).toEqual(100);
     expect(clamp(toRealCutSpeed(1), 100, 4000)).toEqual(100);
   });
-
 });

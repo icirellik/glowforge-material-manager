@@ -43,7 +43,7 @@ import { clamp } from '../lib/glowforgeUnits';
 export async function removeMaterial(materialId: PluginMaterialId) {
   const materials = await getGlowforgeMaterials();
   const newMaterials = await storeGlowforgeMaterials(
-    materials.filter(material => material.id !== materialId)
+    materials.filter((material) => material.id !== materialId)
   );
   return newMaterials;
 }
@@ -56,7 +56,7 @@ export async function removeMaterial(materialId: PluginMaterialId) {
 export async function removeMaterialTitle(title: string) {
   const materials = await getGlowforgeMaterials();
   const newMaterials = await storeGlowforgeMaterials(
-    materials.filter(material => material.title !== title)
+    materials.filter((material) => material.title !== title)
   );
   return newMaterials;
 }
@@ -69,7 +69,7 @@ export async function removeMaterialTitle(title: string) {
 export async function removeRawMaterial(title: string) {
   const rawMaterials = await getRawMaterials();
   const newRawMaterials = await storeRawMaterials(
-    rawMaterials.filter(material => `${material.thickName} ${material.name}` !== title)
+    rawMaterials.filter((material) => `${material.thickName} ${material.name}` !== title)
   );
   return newRawMaterials;
 }
@@ -117,12 +117,12 @@ export function createMaterial(material: PluginMaterial, id: number | string): G
       thumbnails: [
         getUrl('custom-material.png'),
       ],
-      display_options: null
+      display_options: null,
     },
     settings: [
       createSettings(material, 'basic'),
-      createSettings(material, 'pro')
-    ]
+      createSettings(material, 'pro'),
+    ],
   };
 }
 
@@ -132,22 +132,16 @@ export function createMaterial(material: PluginMaterial, id: number | string): G
 function createSettings(material: PluginMaterial, tubeType: GFMaterialTubeType): GFMaterialSettings {
   return {
     description: `${material.thickName} ${material.name} Settings`,
-    active_date: "2017-04-06T00:00-07:00",
+    active_date: '2017-04-06T00:00-07:00',
     environment: [
-      'production'
+      'production',
     ],
     tube_type: tubeType,
     cut_setting: createCutSettings(material.cut),
-    score_settings: material.scores.map((score: any) => {
-      return createScoreSettings(score);
-    }),
-    vector_engrave_settings: material.vectors.map((vector: any) => {
-      return createVectorEngraveSettings(vector);
-    }),
-    bitmap_engrave_settings: material.bitmaps.map((bitmap: any) => {
-      return createBitmapEngraveSettings(bitmap);
-    }),
-  }
+    score_settings: material.scores.map((score: any) => createScoreSettings(score)),
+    vector_engrave_settings: material.vectors.map((vector: any) => createVectorEngraveSettings(vector)),
+    bitmap_engrave_settings: material.bitmaps.map((bitmap: any) => createBitmapEngraveSettings(bitmap)),
+  };
 }
 
 /**
@@ -210,7 +204,7 @@ function createBitmapEngraveSettings(bitmapEngrave: PluginBitmapEngraveSetting):
     focal_offset: bitmapEngrave.focalOffset,
     scangap: bitmapEngrave.scanGap,
     render_method: null,
-    rescale_method: "LagrangeFilter",
+    rescale_method: 'LagrangeFilter',
     minimum_gray_percent: null,
     maximum_gray_percent: null,
     horizontal_timing: null,
@@ -234,9 +228,9 @@ export function toTinyMaterial(material: PluginMaterial): TinyMaterial {
       a: material.cut.passes,
       f: material.cut.focalOffset,
     },
-    s: material.scores.map(score => toTinyScore(score)),
-    v: material.vectors.map(vector => toTinyVectorEngrave(vector)),
-    b: material.bitmaps.map(bitmap => toTinyBitmmapEngrave(bitmap)),
+    s: material.scores.map((score) => toTinyScore(score)),
+    v: material.vectors.map((vector) => toTinyVectorEngrave(vector)),
+    b: material.bitmaps.map((bitmap) => toTinyBitmmapEngrave(bitmap)),
   };
 }
 
@@ -251,9 +245,9 @@ export function toFullMaterial(tinyMaterial: TinyMaterial): PluginMaterial {
       passes: tinyMaterial.c.a,
       focalOffset: tinyMaterial.c.f,
     },
-    scores: tinyMaterial.s.map(score => toFullScore(score)),
-    vectors: tinyMaterial.v.map(vector => toFullVectorEngrave(vector)),
-    bitmaps: tinyMaterial.b.map(bitmap => toFullBitmapEngrave(bitmap)),
+    scores: tinyMaterial.s.map((score) => toFullScore(score)),
+    vectors: tinyMaterial.v.map((vector) => toFullVectorEngrave(vector)),
+    bitmaps: tinyMaterial.b.map((bitmap) => toFullBitmapEngrave(bitmap)),
     sync: true,
   };
 }

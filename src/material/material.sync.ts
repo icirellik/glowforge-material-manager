@@ -24,7 +24,7 @@ import { PluginMaterial } from './materialPlugin';
  *
  * @param remove If true enables destructive changes to occur from cloud sync.
  */
-export async function syncronizeMaterials(remove=false): Promise<boolean> {
+export async function syncronizeMaterials(remove = false): Promise<boolean> {
   // console.log(`Synchronizing Full remove=${remove}`);
   const synchronizedMaterials = await getSynchronizedMaterials();
   const rawMaterials = await getRawMaterials();
@@ -52,23 +52,17 @@ export async function syncronizeMaterials(remove=false): Promise<boolean> {
 
   // These are items that no longer exist in the cloud but still exist locally
   // that we may want to delete.
-  const removableTitleHashes = currentTitleHashes.filter(titleHash => {
-    return !synchronizedMaterials.hasOwnProperty(titleHash);
-  });
+  const removableTitleHashes = currentTitleHashes.filter((titleHash) => !synchronizedMaterials.hasOwnProperty(titleHash));
   // console.log('Removable:');
   // console.log(removableTitleHashes);
 
   // These are items in the cloud that need to be added locally.
-  const newTitleHashes = Object.keys(synchronizedMaterials).filter(titleHash => {
-    return currentTitleHashes.indexOf(titleHash) === -1;
-  });
+  const newTitleHashes = Object.keys(synchronizedMaterials).filter((titleHash) => currentTitleHashes.indexOf(titleHash) === -1);
   // console.log('Added:');
   // console.log(newTitleHashes);
 
   // These are items that are both in the cloud and are local.
-  const sharedTitleHashes = currentTitleHashes.filter(titleHash => {
-    return synchronizedMaterials.hasOwnProperty(titleHash);
-  });
+  const sharedTitleHashes = currentTitleHashes.filter((titleHash) => synchronizedMaterials.hasOwnProperty(titleHash));
   // console.log('Shared:');
   // console.log(sharedTitleHashes);
 
@@ -77,9 +71,7 @@ export async function syncronizeMaterials(remove=false): Promise<boolean> {
   // are typically not done.
   let modified = false;
   if (remove) {
-    const removablePluginMaterials = removableTitleHashes.map(hash => {
-      return titleHashToPluginMaterialMap[hash];
-    });
+    const removablePluginMaterials = removableTitleHashes.map((hash) => titleHashToPluginMaterialMap[hash]);
     // console.log(removablePluginMaterials)
     for (let i = 0; i < removablePluginMaterials.length; i++) {
       const { thickName, name } = removablePluginMaterials[i];

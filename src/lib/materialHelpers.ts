@@ -84,7 +84,7 @@ export interface MultiSettingFunctions {
 }
 
 export const MultiSettingFunctionsDefaults: MultiSettingFunctions = {
-  'bitmaps': createEmptyBitmapEngrave,
-  'scores': createEmptyScore,
-  'vectors': createEmptyVectorEngrave,
+  bitmaps: createEmptyBitmapEngrave,
+  scores: createEmptyScore,
+  vectors: createEmptyVectorEngrave,
 };

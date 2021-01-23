@@ -46,12 +46,11 @@ function saveTemporaryState(editorMode: EditorMode, material: TempMaterial) {
 }
 
 export default class MaterialEditor extends React.Component<MaterialEditorProps> {
-
   // This is a giant hack to work around the validators forcing rendering to
   // occur twice.
   shouldComponentUpdate(prevProps: MaterialEditorProps) {
     let result = true;
-    for (let key of Object.keys(this.props)) {
+    for (const key of Object.keys(this.props)) {
       const val: any = (this.props as any)[key];
       if (key === 'editorMode') {
         if (((prevProps as any)[key] !== val)) {

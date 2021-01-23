@@ -23,7 +23,7 @@ export default function MaterialSettings(props: MaterialSettingsProps) {
         label="Thickness Name *"
         isDisabled={props.action === 'EDIT'}
         onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateMaterial('thickName', event.target.value) }
+        onChange={(event) => props.updateMaterial('thickName', event.target.value)}
         propValidation={props.propValidation}
         value={props.material.thickName}
         validate={props.validationHandler}
@@ -32,7 +32,7 @@ export default function MaterialSettings(props: MaterialSettingsProps) {
         label="Material Name *"
         isDisabled={props.action === 'EDIT'}
         onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateMaterial('name', event.target.value) }
+        onChange={(event) => props.updateMaterial('name', event.target.value)}
         propValidation={props.propValidation}
         value={props.material.name}
         validate={props.validationHandler}
@@ -40,7 +40,7 @@ export default function MaterialSettings(props: MaterialSettingsProps) {
       <InputNumber
         label="Thickness (mm) *"
         onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateMaterial('thickness', asFloat(event.target.value)) }
+        onChange={(event) => props.updateMaterial('thickness', asFloat(event.target.value))}
         propValidation={props.propValidation}
         value={props.material.thickness}
         validate={props.validationHandler}

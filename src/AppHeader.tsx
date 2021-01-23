@@ -17,7 +17,10 @@ export function AppHeader(props: AppHeaderProps) {
     <header className="header">
       <div className="header__headline">
         <img src={logo} className="header__logo" alt="logo" />
-        <h1 className="header__title">Glowforge Material Manager{props.serial ? ` - ${props.serial}` : undefined}</h1>
+        <h1 className="header__title">
+          Glowforge Material Manager
+          {props.serial ? ` - ${props.serial}` : undefined}
+        </h1>
         <SyncStatus
           connected={props.connected}
           forceSync={props.forceSyncronize}

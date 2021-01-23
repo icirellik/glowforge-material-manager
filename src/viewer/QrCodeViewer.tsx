@@ -31,7 +31,7 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
   }
 
   shouldComponentUpdate(nextProps: QrCodeViewerProps, nextState: QrCodeViewerState) {
-    const  { thickName, name } = nextProps.material;
+    const { thickName, name } = nextProps.material;
     const nextTitle = `${thickName} ${name}`;
     if (nextTitle === this.state.title) {
       return false;
@@ -86,38 +86,47 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
   }
 
   render() {
-    const  { thickName, name } = this.props.material;
+    const { thickName, name } = this.props.material;
     const title = `${thickName} ${name}`;
     return (
       <>
         <div className="viewer__headerRow">
           <p>Scannable QR Code</p>
         </div>
-        <img style={{
-          border: '1px solid #000',
-          width: 'fit-content',
-        }} src={this.state.materialIdImageUri} alt="qrcode" />
+        <img
+          style={{
+            border: '1px solid #000',
+            width: 'fit-content',
+          }}
+          src={this.state.materialIdImageUri}
+          alt="qrcode"
+        />
 
         <div style={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'left',
           marginTop: '20px',
-        }}>
+        }}
+        >
           <a
             download={`${title}.svg`}
             href={`data:image/svg+xml;base64,${window.btoa(this.state.materialIdSvgData!)}`}
             target="_blank"
             rel="noopener noreferrer"
-          >Download Material Id</a>
+          >
+            Download Material Id
+          </a>
           <a
             download={`${title}.svg`}
             href={`data:image/svg+xml;base64,${window.btoa(this.state.materialSvgData!)}`}
             target="_blank"
             rel="noopener noreferrer"
-          >Download Material Id + Settings</a>
+          >
+            Download Material Id + Settings
+          </a>
         </div>
       </>
     );
-  };
+  }
 }

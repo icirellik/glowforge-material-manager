@@ -40,7 +40,7 @@ export default function CutSettings(props: CutSettingsProps) {
         max="500"
         min="100"
         onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateCut('speed', toRealCutSpeed(asInteger(event.target.value))) }
+        onChange={(event) => props.updateCut('speed', toRealCutSpeed(asInteger(event.target.value)))}
         propValidation={props.propValidation}
         value={toDisplayCutSpeed(props.cut.speed)}
         validate={props.validationHandler}
@@ -52,7 +52,7 @@ export default function CutSettings(props: CutSettingsProps) {
         max="100"
         min="0"
         onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateCut('power', toRealPower(asInteger(event.target.value))) }
+        onChange={(event) => props.updateCut('power', toRealPower(asInteger(event.target.value)))}
         onChecked={() => {
           const nextMaxPower = !maxPower;
           props.updateCut('power', (nextMaxPower) ? 100 : 99);
@@ -65,14 +65,14 @@ export default function CutSettings(props: CutSettingsProps) {
         label="Passes"
         min="1"
         onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateCut('passes', asInteger(event.target.value)) }
+        onChange={(event) => props.updateCut('passes', asInteger(event.target.value))}
         propValidation={props.propValidation}
         value={props.cut.passes}
       />
       <InputNumber
         label="Focal Offset (mm)"
         onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateCut('focalOffset', precisionRound(asFloat(event.target.value), 3)) }
+        onChange={(event) => props.updateCut('focalOffset', precisionRound(asFloat(event.target.value), 3))}
         propValidation={props.propValidation}
         value={props.cut.focalOffset}
       />

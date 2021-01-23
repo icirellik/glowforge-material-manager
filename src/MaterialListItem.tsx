@@ -22,7 +22,7 @@ export default function MaterialListItem(props: MaterialProps) {
     selectMaterial,
     setMaterial,
     styles,
-  } = props
+  } = props;
   const title = `${material.thickName} ${material.name}`;
   return (
     <div className={`materialList__item ${(props.selected) ? 'materialList__item__selected' : ''}`}>

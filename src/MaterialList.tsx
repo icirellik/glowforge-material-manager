@@ -34,20 +34,27 @@ const SCROLL_BAR_APPEARS = 13;
 
 function MaterialListCreateFromSearch(props: MaterialListCreateFromSearchProps) {
   return (
-    <p className="materialList__create" onClick={() => {
-      const material = createEmptyMaterial();
-      let nameParts: string[] = [];
-      if (props.name) {
-        nameParts = props.name.split(' ');
-      }
-      if (nameParts.length > 1) {
-        material.name = nameParts.slice(1).join(' ');
-        material.thickName = nameParts[0];
-      } else {
-        material.name = nameParts.join(' ');
-      }
-      props.setEditorModeAdd(material);
-    }}>Create "<span>{props.name}</span>"</p>
+    <p
+      className="materialList__create"
+      onClick={() => {
+        const material = createEmptyMaterial();
+        let nameParts: string[] = [];
+        if (props.name) {
+          nameParts = props.name.split(' ');
+        }
+        if (nameParts.length > 1) {
+          material.name = nameParts.slice(1).join(' ');
+          material.thickName = nameParts[0];
+        } else {
+          material.name = nameParts.join(' ');
+        }
+        props.setEditorModeAdd(material);
+      }}
+    >
+      Create "
+      <span>{props.name}</span>
+      "
+    </p>
   );
 }
 
@@ -87,7 +94,7 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
     }
   }
 
-  render () {
+  render() {
     const { materials } = this.props;
 
     const filteredMaterialElements = materials.sort((mat1, mat2) => {
@@ -101,55 +108,53 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
         return 1;
       }
       return 0;
-    }).filter(material => {
+    }).filter((material) => {
       const title = `${material.thickName} ${material.name}`.toLowerCase();
       return !this.state.filter || title.includes(this.state.filter.toLowerCase());
-    })
-
-    const hasScrollbar = filteredMaterialElements.length > SCROLL_BAR_APPEARS;
-    const materialElements = filteredMaterialElements.map(material => {
-      return (
-        <MaterialListItem
-          styles={!hasScrollbar ? { maxWidth: '159px'} : undefined}
-          material={material}
-          selected={`${material.thickName} ${material.name}` === `${this.props.tempMaterial.thickName} ${this.props.tempMaterial.name}`}
-          selectMaterial={this.props.selectMaterial}
-          setMaterial={this.props.setMaterial}
-        />
-      );
     });
 
+    const hasScrollbar = filteredMaterialElements.length > SCROLL_BAR_APPEARS;
+    const materialElements = filteredMaterialElements.map((material) => (
+      <MaterialListItem
+        styles={!hasScrollbar ? { maxWidth: '159px' } : undefined}
+        material={material}
+        selected={`${material.thickName} ${material.name}` === `${this.props.tempMaterial.thickName} ${this.props.tempMaterial.name}`}
+        selectMaterial={this.props.selectMaterial}
+        setMaterial={this.props.setMaterial}
+      />
+    ));
+
     let materialList: JSX.Element | null = null;
-    if (this.state.filter &&
-        materials.map(material => `${material.thickName} ${material.name}`.toLowerCase())
-          .indexOf(this.state.filter) === -1 &&
-        materialElements.length > 0
-      ) {
-        materialList = (
-          <>
-            <div className="materialList__container">
-              <div
-                className="materialList__containerScroll"
-                style={hasScrollbar ? { maxWidth: '224px'} : undefined}
-              >
-                <MaterialListCreateFromSearch
-                  name={this.state.filter}
-                  setEditorModeAdd={async (material) => {
-                    this.props.setEditorModeAdd(material);
-                    this.clearFilter();
-                  }}
-                />
-                {materialElements}
-              </div>
+    if (this.state.filter
+        && materials.map((material) => `${material.thickName} ${material.name}`.toLowerCase())
+          .indexOf(this.state.filter) === -1
+        && materialElements.length > 0
+    ) {
+      materialList = (
+        <>
+          <div className="materialList__container">
+            <div
+              className="materialList__containerScroll"
+              style={hasScrollbar ? { maxWidth: '224px' } : undefined}
+            >
+              <MaterialListCreateFromSearch
+                name={this.state.filter}
+                setEditorModeAdd={async (material) => {
+                  this.props.setEditorModeAdd(material);
+                  this.clearFilter();
+                }}
+              />
+              {materialElements}
             </div>
-          </>
-        );
+          </div>
+        </>
+      );
     } else if (materialElements.length > 0) {
       materialList = (
         <div className="materialList__container">
           <div
             className="materialList__containerScroll"
-            style={hasScrollbar ? { maxWidth: '224px'} : undefined}
+            style={hasScrollbar ? { maxWidth: '224px' } : undefined}
           >
             {materialElements}
           </div>
@@ -173,7 +178,7 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
 
     return (
       <div className="materialList">
-        <div style={{height: '94px'}}>
+        <div style={{ height: '94px' }}>
           <h3>Custom Materials</h3>
           <div className="materialList__search">
             <input

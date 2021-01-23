@@ -1,292 +1,292 @@
 import migrate from './3-update-ids';
 
 const exampleStorage = {
-  "materials": [
+  materials: [
     {
-      "id": "Custom:1",
-      "nominal_thickness": 3.2,
-      "settings": [
+      id: 'Custom:1',
+      nominal_thickness: 3.2,
+      settings: [
         {
-          "active_date": "2017-04-06T00:00-07:00",
-          "bitmap_engrave_settings": [],
-          "cut_setting": {
-            "focal_offset": null,
-            "passes": 1,
-            "power": 99,
-            "speed": 100
+          active_date: '2017-04-06T00:00-07:00',
+          bitmap_engrave_settings: [],
+          cut_setting: {
+            focal_offset: null,
+            passes: 1,
+            power: 99,
+            speed: 100,
           },
-          "description": "Test One Settings",
-          "environment": [
-            "production"
+          description: 'Test One Settings',
+          environment: [
+            'production',
           ],
-          "score_settings": [],
-          "tube_type": "basic",
-          "vector_engrave_settings": []
+          score_settings: [],
+          tube_type: 'basic',
+          vector_engrave_settings: [],
         },
         {
-          "active_date": "2017-04-06T00:00-07:00",
-          "bitmap_engrave_settings": [],
-          "cut_setting": {
-            "focal_offset": null,
-            "passes": 1,
-            "power": 99,
-            "speed": 100
+          active_date: '2017-04-06T00:00-07:00',
+          bitmap_engrave_settings: [],
+          cut_setting: {
+            focal_offset: null,
+            passes: 1,
+            power: 99,
+            speed: 100,
           },
-          "description": "Test One Settings",
-          "environment": [
-            "production"
+          description: 'Test One Settings',
+          environment: [
+            'production',
           ],
-          "score_settings": [],
-          "tube_type": "pro",
-          "vector_engrave_settings": []
-        }
+          score_settings: [],
+          tube_type: 'pro',
+          vector_engrave_settings: [],
+        },
       ],
-      "sku": "",
-      "thickness_name": "Test",
-      "title": "Test One",
-      "variety": {
-        "common_name": "Test One",
-        "display_options": null,
-        "name": "test-one",
-        "thumbnails": [
-          "chrome-extension://ikjgmgfhgelagijhaagpdbcbkmpckpda/custom-material.png"
+      sku: '',
+      thickness_name: 'Test',
+      title: 'Test One',
+      variety: {
+        common_name: 'Test One',
+        display_options: null,
+        name: 'test-one',
+        thumbnails: [
+          'chrome-extension://ikjgmgfhgelagijhaagpdbcbkmpckpda/custom-material.png',
         ],
-        "type_name": "One"
-      }
+        type_name: 'One',
+      },
     },
     {
-      "id": "Custom:2",
-      "nominal_thickness": 3.2,
-      "settings": [
+      id: 'Custom:2',
+      nominal_thickness: 3.2,
+      settings: [
         {
-          "active_date": "2017-04-06T00:00-07:00",
-          "bitmap_engrave_settings": [],
-          "cut_setting": {
-            "focal_offset": null,
-            "passes": 1,
-            "power": 9.9,
-            "speed": 4000
+          active_date: '2017-04-06T00:00-07:00',
+          bitmap_engrave_settings: [],
+          cut_setting: {
+            focal_offset: null,
+            passes: 1,
+            power: 9.9,
+            speed: 4000,
           },
-          "description": "Test Two Settings",
-          "environment": [
-            "production"
+          description: 'Test Two Settings',
+          environment: [
+            'production',
           ],
-          "score_settings": [],
-          "tube_type": "basic",
-          "vector_engrave_settings": []
+          score_settings: [],
+          tube_type: 'basic',
+          vector_engrave_settings: [],
         },
         {
-          "active_date": "2017-04-06T00:00-07:00",
-          "bitmap_engrave_settings": [],
-          "cut_setting": {
-            "focal_offset": null,
-            "passes": 1,
-            "power": 9.9,
-            "speed": 4000
+          active_date: '2017-04-06T00:00-07:00',
+          bitmap_engrave_settings: [],
+          cut_setting: {
+            focal_offset: null,
+            passes: 1,
+            power: 9.9,
+            speed: 4000,
           },
-          "description": "Test Two Settings",
-          "environment": [
-            "production"
+          description: 'Test Two Settings',
+          environment: [
+            'production',
           ],
-          "score_settings": [],
-          "tube_type": "pro",
-          "vector_engrave_settings": []
-        }
+          score_settings: [],
+          tube_type: 'pro',
+          vector_engrave_settings: [],
+        },
       ],
-      "sku": "",
-      "thickness_name": "Test",
-      "title": "Test Two",
-      "variety": {
-        "common_name": "Test Two",
-        "display_options": null,
-        "name": "test-two",
-        "thumbnails": [
-          "chrome-extension://ikjgmgfhgelagijhaagpdbcbkmpckpda/custom-material.png"
+      sku: '',
+      thickness_name: 'Test',
+      title: 'Test Two',
+      variety: {
+        common_name: 'Test Two',
+        display_options: null,
+        name: 'test-two',
+        thumbnails: [
+          'chrome-extension://ikjgmgfhgelagijhaagpdbcbkmpckpda/custom-material.png',
         ],
-        "type_name": "Two"
-      }
-    }
-  ],
-  "rawMaterials": [
-    {
-      "bitmaps": [],
-      "cut": {
-        "focalOffset": null,
-        "passes": 1,
-        "power": 99,
-        "speed": 100
+        type_name: 'Two',
       },
-      "name": "One",
-      "scores": [],
-      "thickName": "Test",
-      "thickness": 3.2,
-      "vectors": []
+    },
+  ],
+  rawMaterials: [
+    {
+      bitmaps: [],
+      cut: {
+        focalOffset: null,
+        passes: 1,
+        power: 99,
+        speed: 100,
+      },
+      name: 'One',
+      scores: [],
+      thickName: 'Test',
+      thickness: 3.2,
+      vectors: [],
     },
     {
-      "bitmaps": [],
-      "cut": {
-        "focalOffset": null,
-        "passes": 1,
-        "power": 9.9,
-        "speed": 4000
+      bitmaps: [],
+      cut: {
+        focalOffset: null,
+        passes: 1,
+        power: 9.9,
+        speed: 4000,
       },
-      "name": "Two",
-      "scores": [],
-      "thickName": "Test",
-      "thickness": 3.2,
-      "vectors": []
-    }
+      name: 'Two',
+      scores: [],
+      thickName: 'Test',
+      thickness: 3.2,
+      vectors: [],
+    },
   ],
-  "shouldUpdate": false,
-  "tempMaterial": null,
-  "ui": {
-    "loadedDesignId": "MJ5yk3K1"
-  }
+  shouldUpdate: false,
+  tempMaterial: null,
+  ui: {
+    loadedDesignId: 'MJ5yk3K1',
+  },
 };
 
 const expected = {
-  "materials": [
+  materials: [
     {
-      "id": "Custom:00",
-      "nominal_thickness": 3.2,
-      "settings": [
+      id: 'Custom:00',
+      nominal_thickness: 3.2,
+      settings: [
         {
-          "active_date": "2017-04-06T00:00-07:00",
-          "bitmap_engrave_settings": [],
-          "cut_setting": {
-            "focal_offset": null,
-            "passes": 1,
-            "power": 99,
-            "speed": 100
+          active_date: '2017-04-06T00:00-07:00',
+          bitmap_engrave_settings: [],
+          cut_setting: {
+            focal_offset: null,
+            passes: 1,
+            power: 99,
+            speed: 100,
           },
-          "description": "Test One Settings",
-          "environment": [
-            "production"
+          description: 'Test One Settings',
+          environment: [
+            'production',
           ],
-          "score_settings": [],
-          "tube_type": "basic",
-          "vector_engrave_settings": []
+          score_settings: [],
+          tube_type: 'basic',
+          vector_engrave_settings: [],
         },
         {
-          "active_date": "2017-04-06T00:00-07:00",
-          "bitmap_engrave_settings": [],
-          "cut_setting": {
-            "focal_offset": null,
-            "passes": 1,
-            "power": 99,
-            "speed": 100
+          active_date: '2017-04-06T00:00-07:00',
+          bitmap_engrave_settings: [],
+          cut_setting: {
+            focal_offset: null,
+            passes: 1,
+            power: 99,
+            speed: 100,
           },
-          "description": "Test One Settings",
-          "environment": [
-            "production"
+          description: 'Test One Settings',
+          environment: [
+            'production',
           ],
-          "score_settings": [],
-          "tube_type": "pro",
-          "vector_engrave_settings": []
-        }
+          score_settings: [],
+          tube_type: 'pro',
+          vector_engrave_settings: [],
+        },
       ],
-      "sku": "",
-      "thickness_name": "Test",
-      "title": "Test One",
-      "variety": {
-        "common_name": "Test One",
-        "display_options": null,
-        "name": "test-one",
-        "thumbnails": [
-          "chrome-extension://ikjgmgfhgelagijhaagpdbcbkmpckpda/custom-material.png"
+      sku: '',
+      thickness_name: 'Test',
+      title: 'Test One',
+      variety: {
+        common_name: 'Test One',
+        display_options: null,
+        name: 'test-one',
+        thumbnails: [
+          'chrome-extension://ikjgmgfhgelagijhaagpdbcbkmpckpda/custom-material.png',
         ],
-        "type_name": "One"
-      }
+        type_name: 'One',
+      },
     },
     {
-      "id": "Custom:0000",
-      "nominal_thickness": 3.2,
-      "settings": [
+      id: 'Custom:0000',
+      nominal_thickness: 3.2,
+      settings: [
         {
-          "active_date": "2017-04-06T00:00-07:00",
-          "bitmap_engrave_settings": [],
-          "cut_setting": {
-            "focal_offset": null,
-            "passes": 1,
-            "power": 9.9,
-            "speed": 4000
+          active_date: '2017-04-06T00:00-07:00',
+          bitmap_engrave_settings: [],
+          cut_setting: {
+            focal_offset: null,
+            passes: 1,
+            power: 9.9,
+            speed: 4000,
           },
-          "description": "Test Two Settings",
-          "environment": [
-            "production"
+          description: 'Test Two Settings',
+          environment: [
+            'production',
           ],
-          "score_settings": [],
-          "tube_type": "basic",
-          "vector_engrave_settings": []
+          score_settings: [],
+          tube_type: 'basic',
+          vector_engrave_settings: [],
         },
         {
-          "active_date": "2017-04-06T00:00-07:00",
-          "bitmap_engrave_settings": [],
-          "cut_setting": {
-            "focal_offset": null,
-            "passes": 1,
-            "power": 9.9,
-            "speed": 4000
+          active_date: '2017-04-06T00:00-07:00',
+          bitmap_engrave_settings: [],
+          cut_setting: {
+            focal_offset: null,
+            passes: 1,
+            power: 9.9,
+            speed: 4000,
           },
-          "description": "Test Two Settings",
-          "environment": [
-            "production"
+          description: 'Test Two Settings',
+          environment: [
+            'production',
           ],
-          "score_settings": [],
-          "tube_type": "pro",
-          "vector_engrave_settings": []
-        }
+          score_settings: [],
+          tube_type: 'pro',
+          vector_engrave_settings: [],
+        },
       ],
-      "sku": "",
-      "thickness_name": "Test",
-      "title": "Test Two",
-      "variety": {
-        "common_name": "Test Two",
-        "display_options": null,
-        "name": "test-two",
-        "thumbnails": [
-          "chrome-extension://ikjgmgfhgelagijhaagpdbcbkmpckpda/custom-material.png"
+      sku: '',
+      thickness_name: 'Test',
+      title: 'Test Two',
+      variety: {
+        common_name: 'Test Two',
+        display_options: null,
+        name: 'test-two',
+        thumbnails: [
+          'chrome-extension://ikjgmgfhgelagijhaagpdbcbkmpckpda/custom-material.png',
         ],
-        "type_name": "Two"
-      }
-    }
-  ],
-  "rawMaterials": [
-    {
-      "bitmaps": [],
-      "cut": {
-        "focalOffset": null,
-        "passes": 1,
-        "power": 99,
-        "speed": 100
+        type_name: 'Two',
       },
-      "name": "One",
-      "scores": [],
-      "thickName": "Test",
-      "thickness": 3.2,
-      "vectors": []
+    },
+  ],
+  rawMaterials: [
+    {
+      bitmaps: [],
+      cut: {
+        focalOffset: null,
+        passes: 1,
+        power: 99,
+        speed: 100,
+      },
+      name: 'One',
+      scores: [],
+      thickName: 'Test',
+      thickness: 3.2,
+      vectors: [],
     },
     {
-      "bitmaps": [],
-      "cut": {
-        "focalOffset": null,
-        "passes": 1,
-        "power": 9.9,
-        "speed": 4000
+      bitmaps: [],
+      cut: {
+        focalOffset: null,
+        passes: 1,
+        power: 9.9,
+        speed: 4000,
       },
-      "name": "Two",
-      "scores": [],
-      "thickName": "Test",
-      "thickness": 3.2,
-      "vectors": []
-    }
+      name: 'Two',
+      scores: [],
+      thickName: 'Test',
+      thickness: 3.2,
+      vectors: [],
+    },
   ],
-  "shouldUpdate": true,
-  "tempMaterial": null,
-  "ui": {
-    "loadedDesignId": "MJ5yk3K1"
-  }
-}
+  shouldUpdate: true,
+  tempMaterial: null,
+  ui: {
+    loadedDesignId: 'MJ5yk3K1',
+  },
+};
 
 describe('migration #3', () => {
   let testData: any = null;
@@ -294,10 +294,8 @@ describe('migration #3', () => {
 
   (<any>global).TextEncoder = function () {
     return {
-      encode: () => {
-
-      }
-    }
+      encode: () => { },
+    };
   };
 
   (<any>global).chrome = {
@@ -312,7 +310,7 @@ describe('migration #3', () => {
             ...data,
           };
           cb();
-        }
+        },
       },
     },
   };
@@ -320,9 +318,9 @@ describe('migration #3', () => {
   (<any>global).crypto = {
     subtle: {
       digest: async () => {
-        id = id + 1;
+        id += 1;
         return new ArrayBuffer(id);
-      }
+      },
     },
   };
 

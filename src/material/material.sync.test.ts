@@ -1,13 +1,17 @@
 import { syncronizeMaterials } from './material.sync';
 import { createEmptyMaterial, TempMaterial } from '../lib/materialHelpers';
 import { hashTitle, compress, decompress } from '../lib/utils';
-import { toTinyMaterial, createMaterial, removeCloudMaterial, sendCloudMaterial, toFullMaterial } from './material';
-import { storeSynchronizedMaterial, storeGlowforgeMaterials, storeRawMaterials, StorageLocal } from '../lib/chromeWrappers';
+import {
+  toTinyMaterial, createMaterial, removeCloudMaterial, sendCloudMaterial, toFullMaterial,
+} from './material';
+import {
+  storeSynchronizedMaterial, storeGlowforgeMaterials, storeRawMaterials, StorageLocal,
+} from '../lib/chromeWrappers';
 
 function mockFunctions() {
   const original = require.requireActual('../lib/crypto');
   let counter = 0;
-  let hashes: Map<string, string> = new Map();
+  const hashes: Map<string, string> = new Map();
   return {
     ...original,
     sha1: jest.fn(async (data: string) => {
@@ -19,10 +23,10 @@ function mockFunctions() {
       hashes.set(message, `${counter}`);
       return Promise.resolve(`${counter}`);
     }),
-  }
+  };
 }
 jest.mock('../lib/crypto', () => mockFunctions());
-require('../lib/crypto')
+require('../lib/crypto');
 
 describe('Synchronization', () => {
   let testLocalData: StorageLocal = {
@@ -34,9 +38,7 @@ describe('Synchronization', () => {
 
   (<any>window).chrome = {
     extension: {
-      getURL: (itemName: string) => {
-        return itemName;
-      },
+      getURL: (itemName: string) => itemName,
     },
     storage: {
       local: {
@@ -53,7 +55,7 @@ describe('Synchronization', () => {
             ...data,
           };
           cb();
-        }
+        },
       },
       sync: {
         get: (key: string, cb: any) => {
@@ -73,7 +75,7 @@ describe('Synchronization', () => {
         getBytesInUse: (key: null, cb: any) => {
           cb(-1);
         },
-      }
+      },
     },
   };
 
@@ -84,7 +86,7 @@ describe('Synchronization', () => {
       shouldUpdate: false,
     };
     testSyncData = {};
-  })
+  });
 
   it('Upload to Cloud', async () => {
     const pluginMaterial = createEmptyMaterial();
@@ -279,23 +281,20 @@ describe('Synchronization', () => {
     // Test
     await syncronizeMaterials();
 
-
     // Verify cloud data.
     expect(Object.keys(testSyncData).length).toEqual(1);
     expect(Object.keys(testSyncData)).toEqual([titleHash]);
 
     // Verify local data.
-    const testLocalDataTitleHashesPromises = testLocalData.rawMaterials!.map(async (pluginMaterial) => {
-      return await hashTitle(pluginMaterial);
-    });
+    const testLocalDataTitleHashesPromises = testLocalData.rawMaterials!.map(async (pluginMaterial) => await hashTitle(pluginMaterial));
     const testLocalDataTitleHashes = await Promise.all(testLocalDataTitleHashesPromises);
     expect(testLocalData.rawMaterials!.length).toEqual(1);
-    expect(testLocalDataTitleHashes).toEqual(["1"]);
+    expect(testLocalDataTitleHashes).toEqual(['1']);
     expect(testLocalDataTitleHashes).toEqual(Object.keys(testSyncData));
 
     // Verify different property.
     expect(testLocalData.rawMaterials![0].thickness).toEqual(1);
-    const remoteMaterial = toFullMaterial(decompress(testSyncData["1"]));
+    const remoteMaterial = toFullMaterial(decompress(testSyncData['1']));
     expect(remoteMaterial.thickness).toEqual(2);
   });
 });
