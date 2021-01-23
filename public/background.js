@@ -102,15 +102,22 @@ async function urlToImageData(imageUrl, scale) {
   });
 }
 
+const codeReader = new ZXing.BrowserQRCodeReader();
 /**
  *
  * @param {string} imageUrl
  */
 async function readQrCodeZx(imageUrl) {
-  const codeReader = new ZXing.BrowserQRCodeReader();
   return codeReader
     .decodeFromImage(undefined, imageUrl)
-    .then(result => result.getText());
+    .then((result) => {
+      console.log(2);
+      return result.getText();
+    })
+    .catch((err) => {
+      console.log(err);
+      return null;
+    });
 }
 
 /**
@@ -226,10 +233,10 @@ function handleDesignIdsMessage(message) {
  */
 async function checkForQRCode(message) {
   const imageUrl = `https://app.glowforge.com${message.image}`;
-
+  log('QR1');
   // Try zxing first
   let qrCodeData = await readQrCodeZx(imageUrl);
-
+  log('QR2');
   if (!qrCodeData) {
     // Fallback to jsqr
     qrCodeData = await readQrCode(imageUrl);

@@ -1,5 +1,14 @@
 {
-  "extends": [ "airbnb"],
+  "extends": [
+    "airbnb",
+    "eslint:recommended",
+    "plugin:import/errors",
+    "plugin:import/typescript",
+    "plugin:import/warnings",
+    "plugin:jsx-a11y/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:react/recommended"
+  ],
   "env": {
     "browser": true,
     "node": true

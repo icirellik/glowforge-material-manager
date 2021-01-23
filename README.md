@@ -151,6 +151,12 @@ This chrome extension is a basic React application with no frills. The project
 uses yarn as its package manager and as such the install and build process is as
 follows:
 
+Development dependencies Ubuntu:
+
+```
+sudo apt-get install libcairo2-dev libjpeg-dev libpango1.0-dev libgif-dev build-essential g++
+```
+
 ```sh
 $ yarn install
 $ yarn build
@@ -160,7 +166,7 @@ Once you have a successful build of the extension you can manually load it into
 chrome by opening the `chrome://extensions/` tab, enabling `developer mode`, and
 loading the upacked extension by selecting the `build` folder.
 
-This project relies on the fact that the Glowforge UI is a React/Redux
+This project relies on the fact that the Glowforge UI is a React/q
 application and makes use of the actions that are available to inject custom
 materials that may be used.
 
