@@ -1,4 +1,4 @@
-import { getLocalStorage, storeBackup } from "../lib/chromeWrappers";
+import { getLocalStorage, storeBackup } from '../lib/chromeWrappers';
 
 const BACKUP_NAME = '0.3.x-migration';
 

@@ -12,7 +12,7 @@ import { sha1 } from './crypto';
  * @param number
  */
 export function roundToNearest5(number: number) {
-  return 5 * Math.round(number / 5)
+  return 5 * Math.round(number / 5);
 }
 
 /**

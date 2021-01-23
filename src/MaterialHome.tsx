@@ -1,7 +1,7 @@
 import React from 'react';
 import { PluginMaterial } from './material/materialPlugin';
 import { ModeAdd, ModeBackup, ForceSyncronize } from './App';
-import './MaterialHome.css'
+import './MaterialHome.css';
 
 interface MaterialHomeProps {
   forceSyncronize: ForceSyncronize;
@@ -27,7 +27,7 @@ export default function MaterialHome(props: MaterialHomeProps) {
           Engrave settings automatically when you select one. In the same way
           that Proofgrade materials would.
         </p>
-        <br/>
+        <br />
         <p>
           The material manager also creates a unique QR Code for each material.
           You can download the QR code and print, engrave, or even order your

@@ -23,40 +23,42 @@ export default function MaterialVectorEngravesViewer(props: MaterialVectorEngrav
         <p>Vector Engrave Settings</p>
       </div>
       {
-        props.vectors.map((vector, index) => {
-          return (
-            <>
-              <div className="viewer__row" style={(index !== 0) ? { marginTop: '10px' } : undefined}>
-                <p className="viewer__label">Name</p>
-                <p className="viewer__value">{vector.name}</p>
-              </div>
-              <div className="viewer__row">
-                <p className="viewer__label">Speed</p>
-                <p className="viewer__value">{toDisplayEngraveSpeed(vector.speed)}</p>
-                <p className="viewer__glowforge">{precisionRound(vector.speed, 2)}</p>
-              </div>
-              <div className="viewer__row">
-                <p className="viewer__label">Power</p>
-                <p className="viewer__value">{toDisplayPowerWords(vector.power)}</p>
-                <p className="viewer__glowforge">{precisionRound(vector.power, 2)}</p>
-              </div>
-              <div className="viewer__row">
-                <p className="viewer__label">Passes</p>
-                <p className="viewer__value">{vector.passes}</p>
-              </div>
-              <div className="viewer__row">
-                <p className="viewer__label">Focal Offset (mm)</p>
-                <p className="viewer__value">{vector.focalOffset}</p>
-              </div>
-              <div className="viewer__row" style={{marginBottom: '10px'}}>
-                <p className="viewer__label">Scan Gap</p>
-                <p className="viewer__value">{toDisplayLinesPerInch(vector.scanGap)} LPI</p>
-                <p className="viewer__glowforge">{vector.scanGap}</p>
-              </div>
-              {(props.vectors.length > 1 && index !== props.vectors.length - 1) ? <hr /> : null}
-            </>
-          );
-        })
+        props.vectors.map((vector, index) => (
+          <>
+            <div className="viewer__row" style={(index !== 0) ? { marginTop: '10px' } : undefined}>
+              <p className="viewer__label">Name</p>
+              <p className="viewer__value">{vector.name}</p>
+            </div>
+            <div className="viewer__row">
+              <p className="viewer__label">Speed</p>
+              <p className="viewer__value">{toDisplayEngraveSpeed(vector.speed)}</p>
+              <p className="viewer__glowforge">{precisionRound(vector.speed, 2)}</p>
+            </div>
+            <div className="viewer__row">
+              <p className="viewer__label">Power</p>
+              <p className="viewer__value">{toDisplayPowerWords(vector.power)}</p>
+              <p className="viewer__glowforge">{precisionRound(vector.power, 2)}</p>
+            </div>
+            <div className="viewer__row">
+              <p className="viewer__label">Passes</p>
+              <p className="viewer__value">{vector.passes}</p>
+            </div>
+            <div className="viewer__row">
+              <p className="viewer__label">Focal Offset (mm)</p>
+              <p className="viewer__value">{vector.focalOffset}</p>
+            </div>
+            <div className="viewer__row" style={{ marginBottom: '10px' }}>
+              <p className="viewer__label">Scan Gap</p>
+              <p className="viewer__value">
+                {toDisplayLinesPerInch(vector.scanGap)}
+                {' '}
+                LPI
+              </p>
+              <p className="viewer__glowforge">{vector.scanGap}</p>
+            </div>
+            {(props.vectors.length > 1 && index !== props.vectors.length - 1) ? <hr /> : null}
+          </>
+        ))
       }
     </>
   );

@@ -7,11 +7,11 @@ import { BrowserQRCodeReader } from '@zxing/library';
 
 const QR_IMAGE_SCALES = [1, 0.9, 0.87, 0.75, 0.6, 0.5, 0.4, 0.25, 0.2, 0.1, 0.05];
 
-export async function zx(url: string) {
+export async function zx(url: string): Promise<string> {
   const codeReader = new BrowserQRCodeReader();
   return codeReader
     .decodeFromImage(undefined, url)
-      .then(result => result.getText());
+    .then((result) => result.getText());
 }
 
 /**
@@ -56,8 +56,9 @@ async function urlToImageData(imageUrl: string, scale: number): Promise<ImageDat
           reject(e);
         }
       }, false);
+
       image.onerror = (err) => {
-        console.log(err)
+        reject(err);
       };
 
       image.src = imageUrl;
@@ -67,7 +68,6 @@ async function urlToImageData(imageUrl: string, scale: number): Promise<ImageDat
   });
 }
 
-
 /**
  * Try to read a QR code from an image.
  *
@@ -76,16 +76,12 @@ async function urlToImageData(imageUrl: string, scale: number): Promise<ImageDat
 export async function readQrCode(imageUrl: string): Promise<string | null> {
   return new Promise(async (resolve, reject) => {
     try {
-      const imageDataPromises = QR_IMAGE_SCALES.map(scale => {
-        return Promise.resolve()
-          .then(() => {
-            return urlToImageData(imageUrl, scale);
-          }).then(imageData => {
-            return jsQR(imageData.data, imageData.width, imageData.height, {
-              inversionAttempts: 'attemptBoth',
-            });
-          }).catch(e => console.log(e));
-        });
+      const imageDataPromises = QR_IMAGE_SCALES.map((scale) => Promise.resolve()
+        .then(() => urlToImageData(imageUrl, scale))
+        .then((imageData) => jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: 'attemptBoth',
+        }))
+        .catch((e) => console.log(e)));
 
       const resolvedCodes = await Promise.all(imageDataPromises);
       const code = resolvedCodes.reduce((prev, cur) => {
@@ -109,7 +105,7 @@ export async function readQrCode(imageUrl: string): Promise<string | null> {
 }
 
 /**
- * Takes some text data and encodes it into a QR Code as a data uril.
+ * Takes some text data and encodes it into a QR Code as a data url.
  *
  * @param text The data to encode.
  */
@@ -130,6 +126,6 @@ export function qrcodeAsSvg(text: string): Promise<string> {
         return;
       }
       resolve(svg);
-    })
+    });
   });
 }

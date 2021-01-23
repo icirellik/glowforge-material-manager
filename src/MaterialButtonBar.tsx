@@ -43,11 +43,17 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
           <button
             onClick={() => { props.addMaterial(); }}
             title="Save the new material"
-          >Create</button>
+            type="button"
+          >
+            Create
+          </button>
           <button
             onClick={() => { props.setEditorModeDefault(); }}
             title="Cancel"
-          >Cancel</button>
+            type="button"
+          >
+            Cancel
+          </button>
         </div>
       );
     case 'BACKUP':
@@ -56,11 +62,17 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
           <button
             onClick={() => { props.setEditorModeDefault(); }}
             title="Home"
-          >Home</button>
+            type="button"
+          >
+            Home
+          </button>
           <button
             onClick={async () => { props.createBackup(); }}
             title="Creates a new backup of all your materials."
-          >Take Backup</button>
+            type="button"
+          >
+            Take Backup
+          </button>
         </div>
       );
     case 'DUPLICATE':
@@ -69,7 +81,10 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
           <button
             onClick={() => { props.addMaterial(); }}
             title="Save the new material"
-          >Create</button>
+            type="button"
+          >
+            Create
+          </button>
           <button
             onClick={() => {
               if (!props.previousTitle) {
@@ -79,7 +94,10 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
               }
             }}
             title="Cancel"
-          >Cancel</button>
+            type="button"
+          >
+            Cancel
+          </button>
         </div>
       );
     case 'EDIT':
@@ -88,7 +106,10 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
           <button
             onClick={() => { props.editMaterial(props.title); }}
             title="Update the current material"
-          >Update</button>
+            type="button"
+          >
+            Update
+          </button>
           <button
             onClick={() => {
               if (!props.previousTitle) {
@@ -98,7 +119,10 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
               }
             }}
             title="Cancel"
-          >Cancel</button>
+            type="button"
+          >
+            Cancel
+          </button>
         </div>
       );
     case 'SELECTED':
@@ -107,19 +131,31 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
           <button
             onClick={() => { props.setMaterial(props.title); }}
             title="Set the current material in the Glowforge UI"
-          >Set</button>
+            type="button"
+          >
+            Set
+          </button>
           <button
             onClick={() => { props.setEditorModeEdit(props.title); }}
             title="Edit the current material"
-          >Edit</button>
+            type="button"
+          >
+            Edit
+          </button>
           <button
             onClick={() => { props.copyMaterial(props.title); }}
             title="Duplicate the current material"
-          >Duplicate</button>
+            type="button"
+          >
+            Duplicate
+          </button>
           <button
             onClick={() => { props.setEditorModeDefault(); }}
             title="Back to main menu"
-          >Close</button>
+            type="button"
+          >
+            Close
+          </button>
         </div>
       );
     case 'DISPLAY':
@@ -129,7 +165,10 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
           <button
             onClick={() => { props.setEditorModeAdd(); }}
             title="Create new material"
-          >New</button>
+            type="button"
+          >
+            New
+          </button>
         </div>
       );
   }

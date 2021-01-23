@@ -62,7 +62,7 @@ interface IMaterialEditor {
   copyMaterial: CopyMaterial;
   editMaterial: EditMaterial;
   removeMaterial: RemoveMaterial;
-  setMaterial: SetMaterial;
+  // setMaterial: SetMaterial;
   updateMaterial: UpdateMaterial;
 
   addSetting: AddSetting;
@@ -88,7 +88,7 @@ interface IMessenger {
 export type ForceSyncronize = () => Promise<void>;
 
 // Editor Modes
-export type EditorMode =  'BACKUP' | 'DISPLAY' | 'ADD' | 'EDIT' | 'DUPLICATE' | 'SELECTED';
+export type EditorMode = 'BACKUP' | 'DISPLAY' | 'ADD' | 'EDIT' | 'DUPLICATE' | 'SELECTED';
 export type EditorModeChange = (mode: EditorMode, material: TempMaterial) => Promise<void>;
 export type ModeAdd = (material?: TempMaterial) => Promise<void>;
 export type ModeBackup = () => Promise<void>;
@@ -174,15 +174,14 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     this.setEditorModeAdd = this.setEditorModeAdd.bind(this);
     this.setEditorModeBackup = this.setEditorModeBackup.bind(this);
     this.setEditorModeDefault = this.setEditorModeDefault.bind(this);
-    this.setEditorModeEdit = this.setEditorModeEdit.bind(this)
-    this.setEditorModeSelect = this.setEditorModeSelect.bind(this)
+    this.setEditorModeEdit = this.setEditorModeEdit.bind(this);
+    this.setEditorModeSelect = this.setEditorModeSelect.bind(this);
 
     // Material
     this.addMaterial = this.addMaterial.bind(this);
     this.copyMaterial = this.copyMaterial.bind(this);
     this.editMaterial = this.editMaterial.bind(this);
     this.removeMaterial = this.removeMaterial.bind(this);
-    this.setMaterial = this.setMaterial.bind(this);
     this.updateMaterial = this.updateMaterial.bind(this);
 
     // MultiSettings
@@ -263,14 +262,12 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
         let tempMaterial: PluginMaterial | undefined;
         if (this.state.tempMaterial) {
-          tempMaterial = pluginMaterials.find(pluginMaterial => {
-            const tempMaterialTitle =
-              `${this.state.tempMaterial.thickName} ${this.state.tempMaterial.name}`;
-            const pluginMaterialTitle =
-              `${pluginMaterial.thickName} ${pluginMaterial.name}`;
+          tempMaterial = pluginMaterials.find((pluginMaterial) => {
+            const tempMaterialTitle = `${this.state.tempMaterial.thickName} ${this.state.tempMaterial.name}`;
+            const pluginMaterialTitle = `${pluginMaterial.thickName} ${pluginMaterial.name}`;
             return pluginMaterialTitle === tempMaterialTitle;
           });
-        };
+        }
 
         stateUpdates = {
           ...stateUpdates,
@@ -280,7 +277,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
           tempMaterial: {
             ...createEmptyMaterial(),
             ...tempMaterial,
-          }
+          },
         };
       }
 
@@ -297,9 +294,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
           synchronized: !shouldUpdate,
         };
       } else if (
-        cloudStorageBytesUsed !== this.state.cloudStorageBytesUsed ||
-        rawSvg !== this.state.rawSvg ||
-        serial !== this.state.serial
+        cloudStorageBytesUsed !== this.state.cloudStorageBytesUsed
+        || rawSvg !== this.state.rawSvg
+        || serial !== this.state.serial
       ) {
         stateUpdates = {
           ...stateUpdates,
@@ -318,7 +315,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         if (!window) {
           return;
         }
-        const outboundQueue = (window as any).outboundQueue;
+        const { outboundQueue } = window as any;
         if (outboundQueue.length > 0) {
           const messages = outboundQueue.splice(0);
           for (let i = 0; i < messages.length; i += 1) {
@@ -340,7 +337,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   }
 
   componentDidUpdate(prevProps: AppProps, prevState: AppState) {
-    if(this.displayRef && prevState.action !== this.state.action) {
+    if (this.displayRef && prevState.action !== this.state.action) {
       (this.displayRef.current as any).scrollTop = 0;
     }
 
@@ -359,14 +356,12 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * Updates the base material properties: thickName, name, thickness
    */
   updateMaterial<K extends keyof TempMaterial>(key: K, value: TempMaterial[K]) {
-    this.setState((state) => {
-      return {
-        tempMaterial: {
-          ...state.tempMaterial,
-          [key]: value,
-        },
-      };
-    });
+    this.setState((state) => ({
+      tempMaterial: {
+        ...state.tempMaterial,
+        [key]: value,
+      },
+    }));
   }
 
   addSetting(prop: keyof MultiSettings) {
@@ -375,7 +370,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       return {
         tempMaterial: {
           ...state.tempMaterial,
-          [prop]: [ ...state.tempMaterial[prop], emptySetting() ],
+          [prop]: [...state.tempMaterial[prop], emptySetting()],
         },
       };
     });
@@ -413,24 +408,20 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    *
    */
   async addMaterial() {
-    const isValid = Object.keys(this.state.tempMaterial.propValidation).map((key) => {
-      return this.state.tempMaterial.propValidation[key];
-    }).reduce((prev, cur) => {
-      return prev && cur;
-    }, true);
+    const isValid = Object.keys(this.state.tempMaterial.propValidation).map((key) => this.state.tempMaterial.propValidation[key]).reduce((prev, cur) => prev && cur, true);
 
     if (!isValid) {
       this.displayMessage(errorMessage('A material property is invalid.'));
       this.setState((state) => {
         const updateValidation: {[key: string]: boolean | null} = {};
-        for (let key of Object.keys(state.tempMaterial.propValidation)) {
+        for (const key of Object.keys(state.tempMaterial.propValidation)) {
           updateValidation[key] = (state.tempMaterial.propValidation[key] === null) ? false : state.tempMaterial.propValidation[key];
         }
         return {
           tempMaterial: {
             ...state.tempMaterial,
             propValidation: updateValidation,
-          }
+          },
         };
       });
       return;
@@ -438,7 +429,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // Hash the title and take the first seven for the id.
     const { thickName, name } = this.state.tempMaterial;
-    const title = `${thickName} ${name}`
+    const title = `${thickName} ${name}`;
     const hash = await sha1(title);
     const id = hash.substring(0, 7);
 
@@ -446,9 +437,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     const newMaterial = createMaterial(this.state.tempMaterial, id);
 
     // Double check for duplicates
-    const duplicate = this.state.materials.find(material => {
-      return material.id === newMaterial.id || material.title === newMaterial.title;
-    });
+    const duplicate = this.state.materials.find((material) => material.id === newMaterial.id || material.title === newMaterial.title);
 
     if (duplicate) {
       this.displayMessage(errorMessage('A material with the same name already exists.'));
@@ -458,7 +447,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     // Create and store.
     const newMaterials: GFMaterial[] = [...this.state.materials, newMaterial];
     const newRawMaterials = [...this.state.rawMaterials, this.state.tempMaterial];
-    await storeGlowforgeMaterials(newMaterials)
+    await storeGlowforgeMaterials(newMaterials);
     await storeRawMaterials(newRawMaterials);
     await clearTempMaterial();
 
@@ -483,9 +472,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    */
   async copyMaterial(title: string) {
     // Look for any duplicates.
-    const duplicates = this.state.materials.filter(material => {
-      return material.title === title;
-    });
+    const duplicates = this.state.materials.filter((material) => material.title === title);
 
     // There should be at least one since we are cloning.
     if (duplicates.length < 1) {
@@ -494,9 +481,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }
 
     // Get the material so we can clone it.
-    const material = this.state.rawMaterials.find(rawMaterial => {
-      return `${rawMaterial.thickName} ${rawMaterial.name}` === title;
-    });
+    const material = this.state.rawMaterials.find((rawMaterial) => `${rawMaterial.thickName} ${rawMaterial.name}` === title);
 
     // Update the application state.
     if (material) {
@@ -515,32 +500,26 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * @param title
    */
   async editMaterial(title: string) {
-    const isValid = Object.keys(this.state.tempMaterial.propValidation).map((key) => {
-      return this.state.tempMaterial.propValidation[key];
-    }).reduce((prev, cur) => {
-      return prev && cur;
-    }, true);
+    const isValid = Object.keys(this.state.tempMaterial.propValidation).map((key) => this.state.tempMaterial.propValidation[key]).reduce((prev, cur) => prev && cur, true);
 
     if (!isValid) {
       this.displayMessage(errorMessage('A material property is invalid.'));
       this.setState((state) => {
         const updateValidation: {[key: string]: boolean | null} = {};
-        for (let key of Object.keys(state.tempMaterial.propValidation)) {
+        for (const key of Object.keys(state.tempMaterial.propValidation)) {
           updateValidation[key] = (state.tempMaterial.propValidation[key] === null) ? false : state.tempMaterial.propValidation[key];
         }
         return {
           tempMaterial: {
             ...state.tempMaterial,
             propValidation: updateValidation,
-          }
+          },
         };
       });
       return;
     }
 
-    const duplicates = this.state.materials.filter(material => {
-      return material.title === `${title}`;
-    });
+    const duplicates = this.state.materials.filter((material) => material.title === `${title}`);
 
     if (duplicates.length !== 1) {
       this.displayMessage(errorMessage('Could not update. A material with the same name already exists.'));
@@ -549,25 +528,19 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // Update material using the same id.
     const materialId = duplicates[0].id.split(':')[1];
-    const newMaterial = createMaterial(this.state.tempMaterial, materialId)
+    const newMaterial = createMaterial(this.state.tempMaterial, materialId);
 
     // Store
-    const newMaterials = this.state.materials.filter(material => {
-      return material.title !== `${title}`;
-    });
-    newMaterials.push(newMaterial)
-    const newRawMaterials = this.state.rawMaterials.filter(material => {
-      return `${material.thickName} ${material.name}` !== `${title}`;
-    });
+    const newMaterials = this.state.materials.filter((material) => material.title !== `${title}`);
+    newMaterials.push(newMaterial);
+    const newRawMaterials = this.state.rawMaterials.filter((material) => `${material.thickName} ${material.name}` !== `${title}`);
     newRawMaterials.push(this.state.tempMaterial);
 
-    await storeGlowforgeMaterials(newMaterials)
+    await storeGlowforgeMaterials(newMaterials);
     await storeRawMaterials(newRawMaterials);
 
     // Send updated materials to the cloud
-    const rawMaterial = this.state.rawMaterials.find(rawMaterial => {
-      return `${rawMaterial.thickName} ${rawMaterial.name}` === `${title}`;
-    });
+    const rawMaterial = this.state.rawMaterials.find((rawMaterial) => `${rawMaterial.thickName} ${rawMaterial.name}` === `${title}`);
     if (rawMaterial) {
       await removeCloudMaterial(rawMaterial);
     }
@@ -586,9 +559,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
   async removeMaterial(title: string) {
     // Look for the material.
-    const found = this.state.rawMaterials.find((material: PluginMaterial) => {
-      return `${material.thickName} ${material.name}` === `${title}`;
-    });
+    const found = this.state.rawMaterials.find((material: PluginMaterial) => `${material.thickName} ${material.name}` === `${title}`);
 
     // If there is no material exit.
     if (!found) {
@@ -614,22 +585,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     await reloadGlowForgeTab();
   }
 
-  /**
-   * Sets the selected material in the GFUI.
-   *
-   * @param title
-   */
-  async setMaterial(title: string) {
-    // Hash the title and take the first seven for the id.
-    const hash = await sha1(title);
-    const id = `Custom:${hash.substring(0, 7)}`;
-
-    sendMessage({
-      type: 'selectMaterial',
-      materialId: id,
-    });
-  }
-
   // Cloud Sync
   // =================================================================
 
@@ -650,9 +605,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     if (material.sync) {
       // Update the current material.
-      const pluginMaterials = this.state.rawMaterials.filter(material => {
-        return getMaterialTitle(material) !== title;
-      });
+      const pluginMaterials = this.state.rawMaterials.filter((material) => getMaterialTitle(material) !== title);
       pluginMaterials.push(updatedMaterial);
 
       await storeRawMaterials(pluginMaterials);
@@ -666,12 +619,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         tempMaterial: updatedMaterial,
         synchronized: false,
       });
-
     } else {
       // Update the current material.
-      const pluginMaterials = this.state.rawMaterials.filter(material => {
-        return getMaterialTitle(material) !== title;
-      });
+      const pluginMaterials = this.state.rawMaterials.filter((material) => getMaterialTitle(material) !== title);
       pluginMaterials.push(updatedMaterial);
 
       await storeRawMaterials(pluginMaterials);
@@ -766,9 +716,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * @param title The material title in the form `thickName name`
    */
   async setEditorModeEdit(title: string) {
-    const rawMaterial = this.state.rawMaterials.find(rawMaterial => {
-      return `${rawMaterial.thickName} ${rawMaterial.name}` === title;
-    });
+    const rawMaterial = this.state.rawMaterials.find((rawMaterial) => `${rawMaterial.thickName} ${rawMaterial.name}` === title);
     await this.changeEditorMode('EDIT', {
       ...rawMaterial!,
       propValidation: {},
@@ -782,9 +730,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
    * @param title The material title in the form `thickName name`
    */
   async setEditorModeSelect(title: string) {
-    const rawMaterial = this.state.rawMaterials.find(rawMaterial => {
-      return `${rawMaterial.thickName} ${rawMaterial.name}` === title;
-    });
+    const rawMaterial = this.state.rawMaterials.find((rawMaterial) => `${rawMaterial.thickName} ${rawMaterial.name}` === title);
 
     if (!rawMaterial) {
       this.displayMessage(defaultMessage('The selected material could not be found.'));
@@ -807,7 +753,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       return {
         tempMaterial: {
           ...tempMaterial,
-        }
+        },
       };
     });
   }
@@ -815,7 +761,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
   // Backups
   // =================================================================
   async createBackup() {
-    const backupName: string = `${(new Date()).toISOString()}`;
+    const backupName = `${(new Date()).toISOString()}`;
     const backup = await getLocalStorage();
     await storeBackup(backupName, backup);
     const backups = await getBackups();
@@ -830,7 +776,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     switch (this.state.action) {
       default:
       case 'DISPLAY':
-          displayPanel = (
+        displayPanel = (
           <MaterialHome
             forceSyncronize={this.forceSyncronize}
             materials={this.state.rawMaterials}
@@ -848,7 +794,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         );
         break;
       case 'SELECTED':
-          displayPanel = (
+        displayPanel = (
           <MaterialViewer
             material={this.state.tempMaterial}
             removeMaterial={this.removeMaterial}
@@ -887,7 +833,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
               materials={this.state.rawMaterials}
               selectMaterial={this.setEditorModeSelect}
               setEditorModeAdd={this.setEditorModeAdd}
-              setMaterial={this.setMaterial}
+              setMaterial={setMaterial}
               tempMaterial={this.state.tempMaterial}
             />
           </div>
@@ -904,7 +850,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
                 setEditorModeDefault={this.setEditorModeDefault}
                 setEditorModeEdit={this.setEditorModeEdit}
                 setEditorModeSelect={this.setEditorModeSelect}
-                setMaterial={this.setMaterial}
+                setMaterial={setMaterial}
                 title={`${this.state.tempMaterial.thickName} ${this.state.tempMaterial.name}`}
               />
             </div>
@@ -916,8 +862,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
           </div>
         </div>
         {
-          this.state.message !== null ?
-            <Message clearMessage={this.clearMessage} {...this.state.message} /> : null
+          this.state.message !== null
+            ? <Message clearMessage={this.clearMessage} {...this.state.message} /> : null
         }
       </div>
     );
@@ -928,4 +874,20 @@ export default App;
 
 function getMaterialTitle(material: PluginMaterial) {
   return `${material.thickName} ${material.name}`;
+}
+
+/**
+ * Sets the selected material in the GFUI.
+ *
+ * @param title
+ */
+async function setMaterial(title: string) {
+  // Hash the title and take the first seven for the id.
+  const hash = await sha1(title);
+  const id = `Custom:${hash.substring(0, 7)}`;
+
+  sendMessage({
+    type: 'selectMaterial',
+    materialId: id,
+  });
 }

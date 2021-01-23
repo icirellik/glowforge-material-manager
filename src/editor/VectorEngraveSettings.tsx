@@ -37,20 +37,18 @@ export default function VectorEngraveSettings(props: VectorEngraveSettingsProps)
         </div>
       </div>
       {
-        props.vectors.map((vector, index) => {
-          return (
-            <VectorEngraveSetting
-              index={index}
-              propValidation={props.propValidation}
-              saveTemporaryState={props.saveTemporaryState}
-              removeVectorEngrave={props.removeVectorEngrave}
-              updateVectorEngrave={props.updateVectorEngrave}
-              vector={vector}
-              validationHandler={props.validationHandler}
-            />
-          );
-        })
+        props.vectors.map((vector, index) => (
+          <VectorEngraveSetting
+            index={index}
+            propValidation={props.propValidation}
+            saveTemporaryState={props.saveTemporaryState}
+            removeVectorEngrave={props.removeVectorEngrave}
+            updateVectorEngrave={props.updateVectorEngrave}
+            vector={vector}
+            validationHandler={props.validationHandler}
+          />
+        ))
       }
     </>
-  )
+  );
 }

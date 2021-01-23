@@ -154,7 +154,7 @@ follows:
 Development dependencies Ubuntu:
 
 ```
-sudo apt-get install libcairo2-dev libjpeg-dev libpango1.0-dev libgif-dev build-essential g++
+sudo apt-get install librsvg2-dev libcairo2-dev libjpeg-dev libpango1.0-dev libgif-dev build-essential g++
 ```
 
 ```sh

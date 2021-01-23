@@ -1,5 +1,5 @@
 import React from 'react';
-import { v4 as uuid } from 'uuid'
+import { v4 as uuid } from 'uuid';
 import { asInteger } from '../lib/utils';
 import IconHelp from '../icons/IconHelp';
 
@@ -26,7 +26,6 @@ interface InputNumberWithCheckBoxProps extends InputNumberProps {
 }
 
 export class InputText extends React.Component<InputProps> {
-
   private id: string;
 
   constructor(props: InputProps) {
@@ -67,12 +66,12 @@ export class InputText extends React.Component<InputProps> {
   }
 
   render() {
-    const props = this.props;
+    const { props } = this;
     let className: string | undefined;
     if (
-      props.validate && props.propValidation &&
-      props.propValidation[this.id] !== null &&
-      props.propValidation[this.id] !== undefined
+      props.validate && props.propValidation
+      && props.propValidation[this.id] !== null
+      && props.propValidation[this.id] !== undefined
     ) {
       className = (!props.propValidation[this.id]) ? 'invalid' : undefined;
     }
@@ -93,7 +92,6 @@ export class InputText extends React.Component<InputProps> {
 }
 
 export class InputNumber extends React.Component<InputNumberProps> {
-
   private id: string;
 
   constructor(props: InputNumberProps) {
@@ -152,14 +150,14 @@ export class InputNumber extends React.Component<InputNumberProps> {
   }
 
   render() {
-    const props = this.props;
+    const { props } = this;
     let className: string | undefined;
     if (
-      props.validate && props.propValidation &&
-      props.propValidation[this.id] !== null &&
-      props.propValidation[this.id] !== undefined
+      props.validate && props.propValidation
+      && props.propValidation[this.id] !== null
+      && props.propValidation[this.id] !== undefined
     ) {
-      className = (!props.propValidation[this.id]) ? "invalid" : undefined
+      className = (!props.propValidation[this.id]) ? 'invalid' : undefined;
     }
 
     let help: React.ReactElement | null = null;
@@ -168,7 +166,10 @@ export class InputNumber extends React.Component<InputNumberProps> {
     }
     return (
       <div className="form-field">
-        <label>{props.label}{help}</label>
+        <label>
+          {props.label}
+          {help}
+        </label>
         <input
           className={className}
           disabled={props.isDisabled}
@@ -185,7 +186,6 @@ export class InputNumber extends React.Component<InputNumberProps> {
 }
 
 export class InputNumberWithCheckbox extends React.Component<InputNumberWithCheckBoxProps> {
-
   private id: string;
 
   constructor(props: InputNumberWithCheckBoxProps) {
@@ -250,14 +250,14 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
   }
 
   render() {
-    const props = this.props;
+    const { props } = this;
     let className: string | undefined;
     if (
-      props.validate && props.propValidation &&
-      props.propValidation[this.id] !== null &&
-      props.propValidation[this.id] !== undefined
+      props.validate && props.propValidation
+      && props.propValidation[this.id] !== null
+      && props.propValidation[this.id] !== undefined
     ) {
-      className = (!props.propValidation[this.id]) ? "invalid" : undefined
+      className = (!props.propValidation[this.id]) ? 'invalid' : undefined;
     }
     return (
       <div className="form-field">
@@ -266,7 +266,7 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
           <label className="label">Max Power</label>
           <input
             type="checkbox"
-            value={this.props.isChecked? 1 : 0}
+            value={this.props.isChecked ? 1 : 0}
             checked={this.props.isChecked}
             onChange={this.onChecked}
             onBlur={this.onBlur}

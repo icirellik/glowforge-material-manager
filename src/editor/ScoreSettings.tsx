@@ -37,20 +37,18 @@ export default function ScoreSettings(props: ScoreSettingsProps) {
         </div>
       </div>
       {
-        props.scores.map((score, index) => {
-          return (
-            <ScoreSetting
-              index={index}
-              propValidation={props.propValidation}
-              score={score}
-              saveTemporaryState={props.saveTemporaryState}
-              removeScore={props.removeScore}
-              updateScore={props.updateScore}
-              validationHandler={props.validationHandler}
-            />
-          );
-        })
+        props.scores.map((score, index) => (
+          <ScoreSetting
+            index={index}
+            propValidation={props.propValidation}
+            score={score}
+            saveTemporaryState={props.saveTemporaryState}
+            removeScore={props.removeScore}
+            updateScore={props.updateScore}
+            validationHandler={props.validationHandler}
+          />
+        ))
       }
     </>
-  )
+  );
 }

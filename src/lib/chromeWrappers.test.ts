@@ -10,14 +10,14 @@ describe('chromeWrappers', () => {
       local: {
         get: (key: any, cb: any) => {
           cb(dataCallback());
-        }
+        },
       },
     },
   };
 
   it('should fetch materials', async () => {
     const resp = {
-      materials: []
+      materials: [],
     };
 
     dataCallback.mockReturnValueOnce(resp);

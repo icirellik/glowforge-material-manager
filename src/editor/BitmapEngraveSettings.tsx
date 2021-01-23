@@ -37,19 +37,17 @@ export default function BitmapEngraveSettings(props: BitmapEngraveSettingsProps)
         </div>
       </div>
       {
-        props.bitmaps.map((bitmap, index) => {
-          return (
-            <BitmapEngraveSetting
-              bitmap={bitmap}
-              index={index}
-              propValidation={props.propValidation}
-              removeBitmapEngrave={props.removeBitmapEngrave}
-              saveTemporaryState={props.saveTemporaryState}
-              updateBitmapEngrave={props.updateBitmapEngrave}
-              validationHandler={props.validationHandler}
-            />
-          );
-        })
+        props.bitmaps.map((bitmap, index) => (
+          <BitmapEngraveSetting
+            bitmap={bitmap}
+            index={index}
+            propValidation={props.propValidation}
+            removeBitmapEngrave={props.removeBitmapEngrave}
+            saveTemporaryState={props.saveTemporaryState}
+            updateBitmapEngrave={props.updateBitmapEngrave}
+            validationHandler={props.validationHandler}
+          />
+        ))
       }
     </>
   );

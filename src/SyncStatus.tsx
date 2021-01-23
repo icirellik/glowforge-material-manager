@@ -10,7 +10,7 @@ interface SyncStatusProps {
 }
 
 export default function SyncStatus(props: SyncStatusProps) {
-  let title: string = 'Status: Unknown';
+  let title = 'Status: Unknown';
   if (props.synchronized) {
     title = 'Status: Synchronized';
   } else if (props.connected) {
@@ -18,9 +18,11 @@ export default function SyncStatus(props: SyncStatusProps) {
   }
   return (
     <div className={
-      (props.connected) ?
-        (props.synchronized) ? 'Status Status-green' : 'Status Status-red'
-      : 'Status Status-gray'}>
+      (props.connected)
+        ? (props.synchronized) ? 'Status Status-green' : 'Status Status-red'
+        : 'Status Status-gray'
+}
+    >
       <IconStatus
         click={props.forceSync}
         height="12px"

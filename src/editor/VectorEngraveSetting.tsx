@@ -56,7 +56,7 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
       <InputText
         label="Name *"
         onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateVectorEngrave(props.index, 'name', event.target.value) }
+        onChange={(event) => props.updateVectorEngrave(props.index, 'name', event.target.value)}
         propValidation={props.propValidation}
         value={props.vector.name}
         validate={props.validationHandler}
@@ -81,7 +81,7 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
         max="100"
         min="0"
         onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateVectorEngrave(props.index, 'power', toRealPower(asInteger(event.target.value))) }
+        onChange={(event) => props.updateVectorEngrave(props.index, 'power', toRealPower(asInteger(event.target.value)))}
         onChecked={() => {
           const nextMaxPower = !maxPower;
           props.updateVectorEngrave(props.index, 'power', (nextMaxPower) ? 100 : 99);
@@ -112,20 +112,19 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
         value={props.vector.focalOffset}
       />
       <InputNumber
-        help={"Scan Gap mapping to Glowforge UI \n " +
-          "1 = 1355 LPI \n " +
-          "2 = 675 LPI \n " +
-          "3 = 450 LPI \n " +
-          "4 = 340 LPI \n " +
-          "5 = 270 LPI \n " +
-          "6 = 225 LPI \n " +
-          "7 = 195 LPI \n " +
-          "8 = 170 LPI \n " +
-          "11 = 125 LPI \n " +
-          "18 = 75 LPI \n " +
-          "39 = 35 LPI \n " +
-          "136 = 10 LPI"
-        }
+        help={'Scan Gap mapping to Glowforge UI \n '
+          + '1 = 1355 LPI \n '
+          + '2 = 675 LPI \n '
+          + '3 = 450 LPI \n '
+          + '4 = 340 LPI \n '
+          + '5 = 270 LPI \n '
+          + '6 = 225 LPI \n '
+          + '7 = 195 LPI \n '
+          + '8 = 170 LPI \n '
+          + '11 = 125 LPI \n '
+          + '18 = 75 LPI \n '
+          + '39 = 35 LPI \n '
+          + '136 = 10 LPI'}
         label={`Scan Gap (LPI ${toDisplayLinesPerInch(props.vector.scanGap)}) *`}
         onBlur={props.saveTemporaryState}
         onChange={(event) => {

@@ -55,7 +55,7 @@ export default function ScoreSetting(props: ScoreSettingProps) {
       <InputText
         label="Name *"
         onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateScore(props.index, 'name', event.target.value) }
+        onChange={(event) => props.updateScore(props.index, 'name', event.target.value)}
         propValidation={props.propValidation}
         value={props.score.name}
         validate={props.validationHandler}
@@ -86,7 +86,7 @@ export default function ScoreSetting(props: ScoreSettingProps) {
         }}
         onChecked={() => {
           const nextMaxPower = !maxPower;
-          props.updateScore(props.index,'power', (nextMaxPower) ? 100 : 99);
+          props.updateScore(props.index, 'power', (nextMaxPower) ? 100 : 99);
         }}
         propValidation={props.propValidation}
         value={toDisplayPower(props.score.power)}

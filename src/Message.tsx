@@ -17,7 +17,7 @@ interface MessageStyle {
 
 export default function Message(props: MessageProps) {
   if (props.message && props.message.length > 0) {
-    let styles: MessageStyle = {};
+    const styles: MessageStyle = {};
     if (props.color) {
       styles.color = props.color;
     }
@@ -37,4 +37,4 @@ export default function Message(props: MessageProps) {
     );
   }
   return null;
-};
+}

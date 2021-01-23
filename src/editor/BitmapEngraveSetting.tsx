@@ -56,7 +56,7 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
       <InputText
         label="Name *"
         onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateBitmapEngrave(props.index, 'name', event.target.value) }
+        onChange={(event) => props.updateBitmapEngrave(props.index, 'name', event.target.value)}
         propValidation={props.propValidation}
         value={props.bitmap.name}
         validate={props.validationHandler}
@@ -115,20 +115,19 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
         value={props.bitmap.focalOffset}
       />
       <InputNumber
-        help={"Scan Gap mapping to Glowforge UI \n " +
-          "1 = 1355 LPI \n " +
-          "2 = 675 LPI \n " +
-          "3 = 450 LPI \n " +
-          "4 = 340 LPI \n " +
-          "5 = 270 LPI \n " +
-          "6 = 225 LPI \n " +
-          "7 = 195 LPI \n " +
-          "8 = 170 LPI \n " +
-          "11 = 125 LPI \n " +
-          "18 = 75 LPI \n " +
-          "39 = 35 LPI \n " +
-          "136 = 10 LPI"
-        }
+        help={'Scan Gap mapping to Glowforge UI \n '
+          + '1 = 1355 LPI \n '
+          + '2 = 675 LPI \n '
+          + '3 = 450 LPI \n '
+          + '4 = 340 LPI \n '
+          + '5 = 270 LPI \n '
+          + '6 = 225 LPI \n '
+          + '7 = 195 LPI \n '
+          + '8 = 170 LPI \n '
+          + '11 = 125 LPI \n '
+          + '18 = 75 LPI \n '
+          + '39 = 35 LPI \n '
+          + '136 = 10 LPI'}
         label={`Scan Gap (LPI ${toDisplayLinesPerInch(props.bitmap.scanGap)}) *`}
         onBlur={props.saveTemporaryState}
         onChange={(event) => {
