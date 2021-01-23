@@ -43,7 +43,7 @@ import { clamp } from '../lib/glowforgeUnits';
 export async function removeMaterial(materialId: PluginMaterialId) {
   const materials = await getGlowforgeMaterials();
   const newMaterials = await storeGlowforgeMaterials(
-    materials.filter((material) => material.id !== materialId),
+    materials.filter((material) => material.id !== materialId)
   );
   return newMaterials;
 }
@@ -56,7 +56,7 @@ export async function removeMaterial(materialId: PluginMaterialId) {
 export async function removeMaterialTitle(title: string) {
   const materials = await getGlowforgeMaterials();
   const newMaterials = await storeGlowforgeMaterials(
-    materials.filter((material) => material.title !== title),
+    materials.filter((material) => material.title !== title)
   );
   return newMaterials;
 }
@@ -69,7 +69,7 @@ export async function removeMaterialTitle(title: string) {
 export async function removeRawMaterial(title: string) {
   const rawMaterials = await getRawMaterials();
   const newRawMaterials = await storeRawMaterials(
-    rawMaterials.filter((material) => `${material.thickName} ${material.name}` !== title),
+    rawMaterials.filter((material) => `${material.thickName} ${material.name}` !== title)
   );
   return newRawMaterials;
 }
