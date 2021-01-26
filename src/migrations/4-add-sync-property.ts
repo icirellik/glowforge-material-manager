@@ -4,7 +4,7 @@ import { removeCloudMaterial, sendCloudMaterial } from '../material/material';
 /**
  * Upgrades any legacy materials to support the sync property.
  */
-export default async function migrate(): Promise<boolean> {
+export async function migration4(): Promise<boolean> {
   let upgraded = false;
 
   const localStorage = await getLocalStorage();

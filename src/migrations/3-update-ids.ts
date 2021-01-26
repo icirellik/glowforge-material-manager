@@ -6,7 +6,7 @@ import { sha1 } from '../lib/crypto';
  *
  * Only glowforge materials need to be updated in this migration.
  */
-export default async function migrate(): Promise<boolean> {
+export async function migration3(): Promise<boolean> {
   let upgraded = false;
 
   const localStorage = await getLocalStorage();

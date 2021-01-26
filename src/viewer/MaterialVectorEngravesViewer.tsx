@@ -13,7 +13,8 @@ export type MaterialVectorEngravesViewerProps = {
 }
 
 export default function MaterialVectorEngravesViewer(props: MaterialVectorEngravesViewerProps) {
-  if (props.vectors.length === 0) {
+  const { vectors } = props;
+  if (vectors.length === 0) {
     return null;
   }
 
@@ -23,7 +24,7 @@ export default function MaterialVectorEngravesViewer(props: MaterialVectorEngrav
         <p>Vector Engrave Settings</p>
       </div>
       {
-        props.vectors.map((vector, index) => (
+        vectors.map((vector, index) => (
           <>
             <div className="viewer__row" style={(index !== 0) ? { marginTop: '10px' } : undefined}>
               <p className="viewer__label">Name</p>
@@ -56,7 +57,7 @@ export default function MaterialVectorEngravesViewer(props: MaterialVectorEngrav
               </p>
               <p className="viewer__glowforge">{vector.scanGap}</p>
             </div>
-            {(props.vectors.length > 1 && index !== props.vectors.length - 1) ? <hr /> : null}
+            {(vectors.length > 1 && index !== vectors.length - 1) ? <hr /> : null}
           </>
         ))
       }

@@ -1,5 +1,5 @@
 import React from 'react';
-import IconClear from './icons/IconClear';
+import { IconClear } from './icons/IconClear';
 import { ClearMessage } from './App';
 import './Message.css';
 
@@ -16,7 +16,8 @@ interface MessageStyle {
 }
 
 export default function Message(props: MessageProps) {
-  if (props.message && props.message.length > 0) {
+  const { message } = props;
+  if (message && message.length > 0) {
     const styles: MessageStyle = {};
     if (props.color) {
       styles.color = props.color;

@@ -12,7 +12,8 @@ export type MaterialScoresViewerProps = {
 }
 
 export default function MaterialScoresViewer(props: MaterialScoresViewerProps) {
-  if (props.scores.length === 0) {
+  const { scores } = props;
+  if (scores.length === 0) {
     return null;
   }
 
@@ -22,7 +23,7 @@ export default function MaterialScoresViewer(props: MaterialScoresViewerProps) {
         <p>Score Settings</p>
       </div>
       {
-        props.scores.map((score, index) => (
+        scores.map((score, index) => (
           <>
             <div className="viewer__row" style={(index !== 0) ? { marginTop: '10px' } : undefined}>
               <p className="viewer__label">Name</p>
@@ -46,7 +47,7 @@ export default function MaterialScoresViewer(props: MaterialScoresViewerProps) {
               <p className="viewer__label">Focal Offset (mm)</p>
               <p className="viewer__value">{score.focalOffset}</p>
             </div>
-            {(props.scores.length > 1 && index !== props.scores.length - 1) ? <hr /> : null}
+            {(scores.length > 1 && index !== scores.length - 1) ? <hr /> : null}
           </>
         ))
       }

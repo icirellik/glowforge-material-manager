@@ -1,5 +1,5 @@
 import React from 'react';
-import IconMinus from '../icons/IconMinus';
+import { IconMinus } from '../icons/IconMinus';
 import {
   asFloat,
   asInteger,
@@ -35,43 +35,52 @@ interface ScoreSettingProps {
 }
 
 export default function ScoreSetting(props: ScoreSettingProps) {
-  const maxPower = (props.score.power === 99.99 || props.score.power === 100);
+  const {
+    index,
+    propValidation,
+    removeScore,
+    score,
+    saveTemporaryState,
+    updateScore,
+    validationHandler,
+  } = props;
+  const maxPower = (score.power === 99.99 || score.power === 100);
   return (
     <>
       <div className="form-sub-header">
         <p>
-          {`Score ${props.index + 1}`}
+          {`Score ${index + 1}`}
         </p>
         <IconMinus
           className="icon-button-add"
           click={() => {
-            props.removeScore(props.index);
+            removeScore(index);
           }}
           height="16px"
-          title={`Remove Score ${props.index + 1}`}
+          title={`Remove Score ${index + 1}`}
           width="16px"
         />
       </div>
       <InputText
         label="Name *"
-        onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateScore(props.index, 'name', event.target.value)}
-        propValidation={props.propValidation}
-        value={props.score.name}
-        validate={props.validationHandler}
+        onBlur={saveTemporaryState}
+        onChange={(event) => updateScore(index, 'name', event.target.value)}
+        propValidation={propValidation}
+        value={score.name}
+        validate={validationHandler}
       />
       <InputNumber
         label="Speed * (100 - 500)"
         max="500"
         min="100"
-        onBlur={props.saveTemporaryState}
+        onBlur={saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = toRealCutSpeed(asInteger(event.target.value));
-          props.updateScore(props.index, 'speed', normalizedValue);
+          updateScore(index, 'speed', normalizedValue);
         }}
-        propValidation={props.propValidation}
-        value={toDisplayCutSpeed(props.score.speed)}
-        validate={props.validationHandler}
+        propValidation={propValidation}
+        value={toDisplayCutSpeed(score.speed)}
+        validate={validationHandler}
       />
       <InputNumberWithCheckbox
         isChecked={maxPower}
@@ -79,39 +88,39 @@ export default function ScoreSetting(props: ScoreSettingProps) {
         label="Power * (0 - 100)"
         max="100"
         min="0"
-        onBlur={props.saveTemporaryState}
+        onBlur={saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = toRealPower(asInteger(event.target.value));
-          props.updateScore(props.index, 'power', normalizedValue);
+          updateScore(index, 'power', normalizedValue);
         }}
         onChecked={() => {
           const nextMaxPower = !maxPower;
-          props.updateScore(props.index, 'power', (nextMaxPower) ? 100 : 99);
+          updateScore(index, 'power', (nextMaxPower) ? 100 : 99);
         }}
-        propValidation={props.propValidation}
-        value={toDisplayPower(props.score.power)}
-        validate={props.validationHandler}
+        propValidation={propValidation}
+        value={toDisplayPower(score.power)}
+        validate={validationHandler}
       />
       <InputNumber
         label="Passes"
         min="1"
-        onBlur={props.saveTemporaryState}
+        onBlur={saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = asInteger(event.target.value);
-          props.updateScore(props.index, 'passes', normalizedValue);
+          updateScore(index, 'passes', normalizedValue);
         }}
-        propValidation={props.propValidation}
-        value={props.score.passes}
+        propValidation={propValidation}
+        value={score.passes}
       />
       <InputNumber
         label="Focal Offset (mm)"
-        onBlur={props.saveTemporaryState}
+        onBlur={saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = precisionRound(asFloat(event.target.value), 3);
-          props.updateScore(props.index, 'focalOffset', normalizedValue);
+          updateScore(index, 'focalOffset', normalizedValue);
         }}
-        propValidation={props.propValidation}
-        value={props.score.focalOffset}
+        propValidation={propValidation}
+        value={score.focalOffset}
       />
     </>
   );

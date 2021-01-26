@@ -1,4 +1,4 @@
-import migrate from './3-update-ids';
+import { migration3 } from './3-update-ids';
 
 const exampleStorage = {
   materials: [
@@ -292,11 +292,9 @@ describe('migration #3', () => {
   let testData: any = null;
   let id = 0;
 
-  (<any>global).TextEncoder = function () {
-    return {
-      encode: () => { },
-    };
-  };
+  (<any>global).TextEncoder = () => ({
+    encode: () => { },
+  });
 
   (<any>global).chrome = {
     storage: {
@@ -329,11 +327,11 @@ describe('migration #3', () => {
    */
   it('should migrate correctly', async () => {
     testData = exampleStorage;
-    await migrate();
+    await migration3();
     expect(testData).toEqual(expected);
 
     id = 0;
-    await migrate();
+    await migration3();
     expect(testData).toEqual(expected);
   });
 });

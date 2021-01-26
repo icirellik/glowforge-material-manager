@@ -1,7 +1,7 @@
 import React from 'react';
 import MaterialListItem from './MaterialListItem';
 import { PluginMaterial } from './material/materialPlugin';
-import {
+import type {
   ModeAdd,
   ModeSelect,
   SetMaterial,
@@ -11,7 +11,7 @@ import {
   TempMaterial,
 } from './lib/materialHelpers';
 import './MaterialList.css';
-import IconClear from './icons/IconClear';
+import { IconClear } from './icons/IconClear';
 
 type MaterialListProps = {
   materials: PluginMaterial[]
@@ -33,6 +33,7 @@ interface MaterialListCreateFromSearchProps {
 const SCROLL_BAR_APPEARS = 13;
 
 function MaterialListCreateFromSearch(props: MaterialListCreateFromSearchProps) {
+  const { name } = props;
   return (
     <p
       className="materialList__create"
@@ -52,7 +53,7 @@ function MaterialListCreateFromSearch(props: MaterialListCreateFromSearchProps) 
       }}
     >
       Create "
-      <span>{props.name}</span>
+      <span>{name}</span>
       "
     </p>
   );
@@ -76,13 +77,13 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
     this.onFilterChange = this.onFilterChange.bind(this);
   }
 
-  clearFilter() {
+  clearFilter(): void {
     this.setState({
       filter: '',
     });
   }
 
-  onFilterChange(event: React.ChangeEvent) {
+  onFilterChange(event: React.ChangeEvent): void {
     if ((event.target as any).value) {
       this.setState({
         filter: (event.target as any).value,
@@ -95,7 +96,14 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
   }
 
   render() {
-    const { materials } = this.props;
+    const {
+      materials,
+      selectMaterial,
+      setEditorModeAdd,
+      setMaterial,
+      tempMaterial,
+    } = this.props;
+    const { filter } = this.state;
 
     const filteredMaterialElements = materials.sort((mat1, mat2) => {
       const mat1Title = `${mat1.thickName} ${mat1.name}`;
@@ -110,24 +118,25 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
       return 0;
     }).filter((material) => {
       const title = `${material.thickName} ${material.name}`.toLowerCase();
-      return !this.state.filter || title.includes(this.state.filter.toLowerCase());
+      return !filter || title.includes(filter.toLowerCase());
     });
 
     const hasScrollbar = filteredMaterialElements.length > SCROLL_BAR_APPEARS;
     const materialElements = filteredMaterialElements.map((material) => (
       <MaterialListItem
-        styles={!hasScrollbar ? { maxWidth: '159px' } : undefined}
+        key={`${material.thickName} ${material.name}`}
         material={material}
-        selected={`${material.thickName} ${material.name}` === `${this.props.tempMaterial.thickName} ${this.props.tempMaterial.name}`}
-        selectMaterial={this.props.selectMaterial}
-        setMaterial={this.props.setMaterial}
+        selected={`${material.thickName} ${material.name}` === `${tempMaterial.thickName} ${tempMaterial.name}`}
+        selectMaterial={selectMaterial}
+        setMaterial={setMaterial}
+        styles={!hasScrollbar ? { maxWidth: '159px' } : undefined}
       />
     ));
 
     let materialList: JSX.Element | null = null;
-    if (this.state.filter
+    if (filter
         && materials.map((material) => `${material.thickName} ${material.name}`.toLowerCase())
-          .indexOf(this.state.filter) === -1
+          .indexOf(filter) === -1
         && materialElements.length > 0
     ) {
       materialList = (
@@ -138,9 +147,9 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
               style={hasScrollbar ? { maxWidth: '224px' } : undefined}
             >
               <MaterialListCreateFromSearch
-                name={this.state.filter}
+                name={filter}
                 setEditorModeAdd={async (material) => {
-                  this.props.setEditorModeAdd(material);
+                  setEditorModeAdd(material);
                   this.clearFilter();
                 }}
               />
@@ -160,12 +169,12 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
           </div>
         </div>
       );
-    } else if (this.state.filter && materialElements.length === 0) {
+    } else if (filter && materialElements.length === 0) {
       materialList = (
         <MaterialListCreateFromSearch
-          name={this.state.filter}
+          name={filter}
           setEditorModeAdd={async (material) => {
-            this.props.setEditorModeAdd(material);
+            setEditorModeAdd(material);
             this.clearFilter();
           }}
         />
@@ -186,7 +195,7 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
               onChange={this.onFilterChange}
               placeholder="Search"
               type="text"
-              value={this.state.filter}
+              value={filter}
             />
             <IconClear
               className="materialList__search__clear"

@@ -1,5 +1,5 @@
 import React from 'react';
-import IconPlus from '../icons/IconPlus';
+import { IconPlus } from '../icons/IconPlus';
 import BitmapEngraveSetting from './BitmapEngraveSetting';
 import { PluginBitmapEngraveSetting } from '../material/materialPlugin';
 
@@ -21,6 +21,15 @@ type BitmapEngraveSettingsProps = {
 }
 
 export default function BitmapEngraveSettings(props: BitmapEngraveSettingsProps) {
+  const {
+    addBitmapEngrave,
+    bitmaps,
+    propValidation,
+    removeBitmapEngrave,
+    saveTemporaryState,
+    updateBitmapEngrave,
+    validationHandler,
+  } = props;
   return (
     <>
       <div className="form-header">
@@ -28,7 +37,7 @@ export default function BitmapEngraveSettings(props: BitmapEngraveSettingsProps)
         <div>
           <IconPlus
             className="icon-button-add"
-            click={props.addBitmapEngrave}
+            click={addBitmapEngrave}
             fill="#001f23"
             height="18px"
             title="Add Bitmap Engrave"
@@ -37,15 +46,16 @@ export default function BitmapEngraveSettings(props: BitmapEngraveSettingsProps)
         </div>
       </div>
       {
-        props.bitmaps.map((bitmap, index) => (
+        bitmaps.map((bitmap, index) => (
           <BitmapEngraveSetting
             bitmap={bitmap}
             index={index}
-            propValidation={props.propValidation}
-            removeBitmapEngrave={props.removeBitmapEngrave}
-            saveTemporaryState={props.saveTemporaryState}
-            updateBitmapEngrave={props.updateBitmapEngrave}
-            validationHandler={props.validationHandler}
+            key={bitmap.name}
+            propValidation={propValidation}
+            removeBitmapEngrave={removeBitmapEngrave}
+            saveTemporaryState={saveTemporaryState}
+            updateBitmapEngrave={updateBitmapEngrave}
+            validationHandler={validationHandler}
           />
         ))
       }

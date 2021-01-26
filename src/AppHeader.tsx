@@ -13,22 +13,29 @@ interface AppHeaderProps {
 }
 
 export function AppHeader(props: AppHeaderProps) {
+  const {
+    cloudStorageBytesUsed,
+    connected,
+    forceSyncronize,
+    serial,
+    synchronized,
+  } = props;
   return (
     <header className="header">
       <div className="header__headline">
         <img src={logo} className="header__logo" alt="logo" />
         <h1 className="header__title">
           Glowforge Material Manager
-          {props.serial ? ` - ${props.serial}` : undefined}
+          {serial ? ` - ${serial}` : undefined}
         </h1>
         <SyncStatus
-          connected={props.connected}
-          forceSync={props.forceSyncronize}
-          synchronized={props.synchronized}
+          connected={connected}
+          forceSync={forceSyncronize}
+          synchronized={synchronized}
         />
       </div>
       <div className="header_subline">
-        {`Cloud Storage Used ${props.cloudStorageBytesUsed} / 102,400`}
+        {`Cloud Storage Used ${cloudStorageBytesUsed} / 102,400`}
       </div>
     </header>
   );

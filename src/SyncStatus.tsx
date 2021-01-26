@@ -1,5 +1,5 @@
 import React from 'react';
-import IconStatus from './icons/IconStatus';
+import { IconStatus } from './icons/IconStatus';
 import { ForceSyncronize } from './App';
 import './SyncStatus.css';
 
@@ -10,21 +10,26 @@ interface SyncStatusProps {
 }
 
 export default function SyncStatus(props: SyncStatusProps) {
+  const {
+    connected,
+    forceSync,
+    synchronized,
+  } = props;
   let title = 'Status: Unknown';
-  if (props.synchronized) {
+  if (synchronized) {
     title = 'Status: Synchronized';
-  } else if (props.connected) {
+  } else if (connected) {
     title = 'Status: Synchronizing';
   }
   return (
     <div className={
-      (props.connected)
-        ? (props.synchronized) ? 'Status Status-green' : 'Status Status-red'
+      (connected)
+        ? (synchronized) ? 'Status Status-green' : 'Status Status-red'
         : 'Status Status-gray'
 }
     >
       <IconStatus
-        click={props.forceSync}
+        click={forceSync}
         height="12px"
         title={title}
         width="12px"

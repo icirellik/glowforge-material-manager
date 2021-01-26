@@ -1,11 +1,11 @@
 import { syncronizeMaterials } from './material.sync';
-import { createEmptyMaterial, TempMaterial } from '../lib/materialHelpers';
-import { hashTitle, compress, decompress } from '../lib/utils';
+import { createEmptyMaterial } from '../lib/materialHelpers';
+import { hashTitle, decompress } from '../lib/utils';
 import {
-  toTinyMaterial, createMaterial, removeCloudMaterial, sendCloudMaterial, toFullMaterial,
+  createMaterial, removeCloudMaterial, sendCloudMaterial, toFullMaterial,
 } from './material';
 import {
-  storeSynchronizedMaterial, storeGlowforgeMaterials, storeRawMaterials, StorageLocal,
+  storeGlowforgeMaterials, storeRawMaterials, StorageLocal,
 } from '../lib/chromeWrappers';
 
 function mockFunctions() {

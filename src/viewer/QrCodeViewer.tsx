@@ -30,23 +30,24 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
     };
   }
 
-  shouldComponentUpdate(nextProps: QrCodeViewerProps, nextState: QrCodeViewerState) {
+  shouldComponentUpdate(nextProps: QrCodeViewerProps) {
     const { thickName, name } = nextProps.material;
+    const { title } = this.state;
     const nextTitle = `${thickName} ${name}`;
-    if (nextTitle === this.state.title) {
+    if (nextTitle === title) {
       return false;
     }
     return true;
   }
 
   async componentDidMount() {
-    const { thickName, name } = this.props.material;
+    const { material: { thickName, name }, material } = this.props;
     const title = `${thickName} ${name}`;
     const hash = await sha1(title);
     const id = hash.substring(0, 7);
 
     const materialId = `Custom:${id}`;
-    const materialData = JSON.stringify(toTinyMaterial(this.props.material));
+    const materialData = JSON.stringify(toTinyMaterial(material));
 
     const materialIdImageUri = await qrcodeAsDataUri(materialId);
     const materialIdSvgData = await qrcodeAsSvg(materialId);
@@ -63,13 +64,13 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
   }
 
   async componentDidUpdate() {
-    const { thickName, name } = this.props.material;
+    const { material: { thickName, name }, material } = this.props;
     const title = `${thickName} ${name}`;
     const hash = await sha1(title);
     const id = hash.substring(0, 7);
 
     const materialId = `Custom:${id}`;
-    const materialData = JSON.stringify(toTinyMaterial(this.props.material));
+    const materialData = JSON.stringify(toTinyMaterial(material));
 
     const materialIdImageUri = await qrcodeAsDataUri(materialId);
     const materialIdSvgData = await qrcodeAsSvg(materialId);
@@ -86,7 +87,12 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
   }
 
   render() {
-    const { thickName, name } = this.props.material;
+    const { material: { thickName, name } } = this.props;
+    const {
+      materialIdImageUri,
+      materialIdSvgData,
+      materialSvgData,
+    } = this.state;
     const title = `${thickName} ${name}`;
     return (
       <>
@@ -98,7 +104,7 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
             border: '1px solid #000',
             width: 'fit-content',
           }}
-          src={this.state.materialIdImageUri}
+          src={materialIdImageUri}
           alt="qrcode"
         />
 
@@ -111,7 +117,7 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
         >
           <a
             download={`${title}.svg`}
-            href={`data:image/svg+xml;base64,${window.btoa(this.state.materialIdSvgData!)}`}
+            href={`data:image/svg+xml;base64,${window.btoa(materialIdSvgData!)}`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -119,7 +125,7 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
           </a>
           <a
             download={`${title}.svg`}
-            href={`data:image/svg+xml;base64,${window.btoa(this.state.materialSvgData!)}`}
+            href={`data:image/svg+xml;base64,${window.btoa(materialSvgData!)}`}
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -13,7 +13,8 @@ export type MaterialBitmapEngravesViewerProps = {
 }
 
 export default function MaterialBitmapEngravesViewer(props: MaterialBitmapEngravesViewerProps) {
-  if (props.bitmaps.length === 0) {
+  const { bitmaps } = props;
+  if (bitmaps.length === 0) {
     return null;
   }
 
@@ -23,7 +24,7 @@ export default function MaterialBitmapEngravesViewer(props: MaterialBitmapEngrav
         <p>Bitmap Engrave Settings</p>
       </div>
       {
-        props.bitmaps.map((bitmap, index) => (
+        bitmaps.map((bitmap, index) => (
           <>
             <div className="viewer__row" style={(index !== 0) ? { marginTop: '10px' } : undefined}>
               <p className="viewer__label">Name</p>
@@ -56,7 +57,7 @@ export default function MaterialBitmapEngravesViewer(props: MaterialBitmapEngrav
               </p>
               <p className="viewer__glowforge">{bitmap.scanGap}</p>
             </div>
-            {(props.bitmaps.length > 1 && index !== props.bitmaps.length - 1) ? <hr /> : null}
+            {(bitmaps.length > 1 && index !== bitmaps.length - 1) ? <hr /> : null}
           </>
         ))
       }

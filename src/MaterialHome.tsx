@@ -1,20 +1,19 @@
 import React from 'react';
-import { PluginMaterial } from './material/materialPlugin';
-import { ModeAdd, ModeBackup, ForceSyncronize } from './App';
+import type { ModeAdd, ModeBackup, ForceSyncronize } from './App';
 import './MaterialHome.css';
 
 interface MaterialHomeProps {
   forceSyncronize: ForceSyncronize;
-  materials: PluginMaterial[],
   rawSvg: string | null;
   setEditorModeAdd: ModeAdd;
   setEditorModeBackup: ModeBackup;
 }
 
 export default function MaterialHome(props: MaterialHomeProps) {
+  const { rawSvg } = props;
   let svg = (<span>Download Raw SVG/Trace (Refresh Page for link)</span>);
-  if (props.rawSvg) {
-    svg = (<a className="materialHome__menuItem" href={props.rawSvg} target="_blank" rel="noopener noreferrer">Download Raw SVG/Trace</a>);
+  if (rawSvg) {
+    svg = (<a className="materialHome__menuItem" href={rawSvg} target="_blank" rel="noopener noreferrer">Download Raw SVG/Trace</a>);
   }
 
   return (
