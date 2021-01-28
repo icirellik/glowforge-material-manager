@@ -10,7 +10,7 @@ import {
 import { toFullMaterial } from './materialConversion';
 
 function mockFunctions() {
-  const original = require.requireActual('../lib/crypto');
+  const original = jest.requireActual('../lib/crypto');
   let counter = 0;
   const hashes: Map<string, string> = new Map();
   return {

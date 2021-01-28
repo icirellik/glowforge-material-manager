@@ -16,7 +16,8 @@
   "scripts": {
     "clean": "rm -rf build",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom",
+    "test": "jest --env=jsdom",
+    "test:watch": "jest --env=jsdom --watchAll",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src/",
     "release-test": "yarn build && mkdir -p releases && cd build && sed -i '/\"key\"/d' manifest.json && sed -i 's/Glowforge Material Manager/Glowforge Material Manager Test/g' manifest.json && zip -r glowforge-material-manager-test.zip . && mv -f *.zip ../releases && cd ..",
     "release": "yarn build && mkdir -p releases && cd build && sed -i '/\"key\"/d' manifest.json && zip -r glowforge-material-manager.zip . && mv -f *.zip ../releases && cd ..",
@@ -30,7 +31,7 @@
     "@babel/preset-react": "7.12.10",
     "@babel/preset-typescript": "7.12.7",
     "@types/chrome": "0.0.128",
-    "@types/jest": "24.0.12",
+    "@types/jest": "^26.0.20",
     "@types/pako": "1.0.1",
     "@types/qrcode": "1.3.5",
     "@types/react": "16.8.16",
@@ -39,7 +40,7 @@
     "@typescript-eslint/eslint-plugin": "4.14.1",
     "@typescript-eslint/parser": "4.14.0",
     "babel-eslint": "10.0.1",
-    "babel-jest": "24.8.0",
+    "babel-jest": "26.6.3",
     "babel-loader": "8.0.5",
     "camelcase": "5.2.0",
     "canvas": "2.6.1",
@@ -57,8 +58,8 @@
     "fs-extra": "7.0.1",
     "html-webpack-plugin": "4.0.0-beta.5",
     "identity-obj-proxy": "3.0.0",
-    "jest": "25.5.4",
-    "jest-watch-typeahead": "0.3.0",
+    "jest": "26.6.3",
+    "jest-watch-typeahead": "0.6.1",
     "mini-css-extract-plugin": "0.5.0",
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "postcss-flexbugs-fixes": "4.1.0",
@@ -66,10 +67,11 @@
     "postcss-normalize": "7.0.1",
     "postcss-preset-env": "6.6.0",
     "postcss-safe-parser": "4.0.1",
-    "react-dev-utils": "^9.0.1",
+    "react-dev-utils": "9.0.1",
     "resolve": "1.10.0",
     "style-loader": "0.23.1",
     "terser-webpack-plugin": "1.2.3",
+    "ts-node": "9.1.1",
     "typescript": "4.1.3",
     "url-loader": "1.1.2",
     "webpack": "4.29.6",
@@ -84,47 +86,6 @@
     ],
     "development": [
       "last 1 chrome version"
-    ]
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
-      "!src/**/*.d.ts"
-    ],
-    "setupFiles": [],
-    "setupFilesAfterEnv": [],
-    "testMatch": [
-      "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
-      "<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}"
-    ],
-    "testEnvironmentOptions": {
-      "resources": "usable"
-    },
-    "transform": {
-      "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
-      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
-      "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
-    },
-    "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$",
-      "^.+\\.module\\.(css|sass|scss)$"
-    ],
-    "modulePaths": [
-      "/home/digerati/tools/node/lib/node_modules"
-    ],
-    "moduleNameMapper": {
-      "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
-    },
-    "moduleFileExtensions": [
-      "js",
-      "ts",
-      "tsx",
-      "json",
-      "jsx"
-    ],
-    "watchPlugins": [
-      "jest-watch-typeahead/filename",
-      "jest-watch-typeahead/testname"
     ]
   }
 }
