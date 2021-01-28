@@ -1,6 +1,6 @@
 import React from 'react';
-import IconOpen from './icons/IconOpen';
-import IconOpenInBrowser from './icons/IconOpenInBrowser';
+import { IconOpen } from './icons/IconOpen';
+import { IconOpenInBrowser } from './icons/IconOpenInBrowser';
 import { PluginMaterial } from './material/materialPlugin';
 import {
   ModeSelect,
@@ -19,13 +19,14 @@ interface MaterialProps {
 export default function MaterialListItem(props: MaterialProps) {
   const {
     material,
+    selected,
     selectMaterial,
     setMaterial,
     styles,
   } = props;
   const title = `${material.thickName} ${material.name}`;
   return (
-    <div className={`materialList__item ${(props.selected) ? 'materialList__item__selected' : ''}`}>
+    <div className={`materialList__item ${(selected) ? 'materialList__item__selected' : ''}`}>
       <span
         style={styles}
         onClick={() => selectMaterial(title)}

@@ -6,9 +6,9 @@ import MaterialCutViewer from './MaterialCutViewer';
 import MaterialScoresViewer from './MaterialScoresViewer';
 import MaterialVectorEngravesViewer from './MaterialVectorEngravesViewer';
 import QrCodeViewer from './QrCodeViewer';
-import IconDeleteForever from '../icons/IconDeleteForever';
-import IconToggleOff from '../icons/IconToggleOff';
-import IconToggleOn from '../icons/IconToggleOn';
+import { IconDeleteForever } from '../icons/IconDeleteForever';
+import { IconToggleOff } from '../icons/IconToggleOff';
+import { IconToggleOn } from '../icons/IconToggleOn';
 import './MaterialViewer.css';
 
 export type MaterialViewerProps = {
@@ -19,7 +19,9 @@ export type MaterialViewerProps = {
 
 export default function MaterialViewer(props: MaterialViewerProps) {
   const {
+    toggleCloundSync,
     material,
+    removeMaterial,
   } = props;
 
   const title = `${material.thickName} ${material.name}`;
@@ -27,14 +29,14 @@ export default function MaterialViewer(props: MaterialViewerProps) {
     ? (
       <IconToggleOn
         className="viewer__syncOn"
-        click={() => { props.toggleCloundSync(material); }}
+        click={() => { toggleCloundSync(material); }}
         title="Cloud Sync Enabled"
       />
     )
     : (
       <IconToggleOff
         className="viewer__syncOff"
-        click={() => { props.toggleCloundSync(material); }}
+        click={() => { toggleCloundSync(material); }}
         title="Clound Sync Disabled"
       />
     );
@@ -75,7 +77,7 @@ export default function MaterialViewer(props: MaterialViewerProps) {
         <IconDeleteForever
           buttonClassName="materialButtons__delete"
           className="materialButtons__delete__icon"
-          click={() => props.removeMaterial(title)}
+          click={() => removeMaterial(title)}
           height="18px"
           text="Delete Permanently"
           title="Delete Permanently"

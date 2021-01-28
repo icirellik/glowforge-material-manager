@@ -1,5 +1,5 @@
 import React from 'react';
-import IconMinus from '../icons/IconMinus';
+import { IconMinus } from '../icons/IconMinus';
 import {
   asFloat,
   asInteger,
@@ -36,43 +36,52 @@ interface BitmapEngraveSettingProps {
 }
 
 export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
-  const maxPower = (props.bitmap.power === 99.99 || props.bitmap.power === 100);
+  const {
+    bitmap,
+    index,
+    propValidation,
+    removeBitmapEngrave,
+    saveTemporaryState,
+    updateBitmapEngrave,
+    validationHandler,
+  } = props;
+  const maxPower = (bitmap.power === 99.99 || bitmap.power === 100);
   return (
     <>
       <div className="form-sub-header">
         <p>
-          {`Bitmap Engrave ${props.index + 1}`}
+          {`Bitmap Engrave ${index + 1}`}
         </p>
         <IconMinus
           className="icon-button-add"
           click={() => {
-            props.removeBitmapEngrave(props.index);
+            removeBitmapEngrave(index);
           }}
           height="16px"
-          title={`Remove Bitmap Engrave ${props.index + 1}`}
+          title={`Remove Bitmap Engrave ${index + 1}`}
           width="16px"
         />
       </div>
       <InputText
         label="Name *"
-        onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateBitmapEngrave(props.index, 'name', event.target.value)}
-        propValidation={props.propValidation}
-        value={props.bitmap.name}
-        validate={props.validationHandler}
+        onBlur={saveTemporaryState}
+        onChange={(event) => updateBitmapEngrave(index, 'name', event.target.value)}
+        propValidation={propValidation}
+        value={bitmap.name}
+        validate={validationHandler}
       />
       <InputNumber
         label="Speed * (100 - 1000)"
         max="1000"
         min="100"
-        onBlur={props.saveTemporaryState}
+        onBlur={saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = toRealEngraveSpeed(asInteger(event.target.value));
-          props.updateBitmapEngrave(props.index, 'speed', normalizedValue);
+          updateBitmapEngrave(index, 'speed', normalizedValue);
         }}
-        propValidation={props.propValidation}
-        value={toDisplayEngraveSpeed(props.bitmap.speed)}
-        validate={props.validationHandler}
+        propValidation={propValidation}
+        value={toDisplayEngraveSpeed(bitmap.speed)}
+        validate={validationHandler}
       />
       <InputNumberWithCheckbox
         isChecked={maxPower}
@@ -80,39 +89,39 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
         label="Power * (0 - 100)"
         max="100"
         min="0"
-        onBlur={props.saveTemporaryState}
+        onBlur={saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = toRealPower(asInteger(event.target.value));
-          props.updateBitmapEngrave(props.index, 'power', normalizedValue);
+          updateBitmapEngrave(index, 'power', normalizedValue);
         }}
         onChecked={() => {
           const nextMaxPower = !maxPower;
-          props.updateBitmapEngrave(props.index, 'power', (nextMaxPower) ? 100 : 99);
+          updateBitmapEngrave(index, 'power', (nextMaxPower) ? 100 : 99);
         }}
-        propValidation={props.propValidation}
-        value={toDisplayPower(props.bitmap.power)}
-        validate={props.validationHandler}
+        propValidation={propValidation}
+        value={toDisplayPower(bitmap.power)}
+        validate={validationHandler}
       />
       <InputNumber
         label="Passes"
         min="1"
-        onBlur={props.saveTemporaryState}
+        onBlur={saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = asInteger(event.target.value);
-          props.updateBitmapEngrave(props.index, 'passes', normalizedValue);
+          updateBitmapEngrave(index, 'passes', normalizedValue);
         }}
-        propValidation={props.propValidation}
-        value={props.bitmap.passes}
+        propValidation={propValidation}
+        value={bitmap.passes}
       />
       <InputNumber
         label="Focal Offset (mm)"
-        onBlur={props.saveTemporaryState}
+        onBlur={saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = precisionRound(asFloat(event.target.value), 3);
-          props.updateBitmapEngrave(props.index, 'focalOffset', normalizedValue);
+          updateBitmapEngrave(index, 'focalOffset', normalizedValue);
         }}
-        propValidation={props.propValidation}
-        value={props.bitmap.focalOffset}
+        propValidation={propValidation}
+        value={bitmap.focalOffset}
       />
       <InputNumber
         help={'Scan Gap mapping to Glowforge UI \n '
@@ -128,15 +137,15 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
           + '18 = 75 LPI \n '
           + '39 = 35 LPI \n '
           + '136 = 10 LPI'}
-        label={`Scan Gap (LPI ${toDisplayLinesPerInch(props.bitmap.scanGap)}) *`}
-        onBlur={props.saveTemporaryState}
+        label={`Scan Gap (LPI ${toDisplayLinesPerInch(bitmap.scanGap)}) *`}
+        onBlur={saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = asInteger(event.target.value);
-          props.updateBitmapEngrave(props.index, 'scanGap', normalizedValue);
+          updateBitmapEngrave(index, 'scanGap', normalizedValue);
         }}
-        propValidation={props.propValidation}
-        value={props.bitmap.scanGap}
-        validate={props.validationHandler}
+        propValidation={propValidation}
+        value={bitmap.scanGap}
+        validate={validationHandler}
       />
     </>
   );

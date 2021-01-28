@@ -29,7 +29,14 @@ interface CutSettingsProps {
 }
 
 export default function CutSettings(props: CutSettingsProps) {
-  const maxPower = (props.cut.power === 99.99 || props.cut.power === 100);
+  const {
+    cut,
+    propValidation,
+    saveTemporaryState,
+    updateCut,
+    validationHandler,
+  } = props;
+  const maxPower = (cut.power === 99.99 || cut.power === 100);
   return (
     <>
       <div className="form-header">
@@ -39,11 +46,11 @@ export default function CutSettings(props: CutSettingsProps) {
         label="Speed * (100 - 500)"
         max="500"
         min="100"
-        onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateCut('speed', toRealCutSpeed(asInteger(event.target.value)))}
-        propValidation={props.propValidation}
-        value={toDisplayCutSpeed(props.cut.speed)}
-        validate={props.validationHandler}
+        onBlur={saveTemporaryState}
+        onChange={(event) => updateCut('speed', toRealCutSpeed(asInteger(event.target.value)))}
+        propValidation={propValidation}
+        value={toDisplayCutSpeed(cut.speed)}
+        validate={validationHandler}
       />
       <InputNumberWithCheckbox
         isChecked={maxPower}
@@ -51,30 +58,30 @@ export default function CutSettings(props: CutSettingsProps) {
         label="Power * (0 - 100)"
         max="100"
         min="0"
-        onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateCut('power', toRealPower(asInteger(event.target.value)))}
+        onBlur={saveTemporaryState}
+        onChange={(event) => updateCut('power', toRealPower(asInteger(event.target.value)))}
         onChecked={() => {
           const nextMaxPower = !maxPower;
-          props.updateCut('power', (nextMaxPower) ? 100 : 99);
+          updateCut('power', (nextMaxPower) ? 100 : 99);
         }}
-        propValidation={props.propValidation}
-        value={toDisplayPower(props.cut.power)}
-        validate={props.validationHandler}
+        propValidation={propValidation}
+        value={toDisplayPower(cut.power)}
+        validate={validationHandler}
       />
       <InputNumber
         label="Passes"
         min="1"
-        onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateCut('passes', asInteger(event.target.value))}
-        propValidation={props.propValidation}
-        value={props.cut.passes}
+        onBlur={saveTemporaryState}
+        onChange={(event) => updateCut('passes', asInteger(event.target.value))}
+        propValidation={propValidation}
+        value={cut.passes}
       />
       <InputNumber
         label="Focal Offset (mm)"
-        onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateCut('focalOffset', precisionRound(asFloat(event.target.value), 3))}
-        propValidation={props.propValidation}
-        value={props.cut.focalOffset}
+        onBlur={saveTemporaryState}
+        onChange={(event) => updateCut('focalOffset', precisionRound(asFloat(event.target.value), 3))}
+        propValidation={propValidation}
+        value={cut.focalOffset}
       />
     </>
   );

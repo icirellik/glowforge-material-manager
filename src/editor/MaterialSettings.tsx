@@ -14,6 +14,14 @@ type MaterialSettingsProps = {
 }
 
 export default function MaterialSettings(props: MaterialSettingsProps) {
+  const {
+    action,
+    material,
+    propValidation,
+    saveTemporaryState,
+    updateMaterial,
+    validationHandler,
+  } = props;
   return (
     <>
       <div className="form-header">
@@ -21,29 +29,29 @@ export default function MaterialSettings(props: MaterialSettingsProps) {
       </div>
       <InputText
         label="Thickness Name *"
-        isDisabled={props.action === 'EDIT'}
-        onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateMaterial('thickName', event.target.value)}
-        propValidation={props.propValidation}
-        value={props.material.thickName}
-        validate={props.validationHandler}
+        isDisabled={action === 'EDIT'}
+        onBlur={saveTemporaryState}
+        onChange={(event) => updateMaterial('thickName', event.target.value)}
+        propValidation={propValidation}
+        value={material.thickName}
+        validate={validationHandler}
       />
       <InputText
         label="Material Name *"
-        isDisabled={props.action === 'EDIT'}
-        onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateMaterial('name', event.target.value)}
-        propValidation={props.propValidation}
-        value={props.material.name}
-        validate={props.validationHandler}
+        isDisabled={action === 'EDIT'}
+        onBlur={saveTemporaryState}
+        onChange={(event) => updateMaterial('name', event.target.value)}
+        propValidation={propValidation}
+        value={material.name}
+        validate={validationHandler}
       />
       <InputNumber
         label="Thickness (mm) *"
-        onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateMaterial('thickness', asFloat(event.target.value))}
-        propValidation={props.propValidation}
-        value={props.material.thickness}
-        validate={props.validationHandler}
+        onBlur={saveTemporaryState}
+        onChange={(event) => updateMaterial('thickness', asFloat(event.target.value))}
+        propValidation={propValidation}
+        value={material.thickness}
+        validate={validationHandler}
       />
     </>
   );

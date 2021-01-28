@@ -1,5 +1,5 @@
 import React from 'react';
-import IconMinus from '../icons/IconMinus';
+import { IconMinus } from '../icons/IconMinus';
 import {
   asFloat,
   asInteger,
@@ -36,43 +36,52 @@ interface VectorEngraveSettingProps {
 }
 
 export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
-  const maxPower = (props.vector.power === 99.99 || props.vector.power === 100);
+  const {
+    index,
+    propValidation,
+    removeVectorEngrave,
+    saveTemporaryState,
+    updateVectorEngrave,
+    vector,
+    validationHandler,
+  } = props;
+  const maxPower = (vector.power === 99.99 || vector.power === 100);
   return (
     <>
       <div className="form-sub-header">
         <p>
-          {`Vector Engrave ${props.index + 1}`}
+          {`Vector Engrave ${index + 1}`}
         </p>
         <IconMinus
           className="icon-button-add"
           click={() => {
-            props.removeVectorEngrave(props.index);
+            removeVectorEngrave(index);
           }}
           height="16px"
-          title={`Remove Vector Engrave ${props.index + 1}`}
+          title={`Remove Vector Engrave ${index + 1}`}
           width="16px"
         />
       </div>
       <InputText
         label="Name *"
-        onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateVectorEngrave(props.index, 'name', event.target.value)}
-        propValidation={props.propValidation}
-        value={props.vector.name}
-        validate={props.validationHandler}
+        onBlur={saveTemporaryState}
+        onChange={(event) => updateVectorEngrave(index, 'name', event.target.value)}
+        propValidation={propValidation}
+        value={vector.name}
+        validate={validationHandler}
       />
       <InputNumber
         label="Speed * (100 - 1000)"
         max="1000"
         min="100"
-        onBlur={props.saveTemporaryState}
+        onBlur={saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = toRealEngraveSpeed(asInteger(event.target.value));
-          props.updateVectorEngrave(props.index, 'speed', normalizedValue);
+          updateVectorEngrave(index, 'speed', normalizedValue);
         }}
-        propValidation={props.propValidation}
-        value={toDisplayEngraveSpeed(props.vector.speed)}
-        validate={props.validationHandler}
+        propValidation={propValidation}
+        value={toDisplayEngraveSpeed(vector.speed)}
+        validate={validationHandler}
       />
       <InputNumberWithCheckbox
         isChecked={maxPower}
@@ -80,36 +89,36 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
         label="Power * (0 - 100)"
         max="100"
         min="0"
-        onBlur={props.saveTemporaryState}
-        onChange={(event) => props.updateVectorEngrave(props.index, 'power', toRealPower(asInteger(event.target.value)))}
+        onBlur={saveTemporaryState}
+        onChange={(event) => updateVectorEngrave(index, 'power', toRealPower(asInteger(event.target.value)))}
         onChecked={() => {
           const nextMaxPower = !maxPower;
-          props.updateVectorEngrave(props.index, 'power', (nextMaxPower) ? 100 : 99);
+          updateVectorEngrave(index, 'power', (nextMaxPower) ? 100 : 99);
         }}
-        propValidation={props.propValidation}
-        value={toDisplayPower(props.vector.power)}
-        validate={props.validationHandler}
+        propValidation={propValidation}
+        value={toDisplayPower(vector.power)}
+        validate={validationHandler}
       />
       <InputNumber
         label="Passes"
         min="1"
-        onBlur={props.saveTemporaryState}
+        onBlur={saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = asInteger(event.target.value);
-          props.updateVectorEngrave(props.index, 'passes', normalizedValue);
+          updateVectorEngrave(index, 'passes', normalizedValue);
         }}
-        propValidation={props.propValidation}
-        value={props.vector.passes}
+        propValidation={propValidation}
+        value={vector.passes}
       />
       <InputNumber
         label="Focal Offset (mm)"
-        onBlur={props.saveTemporaryState}
+        onBlur={saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = precisionRound(asFloat(event.target.value), 3);
-          props.updateVectorEngrave(props.index, 'focalOffset', normalizedValue);
+          updateVectorEngrave(index, 'focalOffset', normalizedValue);
         }}
-        propValidation={props.propValidation}
-        value={props.vector.focalOffset}
+        propValidation={propValidation}
+        value={vector.focalOffset}
       />
       <InputNumber
         help={'Scan Gap mapping to Glowforge UI \n '
@@ -125,15 +134,15 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
           + '18 = 75 LPI \n '
           + '39 = 35 LPI \n '
           + '136 = 10 LPI'}
-        label={`Scan Gap (LPI ${toDisplayLinesPerInch(props.vector.scanGap)}) *`}
-        onBlur={props.saveTemporaryState}
+        label={`Scan Gap (LPI ${toDisplayLinesPerInch(vector.scanGap)}) *`}
+        onBlur={saveTemporaryState}
         onChange={(event) => {
           const normalizedValue = asInteger(event.target.value);
-          props.updateVectorEngrave(props.index, 'scanGap', normalizedValue);
+          updateVectorEngrave(index, 'scanGap', normalizedValue);
         }}
-        propValidation={props.propValidation}
-        value={props.vector.scanGap}
-        validate={props.validationHandler}
+        propValidation={propValidation}
+        value={vector.scanGap}
+        validate={validationHandler}
       />
     </>
   );

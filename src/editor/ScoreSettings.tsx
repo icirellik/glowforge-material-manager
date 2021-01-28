@@ -1,6 +1,6 @@
 import React from 'react';
 import ScoreSetting from './ScoreSetting';
-import IconPlus from '../icons/IconPlus';
+import { IconPlus } from '../icons/IconPlus';
 import { PluginScoreSetting } from '../material/materialPlugin';
 
 // Score Methods
@@ -21,6 +21,15 @@ type ScoreSettingsProps = {
 }
 
 export default function ScoreSettings(props: ScoreSettingsProps) {
+  const {
+    addScore,
+    propValidation,
+    removeScore,
+    scores,
+    saveTemporaryState,
+    updateScore,
+    validationHandler,
+  } = props;
   return (
     <>
       <div className="form-header">
@@ -28,7 +37,7 @@ export default function ScoreSettings(props: ScoreSettingsProps) {
         <div>
           <IconPlus
             className="icon-button-add"
-            click={props.addScore}
+            click={addScore}
             fill="#001f23"
             height="18px"
             title="Add Score"
@@ -37,15 +46,16 @@ export default function ScoreSettings(props: ScoreSettingsProps) {
         </div>
       </div>
       {
-        props.scores.map((score, index) => (
+        scores.map((score, index) => (
           <ScoreSetting
             index={index}
-            propValidation={props.propValidation}
+            key={score.name}
+            propValidation={propValidation}
+            removeScore={removeScore}
+            saveTemporaryState={saveTemporaryState}
             score={score}
-            saveTemporaryState={props.saveTemporaryState}
-            removeScore={props.removeScore}
-            updateScore={props.updateScore}
-            validationHandler={props.validationHandler}
+            updateScore={updateScore}
+            validationHandler={validationHandler}
           />
         ))
       }

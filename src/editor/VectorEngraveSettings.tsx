@@ -1,7 +1,7 @@
 import React from 'react';
 import { PluginVectorEngraveSetting } from '../material/materialPlugin';
 import VectorEngraveSetting from './VectorEngraveSetting';
-import IconPlus from '../icons/IconPlus';
+import { IconPlus } from '../icons/IconPlus';
 
 // Vector Methods
 export type AddVectorEngrave = () => void;
@@ -21,6 +21,15 @@ type VectorEngraveSettingsProps = {
 }
 
 export default function VectorEngraveSettings(props: VectorEngraveSettingsProps) {
+  const {
+    addVectorEngrave,
+    propValidation,
+    removeVectorEngrave,
+    saveTemporaryState,
+    updateVectorEngrave,
+    vectors,
+    validationHandler,
+  } = props;
   return (
     <>
       <div className="form-header">
@@ -28,7 +37,7 @@ export default function VectorEngraveSettings(props: VectorEngraveSettingsProps)
         <div>
           <IconPlus
             className="icon-button-add"
-            click={props.addVectorEngrave}
+            click={addVectorEngrave}
             fill="#001f23"
             height="18px"
             title="Add Vector Engrave"
@@ -37,15 +46,16 @@ export default function VectorEngraveSettings(props: VectorEngraveSettingsProps)
         </div>
       </div>
       {
-        props.vectors.map((vector, index) => (
+        vectors.map((vector, index) => (
           <VectorEngraveSetting
             index={index}
-            propValidation={props.propValidation}
-            saveTemporaryState={props.saveTemporaryState}
-            removeVectorEngrave={props.removeVectorEngrave}
-            updateVectorEngrave={props.updateVectorEngrave}
+            key={vector.name}
+            propValidation={propValidation}
+            removeVectorEngrave={removeVectorEngrave}
+            saveTemporaryState={saveTemporaryState}
+            updateVectorEngrave={updateVectorEngrave}
+            validationHandler={validationHandler}
             vector={vector}
-            validationHandler={props.validationHandler}
           />
         ))
       }
