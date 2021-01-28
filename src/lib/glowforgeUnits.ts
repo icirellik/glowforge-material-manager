@@ -1,6 +1,6 @@
 import {
   roundToNearest5,
-} from './utils';
+} from './roundToNearest5';
 
 const MAX_MOTOR_SPEED = 8500;
 const MIN_UI_SPEED = 100;

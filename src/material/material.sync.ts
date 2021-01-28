@@ -9,7 +9,6 @@ import {
   createMaterial,
   removeMaterialTitle,
   removeRawMaterial,
-  toFullMaterial,
 } from './material';
 import {
   decompress,
@@ -17,7 +16,8 @@ import {
   hashTitle,
 } from '../lib/utils';
 import { sha1 } from '../lib/crypto';
-import { PluginMaterial } from './materialPlugin';
+import type { PluginMaterial } from './materialPlugin';
+import { toFullMaterial } from './materialConversion';
 
 /**
  * Handles cloud synchronization.
@@ -32,9 +32,9 @@ export async function syncronizeMaterials(remove = false): Promise<boolean> {
   // console.log(synchronizedMaterials);
   const currentTitleHashes: string[] = [];
   const currentDataHashes: string[] = [];
-  const titleHashToPluginMaterialMap: {[key: string]: PluginMaterial} = {};
-  const dataHashToPluginMaterialMap: {[key: string]: PluginMaterial} = {};
-  for (let i = 0; i < rawMaterials.length; i++) {
+  const titleHashToPluginMaterialMap: { [key: string]: PluginMaterial } = {};
+  const dataHashToPluginMaterialMap: { [key: string]: PluginMaterial } = {};
+  for (let i = 0; i < rawMaterials.length; i += 1) {
     const material = rawMaterials[i];
     const titleHash = await hashTitle(material);
     const dataHash = await hashMaterial(material);
@@ -73,7 +73,7 @@ export async function syncronizeMaterials(remove = false): Promise<boolean> {
   if (remove) {
     const removablePluginMaterials = removableTitleHashes.map((hash) => titleHashToPluginMaterialMap[hash]);
     // console.log(removablePluginMaterials)
-    for (let i = 0; i < removablePluginMaterials.length; i++) {
+    for (let i = 0; i < removablePluginMaterials.length; i += 1) {
       const { thickName, name } = removablePluginMaterials[i];
       const title = `${thickName} ${name}`;
       // console.log(`Removing ${title}`);
@@ -84,7 +84,7 @@ export async function syncronizeMaterials(remove = false): Promise<boolean> {
   }
 
   // Create new.
-  for (let i = 0; i < newTitleHashes.length; i++) {
+  for (let i = 0; i < newTitleHashes.length; i += 1) {
     const titleHash = newTitleHashes[i];
     const binaryData = synchronizedMaterials[titleHash];
     const pluginMaterial = toFullMaterial(decompress(binaryData));
@@ -102,7 +102,7 @@ export async function syncronizeMaterials(remove = false): Promise<boolean> {
   }
 
   // Check for modifications.
-  for (let i = 0; i < sharedTitleHashes.length; i++) {
+  for (let i = 0; i < sharedTitleHashes.length; i += 1) {
     const titleHash = sharedTitleHashes[i];
     const binaryData = synchronizedMaterials[titleHash];
     const pluginMaterial = toFullMaterial(decompress(binaryData));

@@ -1,6 +1,6 @@
-import { GFMaterial } from '../material/materialGlowforge';
-import { PluginMaterial } from '../material/materialPlugin';
-import { TempMaterial } from './materialHelpers';
+import type { GFMaterial } from '../material/materialGlowforge';
+import type { PluginMaterial } from '../material/materialPlugin';
+import type { TempMaterial } from './materialHelpers';
 
 export type SyncId = string;
 export type SyncData = string;
@@ -16,7 +16,7 @@ export interface UISettings {
 
 export interface StorageLocal {
   // Stores material backups by version number before a major release occurs.
-  backup?: {[key: string]: StorageLocal};
+  backup?: { [key: string]: StorageLocal };
   // The Glowforge formatted materials.
   materials?: GFMaterial[];
   // The raw material data that is used to generated Glowforge materials.
@@ -53,7 +53,7 @@ export async function getLocalStorage(): Promise<StorageLocal> {
 /**
  * Gets all the backups.
  */
-export async function getBackups(): Promise<{[key: string]: StorageLocal} | void> {
+export async function getBackups(): Promise<{ [key: string]: StorageLocal } | void> {
   return new Promise((resolve) => {
     window.chrome.storage.local.get(null, (result: StorageLocal) => {
       if (result && result.backup) {

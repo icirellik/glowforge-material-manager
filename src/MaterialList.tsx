@@ -1,15 +1,13 @@
 import React from 'react';
 import MaterialListItem from './MaterialListItem';
-import { PluginMaterial } from './material/materialPlugin';
+import type { PluginMaterial } from './material/materialPlugin';
 import type {
   ModeAdd,
   ModeSelect,
   SetMaterial,
 } from './App';
-import {
-  createEmptyMaterial,
-  TempMaterial,
-} from './lib/materialHelpers';
+import type { TempMaterial } from './lib/materialHelpers';
+import { createEmptyMaterial } from './lib/materialHelpers';
 import './MaterialList.css';
 import { IconClear } from './icons/IconClear';
 

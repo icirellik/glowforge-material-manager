@@ -1,6 +1,6 @@
 import React from 'react';
-import { PluginMaterial } from '../material/materialPlugin';
-import { EditorMode, UpdateMaterial } from '../App';
+import type { PluginMaterial } from '../material/materialPlugin';
+import type { EditorMode, UpdateMaterial } from '../App';
 import { InputText, InputNumber } from './Input';
 import { asFloat } from '../lib/utils';
 

@@ -2,11 +2,12 @@ import { syncronizeMaterials } from './material.sync';
 import { createEmptyMaterial } from '../lib/materialHelpers';
 import { hashTitle, decompress } from '../lib/utils';
 import {
-  createMaterial, removeCloudMaterial, sendCloudMaterial, toFullMaterial,
+  createMaterial, removeCloudMaterial, sendCloudMaterial,
 } from './material';
 import {
   storeGlowforgeMaterials, storeRawMaterials, StorageLocal,
 } from '../lib/chromeWrappers';
+import { toFullMaterial } from './materialConversion';
 
 function mockFunctions() {
   const original = require.requireActual('../lib/crypto');
@@ -286,7 +287,7 @@ describe('Synchronization', () => {
     expect(Object.keys(testSyncData)).toEqual([titleHash]);
 
     // Verify local data.
-    const testLocalDataTitleHashesPromises = testLocalData.rawMaterials!.map(async (pluginMaterial) => await hashTitle(pluginMaterial));
+    const testLocalDataTitleHashesPromises = testLocalData.rawMaterials!.map(async (pluginMaterial) => hashTitle(pluginMaterial));
     const testLocalDataTitleHashes = await Promise.all(testLocalDataTitleHashesPromises);
     expect(testLocalData.rawMaterials!.length).toEqual(1);
     expect(testLocalDataTitleHashes).toEqual(['1']);
