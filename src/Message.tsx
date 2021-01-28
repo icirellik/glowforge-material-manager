@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconClear } from './icons/IconClear';
-import { ClearMessage } from './App';
+import type { ClearMessage } from './App';
 import './Message.css';
 
 type MessageProps = {

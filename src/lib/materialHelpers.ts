@@ -1,4 +1,4 @@
-import {
+import type {
   PluginBitmapEngraveSetting,
   PluginScoreSetting,
   PluginVectorEngraveSetting,
@@ -30,7 +30,7 @@ export function createEmptyMaterial(): TempMaterial {
   };
 }
 
-export function createEmptyScore():PluginScoreSetting {
+export function createEmptyScore(): PluginScoreSetting {
   return {
     name: '',
     power: 99,

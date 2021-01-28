@@ -12,7 +12,7 @@ import {
   toRealEngraveSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
-import {
+import type {
   PluginVectorEngraveSetting,
 } from '../material/materialPlugin';
 import {
@@ -20,7 +20,7 @@ import {
   InputNumber,
   InputNumberWithCheckbox,
 } from './Input';
-import {
+import type {
   RemoveVectorEngrave,
   UpdateVectorEngrave,
 } from './VectorEngraveSettings';

@@ -2,7 +2,7 @@ import React from 'react';
 import {
   storeTempMaterial,
 } from '../lib/chromeWrappers';
-import {
+import type {
   AddSetting,
   EditorMode,
   RemoveSetting,

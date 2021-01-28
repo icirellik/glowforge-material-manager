@@ -2,18 +2,9 @@ import * as pako from 'pako';
 import {
   toFullMaterial,
   toTinyMaterial,
-} from '../material/material';
-import { PluginMaterial } from '../material/materialPlugin';
+} from '../material/materialConversion';
+import type { PluginMaterial } from '../material/materialPlugin';
 import { sha1 } from './crypto';
-
-/**
- * A helper function that rounds to the nearest 5.
- *
- * @param number
- */
-export function roundToNearest5(number: number) {
-  return 5 * Math.round(number / 5);
-}
 
 /**
  * A helper function to assist with rounding to a specific precision.
@@ -71,7 +62,7 @@ export function decompress(binaryJson: any) {
  * @returns The material title hash.
  */
 export async function hashTitle(material: PluginMaterial) {
-  return await sha1(`${material.thickName} ${material.name}`);
+  return sha1(`${material.thickName} ${material.name}`);
 }
 
 /**
@@ -83,13 +74,13 @@ export async function hashTitle(material: PluginMaterial) {
  * @param material The material to hash.
  */
 export async function hashMaterial(material: PluginMaterial) {
-  return await sha1(JSON.stringify(toFullMaterial(toTinyMaterial(material))));
+  return sha1(JSON.stringify(toFullMaterial(toTinyMaterial(material))));
 }
 
 /**
  * Checks to see if two objects are equivalant.
  */
-export function isEquivalentObject(obj1: {[key: string]: unknown}, obj2: {[key: string]: unknown}): boolean {
+export function isEquivalentObject(obj1: { [key: string]: unknown }, obj2: { [key: string]: unknown }): boolean {
   // Create arrays of property names
   const obj1Props = Object.getOwnPropertyNames(obj1);
   const obj2Props = Object.getOwnPropertyNames(obj2);
@@ -100,7 +91,7 @@ export function isEquivalentObject(obj1: {[key: string]: unknown}, obj2: {[key: 
     return false;
   }
 
-  for (let i = 0; i < obj1Props.length; i++) {
+  for (let i = 0; i < obj1Props.length; i += 1) {
     const propName = obj1Props[i];
 
     // If values of same property are not equal,

@@ -11,7 +11,7 @@ import {
   toRealCutSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
-import {
+import type {
   PluginScoreSetting,
 } from '../material/materialPlugin';
 import {
@@ -19,7 +19,7 @@ import {
   InputNumber,
   InputNumberWithCheckbox,
 } from './Input';
-import {
+import type {
   RemoveScore,
   UpdateScore,
 } from './ScoreSettings';

@@ -20,7 +20,7 @@ import {
   InputNumber,
   InputNumberWithCheckbox,
 } from './Input';
-import {
+import type {
   RemoveBitmapEngrave,
   UpdateBitmapEngrave,
 } from './BitmapEngraveSettings';

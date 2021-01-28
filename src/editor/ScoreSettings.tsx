@@ -1,7 +1,7 @@
 import React from 'react';
 import ScoreSetting from './ScoreSetting';
 import { IconPlus } from '../icons/IconPlus';
-import { PluginScoreSetting } from '../material/materialPlugin';
+import type { PluginScoreSetting } from '../material/materialPlugin';
 
 // Score Methods
 export type AddScore = () => void;

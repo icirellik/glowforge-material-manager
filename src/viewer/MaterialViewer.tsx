@@ -1,6 +1,6 @@
 import React from 'react';
-import { PluginMaterial } from '../material/materialPlugin';
-import { RemoveMaterial } from '../App';
+import type { PluginMaterial } from '../material/materialPlugin';
+import type { RemoveMaterial } from '../App';
 import MaterialBitmapEngravesViewer from './MaterialBitmapEngravesViewer';
 import MaterialCutViewer from './MaterialCutViewer';
 import MaterialScoresViewer from './MaterialScoresViewer';

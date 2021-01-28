@@ -4,7 +4,7 @@ import {
   toDisplayLinesPerInch,
   toDisplayPowerWords,
 } from '../lib/glowforgeUnits';
-import { PluginMaterial } from '../material/materialPlugin';
+import type { PluginMaterial } from '../material/materialPlugin';
 import { precisionRound } from '../lib/utils';
 import './MaterialViewer.css';
 

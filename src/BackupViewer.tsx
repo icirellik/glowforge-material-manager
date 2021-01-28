@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { StorageLocal } from './lib/chromeWrappers';
+import type { StorageLocal } from './lib/chromeWrappers';
 
 interface BackupViewerProps {
   backups: {[key: string]: StorageLocal} | void;

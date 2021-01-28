@@ -1,7 +1,7 @@
 import React from 'react';
-import SyncStatus from './SyncStatus';
+import { SyncStatus } from './SyncStatus';
 import logo from './logo.svg';
-import { ForceSyncronize } from './App';
+import type { ForceSyncronize } from './App';
 import './AppHeader.css';
 
 interface AppHeaderProps {

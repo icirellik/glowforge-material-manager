@@ -1,5 +1,5 @@
 import React from 'react';
-import { PluginVectorEngraveSetting } from '../material/materialPlugin';
+import type { PluginVectorEngraveSetting } from '../material/materialPlugin';
 import VectorEngraveSetting from './VectorEngraveSetting';
 import { IconPlus } from '../icons/IconPlus';
 

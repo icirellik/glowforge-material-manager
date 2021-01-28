@@ -10,7 +10,7 @@ import {
   toRealCutSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
-import {
+import type {
   PluginCutSetting,
 } from '../material/materialPlugin';
 import {

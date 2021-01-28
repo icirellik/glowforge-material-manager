@@ -1,8 +1,8 @@
 import React from 'react';
 import { IconOpen } from './icons/IconOpen';
 import { IconOpenInBrowser } from './icons/IconOpenInBrowser';
-import { PluginMaterial } from './material/materialPlugin';
-import {
+import type { PluginMaterial } from './material/materialPlugin';
+import type {
   ModeSelect,
   SetMaterial,
 } from './App';

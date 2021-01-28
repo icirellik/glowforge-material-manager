@@ -1,7 +1,7 @@
 import React from 'react';
 import { IconPlus } from '../icons/IconPlus';
 import BitmapEngraveSetting from './BitmapEngraveSetting';
-import { PluginBitmapEngraveSetting } from '../material/materialPlugin';
+import type { PluginBitmapEngraveSetting } from '../material/materialPlugin';
 
 // Bitmap Methods
 export type AddBitmapEngrave = () => void;
