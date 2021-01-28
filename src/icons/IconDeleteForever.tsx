@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react';
-import { IconProps } from './IconsProps';
+import type { IconProps } from './IconsProps';
+import { DEFAULT_ICON_STYLES } from './IconsShared';
 import './Icons.css';
 
 export const IconDeleteForever: FunctionComponent<IconProps> = (props: IconProps) => {
@@ -14,12 +15,6 @@ export const IconDeleteForever: FunctionComponent<IconProps> = (props: IconProps
     width,
   } = props;
 
-  const styles = {
-    fill: fill || 'currentColor',
-    height: height || '24px',
-    width: width || '24px',
-  };
-
   const buttonClasses = `icon-button ${buttonClassName}`;
 
   return (
@@ -31,7 +26,14 @@ export const IconDeleteForever: FunctionComponent<IconProps> = (props: IconProps
     >
       <svg
         className={className}
-        style={styles}
+        style={{
+          ...DEFAULT_ICON_STYLES,
+          ...{
+            fill,
+            height,
+            width,
+          },
+        }}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
       >
