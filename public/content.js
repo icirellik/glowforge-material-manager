@@ -7,6 +7,9 @@
  */
 const localWindow = (window);
 
+// Set by inject.js on the script tag that loaded this file.
+const { dataset } = document.currentScript;
+
 // Develop:
 // Automatically set using your the runtime.
 //
@@ -15,10 +18,11 @@ const localWindow = (window);
 //
 // Webstore Prod:
 // const extensionId = 'adabmafjmdcjnihkmggljljeopjfghii';
-const { extensionId } = localWindow;
+const { extensionId } = dataset;
+const extensionDevMode = dataset.extensionDevMode === 'true';
 
 function log(message) {
-  if (localWindow.extensionDevMode) {
+  if (extensionDevMode) {
     // eslint-disable-next-line
     console.log(message);
   }

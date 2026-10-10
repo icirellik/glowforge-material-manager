@@ -3,7 +3,7 @@ import {
 } from './chromeWrappers';
 
 describe('chromeWrappers', () => {
-  const dataCallback = jest.fn();
+  const dataCallback = vi.fn();
 
   (<any>global).chrome = {
     storage: {

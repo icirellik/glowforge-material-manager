@@ -1,10 +1,11 @@
 {
   "short_name": "Glowforge Materials",
   "name": "Glowforge Material Manager",
-  "manifest_version": 2,
+  "manifest_version": 3,
+  "minimum_chrome_version": "116",
   "description": "Browser extension that allows users to save and modify their own materials for use in the Glowforge web interface.",
   "default_locale": "en",
-  "browser_action": {
+  "action": {
     "default_popup": "index.html",
     "default_title": "Glowforge Material Manager"
   },
@@ -14,12 +15,15 @@
     "128": "icon128.png"
   },
   "permissions": [
+    "offscreen",
     "storage",
-    "tabs",
+    "tabs"
+  ],
+  "host_permissions": [
     "*://app.glowforge.com/*"
   ],
   "background": {
-    "page": "background.html"
+    "service_worker": "background.js"
   },
   "externally_connectable": {
     "matches": [
@@ -37,8 +41,15 @@
     }
   ],
   "web_accessible_resources": [
-    "content.js",
-    "custom-material.png"
+    {
+      "resources": [
+        "content.js",
+        "custom-material.png"
+      ],
+      "matches": [
+        "*://app.glowforge.com/*"
+      ]
+    }
   ],
   "key": "AAAAB3NzaC1yc2EAAAADAQABAAABAQCqBjh/FC9CD5Y6I0SzrNqafNjf17F54lafObU3USUbdO3oNDNAnE0t+Db6wnO82s8yLTADXPa0tUBQLQH4v9zxj6+npyk53/FRvgbex7o8G3wGZMSHCt+zTCS5CxsGOczd8E6QxlLYcmuzz/JRqtFsgucVN9rk397SWHAUTVFcIMBX6kU/vQ9lAW2YgYlG7lo/M0JKNfeYykkVJurMH6qe6kdTRffbVMfsZ7DLdjmLgLK4ZP7hfp7zrAToDHedGMdm1UWbML/JSD4l7CO6T7LPvYq4gLnLyiOHwhO85oB0ukntbqJ4gQhCCOnueBluKb+cwcExajLcbCJ1FY2j9ujT",
   "version": "0.4.10"

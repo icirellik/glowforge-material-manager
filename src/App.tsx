@@ -316,30 +316,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       if (Object.keys(stateUpdates).length > 0) {
         this.setState(stateUpdates as AppState);
       }
-
-      // Check background thread for messages.
-      window.chrome.runtime.getBackgroundPage(async (window) => {
-        if (!window) {
-          return;
-        }
-        const { outboundQueue } = window as any;
-        if (outboundQueue.length > 0) {
-          const messages = outboundQueue.splice(0);
-          for (let i = 0; i < messages.length; i += 1) {
-            const message = messages[i];
-            switch (message.type) {
-              default:
-                console.log('inbound message');
-                // Example: Send message back.
-                // sendMessage({
-                //   type: 'selectMaterial',
-                //   materialId: qrCodeData,
-                // });
-                break;
-            }
-          }
-        }
-      });
     }, 750);
   }
 

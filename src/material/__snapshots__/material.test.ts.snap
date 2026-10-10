@@ -1,53 +1,53 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`material creates a custom material 1`] = `
-Object {
+exports[`material > creates a custom material 1`] = `
+{
   "id": "Custom:4",
   "nominal_thickness": null,
-  "settings": Array [
-    Object {
+  "settings": [
+    {
       "active_date": "2017-04-06T00:00-07:00",
-      "bitmap_engrave_settings": Array [],
-      "cut_setting": Object {
+      "bitmap_engrave_settings": [],
+      "cut_setting": {
         "focal_offset": null,
         "passes": 1,
         "power": 99,
         "speed": 100,
       },
       "description": "  Settings",
-      "environment": Array [
+      "environment": [
         "production",
       ],
-      "score_settings": Array [],
+      "score_settings": [],
       "tube_type": "basic",
-      "vector_engrave_settings": Array [],
+      "vector_engrave_settings": [],
     },
-    Object {
+    {
       "active_date": "2017-04-06T00:00-07:00",
-      "bitmap_engrave_settings": Array [],
-      "cut_setting": Object {
+      "bitmap_engrave_settings": [],
+      "cut_setting": {
         "focal_offset": null,
         "passes": 1,
         "power": 99,
         "speed": 100,
       },
       "description": "  Settings",
-      "environment": Array [
+      "environment": [
         "production",
       ],
-      "score_settings": Array [],
+      "score_settings": [],
       "tube_type": "pro",
-      "vector_engrave_settings": Array [],
+      "vector_engrave_settings": [],
     },
   ],
   "sku": "",
   "thickness_name": "",
   "title": " ",
-  "variety": Object {
+  "variety": {
     "common_name": " ",
     "display_options": null,
     "name": "-",
-    "thumbnails": Array [
+    "thumbnails": [
       "image.png",
     ],
     "type_name": "",
@@ -55,8 +55,8 @@ Object {
 }
 `;
 
-exports[`material creates a new bitmap engrave 1`] = `
-Object {
+exports[`material > creates a new bitmap engrave 1`] = `
+{
   "focalOffset": null,
   "horizontalTiming": null,
   "maximumGrayPercent": null,
@@ -71,8 +71,8 @@ Object {
 }
 `;
 
-exports[`material creates a new score 1`] = `
-Object {
+exports[`material > creates a new score 1`] = `
+{
   "focalOffset": null,
   "name": "",
   "passes": 1,
@@ -81,8 +81,8 @@ Object {
 }
 `;
 
-exports[`material creates a new vector engrave 1`] = `
-Object {
+exports[`material > creates a new vector engrave 1`] = `
+{
   "focalOffset": null,
   "name": "",
   "passes": 1,

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "lib": [
       "dom",
       "dom.iterable",
@@ -14,16 +14,19 @@
     "isolatedModules": true,
     "jsx": "react",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "types": [
+      "chrome",
+      "node",
+      "vite/client",
+      "vitest/globals"
+    ]
   },
   "include": [
-    "src"
-  ],
-  "typeRoots": [
     "src"
   ]
 }
