@@ -332,7 +332,7 @@ export async function storeSynchronizedMaterial(hash: string, material: string):
  * @param itemName The content name.
  */
 export function getUrl(itemName: string): string {
-  return window.chrome.extension.getURL(itemName);
+  return window.chrome.runtime.getURL(itemName);
 }
 
 export async function inGlowforgeTab(): Promise<boolean> {
@@ -392,18 +392,15 @@ export async function getPlatform(): Promise<string> {
 }
 
 /**
- * Sends an message to the background process.
+ * Sends an message to the background service worker.
  *
  * @param message The message to queue.
  */
 export function sendMessage(message: object) {
   // Forward the request to the GFUI
-  window.chrome.runtime.getBackgroundPage((window) => {
-    if (window) {
-      if (!(window as any).inboundQueue) {
-        (window as any).inboundQueue = [];
-      }
-      (window as any).inboundQueue.push(message);
-    }
+  window.chrome.runtime.sendMessage({
+    target: 'background',
+    type: 'queueMessage',
+    message,
   });
 }

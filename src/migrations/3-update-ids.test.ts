@@ -292,9 +292,9 @@ describe('migration #3', () => {
   let testData: any = null;
   let id = 0;
 
-  (<any>global).TextEncoder = () => ({
-    encode: () => { },
-  });
+  (<any>global).TextEncoder = class {
+    encode = () => { };
+  };
 
   (<any>global).chrome = {
     storage: {
@@ -313,14 +313,15 @@ describe('migration #3', () => {
     },
   };
 
-  (<any>global).crypto = {
+  // Node's global crypto is read-only, so it can't simply be assigned.
+  vi.stubGlobal('crypto', {
     subtle: {
       digest: async () => {
         id += 1;
         return new ArrayBuffer(id);
       },
     },
-  };
+  });
 
   /**
    * TODO: Update to properly test crypto if ever possible.

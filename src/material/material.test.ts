@@ -6,10 +6,10 @@ import {
 } from '../lib/materialHelpers';
 
 describe('material', () => {
-  const dataCallback = jest.fn();
+  const dataCallback = vi.fn();
 
   (<any>global).chrome = {
-    extension: {
+    runtime: {
       getURL: dataCallback,
     },
   };

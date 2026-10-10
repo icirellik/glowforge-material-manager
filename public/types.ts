@@ -46,7 +46,5 @@ type Store = {
 };
 
 export type Window = {
-  extensionDevMode: boolean;
-  extensionId: string;
   store: Store;
 };

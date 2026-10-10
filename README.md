@@ -1,4 +1,4 @@
-# Glowforge Material Manager [![Build Status](https://travis-ci.org/icirellik/glowforge-material-manager.svg?branch=master)](https://travis-ci.org/icirellik/glowforge-material-manager)
+# Glowforge Material Manager [![CI](https://github.com/icirellik/glowforge-material-manager/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/icirellik/glowforge-material-manager/actions/workflows/ci.yml)
 
 Browser extension that allows users to save and modify their own materials for
 use in the Glowforge web interface.
@@ -147,15 +147,9 @@ that to happen on its own. To force a plugin to update:
 
 # Development
 
-This chrome extension is a basic React application with no frills. The project
-uses yarn as its package manager and as such the install and build process is as
-follows:
-
-Development dependencies Ubuntu:
-
-```
-sudo apt-get install librsvg2-dev libcairo2-dev libjpeg-dev libpango1.0-dev libgif-dev build-essential g++
-```
+This chrome extension is a basic React application with no frills, built with
+Vite. The project uses yarn as its package manager and the Node version in
+`.nvmrc`, and as such the install and build process is as follows:
 
 ```sh
 $ yarn install
@@ -197,8 +191,8 @@ Add materials
 window.store.dispatch({ type: "ADD_MATERIALS", materials: [] });
 ```
 
-If you want to force reset the local storage for the plugin, open up the
-background.js in chrome developer tools and run the following command. This can
+If you want to force reset the local storage for the plugin, inspect the
+service worker from `chrome://extensions/` and run the following command. This can
 be useful when you changed the properties that local storage references or when
 you just want to quickly force a reset.
 

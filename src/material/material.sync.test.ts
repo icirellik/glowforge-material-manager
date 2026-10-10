@@ -9,13 +9,13 @@ import {
 } from '../lib/chromeWrappers';
 import { toFullMaterial } from './materialConversion';
 
-function mockFunctions() {
-  const original = jest.requireActual('../lib/crypto');
+vi.mock('../lib/crypto', async (importOriginal) => {
+  const original = await importOriginal<typeof import('../lib/crypto')>();
   let counter = 0;
   const hashes: Map<string, string> = new Map();
   return {
     ...original,
-    sha1: jest.fn(async (data: string) => {
+    sha1: vi.fn(async (data: string) => {
       const message = JSON.stringify(data);
       if (hashes.has(message)) {
         return hashes.get(message)!;
@@ -25,9 +25,7 @@ function mockFunctions() {
       return Promise.resolve(`${counter}`);
     }),
   };
-}
-jest.mock('../lib/crypto', () => mockFunctions());
-require('../lib/crypto');
+});
 
 describe('Synchronization', () => {
   let testLocalData: StorageLocal = {
@@ -38,7 +36,7 @@ describe('Synchronization', () => {
   let testSyncData: any = null;
 
   (<any>window).chrome = {
-    extension: {
+    runtime: {
       getURL: (itemName: string) => itemName,
     },
     storage: {
