@@ -89,7 +89,7 @@ export async function syncronizeMaterials(remove = false): Promise<boolean> {
     const binaryData = synchronizedMaterials[titleHash];
     const pluginMaterial = toFullMaterial(decompress(binaryData));
 
-    const id = `Custom:${titleHash.substring(0, 7)}`;
+    const id = titleHash.substring(0, 7);
     // console.log(`Adding '${pluginMaterial.thickName} ${pluginMaterial.name}'`);
 
     const glowforgeMaterials = await getGlowforgeMaterials();
@@ -126,7 +126,7 @@ export async function syncronizeMaterials(remove = false): Promise<boolean> {
 
       // Hash the title and take the first seven for the id.
       const titleHash = await sha1(title);
-      const id = `Custom:${titleHash.substring(0, 7)}`;
+      const id = titleHash.substring(0, 7);
 
       // Replace
       const glowforgeMaterials = await getGlowforgeMaterials();

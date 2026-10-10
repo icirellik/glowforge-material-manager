@@ -335,19 +335,26 @@ export function getUrl(itemName: string): string {
   return window.chrome.runtime.getURL(itemName);
 }
 
-export async function inGlowforgeTab(): Promise<boolean> {
+/**
+ * Gets the active tab if it is a Glowforge tab.
+ */
+async function getGlowforgeTab(): Promise<chrome.tabs.Tab | null> {
   return new Promise((resolve) => {
     window.chrome.tabs.query({
       active: true,
       lastFocusedWindow: true,
     }, (tabs) => {
       if (!!tabs && !!tabs[0] && tabs[0].url && tabs[0].url.indexOf('app.glowforge.com') !== -1) {
-        resolve(true);
+        resolve(tabs[0]);
       } else {
-        resolve(false);
+        resolve(null);
       }
     });
   });
+}
+
+export async function inGlowforgeTab(): Promise<boolean> {
+  return !!(await getGlowforgeTab());
 }
 
 /**
@@ -392,15 +399,25 @@ export async function getPlatform(): Promise<string> {
 }
 
 /**
- * Sends an message to the background service worker.
+ * Sends a message to the extension's content script in the active Glowforge
+ * tab, which forwards it to the GFUI.
  *
- * @param message The message to queue.
+ * @param message The message to send.
  */
-export function sendMessage(message: object) {
-  // Forward the request to the GFUI
-  window.chrome.runtime.sendMessage({
-    target: 'background',
-    type: 'queueMessage',
-    message,
-  });
+export async function sendMessage(message: object): Promise<void> {
+  const tab = await getGlowforgeTab();
+  if (!tab || tab.id === undefined) {
+    return;
+  }
+
+  try {
+    await window.chrome.tabs.sendMessage(tab.id, {
+      target: 'bridge',
+      ...message,
+    });
+  } catch (error) {
+    // Tabs opened before the extension was installed or updated don't have
+    // the content script until they are reloaded.
+    console.log(error);
+  }
 }

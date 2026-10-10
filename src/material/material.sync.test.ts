@@ -197,6 +197,7 @@ describe('Synchronization', () => {
     expect(Object.keys(testSyncData).length).toEqual(1);
     expect(Object.keys(testSyncData)).toEqual([titleHash]);
     expect(testLocalData.rawMaterials!.length).toEqual(1);
+    expect(testLocalData.materials!.map((m) => m.id)).toEqual([`Custom:${titleHash.substring(0, 7)}`]);
   });
 
   it('1 Local, 1 Cloud, Same Ids, Same Data = Do Nothing', async () => {
@@ -252,6 +253,7 @@ describe('Synchronization', () => {
     expect(Object.keys(testSyncData).length).toEqual(1);
     expect(Object.keys(testSyncData)).toEqual([titleHash]);
     expect(testLocalData.rawMaterials!.length).toEqual(1);
+    expect(testLocalData.materials!.map((m) => m.id)).toEqual([`Custom:${titleHash.substring(0, 7)}`]);
   });
 
   it('1 Local, 1 Cloud, Same Ids, Different Data, Local Sync Disabled = No Change', async () => {

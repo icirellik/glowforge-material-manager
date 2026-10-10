@@ -25,6 +25,17 @@ describe('material', () => {
     expect(createMaterial(rawMaterial, id)).toMatchSnapshot();
   });
 
+  it('removes doubled custom prefixes from the id', () => {
+    dataCallback.mockReturnValueOnce('image.png');
+
+    const rawMaterial = {
+      ...createEmptyMaterial(),
+    };
+
+    expect(createMaterial(rawMaterial, 'Custom:Custom:ce00539').id).toEqual('Custom:ce00539');
+    expect(createMaterial(rawMaterial, 'ce00539').id).toEqual('Custom:ce00539');
+  });
+
   it('creates a new score', () => {
     expect(createEmptyScore()).toMatchSnapshot();
   });
