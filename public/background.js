@@ -64,64 +64,14 @@ function storeUISettings(settings) {
   });
 }
 
-/**
- * Browser background task to synchronize the GFUI with the custom materials.
- */
-function asFloat(number) {
-  return Number.parseFloat(number, 10);
-}
-
-/**
- * Used to convert old floats stored as a string to real floats.
- *
- * TODO: Deprecated can be removed one 0.4.x is released.
- */
-function verifyTypes(material) {
-  return Object.assign({}, material, {
-    nominal_thickness: asFloat(material.nominal_thickness),
-  });
-}
-
-// Message Queue
-// ===================================================================
-
-// The service worker is stopped when idle, so messages waiting to be relayed
-// to the GFUI are kept in session storage instead of memory.
-const runInboundQueueUpdate = createSerialRunner();
-
-/**
- * Replaces the queued messages with the result of `update`.
- *
- * @returns The messages that were queued before the update.
- */
-function updateInboundQueue(update) {
-  return runInboundQueueUpdate(async () => {
-    const { inboundQueue = [] } = await chrome.storage.session.get('inboundQueue');
-    await chrome.storage.session.set({
-      inboundQueue: update(inboundQueue),
-    });
-    return inboundQueue;
-  });
-}
-
-/**
- * Queues a message to be relayed to the GFUI.
- */
-function queueMessage(message) {
-  return updateInboundQueue(queue => [...queue, message]);
-}
-
-/**
- * Removes and returns all of the queued messages.
- */
-function takeQueuedMessages() {
-  return updateInboundQueue(() => []);
-}
-
 // QR Code
 // ===================================================================
 const OFFSCREEN_DOCUMENT_PATH = 'offscreen.html';
 let offscreenDocumentReady = null;
+
+// Matches both kinds of material QR code, `Custom:<id>` and
+// `Custom:<id>|<settings>`.
+const CUSTOM_MATERIAL_QR_CODE = /^(Custom:[0-9a-f]{7})(\|[\s\S]*)?$/;
 
 /**
  * Opens the offscreen document that decodes QR codes, unless it is already
@@ -162,33 +112,43 @@ async function decodeQrCode(imageUrl) {
   });
 }
 
+/**
+ * Checks the lid camera image for a custom material QR code.
+ *
+ * @param {string} image The lid image url.
+ * @returns The id of the material to select, or null.
+ */
+async function checkForQRCode(image) {
+  // Older versions of the GFUI used a path on app.glowforge.com, newer ones use
+  // a full url.
+  const imageUrl = new URL(image, 'https://app.glowforge.com');
+  if (imageUrl.protocol !== 'https:') {
+    return null;
+  }
+
+  const qrCodeData = await decodeQrCode(imageUrl.href);
+  log('QR Code Results');
+  log(qrCodeData);
+
+  if (qrCodeData && qrCodeData.startsWith('Glowforge')) {
+    log('PG Material detected');
+    return null;
+  }
+
+  const match = qrCodeData && qrCodeData.match(CUSTOM_MATERIAL_QR_CODE);
+  if (match) {
+    log('Custom Material detected');
+    return match[1];
+  }
+  return null;
+}
+
 // Message Handlers
 // ===================================================================
 
-/**
- * Gets the materials from local storage and queues them for the UI for
- * installation.
- */
-async function refreshMaterials() {
-  const result = await load();
-  if (result && result.materials && result.shouldUpdate) {
-    await store({
-      shouldUpdate: false,
-    });
-    const message = {
-      type: 'addMaterials',
-      materials: result.materials.map(verifyTypes),
-    };
-
-    await queueMessage(message);
-    log(`sending materials: total ${message.materials.length}`);
-  } else if (result && result.shouldUpdate) {
-    log('clearing shouldUpdate');
-    await store({
-      shouldUpdate: false,
-    });
-  }
-}
+// Machine serials and design ids come from the page, so only accept values
+// that look like ids.
+const IDENTIFIER = /^[A-Za-z0-9_-]{1,64}$/;
 
 /**
  * Forces the should update flag to be true, creates a one time refresh.
@@ -203,124 +163,60 @@ function forceRefresh() {
  * Updates the currently selected machine.
  */
 function handleMachineSerial(message) {
-  if (message.serial) {
-    return storeUISettings({
-      serial: message.serial,
-    });
-  }
   return storeUISettings({
-    serial: null,
+    serial: IDENTIFIER.test(message.serial) ? message.serial : null,
   });
 }
 
 /**
- * Updates the list of design ids in local storage.
+ * Updates the design that is open in the GFUI.
  */
-function handleDesignIdsMessage(message) {
-  if (message.designIds && message.designIds.length > 0) {
-    return storeUISettings({
-      loadedDesignId: message.designIds[0],
-    });
-  }
+function handleDesignId(message) {
   return storeUISettings({
-    loadedDesignId: null,
+    loadedDesignId: IDENTIFIER.test(message.designId) ? message.designId : null,
   });
 }
 
 /**
- * Check to see if there is a QR Code in the current image and queues a message
- * that will set the materil if one is detected.
+ * Handles a message from bridge.js in a Glowforge tab.
+ *
+ * machineSerial - The selected machine changed.
+ * designId - The open design changed.
+ * lidImage - The lid camera image changed.
+ *
+ * @returns The response, the material to select for `lidImage`.
  */
-async function checkForQRCode(message) {
-  const imageUrl = `https://app.glowforge.com${message.image}`;
-  const qrCodeData = await decodeQrCode(imageUrl);
-  log('QR Code Results');
-  log(qrCodeData);
-
-  if (qrCodeData && qrCodeData.startsWith('Glowforge')) {
-    log('PG Material detected');
-  } else if (qrCodeData && qrCodeData.startsWith('Custom')) {
-    log('Custom Material detected');
-    await queueMessage({
-      type: 'selectMaterial',
-      materialId: qrCodeData,
-    });
-  }
-}
-
-/**
- * Handles a message from the Glowforge UI.
- *
- * lidImage - Inbound
- * loadedDesignIds - Inbound
- * forceRefresh - Inbound
- *
- * checkMessages - pulls messages from inboundQueue
- *
- * @returns The response to send back to the GFUI.
- */
-async function handleExternalMessage(request) {
+async function handleBridgeMessage(request) {
   log(`message: ${request.type}`);
-  if (request.type === 'lidImage') {
-    // Decoding can be slow, don't hold up the response.
-    checkForQRCode(request).catch(error => log(error));
-  } else if (request.type === 'machineSerial') {
+  if (request.type === 'machineSerial') {
     await handleMachineSerial(request);
-  } else if (request.type === 'loadedDesignIds') {
-    await handleDesignIdsMessage(request);
-  } else if (request.type === 'checkMessages') {
-    // One check messages call refresh materials to see if we need to queue a
-    // material sync message.
-    await refreshMaterials();
-
-    // Only when checking messages should we relay and inbound message to the
-    // GFUI, the other handlers will not nescisarilly respect the response.
-    const relayMessages = await takeQueuedMessages();
-    if (relayMessages.length > 0) {
-      return {
-        messages: relayMessages,
-      };
-    }
-  } else if (request.type === 'forceRefresh') {
-    await forceRefresh();
+  } else if (request.type === 'designId') {
+    await handleDesignId(request);
+  } else if (request.type === 'lidImage' && typeof request.image === 'string') {
+    return checkForQRCode(request.image);
   }
-  return undefined;
+  return null;
 }
 
 /**
- * Handle messaging with the Glowforge UI.
+ * Handle messaging with the Glowforge tabs.
  *
  * The handlers are async, so we must return true and call `sendResponse`
  * once they finish.
- */
-chrome.runtime.onMessageExternal.addListener(
-  (request, sender, sendResponse) => {
-    handleExternalMessage(request)
-      .catch((error) => {
-        log(error);
-        return undefined;
-      })
-      // Always call send response
-      .then(sendResponse);
-    return true;
-  },
-);
-
-/**
- * Handle messaging with the react app.
  */
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.target !== 'background') {
     return false;
   }
 
-  if (request.type === 'queueMessage') {
-    queueMessage(request.message)
-      .catch(error => log(error))
-      .then(() => sendResponse());
-    return true;
-  }
-  return false;
+  handleBridgeMessage(request)
+    .catch((error) => {
+      log(error);
+      return null;
+    })
+    // Always call send response
+    .then(sendResponse);
+  return true;
 });
 
 /**

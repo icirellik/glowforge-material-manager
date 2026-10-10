@@ -11,6 +11,7 @@ import {
   removeRawMaterial,
   sendCloudMaterial,
   removeMaterialTitle,
+  stripCustomPrefix,
 } from './material/material';
 import {
   clearTempMaterial,
@@ -514,7 +515,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     }
 
     // Update material using the same id.
-    const materialId = duplicates[0].id.split(':')[1];
+    const materialId = stripCustomPrefix(duplicates[0].id);
     const newMaterial = createMaterial(tempMaterial, materialId);
 
     // Store
@@ -895,7 +896,7 @@ async function setMaterial(title: string) {
   const hash = await sha1(title);
   const id = `Custom:${hash.substring(0, 7)}`;
 
-  sendMessage({
+  await sendMessage({
     type: 'selectMaterial',
     materialId: id,
   });

@@ -96,11 +96,19 @@ export async function removeCloudMaterial(material: PluginMaterial) {
 }
 
 /**
+ * Removes the `Custom:` prefix from a material id. Older versions could save
+ * ids with the prefix twice.
+ */
+export function stripCustomPrefix(id: string): string {
+  return id.replace(/^(Custom:)+/, '');
+}
+
+/**
  * Creates a new custom material.
  */
 export function createMaterial(material: PluginMaterial, id: number | string): GFMaterial {
   return {
-    id: `Custom:${id}`,
+    id: `Custom:${stripCustomPrefix(String(id))}`,
     title: `${material.thickName} ${material.name}`,
     sku: '',
     nominal_thickness: material.thickness,
