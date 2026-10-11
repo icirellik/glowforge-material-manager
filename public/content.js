@@ -75,11 +75,16 @@
   // added again. Adding a material replaces it, which also unselects it.
   const added = new Map();
 
+  // The ids of the custom materials that were still missing right after they
+  // were last added, because the GFUI dropped them. They aren't restored
+  // again, which could loop, until new materials arrive.
+  let droppedIds = new Set();
+
   /**
-   * Checks whether any custom material is missing from the GFUI's material list.
+   * Finds the custom materials that are missing from the GFUI's material list.
    */
-  function isMissingMaterials(materialList) {
-    return materials.some(material => !materialList || !materialList.has(material.id));
+  function missingMaterials(materialList) {
+    return materials.filter(material => !materialList || !materialList.has(material.id));
   }
 
   /**
@@ -115,7 +120,9 @@
         });
       }
     }
-    return !isMissingMaterials(store.getState().getIn(['materials', 'materialList']));
+    const missing = missingMaterials(store.getState().getIn(['materials', 'materialList']));
+    droppedIds = new Set(missing.map(material => material.id));
+    return missing.length === 0;
   }
 
   /**
@@ -148,11 +155,40 @@
   }
 
   /**
+   * Checks whether custom materials have gone missing from the GFUI's
+   * material list, other than ones it dropped.
+   */
+  function needsRestore(materialList) {
+    return missingMaterials(materialList).some(material => !droppedIds.has(material.id));
+  }
+
+  /**
+   * Re-adds the custom materials that have gone missing.
+   */
+  let restoreScheduled = false;
+  function restoreMaterials() {
+    restoreScheduled = false;
+    try {
+      const store = getStore();
+      // Adding them may have dropped some since this was scheduled.
+      if (!isCurrent() || !store || !needsRestore(store.getState().getIn(['materials', 'materialList']))) {
+        return;
+      }
+      log('restoring missing custom materials');
+      if (addMaterials(false)) {
+        postToExtension('materialsApplied', { version: materialsVersion });
+      }
+    } catch (e) {
+      // Don't send my errors to GlowForge.
+      log(`restore error: ${e}`);
+    }
+  }
+
+  /**
    * Re-adds the custom materials if they go missing from the GFUI's material
    * list. Only checks when the list changes.
    */
   let checkedMaterialList = null;
-  let restoreScheduled = false;
   function checkMaterials(state) {
     const materialList = state.getIn(['materials', 'materialList']);
     if (materialList === checkedMaterialList) {
@@ -160,16 +196,10 @@
     }
     checkedMaterialList = materialList;
 
-    if (!restoreScheduled && isMissingMaterials(materialList)) {
+    if (!restoreScheduled && needsRestore(materialList)) {
       restoreScheduled = true;
       // Don't dispatch from inside the store's own update.
-      setTimeout(() => {
-        restoreScheduled = false;
-        log('restoring missing custom materials');
-        if (addMaterials(false)) {
-          postToExtension('materialsApplied', { version: materialsVersion });
-        }
-      }, 0);
+      setTimeout(restoreMaterials, 0);
     }
   }
 

@@ -40,12 +40,15 @@ class FakeMap {
 
 /**
  * A store with the GFUI's material reducers: adding a material replaces it,
- * and selecting one marks it selected.
+ * and selecting one marks it selected. Materials can be dropped instead of
+ * added, though adding them still makes a new list.
  */
 function fakeGlowforge() {
   const dispatched: any[] = [];
   const listeners: (() => void)[] = [];
-  let materialList = new FakeMap([['Glowforge:1', new FakeMap([['id', 'Glowforge:1']])]]);
+  const dropped = new Set<string>();
+  const catalog = () => new FakeMap([['Glowforge:1', new FakeMap([['id', 'Glowforge:1']])]]);
+  let materialList = catalog();
   let machines = new FakeMap([['selectedMachineSerial', 'SN-1'], ['machineMap', new FakeMap([['SN-1', new FakeMap()]])]]);
   const notify = () => listeners.forEach((listener) => listener());
   const store = {
@@ -57,8 +60,11 @@ function fakeGlowforge() {
     dispatch: (action: any) => {
       dispatched.push(action);
       if (action.type === 'ADD_MATERIALS') {
+        materialList = new FakeMap([...materialList.entries]);
         for (const material of action.materials) {
-          materialList = materialList.set(material.id, new FakeMap(Object.entries(material)));
+          if (!dropped.has(material.id)) {
+            materialList = materialList.set(material.id, new FakeMap(Object.entries(material)));
+          }
         }
       } else if (action.type === 'SET_MATERIAL') {
         materialList = materialList.map((material, id) => material.set('selected', id === action.id));
@@ -69,7 +75,14 @@ function fakeGlowforge() {
   return {
     store,
     dispatched: (type: string) => dispatched.filter((action) => action.type === type),
+    ids: () => [...materialList.entries.keys()],
     selected: () => [...materialList.entries].filter(([, material]: any) => material.get('selected')).map(([id]) => id),
+    drop: (id: string) => dropped.add(id),
+    // Glowforge reloads its catalog, which removes the custom materials.
+    refreshCatalog: () => {
+      materialList = catalog();
+      notify();
+    },
     setLidImage: (url: string) => {
       machines = new FakeMap([['selectedMachineSerial', 'SN-1'], ['machineMap', new FakeMap([['SN-1', new FakeMap([['lidImage', url]])]])]]);
       notify();
@@ -222,6 +235,36 @@ describe('page scripts', () => {
     await extension.chrome.storage.local.set({ materials: [...MATERIALS, { id: 'Custom:ccccccc', title: 'Cherry' }] });
     await settle();
     expect(await extension.fromPopup({ type: 'status' })).toMatchObject({ synchronized: false });
+  });
+
+  it('adds the materials back after a catalog refresh', async () => {
+    page.refreshCatalog();
+    await settle();
+    expect(page.ids()).toEqual(['Glowforge:1', 'Custom:aaaaaaa', 'Custom:bbbbbbb']);
+    expect(await extension.fromPopup({ type: 'status' })).toMatchObject({ synchronized: true });
+  });
+
+  it('stops adding a material that the page drops until new materials arrive', async () => {
+    page.drop('Custom:ccccccc');
+    const addsOfDropped = () => page.dispatched('ADD_MATERIALS')
+      .filter((action: any) => action.materials.some((material: any) => material.id === 'Custom:ccccccc'))
+      .length;
+
+    await extension.chrome.storage.local.set({ materials: [...MATERIALS, { id: 'Custom:ccccccc', title: 'Cherry' }] });
+    await settle();
+    expect(addsOfDropped()).toEqual(1);
+    expect(await extension.fromPopup({ type: 'status' })).toMatchObject({ synchronized: false });
+
+    // A catalog refresh still brings back the others, and tries it once more.
+    page.refreshCatalog();
+    await settle();
+    expect(page.ids()).toEqual(['Glowforge:1', 'Custom:aaaaaaa', 'Custom:bbbbbbb']);
+    expect(addsOfDropped()).toEqual(2);
+
+    // So do new materials.
+    await extension.chrome.storage.local.set({ syncRequestedAt: 1 });
+    await settle();
+    expect(addsOfDropped()).toEqual(3);
   });
 
   it('lets only the newest copy of the scripts run', async () => {
