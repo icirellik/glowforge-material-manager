@@ -18,33 +18,33 @@ export default async function migrate(): Promise<boolean> {
 
   const _materials = localStorage.materials!.map((material: GFMaterial) => {
     if (
-      !material.hasOwnProperty('nominal_thickness') ||
+      !Object.hasOwn(material, 'nominal_thickness') ||
       material.nominal_thickness === null ||
       material.nominal_thickness ===
-        parseFloat(material.nominal_thickness as any)
+        parseFloat(String(material.nominal_thickness))
     ) {
       return material;
     }
     upgraded = true;
     return {
       ...material,
-      nominal_thickness: asFloat(material.nominal_thickness as any),
+      nominal_thickness: asFloat(String(material.nominal_thickness)),
     };
   });
 
   const _rawMaterials = localStorage.rawMaterials!.map(
     (rawMaterial: PluginMaterial) => {
       if (
-        !rawMaterial.hasOwnProperty('thickness') ||
+        !Object.hasOwn(rawMaterial, 'thickness') ||
         rawMaterial.thickness === null ||
-        rawMaterial.thickness === parseFloat(rawMaterial.thickness)
+        rawMaterial.thickness === parseFloat(String(rawMaterial.thickness))
       ) {
         return rawMaterial;
       }
       upgraded = true;
       return {
         ...rawMaterial,
-        thickness: asFloat(rawMaterial.thickness),
+        thickness: asFloat(String(rawMaterial.thickness)),
       };
     },
   );

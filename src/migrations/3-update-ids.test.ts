@@ -273,20 +273,23 @@ const expected = {
 };
 
 describe('migration #3', () => {
-  let testData: any = null;
+  let testData: object | null = null;
   let id = 0;
 
-  (<any>global).TextEncoder = class {
-    encode = () => {};
-  };
+  vi.stubGlobal(
+    'TextEncoder',
+    class {
+      encode = () => {};
+    },
+  );
 
-  (<any>global).chrome = {
+  vi.stubGlobal('chrome', {
     storage: {
       local: {
-        get: (key: any, cb: any) => {
+        get: (key: unknown, cb: (items: object | null) => void) => {
           cb(testData);
         },
-        set: (data: any, cb: any) => {
+        set: (data: object, cb: () => void) => {
           testData = {
             ...testData,
             ...data,
@@ -295,7 +298,7 @@ describe('migration #3', () => {
         },
       },
     },
-  };
+  });
 
   // Node's global crypto is read-only, so it can't simply be assigned.
   vi.stubGlobal('crypto', {

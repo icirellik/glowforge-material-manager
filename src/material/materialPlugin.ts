@@ -2,7 +2,7 @@
 export type PluginMaterial = {
   name: string;
   thickName: string;
-  thickness: any;
+  thickness: number | null;
   bitmaps: PluginBitmapEngraveSetting[];
   cut: PluginCutSetting;
   scores: PluginScoreSetting[];

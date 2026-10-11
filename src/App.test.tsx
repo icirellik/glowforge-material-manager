@@ -8,24 +8,24 @@ describe('App', () => {
     // test.
     vi.useFakeTimers();
 
-    (window as any).chrome = {
+    vi.stubGlobal('chrome', {
       storage: {
         local: {
-          get: (keys: any, cb: any) => cb({}),
-          set: (items: any, cb: any) => cb(),
+          get: (keys: unknown, cb: (items: object) => void) => cb({}),
+          set: (items: object, cb: () => void) => cb(),
         },
         sync: {
-          get: (keys: any, cb: any) => cb({}),
-          getBytesInUse: (keys: any, cb: any) => cb(0),
+          get: (keys: unknown, cb: (items: object) => void) => cb({}),
+          getBytesInUse: (keys: unknown, cb: (bytes: number) => void) => cb(0),
         },
       },
       tabs: {
-        query: (query: any, cb: any) => cb([]),
+        query: (query: unknown, cb: (tabs: object[]) => void) => cb([]),
       },
       permissions: {
         contains: async () => false,
       },
-    };
+    });
   });
 
   afterEach(() => {

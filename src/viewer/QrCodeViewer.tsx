@@ -47,20 +47,34 @@ export default function QrCodeViewer({ material }: QrCodeViewerProps) {
   const title = `${material.thickName} ${material.name}`;
   // The title makes the id, so the stickers change with it and the settings.
   const settings = JSON.stringify(toTinyMaterial(material));
-  const [stickers, setStickers] = useState<Stickers | null>(null);
+  // Kept with the title and settings they were made for, so that old stickers
+  // aren't shown while new ones are made.
+  const [made, setMade] = useState<{
+    title: string;
+    settings: string;
+    stickers: Stickers;
+  } | null>(null);
 
   useEffect(() => {
     let current = true;
-    setStickers(null);
     materialIdForTitle(title).then((id) => {
       if (current) {
-        setStickers(makeStickers(id, JSON.parse(settings)));
+        setMade({
+          title,
+          settings,
+          stickers: makeStickers(id, JSON.parse(settings)),
+        });
       }
     });
     return () => {
       current = false;
     };
   }, [title, settings]);
+
+  const stickers =
+    made && made.title === title && made.settings === settings
+      ? made.stickers
+      : null;
 
   return (
     <>

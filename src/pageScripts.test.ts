@@ -12,10 +12,10 @@ const BRIDGE = fs.readFileSync(path.join(PUBLIC, 'bridge.js'), 'utf8');
 const CONTENT = fs.readFileSync(path.join(PUBLIC, 'content.js'), 'utf8');
 
 // Like the GFUI's Immutable maps.
-class FakeMap {
-  entries: Map<string, unknown>;
+class FakeMap<V = unknown> {
+  entries: Map<string, V>;
 
-  constructor(entries: [string, unknown][] = []) {
+  constructor(entries: [string, V][] = []) {
     this.entries = new Map(entries);
   }
 
@@ -27,24 +27,33 @@ class FakeMap {
     return this.entries.has(key);
   }
 
-  set(key: string, value: unknown) {
+  set(key: string, value: V) {
     const copy = new FakeMap([...this.entries]);
     copy.entries.set(key, value);
     return copy;
   }
 
-  map(update: (value: any, key: string) => unknown) {
+  map<W>(update: (value: V, key: string) => W) {
     return new FakeMap(
-      [...this.entries].map(([key, value]) => [key, update(value, key)]),
+      [...this.entries].map(([key, value]): [string, W] => [
+        key,
+        update(value, key),
+      ]),
     );
   }
 
   getIn(keys: string[]): unknown {
-    return keys.reduce(
-      (value: any, key) => (value && value.get ? value.get(key) : undefined),
+    return keys.reduce<unknown>(
+      (value, key) => (value instanceof FakeMap ? value.get(key) : undefined),
       this,
     );
   }
+}
+
+interface Action {
+  type: string;
+  id?: string;
+  materials?: { id: string }[];
 }
 
 /**
@@ -53,20 +62,22 @@ class FakeMap {
  * added, though adding them still makes a new list.
  */
 function fakeGlowforge() {
-  const dispatched: any[] = [];
+  const dispatched: Action[] = [];
   const listeners: (() => void)[] = [];
   const dropped = new Set<string>();
   const catalog = () =>
-    new FakeMap([['Glowforge:1', new FakeMap([['id', 'Glowforge:1']])]]);
+    new FakeMap<FakeMap>([
+      ['Glowforge:1', new FakeMap([['id', 'Glowforge:1']])],
+    ]);
   let materialList = catalog();
-  let machines = new FakeMap([
+  let machines = new FakeMap<unknown>([
     ['selectedMachineSerial', 'SN-1'],
     ['machineMap', new FakeMap([['SN-1', new FakeMap()]])],
   ]);
   const notify = () => listeners.forEach((listener) => listener());
   const store = {
     getState: () =>
-      new FakeMap([
+      new FakeMap<unknown>([
         ['materials', new FakeMap([['materialList', materialList]])],
         ['machines', machines],
       ]),
@@ -74,11 +85,11 @@ function fakeGlowforge() {
       listeners.push(listener);
       return () => listeners.splice(listeners.indexOf(listener), 1);
     },
-    dispatch: (action: any) => {
+    dispatch: (action: Action) => {
       dispatched.push(action);
       if (action.type === 'ADD_MATERIALS') {
         materialList = new FakeMap([...materialList.entries]);
-        for (const material of action.materials) {
+        for (const material of action.materials!) {
           if (!dropped.has(material.id)) {
             materialList = materialList.set(
               material.id,
@@ -101,7 +112,7 @@ function fakeGlowforge() {
     ids: () => [...materialList.entries.keys()],
     selected: () =>
       [...materialList.entries]
-        .filter(([, material]: any) => material.get('selected'))
+        .filter(([, material]) => material.get('selected'))
         .map(([id]) => id),
     drop: (id: string) => dropped.add(id),
     // Glowforge reloads its catalog, which removes the custom materials.
@@ -110,7 +121,7 @@ function fakeGlowforge() {
       notify();
     },
     setLidImage: (url: string) => {
-      machines = new FakeMap([
+      machines = new FakeMap<unknown>([
         ['selectedMachineSerial', 'SN-1'],
         [
           'machineMap',
@@ -122,25 +133,30 @@ function fakeGlowforge() {
   };
 }
 
+type StorageChanges = Record<string, { oldValue: unknown; newValue: unknown }>;
+type ChangeListener = (changes: StorageChanges, area: string) => void;
+type MessageListener = (
+  request: Record<string, unknown>,
+  sender: object,
+  respond: (response: unknown) => void,
+) => boolean;
+
 /**
  * The extension API that the scripts use, with storage, the background's
  * replies to lid images, and the popup's messages.
  */
 function fakeExtension(items: Record<string, unknown>) {
-  const changeListeners: ((changes: any, area: string) => void)[] = [];
-  const messageListeners: ((
-    request: any,
-    sender: any,
-    respond: (response: unknown) => void,
-  ) => boolean)[] = [];
+  const changeListeners: ChangeListener[] = [];
+  const messageListeners: MessageListener[] = [];
   const lidImageReplies: unknown[] = [];
   const chrome = {
     runtime: {
       getManifest: () => ({ update_url: 'https://example.com' }),
-      sendMessage: async (message: any) =>
+      sendMessage: async (message: { type: string }) =>
         message.type === 'lidImage' ? lidImageReplies.shift() : undefined,
       onMessage: {
-        addListener: (listener: any) => messageListeners.push(listener),
+        addListener: (listener: MessageListener) =>
+          messageListeners.push(listener),
       },
     },
     storage: {
@@ -158,7 +174,8 @@ function fakeExtension(items: Record<string, unknown>) {
         },
       },
       onChanged: {
-        addListener: (listener: any) => changeListeners.push(listener),
+        addListener: (listener: ChangeListener) =>
+          changeListeners.push(listener),
       },
     },
   };
@@ -166,7 +183,7 @@ function fakeExtension(items: Record<string, unknown>) {
     chrome,
     replyToLidImage: (reply: unknown) => lidImageReplies.push(reply),
     // A message from the popup, to whichever copy of the bridge answers.
-    fromPopup: (request: any) =>
+    fromPopup: (request: Record<string, unknown>) =>
       new Promise((resolve) => {
         for (const listener of messageListeners)
           listener({ target: 'bridge', ...request }, {}, resolve);
@@ -193,7 +210,13 @@ const findStore = () =>
 describe('page scripts', () => {
   let page: ReturnType<typeof fakeGlowforge>;
   let extension: ReturnType<typeof fakeExtension>;
-  const run = (source: string) => new Function(source)(); // eslint-disable-line no-new-func
+  const run = (source: string) => new Function(source)();
+  // The globals that the page and the scripts share.
+  const pageWindow = window as Window & {
+    store?: unknown;
+    glowforgeMaterialManagerBridge?: unknown;
+    glowforgeMaterialManagerContent?: unknown;
+  };
 
   beforeEach(async () => {
     // jsdom leaves out the message's source, which the scripts check.
@@ -201,7 +224,7 @@ describe('page scripts', () => {
       setTimeout(
         () =>
           window.dispatchEvent(
-            new MessageEvent('message', { data, source: window as any }),
+            new MessageEvent('message', { data, source: window }),
           ),
         0,
       );
@@ -211,7 +234,7 @@ describe('page scripts', () => {
       materials: MATERIALS.map((material) => ({ ...material })),
     });
     vi.stubGlobal('chrome', extension.chrome);
-    (window as any).store = page.store;
+    pageWindow.store = page.store;
     run(BRIDGE);
     run(CONTENT);
     await findStore();
@@ -220,8 +243,8 @@ describe('page scripts', () => {
 
   afterEach(() => {
     // Newer copies stop older ones.
-    (window as any).glowforgeMaterialManagerBridge = null;
-    (window as any).glowforgeMaterialManagerContent = null;
+    pageWindow.glowforgeMaterialManagerBridge = null;
+    pageWindow.glowforgeMaterialManagerContent = null;
     vi.unstubAllGlobals();
   });
 
@@ -242,7 +265,7 @@ describe('page scripts', () => {
     await settle();
     const adds = page.dispatched('ADD_MATERIALS');
     expect(adds).toHaveLength(2);
-    expect(adds[1].materials.map((material: any) => material.id)).toEqual([
+    expect(adds[1].materials!.map((material) => material.id)).toEqual([
       'Custom:bbbbbbb',
     ]);
   });
@@ -308,7 +331,7 @@ describe('page scripts', () => {
   it("reports a tab that doesn't have the latest materials", async () => {
     // A page that ignores new materials.
     const { dispatch } = page.store;
-    page.store.dispatch = (action: any) =>
+    page.store.dispatch = (action: Action) =>
       action.type === 'ADD_MATERIALS' ? undefined : dispatch(action);
     await extension.chrome.storage.local.set({
       materials: [...MATERIALS, { id: 'Custom:ccccccc', title: 'Cherry' }],
@@ -337,9 +360,9 @@ describe('page scripts', () => {
     const addsOfDropped = () =>
       page
         .dispatched('ADD_MATERIALS')
-        .filter((action: any) =>
-          action.materials.some(
-            (material: any) => material.id === 'Custom:ccccccc',
+        .filter((action) =>
+          action.materials!.some(
+            (material) => material.id === 'Custom:ccccccc',
           ),
         ).length;
 
@@ -383,7 +406,7 @@ describe('page scripts', () => {
 
   it('keeps its own errors out of the page', async () => {
     const { dispatch } = page.store;
-    page.store.dispatch = (action: any) => {
+    page.store.dispatch = (action: Action) => {
       if (action.type === 'SET_MATERIAL') throw new Error('Glowforge broke');
       return dispatch(action);
     };

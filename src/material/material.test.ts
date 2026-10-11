@@ -9,11 +9,11 @@ import {
 describe('material', () => {
   const dataCallback = vi.fn();
 
-  (<any>global).chrome = {
+  vi.stubGlobal('chrome', {
     runtime: {
       getURL: dataCallback,
     },
-  };
+  });
 
   it('creates a custom material', () => {
     dataCallback.mockReturnValueOnce('image.png');

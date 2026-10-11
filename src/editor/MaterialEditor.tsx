@@ -48,16 +48,18 @@ export default class MaterialEditor extends React.Component<MaterialEditorProps>
   // occur twice.
   shouldComponentUpdate(prevProps: MaterialEditorProps) {
     let result = true;
-    for (const key of Object.keys(this.props)) {
-      const val: any = (this.props as any)[key];
+    for (const key of Object.keys(
+      this.props,
+    ) as (keyof MaterialEditorProps)[]) {
+      const val = this.props[key];
       if (key === 'editorMode') {
-        if ((prevProps as any)[key] !== val) {
+        if (prevProps[key] !== val) {
           result = true;
           break;
         }
       } else if (key === 'material') {
-        if ((prevProps as any)[key] !== val) {
-          if (isEquivalentObject((prevProps as any)[key], val as any)) {
+        if (prevProps[key] !== val) {
+          if (isEquivalentObject(prevProps.material, this.props.material)) {
             result = false;
           }
         }

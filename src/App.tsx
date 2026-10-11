@@ -104,6 +104,7 @@ interface IMessenger {
 
 export type ForceSyncronize = () => Promise<void>;
 export type Reconnect = () => Promise<void>;
+export type ToggleCloudSync = (material: TempMaterial) => Promise<void>;
 export type ToggleQrAutoSelect = () => Promise<void>;
 export type Connection = TabConnection['state'];
 
@@ -363,7 +364,7 @@ class App
   componentDidUpdate(prevProps: AppProps, prevState: AppState) {
     const { action } = this.state;
     if (this.displayRef && prevState.action !== action) {
-      (this.displayRef.current as any).scrollTop = 0;
+      this.displayRef.current!.scrollTop = 0;
     }
 
     // Object.entries(this.props).forEach(([key, val]) =>
@@ -922,7 +923,7 @@ class App
 
     const { platform } = this.props;
 
-    let displayPanel: JSX.Element | null = null;
+    let displayPanel: JSX.Element;
     switch (action) {
       default:
       case 'DISPLAY':

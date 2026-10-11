@@ -48,7 +48,7 @@ export function compress(json: object | Array<unknown>) {
  *
  * @param binaryJson A compressed JSON buffer.
  */
-export function decompress(binaryJson: any) {
+export function decompress(binaryJson: pako.Data) {
   return JSON.parse(pako.inflate(binaryJson, { to: 'string' }));
 }
 
@@ -77,9 +77,9 @@ export async function hashMaterial(material: PluginMaterial) {
 /**
  * Checks to see if two objects are equivalant.
  */
-export function isEquivalentObject(
-  obj1: { [key: string]: unknown },
-  obj2: { [key: string]: unknown },
+export function isEquivalentObject<T extends object>(
+  obj1: T,
+  obj2: T,
 ): boolean {
   // Create arrays of property names
   const obj1Props = Object.getOwnPropertyNames(obj1);
@@ -92,7 +92,7 @@ export function isEquivalentObject(
   }
 
   for (let i = 0; i < obj1Props.length; i += 1) {
-    const propName = obj1Props[i];
+    const propName = obj1Props[i] as keyof T;
 
     // If values of same property are not equal,
     // objects are not equivalent

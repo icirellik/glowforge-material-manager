@@ -16,9 +16,9 @@ vi.mock('./lib/contentScripts', () => ({
   addContentScriptsToOpenTabs: vi.fn(async () => {}),
 }));
 
-const listeners: Record<string, (...args: any[]) => any> = {};
+const listeners: Record<string, (...args: unknown[]) => unknown> = {};
 const event = (name: string) => ({
-  addListener: (listener: (...args: any[]) => any) => {
+  addListener: (listener: (...args: unknown[]) => unknown) => {
     listeners[name] = listener;
   },
 });
