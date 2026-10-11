@@ -9,9 +9,9 @@ import type { Modules } from './spec';
 /**
  * Encodes text as a QR code, following ISO/IEC 18004.
  *
- * The text is one segment, in the most compact mode that holds all of it:
- * numeric, alphanumeric or UTF-8 bytes. Like most encoders, the code is the
- * smallest version that fits, with the mask that scores the lowest penalty.
+ * The text is split into numeric, alphanumeric and UTF-8 byte segments in the
+ * way that needs the fewest bits. Like most encoders, the code is the smallest
+ * version that fits, with the mask that scores the lowest penalty.
  */
 
 export type ErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H';
@@ -30,58 +30,156 @@ const LEVELS: Record<ErrorCorrectionLevel, number> = {
   L, M, Q, H,
 };
 
-interface Segment {
+// A run of data in one mode. Modes with a character count, like numeric and
+// byte, have one; others, like ECI, only have their bits.
+export interface Segment {
   mode: number;
-  count: number;
+  count?: number;
   bits: number[];
 }
 
-function writeBits(bits: number[], value: number, count: number) {
+export function writeBits(bits: number[], value: number, count: number) {
   for (let i = count - 1; i >= 0; i -= 1) bits.push((value >>> i) & 1);
 }
 
-function toSegment(text: string): Segment {
+export function numericSegment(digits: string): Segment {
   const bits: number[] = [];
-  if (/^[0-9]*$/.test(text)) {
-    // Three digits in 10 bits, and the last one or two in 4 or 7.
-    for (let i = 0; i < text.length; i += 3) {
-      const digits = text.slice(i, i + 3);
-      writeBits(bits, Number(digits), [0, 4, 7, 10][digits.length]);
-    }
-    return { mode: NUMERIC, count: text.length, bits };
+  // Three digits in 10 bits, and the last one or two in 4 or 7.
+  for (let i = 0; i < digits.length; i += 3) {
+    const group = digits.slice(i, i + 3);
+    writeBits(bits, Number(group), [0, 4, 7, 10][group.length]);
   }
-  if (/^[0-9A-Z $%*+\-./:]*$/.test(text)) {
-    // Two characters in 11 bits, and the last one in 6.
-    for (let i = 0; i < text.length; i += 2) {
-      const first = ALPHANUMERIC_CHARACTERS.indexOf(text[i]);
-      if (i + 1 < text.length) {
-        writeBits(bits, first * 45 + ALPHANUMERIC_CHARACTERS.indexOf(text[i + 1]), 11);
-      } else {
-        writeBits(bits, first, 6);
-      }
+  return { mode: NUMERIC, count: digits.length, bits };
+}
+
+export function alphanumericSegment(text: string): Segment {
+  const bits: number[] = [];
+  // Two characters in 11 bits, and the last one in 6.
+  for (let i = 0; i < text.length; i += 2) {
+    const first = ALPHANUMERIC_CHARACTERS.indexOf(text[i]);
+    if (i + 1 < text.length) {
+      writeBits(bits, first * 45 + ALPHANUMERIC_CHARACTERS.indexOf(text[i + 1]), 11);
+    } else {
+      writeBits(bits, first, 6);
     }
-    return { mode: ALPHANUMERIC, count: text.length, bits };
   }
-  const bytes = new TextEncoder().encode(text);
+  return { mode: ALPHANUMERIC, count: text.length, bits };
+}
+
+export function byteSegment(bytes: Uint8Array): Segment {
+  const bits: number[] = [];
   for (const byte of bytes) writeBits(bits, byte, 8);
   return { mode: BYTE, count: bytes.length, bits };
 }
 
-function fits(segment: Segment, version: number, level: number): boolean {
-  const lengthBits = countBits(segment.mode, version)!;
-  return segment.count < 2 ** lengthBits
-    && 4 + lengthBits + segment.bits.length <= blockLayout(version, level).dataTotal * 8;
+const MODES = [NUMERIC, ALPHANUMERIC, BYTE];
+const encoder = new TextEncoder();
+
+function canEncode(mode: number, character: string): boolean {
+  if (mode === NUMERIC) return character >= '0' && character <= '9';
+  if (mode === ALPHANUMERIC) return ALPHANUMERIC_CHARACTERS.includes(character);
+  return true;
 }
 
 /**
- * The data codewords: the segment, a terminator and padding.
+ * Splits text into the segments that need the fewest bits in a version's size
+ * class, choosing a mode for every character.
  */
-function dataCodewords(segment: Segment, version: number, level: number): Uint8Array {
+export function segmentText(text: string, version: number): Segment[] {
+  const characters = Array.from(text);
+  if (characters.length === 0) {
+    return [];
+  }
+
+  // Costs are in sixths of a bit, so that digits (10 bits per 3) and
+  // alphanumeric characters (11 bits per 2) cost whole numbers.
+  const characterCost = (mode: number, character: string) => {
+    if (mode === NUMERIC) return 20;
+    if (mode === ALPHANUMERIC) return 33;
+    return encoder.encode(character).length * 48;
+  };
+  const headerCost = (mode: number) => (4 + countBits(mode, version)!) * 6;
+
+  // After each character, the cheapest cost of the text so far with each mode
+  // open, and the mode that character was written in to get there.
+  let costs = MODES.map(headerCost);
+  const writtenIn: (number | null)[][] = [];
+  for (const character of characters) {
+    const written: (number | null)[] = [];
+    const next: number[] = [];
+    for (let index = 0; index < MODES.length; index += 1) {
+      const fits = canEncode(MODES[index], character);
+      written.push(fits ? MODES[index] : null);
+      next.push(fits ? costs[index] + characterCost(MODES[index], character) : Infinity);
+    }
+    // Switching modes after this character ends its segment, which rounds up
+    // to a whole bit, and starts a new one with a header.
+    const switched = next.slice();
+    const modes = written.slice();
+    for (let to = 0; to < MODES.length; to += 1) {
+      for (let from = 0; from < MODES.length; from += 1) {
+        const cost = Math.ceil(next[from] / 6) * 6 + headerCost(MODES[to]);
+        if (written[from] !== null && cost < switched[to]) {
+          switched[to] = cost;
+          modes[to] = written[from];
+        }
+      }
+    }
+    writtenIn.push(modes);
+    costs = switched;
+  }
+
+  // Trace the cheapest path back, then join characters in the same mode.
+  let mode = MODES[costs.indexOf(Math.min(...costs))];
+  const characterModes: number[] = [];
+  for (let i = characters.length - 1; i >= 0; i -= 1) {
+    mode = writtenIn[i][MODES.indexOf(mode)]!;
+    characterModes[i] = mode;
+  }
+  const segments: Segment[] = [];
+  let start = 0;
+  for (let i = 1; i <= characters.length; i += 1) {
+    if (i === characters.length || characterModes[i] !== characterModes[start]) {
+      const run = characters.slice(start, i).join('');
+      if (characterModes[start] === NUMERIC) segments.push(numericSegment(run));
+      else if (characterModes[start] === ALPHANUMERIC) segments.push(alphanumericSegment(run));
+      else segments.push(byteSegment(encoder.encode(run)));
+      start = i;
+    }
+  }
+  return segments;
+}
+
+/**
+ * The bits that segments take in a version, or Infinity if a character count
+ * doesn't fit in its field.
+ */
+function segmentBits(segments: Segment[], version: number): number {
+  let total = 0;
+  for (const { mode, count, bits } of segments) {
+    let lengthBits = 0;
+    if (count !== undefined) {
+      lengthBits = countBits(mode, version)!;
+      if (count >= 2 ** lengthBits) {
+        return Infinity;
+      }
+    }
+    total += 4 + lengthBits + bits.length;
+  }
+  return total;
+}
+
+/**
+ * The data codewords: the segments, a terminator and padding.
+ */
+function dataCodewords(segments: Segment[], version: number, level: number): Uint8Array {
   const { dataTotal } = blockLayout(version, level);
   const bits: number[] = [];
-  writeBits(bits, segment.mode, 4);
-  writeBits(bits, segment.count, countBits(segment.mode, version)!);
-  for (const bit of segment.bits) bits.push(bit);
+  for (const { mode, count, bits: segmentData } of segments) {
+    writeBits(bits, mode, 4);
+    if (count !== undefined) writeBits(bits, count, countBits(mode, version)!);
+    for (const bit of segmentData) bits.push(bit);
+  }
   // Up to four zeros end the data, then more fill the last codeword.
   writeBits(bits, 0, Math.min(4, dataTotal * 8 - bits.length));
   writeBits(bits, 0, (8 - (bits.length % 8)) % 8);
@@ -234,11 +332,15 @@ function penalty({ size, data }: Modules): number {
 }
 
 /**
- * Encodes text as the modules of a QR code.
+ * Encodes segments as the modules of a QR code. The segments can depend on the
+ * version, as character counts and the best split change with its size.
  *
- * @throws When the text doesn't fit, or the options aren't valid.
+ * @throws When the segments don't fit, or the options aren't valid.
  */
-export function encodeQrCode(text: string, { level = 'M', version, mask }: EncodeOptions = {}): Modules {
+export function encodeSegments(
+  segmentsFor: (version: number) => Segment[],
+  { level = 'M', version, mask }: EncodeOptions = {}
+): Modules {
   const levelIndex = LEVELS[level];
   if (levelIndex === undefined) {
     throw new Error(`Unknown error correction level: ${level}`);
@@ -250,9 +352,16 @@ export function encodeQrCode(text: string, { level = 'M', version, mask }: Encod
     throw new Error(`Masks are 0 to 7: ${mask}`);
   }
 
-  const segment = toSegment(text);
   const versions = version ? [version] : Array.from({ length: 40 }, (_, index) => index + 1);
-  const chosen = versions.find((candidate) => fits(segment, candidate, levelIndex));
+  let chosen = 0;
+  let segments: Segment[] = [];
+  for (const candidate of versions) {
+    segments = segmentsFor(candidate);
+    if (segmentBits(segments, candidate) <= blockLayout(candidate, levelIndex).dataTotal * 8) {
+      chosen = candidate;
+      break;
+    }
+  }
   if (!chosen) {
     throw new Error(version ? `The text doesn't fit in a version ${version} QR code` : 'The text is too long for a QR code');
   }
@@ -260,7 +369,7 @@ export function encodeQrCode(text: string, { level = 'M', version, mask }: Encod
   const size = sizeOf(chosen);
   const data = new Uint8Array(size * size);
   drawFunctionPatterns(data, chosen);
-  const codewords = interleave(dataCodewords(segment, chosen, levelIndex), chosen, levelIndex);
+  const codewords = interleave(dataCodewords(segments, chosen, levelIndex), chosen, levelIndex);
   const order = dataModuleOrder(chosen);
   // Leftover modules are remainder bits, which stay light.
   for (let bit = 0; bit < codewords.length * 8; bit += 1) {
@@ -287,4 +396,25 @@ export function encodeQrCode(text: string, { level = 'M', version, mask }: Encod
     }
   }
   return best;
+}
+
+// The best split only changes between the size classes of versions 1-9, 10-26
+// and 27-40, where character counts get longer.
+function sizeClass(version: number): number {
+  if (version < 10) return 1;
+  return version < 27 ? 10 : 27;
+}
+
+/**
+ * Encodes text as the modules of a QR code.
+ *
+ * @throws When the text doesn't fit, or the options aren't valid.
+ */
+export function encodeQrCode(text: string, options: EncodeOptions = {}): Modules {
+  const bySizeClass = new Map<number, Segment[]>();
+  return encodeSegments((version) => {
+    const key = sizeClass(version);
+    if (!bySizeClass.has(key)) bySizeClass.set(key, segmentText(text, key));
+    return bySizeClass.get(key)!;
+  }, options);
 }

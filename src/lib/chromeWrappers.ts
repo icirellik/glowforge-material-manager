@@ -1,4 +1,5 @@
 import type { GFMaterial } from '../material/materialGlowforge';
+import { requestSync } from './sync';
 import type { PluginMaterial } from '../material/materialPlugin';
 import type { TempMaterial } from './materialHelpers';
 
@@ -16,8 +17,8 @@ export interface StorageLocal {
   materials?: GFMaterial[];
   // The raw material data that is used to generated Glowforge materials.
   rawMaterials?: PluginMaterial[];
-  // Should the list in the glowforge app be updated?
-  shouldUpdate?: boolean;
+  // When every Glowforge tab was last asked to add the materials again.
+  syncRequestedAt?: number;
   // A material that was saved due to the popup window being dismissed without
   // clicking the save button.
   tempMaterial?: TempMaterial | null;
@@ -117,7 +118,7 @@ export async function getGlowforgeMaterials(): Promise<GFMaterial[]> {
 }
 
 /**
- * Saves the Glowforge materials and forces the Glowforge UI to synchronize.
+ * Saves the Glowforge materials, which the Glowforge tabs pick up.
  *
  * @param materials
  */
@@ -125,7 +126,6 @@ export async function storeGlowforgeMaterials(materials: GFMaterial[]): Promise<
   return new Promise((resolve) => {
     window.chrome.storage.local.set({
       materials,
-      shouldUpdate: true,
     }, () => {
       resolve(materials);
     });
@@ -148,10 +148,8 @@ export async function getRawMaterials(): Promise<PluginMaterial[]> {
 }
 
 /**
- * Saves the raw materials and forces the glowforge app to synchronize.
- *
- * TODO: Is the synchronization here required, raw materials don't hold new
- * information.
+ * Saves the raw materials. The Glowforge tabs only use the Glowforge
+ * materials, which are saved with them.
  *
  * @param materials
  */
@@ -159,7 +157,6 @@ export async function storeRawMaterials(materials: PluginMaterial[]): Promise<Pl
   return new Promise((resolve) => {
     window.chrome.storage.local.set({
       rawMaterials: materials,
-      shouldUpdate: true,
     }, () => {
       resolve(materials);
     });
@@ -212,16 +209,10 @@ export async function storeTempMaterial(material: PluginMaterial): Promise<Plugi
 }
 
 /**
- * Forces the glowforge application to synchronize with any material changes.
+ * Asks every Glowforge tab to add the materials again.
  */
-export async function forceSync(): Promise<boolean> {
-  return new Promise((resolve) => {
-    window.chrome.storage.local.set({
-      shouldUpdate: true,
-    }, () => {
-      resolve(true);
-    });
-  });
+export async function forceSync(): Promise<void> {
+  return requestSync();
 }
 
 // Synchronized Storage
@@ -332,16 +323,20 @@ export interface TabStatus {
   designId: string | null;
 }
 
+// The active tab, as far as the popup is concerned: not Glowforge, Glowforge
+// without the extension's scripts running in it, or connected.
+export type TabConnection =
+  | { state: 'none' }
+  | { state: 'disconnected', tabId: number }
+  | { state: 'connected', tabId: number, status: TabStatus };
+
 /**
  * Asks the active Glowforge tab for its status.
- *
- * @returns The status, or null if the active tab isn't a Glowforge tab or the
- * extension's scripts aren't running in it.
  */
-export async function getTabStatus(): Promise<TabStatus | null> {
+export async function getTabConnection(): Promise<TabConnection> {
   const tab = await getGlowforgeTab();
   if (!tab || tab.id === undefined) {
-    return null;
+    return { state: 'none' };
   }
 
   try {
@@ -349,11 +344,14 @@ export async function getTabStatus(): Promise<TabStatus | null> {
       target: 'bridge',
       type: 'status',
     });
-    return status && typeof status === 'object' ? status : null;
+    if (status && typeof status === 'object') {
+      return { state: 'connected', tabId: tab.id, status };
+    }
   } catch {
-    // The tab is still loading, or was discarded and hasn't reloaded.
-    return null;
+    // Nothing is listening: the scripts couldn't be added after an update, or
+    // the tab is still loading.
   }
+  return { state: 'disconnected', tabId: tab.id };
 }
 
 /**
@@ -402,11 +400,12 @@ export async function getPlatform(): Promise<string> {
  * tab, which forwards it to the GFUI.
  *
  * @param message The message to send.
+ * @returns Whether a Glowforge tab got it.
  */
-export async function sendMessage(message: object): Promise<void> {
+export async function sendMessage(message: object): Promise<boolean> {
   const tab = await getGlowforgeTab();
   if (!tab || tab.id === undefined) {
-    return;
+    return false;
   }
 
   try {
@@ -414,9 +413,9 @@ export async function sendMessage(message: object): Promise<void> {
       target: 'bridge',
       ...message,
     });
-  } catch (error) {
-    // Tabs opened before the extension was installed or updated don't have
-    // the content script until they are reloaded.
-    console.log(error);
+    return true;
+  } catch {
+    // The extension's scripts aren't running in the tab.
+    return false;
   }
 }
