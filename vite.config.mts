@@ -1,12 +1,22 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 
-// Vite only compiles the popup (index.html). The rest of the extension in
-// public/ (manifest, service worker, content scripts and QR libraries) is
-// copied into the build as-is.
+// Vite compiles the popup (index.html) and the background service worker. The
+// rest of the extension in public/ (manifest and content scripts) is copied
+// into the build as-is.
 export default defineConfig({
   build: {
     outDir: 'build',
+    rolldownOptions: {
+      input: {
+        index: 'index.html',
+        background: 'src/background.ts',
+      },
+      output: {
+        // The manifest refers to the service worker by name.
+        entryFileNames: (chunk) => (chunk.name === 'background' ? 'background.js' : 'assets/[name]-[hash].js'),
+      },
+    },
     // Matches `minimum_chrome_version` in the manifest.
     target: 'chrome116',
     sourcemap: true,
@@ -16,12 +26,6 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
-    environmentOptions: {
-      // Lets jsdom load the images that the QR code tests decode.
-      jsdom: {
-        resources: 'usable',
-      },
-    },
     globals: true,
   },
 });

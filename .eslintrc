@@ -19,10 +19,13 @@
     "node": true
   },
   "globals": {
-    "chrome": true,
-    "jsQR": true
+    "chrome": true
   },
   "rules": {
+    // Tests can use dev dependencies.
+    "import/no-extraneous-dependencies": ["error", {
+      "devDependencies": ["**/*.test.ts", "**/*.test.tsx"]
+    }],
     // Rules that need to be corrected
     "@typescript-eslint/ban-types": 0,
     "@typescript-eslint/explicit-module-boundary-types": 0,
