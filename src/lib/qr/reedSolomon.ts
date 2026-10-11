@@ -134,9 +134,11 @@ function errorLocator(syndrome: number[]): number[] {
 /**
  * Corrects a block of data and error correction codewords in place.
  *
- * @returns False when the block has more errors than can be corrected.
+ * @param maxErrors The most wrong codewords to correct, at most half of the
+ * error correction codewords.
+ * @returns False when the block has more errors than that.
  */
-export function correctErrors(block: Uint8Array, ecCount: number): boolean {
+export function correctErrors(block: Uint8Array, ecCount: number, maxErrors = Math.floor(ecCount / 2)): boolean {
   const syndrome = syndromes(block, ecCount);
   if (syndrome.every((value) => value === 0)) {
     return true;
@@ -144,7 +146,7 @@ export function correctErrors(block: Uint8Array, ecCount: number): boolean {
 
   const locator = errorLocator(syndrome);
   const errorCount = locator.length - 1;
-  if (errorCount * 2 > ecCount) {
+  if (errorCount > maxErrors) {
     return false;
   }
 

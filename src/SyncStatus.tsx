@@ -1,37 +1,39 @@
 import React, { FunctionComponent } from 'react';
 import { IconStatus } from './icons/IconStatus';
-import type { ForceSyncronize } from './App';
+import type { Connection, ForceSyncronize, Reconnect } from './App';
 import './SyncStatus.css';
 
 interface SyncStatusProps {
-  connected: boolean;
+  connection: Connection;
   forceSync: ForceSyncronize;
+  reconnect: Reconnect;
   synchronized: boolean;
 }
 
+const TITLES: Record<Connection, string> = {
+  none: 'Status: Open Glowforge to synchronize',
+  disconnected: 'Status: Not connected to this Glowforge tab, click to reconnect',
+  connected: 'Status: Synchronizing',
+};
+
 export const SyncStatus: FunctionComponent<SyncStatusProps> = (props: SyncStatusProps) => {
   const {
-    connected,
+    connection,
     forceSync,
+    reconnect,
     synchronized,
   } = props;
-  let title = 'Status: Unknown';
-  if (synchronized) {
-    title = 'Status: Synchronized';
-  } else if (connected) {
-    title = 'Status: Synchronizing';
+  const connected = connection === 'connected';
+  let className = 'Status Status-gray';
+  if (connected) {
+    className = synchronized ? 'Status Status-green' : 'Status Status-red';
   }
   return (
-    <div className={
-      (connected)
-        ? (synchronized) ? 'Status Status-green' : 'Status Status-red'
-        : 'Status Status-gray'
-}
-    >
+    <div className={className}>
       <IconStatus
-        click={forceSync}
+        click={connection === 'disconnected' ? reconnect : forceSync}
         height="12px"
-        title={title}
+        title={connected && synchronized ? 'Status: Synchronized' : TITLES[connection]}
         width="12px"
       />
     </div>
