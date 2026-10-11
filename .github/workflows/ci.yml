@@ -18,13 +18,15 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: yarn
+          cache: npm
 
-      - run: yarn install --frozen-lockfile
+      - run: npm ci
 
-      - run: yarn lint
+      - run: npm run lint
 
-      - run: yarn test
+      - run: npm run format:check
+
+      - run: npm test
 
       # Type-checks with TypeScript 7 before building with Vite.
-      - run: yarn build
+      - run: npm run build
