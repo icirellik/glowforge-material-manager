@@ -50,7 +50,7 @@ that my materials, ids and sync don't break.
 
 ### US-03 QR auto-select works on real lid images
 
-**Done** in #136 and #137.
+**Done** in #136 and #137, with review fixes in #139.
 
 As a user who puts a material's QR sticker on the bed, I want the material
 selected for me, like Proofgrade, so that I don't pick it by hand.
@@ -59,10 +59,14 @@ selected for me, like Proofgrade, so that I don't pick it by hand.
 - [x] The service worker downloads the lid image directly, with a timeout.
 - [x] Only `Custom:<7 hex>` payloads select a material, and only in the tab
   the lid image came from.
+- [x] A sticker selects its material when it appears, not in every lid image
+  after, so a material picked by hand stays (#139).
+- [x] Stickers next to sheet edges, on offcuts, among engravings, in a hard
+  shadow, and blurred and tilted settings codes read (#139).
 
 ### US-04 The popup shows the active tab
 
-**In review** in #138.
+**In review** in #138, with a reconnect option in #139.
 
 As a user with several Glowforge tabs, I want the popup's sync light,
 machine and trace download to describe the tab I'm looking at, so that I
@@ -73,12 +77,15 @@ can trust them.
 - [x] On other tabs, the serial and trace are hidden.
 - [x] Tabs that were open before an install or update get the scripts
   without a reload.
+- [x] A Glowforge tab without the scripts can be reconnected from the popup,
+  and Set says when it can't reach the tab (#139).
 
 ## Partly done
 
 ### US-05 Stable material ids
 
-**Partly done.** The doubled-id bug is fixed in #136.
+**Partly done.** The doubled-id bug is fixed in #136, and since #139 ids come
+from one helper, `materialIdForTitle`.
 
 As a user, I want a material's id to stay the same when I rename it, so that
 printed QR stickers and saved designs keep working.
@@ -103,17 +110,19 @@ lose any.
 
 ### US-07 QR release prep
 
-**Planned.** Small. Do it before the next Web Store release.
+**Partly done** in #139. Do the rest before the next Web Store release.
 
 As a user updating the extension, I want it to stay enabled, so that I
 don't have to approve a new permission I may not need.
 
-- [ ] Access to `storage.googleapis.com/gf-app-imgl` is requested only when
+- [x] Access to `storage.googleapis.com/gf-app-imgl` is requested only when
   QR auto-select is turned on, so the update doesn't disable the extension.
 - [ ] A downloaded sticker SVG imports into the Glowforge app and engraves
   as expected.
 - [ ] A few more real lid photos are in the tests: the sticker in different
   places, different lighting.
+- [ ] Find whether real lid photos need heavily blurred codes tilted past
+  35° to read, which loses the far finder today.
 
 ### US-08 Export and import
 
@@ -220,6 +229,7 @@ share materials between people and machines.
   offers to add it from the sticker's settings.
 - [ ] The settings are shown for review before saving.
 - [ ] Today the settings part of the payload is ignored.
+  `parseMaterialQrCode` already returns it, unchecked (#139).
 
 ### US-16 Diagnostics panel per tab
 
