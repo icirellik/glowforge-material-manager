@@ -9,9 +9,12 @@ type ImmutableMap = {
 export type Store = {
   dispatch: (message: {[key: string]: unknown}) => void;
   getState(): ImmutableMap;
-  subscribe: (listener: () => void) => void;
+  // Redux returns a function that unsubscribes.
+  subscribe: (listener: () => void) => (() => void) | void;
 };
 
 export type Window = {
   store?: Store;
+  // The running copy of content.js.
+  glowforgeMaterialManagerContent?: object;
 };
