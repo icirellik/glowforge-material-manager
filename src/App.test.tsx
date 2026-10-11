@@ -19,6 +19,9 @@ describe('App', () => {
           getBytesInUse: (keys: any, cb: any) => cb(0),
         },
       },
+      tabs: {
+        query: (query: any, cb: any) => cb([]),
+      },
     };
   });
 
@@ -29,7 +32,6 @@ describe('App', () => {
   it('renders without crashing', () => {
     const div = document.createElement('div');
     ReactDOM.render(<App
-      connected={false}
       platform="linux"
     />, div);
     ReactDOM.unmountComponentAtNode(div);
