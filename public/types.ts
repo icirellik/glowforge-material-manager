@@ -1,50 +1,17 @@
-type BedImage = {
-  createdAt: string;
-  isAuthorized: boolean;
-  isInvalidated: boolean;
+/**
+ * The parts of the GFUI's Immutable.js state that content.js uses.
+ */
+type ImmutableMap = {
+  getIn(path: (string | number)[]): unknown;
+  has(key: string): boolean;
 };
 
-type Machine = {
-  bedImage?: BedImage;
-  preloadedLidImage?: string;
-};
-
-type MachineMap = {
-  [key: string]: Machine;
-};
-
-type Machines = {
-  selectedMachineSerial?: string;
-  machineMap?: MachineMap;
-};
-
-type PresentObject = {
-  loadedDesignIds: string[];
-};
-
-type Present = {
-  toJSON: () => PresentObject;
-};
-
-type WorkSpace = {
-  present?: Present;
-};
-
-export type ReduxStore = {
-  machines?: Machines;
-  workspace?: WorkSpace;
-};
-
-type StoreObject = {
-  toJSON: () => ReduxStore;
-}
-
-type Store = {
+export type Store = {
   dispatch: (message: {[key: string]: unknown}) => void;
-  getState(): StoreObject;
+  getState(): ImmutableMap;
   subscribe: (listener: () => void) => void;
 };
 
 export type Window = {
-  store: Store;
+  store?: Store;
 };

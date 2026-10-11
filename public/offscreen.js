@@ -39,7 +39,7 @@ const QR_IMAGE_SCALES = [1, 0.9, 0.87, 0.75, 0.6, 0.5, 0.4, 0.25, 0.2, 0.1, 0.05
  * @param {number} scale
  */
 async function urlToImageData(imageUrl, scale) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
     const image = new Image();
@@ -50,17 +50,27 @@ async function urlToImageData(imageUrl, scale) {
       context.drawImage(image, 0, 0, canvas.width, canvas.height);
       resolve(canvas);
     }, false);
+    image.addEventListener('error', () => {
+      reject(new Error(`Could not load ${imageUrl}`));
+    }, false);
     image.src = imageUrl;
   });
 }
 
-const codeReader = new ZXing.BrowserQRCodeReader();
+// zxing never settles if the image fails to load.
+const ZXING_TIMEOUT_MS = 10000;
+
 /**
  *
  * @param {string} imageUrl
  */
 async function readQrCodeZx(imageUrl) {
-  return codeReader
+  // A shared reader cancels the previous image whenever it starts a new one.
+  const codeReader = new ZXing.BrowserQRCodeReader();
+  const timeout = new Promise((resolve) => {
+    setTimeout(() => resolve(null), ZXING_TIMEOUT_MS);
+  });
+  const decoded = codeReader
     .decodeFromImage(undefined, imageUrl)
     .then((result) => {
       console.log(2);
@@ -70,6 +80,7 @@ async function readQrCodeZx(imageUrl) {
       console.log(err);
       return null;
     });
+  return Promise.race([decoded, timeout]);
 }
 
 /**

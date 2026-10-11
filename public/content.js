@@ -1,26 +1,22 @@
-/** @typedef {import("./types").ReduxStore} ReduxStore */
+/** @typedef {import("./types").Store} Store */
 /** @typedef {import("./types").Window} WindowExt */
 /** @typedef {Window & WindowExt} ExtendedWindow */
 
 /**
+ * Runs in the Glowforge page so that it can use the page's Redux store. It
+ * talks to the extension through bridge.js.
+ *
  * @type {ExtendedWindow}
  */
 const localWindow = (window);
 
-// Set by inject.js on the script tag that loaded this file.
-const { dataset } = document.currentScript;
+const CHANNEL = 'glowforge-material-manager';
 
-// Develop:
-// Automatically set using your the runtime.
-//
-// Webstore Test:
-// const extensionId = 'oehpknagabkobfeijndckpapicmfoknn';
-//
-// Webstore Prod:
-// const extensionId = 'adabmafjmdcjnihkmggljljeopjfghii';
-const { extensionId } = dataset;
-const extensionDevMode = dataset.extensionDevMode === 'true';
+// The GFUI creates its store after this script runs.
+const STORE_POLL_MS = 250;
+const STORE_TIMEOUT_MS = 60000;
 
+let extensionDevMode = false;
 function log(message) {
   if (extensionDevMode) {
     // eslint-disable-next-line
@@ -29,15 +25,61 @@ function log(message) {
 }
 
 /**
- * Sets the units in the GF UI
- *
- * @param unitType Either `METRIC` or `IMPERIAL`
+ * Sends a message to the extension through bridge.js.
  */
-function setUnits(unitType) {
-  localWindow.store.dispatch({
-    type: 'SET_UNITS',
-    unitType,
-  });
+function postToExtension(type, data = {}) {
+  window.postMessage({
+    channel: CHANNEL,
+    to: 'extension',
+    type,
+    ...data,
+  }, window.location.origin);
+}
+
+/**
+ * Gets the GFUI's Redux store, or null if it hasn't been created yet.
+ *
+ * @returns {Store | null}
+ */
+function getStore() {
+  const { store } = localWindow;
+  if (store && store.getState && store.dispatch && store.subscribe) {
+    return store;
+  }
+  return null;
+}
+
+// The custom materials that should be in the GFUI.
+let materials = [];
+
+/**
+ * Checks whether any custom material is missing from the GFUI's material list.
+ */
+function isMissingMaterials(materialList) {
+  return materials.some(material => !materialList || !materialList.has(material.id));
+}
+
+/**
+ * Adds the custom materials to the GFUI. Adding replaces any material with the
+ * same id, so `force` adds them all again to pick up changes.
+ *
+ * @returns Whether every custom material is now in the GFUI.
+ */
+function addMaterials(force) {
+  const store = getStore();
+  if (!store) {
+    return false;
+  }
+
+  const materialList = store.getState().getIn(['materials', 'materialList']);
+  if (materials.length > 0 && (force || isMissingMaterials(materialList))) {
+    log('adding custom materials');
+    store.dispatch({
+      type: 'ADD_MATERIALS',
+      materials,
+    });
+  }
+  return !isMissingMaterials(store.getState().getIn(['materials', 'materialList']));
 }
 
 /**
@@ -45,250 +87,109 @@ function setUnits(unitType) {
  *
  * @param materialId The material id.
  */
-function setMaterial(materialId) {
-  localWindow.store.dispatch({
+function selectMaterial(materialId) {
+  const store = getStore();
+  if (!store || typeof materialId !== 'string') {
+    return;
+  }
+
+  addMaterials(false);
+  const materialList = store.getState().getIn(['materials', 'materialList']);
+  if (!materialList || !materialList.has(materialId)) {
+    log(`unknown material: ${materialId}`);
+    return;
+  }
+
+  log('setting the selected material');
+  store.dispatch({
     type: 'SET_MATERIAL',
     id: materialId,
   });
 }
 
 /**
- * Adds a single material to the UI.
- *
- * @param material The material to add.
+ * Re-adds the custom materials if they go missing from the GFUI's material
+ * list. Only checks when the list changes.
  */
-function addMaterial(material) {
-  localWindow.store.dispatch({
-    type: 'ADD_MATERIAL',
-    material,
-  });
-}
-
-/**
- * Add many materials to the UI.
- *
- * @param materials An array of materials to add.
- */
-function addMaterials(materials) {
-  localWindow.store.dispatch({
-    type: 'ADD_MATERIALS',
-    materials,
-  });
-}
-
-/**
- * Leverage the redux actions to inject custom materials.
- */
-function handleMessages(response) {
-  if (!response || !response.messages) {
+let checkedMaterialList = null;
+let restoreScheduled = false;
+function checkMaterials(state) {
+  const materialList = state.getIn(['materials', 'materialList']);
+  if (materialList === checkedMaterialList) {
     return;
   }
+  checkedMaterialList = materialList;
 
-  for (let i = 0; i < response.messages.length; i += 1) {
-    const message = response.messages[i];
-    if (!message) {
-      return;
-    }
-
-    if (message.type === 'addMaterials') {
-      log('adding custom materials');
-      addMaterials(message.materials);
-    } else if (message.type === 'addMaterial') {
-      log('adding custom material');
-      addMaterial(message.material);
-    } else if (message.type === 'clone') {
-      log('cloning design');
-      // TODO: Clone design
-    } else if (message.type === 'toggleUnits') {
-      log('toggle units');
-      setUnits(message.unitType);
-    } else if (message.type === 'selectMaterial') {
-      log('setting the selected material');
-      setMaterial(message.materialId);
-    } else {
-      log('unknown message');
-    }
+  if (!restoreScheduled && isMissingMaterials(materialList)) {
+    restoreScheduled = true;
+    // Don't dispatch from inside the store's own update.
+    setTimeout(() => {
+      restoreScheduled = false;
+      log('restoring missing custom materials');
+      if (addMaterials(false)) {
+        postToExtension('materialsApplied');
+      }
+    }, 0);
   }
 }
 
 /**
- * Checks and displays any runtime errors.
- */
-function checkLastRuntimeError() {
-  if (chrome.runtime.lastError) {
-    log(`Last seen error: ${chrome.runtime.lastError.message}`);
-    chrome.runtime.lastError = null;
-  }
-}
-
-/**
- * Sends a message to the chrome background process.
- *
- * @param message The message.
- * @param callback The response handler.
- */
-function sendBackgroundMessage(message, callback) {
-  chrome.runtime.sendMessage(
-    extensionId,
-    message,
-    (response) => {
-      callback(response);
-    },
-  );
-}
-
-/**
- * Request the materials created by the user in the extension.
- */
-setInterval(() => {
-  log('message - checkMessages');
-  sendBackgroundMessage({
-    type: 'checkMessages',
-  }, (response) => {
-    handleMessages(response);
-    checkLastRuntimeError();
-  });
-}, 750);
-
-/**
- * Set a one-time refresh on content injection. New tabs, refreshes.
- *
- * Sets shouldUpdate to true.
- */
-setTimeout(() => {
-  log('message - forceRefresh');
-  sendBackgroundMessage({
-    type: 'forceRefresh',
-  }, () => {
-    log('force refresh response');
-    checkLastRuntimeError();
-  });
-}, 0);
-
-/**
- *
+ * Informs the extension when the selected machine changes, and when its lid
+ * camera image changes so it can be checked for a QR code.
  */
 let prevMachineSerial = null;
-function checkMachineSerial(machineSerial) {
-  if (!machineSerial) {
+let prevLidImagePath = null;
+function checkMachine(state) {
+  const serial = state.getIn(['machines', 'selectedMachineSerial']);
+  if (!serial) {
     prevMachineSerial = null;
     return;
   }
 
-  if (machineSerial !== prevMachineSerial) {
+  if (serial !== prevMachineSerial) {
     log('message - machineSerial');
-    sendBackgroundMessage({
-      type: 'machineSerial',
-      serial: machineSerial,
-    }, () => {
-      log('machineSerial - success');
-      checkLastRuntimeError();
-    });
-    prevMachineSerial = machineSerial;
+    postToExtension('machineSerial', { serial });
+    prevMachineSerial = serial;
   }
-}
 
-/**
- * Checks if the lid image has changed and if so, informs the app.
- *
- * Always check when the page loads, then only check when the image bed is
- * invalidated.
- */
-let prevPreloadedLidImage = null;
-let lidImageFirstLoad = true;
-function checkLidImage(preloadedLidImage, isInvalidated) {
-  if (!lidImageFirstLoad && !isInvalidated) {
-    prevPreloadedLidImage = null;
-    return;
-  }
-  if (!preloadedLidImage) {
-    prevPreloadedLidImage = null;
+  // Older versions of the GFUI called this `preloadedLidImage`.
+  const lidImage = state.getIn(['machines', 'machineMap', serial, 'lidImage'])
+    || state.getIn(['machines', 'machineMap', serial, 'preloadedLidImage']);
+  if (typeof lidImage !== 'string') {
     return;
   }
 
-  if (preloadedLidImage !== prevPreloadedLidImage) {
+  // The signed query string changes whenever the URL is refreshed, the path
+  // only changes with the image.
+  const lidImagePath = lidImage.split('?')[0];
+  if (lidImagePath !== prevLidImagePath) {
     log('message - lidImage');
-    sendBackgroundMessage({
-      type: 'lidImage',
-      image: preloadedLidImage,
-    }, () => {
-      log('lidImage - success');
-      checkLastRuntimeError();
-    });
-    prevPreloadedLidImage = preloadedLidImage;
-    lidImageFirstLoad = false;
+    postToExtension('lidImage', { image: lidImage });
+    prevLidImagePath = lidImagePath;
   }
 }
 
 /**
- * checks is the loaded designs have changed and if so informs the app.
+ * Informs the extension when the open design changes, so that the trace can be
+ * downloaded.
  */
-let prevLoadedDesignIds = [];
-function checkLoadedDesignIds(loadedDesignIds) {
-  if (!loadedDesignIds || loadedDesignIds.length === 0) {
-    prevLoadedDesignIds = [];
-    return;
-  }
-
-  let diff = false;
-  if (loadedDesignIds.length === prevLoadedDesignIds.length) {
-    for (let i = 0; i < loadedDesignIds.length; i += 1) {
-      if (loadedDesignIds[i] !== prevLoadedDesignIds[i]) {
-        diff = true;
-        break;
-      }
-    }
-  } else {
-    diff = true;
-  }
-
-  if (diff) {
-    log('message - loadedDesignIds');
-    sendBackgroundMessage({
-      type: 'loadedDesignIds',
-      designIds: loadedDesignIds,
-    }, () => {
-      log('loadedDesignIds - success');
-      checkLastRuntimeError();
-    });
-    prevLoadedDesignIds = Array.from(loadedDesignIds);
+let prevDesignId;
+function checkDesignId() {
+  const match = window.location.pathname.match(/^\/designs\/([^/]+)/);
+  const designId = match ? match[1] : null;
+  if (designId !== prevDesignId) {
+    log('message - designId');
+    postToExtension('designId', { designId });
+    prevDesignId = designId;
   }
 }
-
 
 function storeListener() {
   try {
-    const state = localWindow.store.getState().toJSON();
-
-    // Detect selected machine changes.
-    if (
-      state.machines
-      && state.machines.selectedMachineSerial
-    ) {
-      checkMachineSerial(state.machines.selectedMachineSerial);
-    }
-
-    // If there is at least on machine attempt to detect a QR code in the bed.
-    if (
-      state.machines
-      && state.machines.selectedMachineSerial
-      && Object.keys(state.machines.machineMap).length > 0
-    ) {
-      const { selectedMachineSerial } = state.machines;
-      const { preloadedLidImage, bedImage } = state.machines.machineMap[selectedMachineSerial];
-      checkLidImage(preloadedLidImage, bedImage.isInvalidated);
-    }
-
-    // Track the different loaded designs so that we can download the trace.
-    if (
-      state.workspace
-      && state.workspace.present
-    ) {
-      const present = state.workspace.present.toJSON();
-      if (present.loadedDesignIds.length > 0) {
-        checkLoadedDesignIds(present.loadedDesignIds);
-      }
-    }
+    const state = getStore().getState();
+    checkMaterials(state);
+    checkMachine(state);
+    checkDesignId();
   } catch (e) {
     // Don't send my errors to GlowForge.
     log(`store error: ${e}`);
@@ -296,6 +197,52 @@ function storeListener() {
 }
 
 /**
- * Subscribe to redux store changes.
+ * Handles a message from the extension.
+ *
+ * hello - bridge.js loaded, reply if the store is ready.
+ * materials - The custom materials, add them to the GFUI.
+ * selectMaterial - Select a material in the GFUI.
  */
-localWindow.store.subscribe(storeListener);
+window.addEventListener('message', (event) => {
+  const message = event.data;
+  if (
+    event.source !== window
+    || !message
+    || message.channel !== CHANNEL
+    || message.to !== 'page'
+  ) {
+    return;
+  }
+
+  extensionDevMode = message.devMode === true;
+  if (message.type === 'hello') {
+    if (getStore()) {
+      postToExtension('ready');
+    }
+  } else if (message.type === 'materials') {
+    materials = Array.isArray(message.materials) ? message.materials : [];
+    if (addMaterials(true)) {
+      postToExtension('materialsApplied');
+    }
+  } else if (message.type === 'selectMaterial') {
+    selectMaterial(message.materialId);
+  }
+});
+
+/**
+ * Wait for the GFUI to create its store, then subscribe to changes and ask the
+ * extension for the materials.
+ */
+const startedAt = Date.now();
+const storeTimer = setInterval(() => {
+  const store = getStore();
+  if (store) {
+    clearInterval(storeTimer);
+    store.subscribe(storeListener);
+    storeListener();
+    postToExtension('ready');
+  } else if (Date.now() - startedAt > STORE_TIMEOUT_MS) {
+    clearInterval(storeTimer);
+    log('Glowforge store not found');
+  }
+}, STORE_POLL_MS);
