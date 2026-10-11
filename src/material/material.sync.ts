@@ -15,7 +15,7 @@ import {
   hashMaterial,
   hashTitle,
 } from '../lib/utils';
-import { sha1 } from '../lib/crypto';
+import { materialIdForTitle } from './materialId';
 import type { PluginMaterial } from './materialPlugin';
 import { toFullMaterial } from './materialConversion';
 
@@ -124,9 +124,7 @@ export async function syncronizeMaterials(remove = false): Promise<boolean> {
       await removeMaterialTitle(title);
       await removeRawMaterial(title);
 
-      // Hash the title and take the first seven for the id.
-      const titleHash = await sha1(title);
-      const id = titleHash.substring(0, 7);
+      const id = await materialIdForTitle(title);
 
       // Replace
       const glowforgeMaterials = await getGlowforgeMaterials();

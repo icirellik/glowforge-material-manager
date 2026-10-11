@@ -42,6 +42,11 @@
   // page can be matched to the latest ones.
   let materialsVersion = 0;
 
+  // The material of the sticker in the last lid image read. A sticker selects
+  // its material when it appears, not again in every image after, so that it
+  // doesn't undo a material the user picks while it's on the bed.
+  let stickerMaterial = null;
+
   // Machine serials and design ids come from the page, so only accept values
   // that look like ids.
   const IDENTIFIER = /^[A-Za-z0-9_-]{1,64}$/;
@@ -90,8 +95,10 @@
 
   /**
    * Sends the custom materials to the page to be added to the GFUI.
+   *
+   * @param force Add every material again, not only new and changed ones.
    */
-  async function sendMaterials() {
+  async function sendMaterials(force = false) {
     const { materials = [] } = await chrome.storage.local.get('materials');
     log(`sending materials: total ${materials.length}`);
     materialsVersion += 1;
@@ -99,23 +106,33 @@
     postToPage('materials', {
       materials: materials.map(normalizeMaterial),
       version: materialsVersion,
+      force,
     });
   }
 
   /**
    * Marks this tab as synchronized once the page has the latest custom
-   * materials, and clears the request to synchronize every tab.
+   * materials.
    */
-  async function markSynchronized(version) {
-    if (version !== materialsVersion) {
+  function markSynchronized(version) {
+    if (version === materialsVersion) {
+      status.synchronized = true;
+    }
+  }
+
+  /**
+   * Selects the material of a sticker that has just appeared in the lid
+   * image.
+   */
+  async function checkLidImage(image) {
+    const check = await sendToBackground('lidImage', { image });
+    // Images that weren't read, like with QR auto-select off, change nothing.
+    if (!check || !check.read || check.materialId === stickerMaterial) {
       return;
     }
-    status.synchronized = true;
-    const { shouldUpdate } = await chrome.storage.local.get('shouldUpdate');
-    if (shouldUpdate) {
-      await chrome.storage.local.set({
-        shouldUpdate: false,
-      });
+    stickerMaterial = check.materialId;
+    if (stickerMaterial) {
+      postToPage('selectMaterial', { materialId: stickerMaterial });
     }
   }
 
@@ -133,16 +150,13 @@
       status.ready = true;
       await sendMaterials();
     } else if (message.type === 'materialsApplied') {
-      await markSynchronized(message.version);
+      markSynchronized(message.version);
     } else if (message.type === 'machineSerial') {
       status.serial = asIdentifier(message.serial);
     } else if (message.type === 'designId') {
       status.designId = asIdentifier(message.designId);
     } else if (message.type === 'lidImage') {
-      const materialId = await sendToBackground('lidImage', { image: message.image });
-      if (materialId) {
-        postToPage('selectMaterial', { materialId });
-      }
+      await checkLidImage(message.image);
     }
   }
 
@@ -161,14 +175,16 @@
   });
 
   /**
-   * Send the materials again whenever they change or a synchronization is
-   * forced.
+   * Send the materials again whenever they change, and all of them when a
+   * synchronization is requested.
    */
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (!isCurrent() || areaName !== 'local') {
       return;
     }
-    if (changes.materials || (changes.shouldUpdate && changes.shouldUpdate.newValue)) {
+    if (changes.syncRequestedAt) {
+      sendMaterials(true).catch(error => log(error));
+    } else if (changes.materials) {
       sendMaterials().catch(error => log(error));
     }
   });

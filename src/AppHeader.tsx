@@ -1,13 +1,14 @@
 import React from 'react';
 import { SyncStatus } from './SyncStatus';
 import logo from './logo.svg';
-import type { ForceSyncronize } from './App';
+import type { Connection, ForceSyncronize, Reconnect } from './App';
 import './AppHeader.css';
 
 interface AppHeaderProps {
   cloudStorageBytesUsed: number;
-  connected: boolean;
+  connection: Connection;
   forceSyncronize: ForceSyncronize;
+  reconnect: Reconnect;
   serial: string | null;
   synchronized: boolean;
 }
@@ -15,8 +16,9 @@ interface AppHeaderProps {
 export function AppHeader(props: AppHeaderProps) {
   const {
     cloudStorageBytesUsed,
-    connected,
+    connection,
     forceSyncronize,
+    reconnect,
     serial,
     synchronized,
   } = props;
@@ -29,8 +31,9 @@ export function AppHeader(props: AppHeaderProps) {
           {serial ? ` - ${serial}` : undefined}
         </h1>
         <SyncStatus
-          connected={connected}
+          connection={connection}
           forceSync={forceSyncronize}
+          reconnect={reconnect}
           synchronized={synchronized}
         />
       </div>

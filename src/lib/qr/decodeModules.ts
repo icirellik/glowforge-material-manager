@@ -13,6 +13,21 @@ import type { Modules } from './spec';
  * the codewords, error correction and the data segments.
  */
 
+export interface DecodedQrCode {
+  text: string;
+  version: number;
+  // The code was read from behind, or in a reflection.
+  mirrored: boolean;
+  // Codes that are one part of a longer message say which part they are.
+  structuredAppend?: {
+    // From 0.
+    index: number;
+    total: number;
+    // The XOR of every byte of the whole message.
+    parity: number;
+  };
+}
+
 // Both codes can correct three wrong bits.
 const MAX_INFO_ERRORS = 3;
 
@@ -101,7 +116,7 @@ function readCodewords({ size, data }: Modules, version: number, mask: number): 
  */
 function correctCodewords(codewords: Uint8Array, version: number, level: number): Uint8Array | null {
   const {
-    ecPerBlock, blockCount, dataTotal, shortData, shortBlocks,
+    ecPerBlock, blockCount, dataTotal, shortData, shortBlocks, maxErrors,
   } = blockLayout(version, level);
   const blocks = Array.from(
     { length: blockCount },
@@ -127,7 +142,7 @@ function correctCodewords(codewords: Uint8Array, version: number, level: number)
   const result = new Uint8Array(dataTotal);
   let offset = 0;
   for (const block of blocks) {
-    if (!correctErrors(block, ecPerBlock)) {
+    if (!correctErrors(block, ecPerBlock, maxErrors)) {
       return null;
     }
     result.set(block.subarray(0, block.length - ecPerBlock), offset);
@@ -154,7 +169,9 @@ function bitReader(bytes: Uint8Array) {
 // The character sets that ECI designators select, by the names TextDecoder
 // knows them by.
 const ECI_CHARSETS: Record<number, string> = {
+  0: 'cp437',
   1: 'iso-8859-1',
+  2: 'cp437',
   3: 'iso-8859-1',
   4: 'iso-8859-2',
   5: 'iso-8859-3',
@@ -183,23 +200,33 @@ const ECI_CHARSETS: Record<number, string> = {
   30: 'euc-kr',
 };
 
+// The upper half of code page 437, the character set of ECI 0 and 2.
+const CP437 = 'ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■\u00a0';
+
 /**
  * Turns bytes into text. Without an ECI, most encoders, including ours, write
  * UTF-8, so that's tried before the standard's default of ISO-8859-1.
  */
 function decodeBytes(bytes: number[], charset: string | null): string {
-  const array = Uint8Array.from(bytes);
+  // TextDecoder treats ISO-8859-1 as windows-1252, which differs from 0x80 to
+  // 0x9F, and doesn't know code page 437.
+  if (charset === 'iso-8859-1') {
+    return bytes.map((byte) => String.fromCharCode(byte)).join('');
+  }
+  if (charset === 'cp437') {
+    return bytes.map((byte) => (byte < 0x80 ? String.fromCharCode(byte) : CP437[byte - 0x80])).join('');
+  }
   if (charset) {
     try {
-      return new TextDecoder(charset).decode(array);
+      return new TextDecoder(charset).decode(Uint8Array.from(bytes));
     } catch {
       // The browser doesn't know this character set.
     }
   }
   try {
-    return new TextDecoder('utf-8', { fatal: true }).decode(array);
+    return new TextDecoder('utf-8', { fatal: true }).decode(Uint8Array.from(bytes));
   } catch {
-    return new TextDecoder('iso-8859-1').decode(array);
+    return decodeBytes(bytes, 'iso-8859-1');
   }
 }
 
@@ -229,8 +256,11 @@ function readEci(reader: ReturnType<typeof bitReader>): number | null {
  *
  * @returns The text, or null if the data is malformed.
  */
-function readSegments(bytes: Uint8Array, version: number): string | null {
+function readSegments(bytes: Uint8Array, version: number): Pick<DecodedQrCode, 'text' | 'structuredAppend'> | null {
   const reader = bitReader(bytes);
+  let structuredAppend: DecodedQrCode['structuredAppend'];
+  // In GS1 and other FNC1 data, % in alphanumeric segments separates fields.
+  let fnc1 = false;
 
   let text = '';
   let charset: string | null = null;
@@ -259,18 +289,22 @@ function readSegments(bytes: Uint8Array, version: number): string | null {
       }
       charset = ECI_CHARSETS[designator] || null;
     } else if (mode === STRUCTURED_APPEND) {
-      // The position in the sequence and parity, the parts are read alone.
       if (reader.available() < 16) {
         return null;
       }
-      reader.read(16);
+      const index = reader.read(4);
+      const total = reader.read(4) + 1;
+      structuredAppend = { index, total, parity: reader.read(8) };
+    } else if (mode === FNC1_FIRST) {
+      fnc1 = true;
     } else if (mode === FNC1_SECOND) {
-      // The application indicator.
+      // The application indicator, which isn't part of the text.
       if (reader.available() < 8) {
         return null;
       }
       reader.read(8);
-    } else if (mode !== FNC1_FIRST) {
+      fnc1 = true;
+    } else {
       const bits = countBits(mode, version);
       if (!bits || reader.available() < bits) {
         return null;
@@ -300,6 +334,7 @@ function readSegments(bytes: Uint8Array, version: number): string | null {
           }
         } else if (mode === ALPHANUMERIC) {
           // Two characters in 11 bits, and the last one in 6.
+          let segment = '';
           for (let remaining = count; remaining > 0; remaining -= 2) {
             const pair = remaining >= 2;
             if (reader.available() < (pair ? 11 : 6)) {
@@ -309,10 +344,12 @@ function readSegments(bytes: Uint8Array, version: number): string | null {
             if (value >= (pair ? 45 * 45 : 45)) {
               return null;
             }
-            text += pair
+            segment += pair
               ? ALPHANUMERIC_CHARACTERS[Math.floor(value / 45)] + ALPHANUMERIC_CHARACTERS[value % 45]
               : ALPHANUMERIC_CHARACTERS[value];
           }
+          // A single % is the field separator, GS, and %% is a %.
+          text += fnc1 ? segment.replace(/%%|%/g, (match) => (match === '%%' ? '%' : '\x1d')) : segment;
         } else {
           // Kanji are Shift JIS characters, compacted into 13 bits.
           if (reader.available() < count * 13) {
@@ -331,10 +368,10 @@ function readSegments(bytes: Uint8Array, version: number): string | null {
     }
   }
   flush();
-  return text;
+  return { text, structuredAppend };
 }
 
-function decode(modules: Modules, version: number): string | null {
+function decode(modules: Modules, version: number): Pick<DecodedQrCode, 'text' | 'structuredAppend'> | null {
   const format = readFormat(modules);
   if (!format) {
     return null;
@@ -361,13 +398,17 @@ function transpose({ size, data }: Modules): Modules {
  * Decodes a QR code's modules into its text. Mirrored codes, seen from behind
  * or in a reflection, are read too.
  *
- * @returns The text, or null if the modules aren't a readable QR code.
+ * @returns The decoded code, or null if the modules aren't a readable QR code.
  */
-export function decodeModules(modules: Modules): string | null {
+export function decodeModules(modules: Modules): DecodedQrCode | null {
   const version = (modules.size - 17) / 4;
   if (!Number.isInteger(version) || version < 1 || version > 40) {
     return null;
   }
-  const text = decode(modules, version);
-  return text !== null ? text : decode(transpose(modules), version);
+  const decoded = decode(modules, version);
+  if (decoded) {
+    return { ...decoded, version, mirrored: false };
+  }
+  const mirrored = decode(transpose(modules), version);
+  return mirrored && { ...mirrored, version, mirrored: true };
 }

@@ -281,7 +281,7 @@ const expected = {
       vectors: [],
     },
   ],
-  shouldUpdate: true,
+  shouldUpdate: false,
   tempMaterial: null,
   ui: {
     loadedDesignId: 'MJ5yk3K1',

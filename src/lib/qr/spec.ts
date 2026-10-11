@@ -215,6 +215,17 @@ export function dataModuleOrder(version: number): Int32Array {
   return result;
 }
 
+// The smallest codes keep some error correction codewords back to detect
+// wrong corrections, rather than to make them, by level and version.
+const MISDECODE_PROTECTION: Record<string, number> = {
+  [`${L}-1`]: 3,
+  [`${M}-1`]: 2,
+  [`${Q}-1`]: 1,
+  [`${H}-1`]: 1,
+  [`${L}-2`]: 2,
+  [`${L}-3`]: 1,
+};
+
 /**
  * How a version and level split the codewords into error correction blocks.
  * When the data doesn't divide evenly, the last blocks have one more data
@@ -232,6 +243,8 @@ export function blockLayout(version: number, level: number) {
     dataTotal,
     shortData: Math.floor(dataTotal / blockCount),
     shortBlocks: blockCount - (dataTotal % blockCount),
+    // The most wrong codewords each block may correct.
+    maxErrors: Math.floor((ecPerBlock - (MISDECODE_PROTECTION[`${level}-${version}`] || 0)) / 2),
   };
 }
 
