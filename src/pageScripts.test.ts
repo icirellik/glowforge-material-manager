@@ -19,9 +19,13 @@ class FakeMap {
     this.entries = new Map(entries);
   }
 
-  get(key: string) { return this.entries.get(key); }
+  get(key: string) {
+    return this.entries.get(key);
+  }
 
-  has(key: string) { return this.entries.has(key); }
+  has(key: string) {
+    return this.entries.has(key);
+  }
 
   set(key: string, value: unknown) {
     const copy = new FakeMap([...this.entries]);
@@ -30,11 +34,16 @@ class FakeMap {
   }
 
   map(update: (value: any, key: string) => unknown) {
-    return new FakeMap([...this.entries].map(([key, value]) => [key, update(value, key)]));
+    return new FakeMap(
+      [...this.entries].map(([key, value]) => [key, update(value, key)]),
+    );
   }
 
   getIn(keys: string[]): unknown {
-    return keys.reduce((value: any, key) => (value && value.get ? value.get(key) : undefined), this);
+    return keys.reduce(
+      (value: any, key) => (value && value.get ? value.get(key) : undefined),
+      this,
+    );
   }
 }
 
@@ -47,12 +56,20 @@ function fakeGlowforge() {
   const dispatched: any[] = [];
   const listeners: (() => void)[] = [];
   const dropped = new Set<string>();
-  const catalog = () => new FakeMap([['Glowforge:1', new FakeMap([['id', 'Glowforge:1']])]]);
+  const catalog = () =>
+    new FakeMap([['Glowforge:1', new FakeMap([['id', 'Glowforge:1']])]]);
   let materialList = catalog();
-  let machines = new FakeMap([['selectedMachineSerial', 'SN-1'], ['machineMap', new FakeMap([['SN-1', new FakeMap()]])]]);
+  let machines = new FakeMap([
+    ['selectedMachineSerial', 'SN-1'],
+    ['machineMap', new FakeMap([['SN-1', new FakeMap()]])],
+  ]);
   const notify = () => listeners.forEach((listener) => listener());
   const store = {
-    getState: () => new FakeMap([['materials', new FakeMap([['materialList', materialList]])], ['machines', machines]]),
+    getState: () =>
+      new FakeMap([
+        ['materials', new FakeMap([['materialList', materialList]])],
+        ['machines', machines],
+      ]),
     subscribe: (listener: () => void) => {
       listeners.push(listener);
       return () => listeners.splice(listeners.indexOf(listener), 1);
@@ -63,20 +80,29 @@ function fakeGlowforge() {
         materialList = new FakeMap([...materialList.entries]);
         for (const material of action.materials) {
           if (!dropped.has(material.id)) {
-            materialList = materialList.set(material.id, new FakeMap(Object.entries(material)));
+            materialList = materialList.set(
+              material.id,
+              new FakeMap(Object.entries(material)),
+            );
           }
         }
       } else if (action.type === 'SET_MATERIAL') {
-        materialList = materialList.map((material, id) => material.set('selected', id === action.id));
+        materialList = materialList.map((material, id) =>
+          material.set('selected', id === action.id),
+        );
       }
       notify();
     },
   };
   return {
     store,
-    dispatched: (type: string) => dispatched.filter((action) => action.type === type),
+    dispatched: (type: string) =>
+      dispatched.filter((action) => action.type === type),
     ids: () => [...materialList.entries.keys()],
-    selected: () => [...materialList.entries].filter(([, material]: any) => material.get('selected')).map(([id]) => id),
+    selected: () =>
+      [...materialList.entries]
+        .filter(([, material]: any) => material.get('selected'))
+        .map(([id]) => id),
     drop: (id: string) => dropped.add(id),
     // Glowforge reloads its catalog, which removes the custom materials.
     refreshCatalog: () => {
@@ -84,7 +110,13 @@ function fakeGlowforge() {
       notify();
     },
     setLidImage: (url: string) => {
-      machines = new FakeMap([['selectedMachineSerial', 'SN-1'], ['machineMap', new FakeMap([['SN-1', new FakeMap([['lidImage', url]])]])]]);
+      machines = new FakeMap([
+        ['selectedMachineSerial', 'SN-1'],
+        [
+          'machineMap',
+          new FakeMap([['SN-1', new FakeMap([['lidImage', url]])]]),
+        ],
+      ]);
       notify();
     },
   };
@@ -96,34 +128,50 @@ function fakeGlowforge() {
  */
 function fakeExtension(items: Record<string, unknown>) {
   const changeListeners: ((changes: any, area: string) => void)[] = [];
-  const messageListeners: ((request: any, sender: any, respond: (response: unknown) => void) => boolean)[] = [];
+  const messageListeners: ((
+    request: any,
+    sender: any,
+    respond: (response: unknown) => void,
+  ) => boolean)[] = [];
   const lidImageReplies: unknown[] = [];
   const chrome = {
     runtime: {
       getManifest: () => ({ update_url: 'https://example.com' }),
-      sendMessage: async (message: any) => (message.type === 'lidImage' ? lidImageReplies.shift() : undefined),
-      onMessage: { addListener: (listener: any) => messageListeners.push(listener) },
+      sendMessage: async (message: any) =>
+        message.type === 'lidImage' ? lidImageReplies.shift() : undefined,
+      onMessage: {
+        addListener: (listener: any) => messageListeners.push(listener),
+      },
     },
     storage: {
       local: {
         get: async (key: string) => ({ [key]: items[key] }),
         set: async (values: Record<string, unknown>) => {
-          const changes = Object.fromEntries(Object.entries(values).map(([key, value]) => [key, { oldValue: items[key], newValue: value }]));
+          const changes = Object.fromEntries(
+            Object.entries(values).map(([key, value]) => [
+              key,
+              { oldValue: items[key], newValue: value },
+            ]),
+          );
           Object.assign(items, values);
           changeListeners.forEach((listener) => listener(changes, 'local'));
         },
       },
-      onChanged: { addListener: (listener: any) => changeListeners.push(listener) },
+      onChanged: {
+        addListener: (listener: any) => changeListeners.push(listener),
+      },
     },
   };
   return {
     chrome,
     replyToLidImage: (reply: unknown) => lidImageReplies.push(reply),
     // A message from the popup, to whichever copy of the bridge answers.
-    fromPopup: (request: any) => new Promise((resolve) => {
-      for (const listener of messageListeners) listener({ target: 'bridge', ...request }, {}, resolve);
-      setTimeout(() => resolve(undefined), 0);
-    }),
+    fromPopup: (request: any) =>
+      new Promise((resolve) => {
+        for (const listener of messageListeners)
+          listener({ target: 'bridge', ...request }, {}, resolve);
+        setTimeout(() => resolve(undefined), 0);
+      }),
   };
 }
 
@@ -132,9 +180,15 @@ const MATERIALS = [
   { id: 'Custom:bbbbbbb', title: 'Thick Walnut', nominal_thickness: 0.25 },
 ];
 
-const settle = () => new Promise((resolve) => { setTimeout(resolve, 20); });
+const settle = () =>
+  new Promise((resolve) => {
+    setTimeout(resolve, 20);
+  });
 // content.js looks for the store every 250 ms.
-const findStore = () => new Promise((resolve) => { setTimeout(resolve, 300); });
+const findStore = () =>
+  new Promise((resolve) => {
+    setTimeout(resolve, 300);
+  });
 
 describe('page scripts', () => {
   let page: ReturnType<typeof fakeGlowforge>;
@@ -144,10 +198,18 @@ describe('page scripts', () => {
   beforeEach(async () => {
     // jsdom leaves out the message's source, which the scripts check.
     window.postMessage = (data: unknown) => {
-      setTimeout(() => window.dispatchEvent(new MessageEvent('message', { data, source: window as any })), 0);
+      setTimeout(
+        () =>
+          window.dispatchEvent(
+            new MessageEvent('message', { data, source: window as any }),
+          ),
+        0,
+      );
     };
     page = fakeGlowforge();
-    extension = fakeExtension({ materials: MATERIALS.map((material) => ({ ...material })) });
+    extension = fakeExtension({
+      materials: MATERIALS.map((material) => ({ ...material })),
+    });
     vi.stubGlobal('chrome', extension.chrome);
     (window as any).store = page.store;
     run(BRIDGE);
@@ -166,7 +228,10 @@ describe('page scripts', () => {
   it('adds the materials and reports the tab synchronized', async () => {
     expect(page.dispatched('ADD_MATERIALS')).toHaveLength(1);
     expect(await extension.fromPopup({ type: 'status' })).toEqual({
-      ready: true, synchronized: true, serial: 'SN-1', designId: null,
+      ready: true,
+      synchronized: true,
+      serial: 'SN-1',
+      designId: null,
     });
   });
 
@@ -177,7 +242,9 @@ describe('page scripts', () => {
     await settle();
     const adds = page.dispatched('ADD_MATERIALS');
     expect(adds).toHaveLength(2);
-    expect(adds[1].materials.map((material: any) => material.id)).toEqual(['Custom:bbbbbbb']);
+    expect(adds[1].materials.map((material: any) => material.id)).toEqual([
+      'Custom:bbbbbbb',
+    ]);
   });
 
   it('adds every material on each sync request, even repeated ones', async () => {
@@ -192,24 +259,34 @@ describe('page scripts', () => {
 
   it('keeps a selected material selected when it changes', async () => {
     page.store.dispatch({ type: 'SET_MATERIAL', id: 'Custom:aaaaaaa' });
-    await extension.chrome.storage.local.set({ materials: [{ ...MATERIALS[0], title: 'Thin Birch v2' }, MATERIALS[1]] });
+    await extension.chrome.storage.local.set({
+      materials: [{ ...MATERIALS[0], title: 'Thin Birch v2' }, MATERIALS[1]],
+    });
     await settle();
     expect(page.selected()).toEqual(['Custom:aaaaaaa']);
   });
 
-  it('doesn\'t select a material that is already selected', async () => {
-    await extension.fromPopup({ type: 'selectMaterial', materialId: 'Custom:aaaaaaa' });
+  it("doesn't select a material that is already selected", async () => {
+    await extension.fromPopup({
+      type: 'selectMaterial',
+      materialId: 'Custom:aaaaaaa',
+    });
     await settle();
-    await extension.fromPopup({ type: 'selectMaterial', materialId: 'Custom:aaaaaaa' });
+    await extension.fromPopup({
+      type: 'selectMaterial',
+      materialId: 'Custom:aaaaaaa',
+    });
     await settle();
     expect(page.dispatched('SET_MATERIAL')).toHaveLength(1);
     expect(page.selected()).toEqual(['Custom:aaaaaaa']);
   });
 
-  it('selects a sticker\'s material when it appears, not in every image after', async () => {
+  it("selects a sticker's material when it appears, not in every image after", async () => {
     const lidImage = async (index: number, reply: unknown) => {
       extension.replyToLidImage(reply);
-      page.setLidImage(`https://storage.googleapis.com/gf-app-imgl/${index}.jpg?sig=${index}`);
+      page.setLidImage(
+        `https://storage.googleapis.com/gf-app-imgl/${index}.jpg?sig=${index}`,
+      );
       await settle();
     };
     await lidImage(1, { read: true, materialId: 'Custom:aaaaaaa' });
@@ -228,37 +305,61 @@ describe('page scripts', () => {
     expect(page.selected()).toEqual(['Custom:aaaaaaa']);
   });
 
-  it('reports a tab that doesn\'t have the latest materials', async () => {
+  it("reports a tab that doesn't have the latest materials", async () => {
     // A page that ignores new materials.
     const { dispatch } = page.store;
-    page.store.dispatch = (action: any) => (action.type === 'ADD_MATERIALS' ? undefined : dispatch(action));
-    await extension.chrome.storage.local.set({ materials: [...MATERIALS, { id: 'Custom:ccccccc', title: 'Cherry' }] });
+    page.store.dispatch = (action: any) =>
+      action.type === 'ADD_MATERIALS' ? undefined : dispatch(action);
+    await extension.chrome.storage.local.set({
+      materials: [...MATERIALS, { id: 'Custom:ccccccc', title: 'Cherry' }],
+    });
     await settle();
-    expect(await extension.fromPopup({ type: 'status' })).toMatchObject({ synchronized: false });
+    expect(await extension.fromPopup({ type: 'status' })).toMatchObject({
+      synchronized: false,
+    });
   });
 
   it('adds the materials back after a catalog refresh', async () => {
     page.refreshCatalog();
     await settle();
-    expect(page.ids()).toEqual(['Glowforge:1', 'Custom:aaaaaaa', 'Custom:bbbbbbb']);
-    expect(await extension.fromPopup({ type: 'status' })).toMatchObject({ synchronized: true });
+    expect(page.ids()).toEqual([
+      'Glowforge:1',
+      'Custom:aaaaaaa',
+      'Custom:bbbbbbb',
+    ]);
+    expect(await extension.fromPopup({ type: 'status' })).toMatchObject({
+      synchronized: true,
+    });
   });
 
   it('stops adding a material that the page drops until new materials arrive', async () => {
     page.drop('Custom:ccccccc');
-    const addsOfDropped = () => page.dispatched('ADD_MATERIALS')
-      .filter((action: any) => action.materials.some((material: any) => material.id === 'Custom:ccccccc'))
-      .length;
+    const addsOfDropped = () =>
+      page
+        .dispatched('ADD_MATERIALS')
+        .filter((action: any) =>
+          action.materials.some(
+            (material: any) => material.id === 'Custom:ccccccc',
+          ),
+        ).length;
 
-    await extension.chrome.storage.local.set({ materials: [...MATERIALS, { id: 'Custom:ccccccc', title: 'Cherry' }] });
+    await extension.chrome.storage.local.set({
+      materials: [...MATERIALS, { id: 'Custom:ccccccc', title: 'Cherry' }],
+    });
     await settle();
     expect(addsOfDropped()).toEqual(1);
-    expect(await extension.fromPopup({ type: 'status' })).toMatchObject({ synchronized: false });
+    expect(await extension.fromPopup({ type: 'status' })).toMatchObject({
+      synchronized: false,
+    });
 
     // A catalog refresh still brings back the others, and tries it once more.
     page.refreshCatalog();
     await settle();
-    expect(page.ids()).toEqual(['Glowforge:1', 'Custom:aaaaaaa', 'Custom:bbbbbbb']);
+    expect(page.ids()).toEqual([
+      'Glowforge:1',
+      'Custom:aaaaaaa',
+      'Custom:bbbbbbb',
+    ]);
     expect(addsOfDropped()).toEqual(2);
 
     // So do new materials.
@@ -273,7 +374,9 @@ describe('page scripts', () => {
     await findStore();
     await settle();
     const before = page.dispatched('ADD_MATERIALS').length;
-    await extension.chrome.storage.local.set({ materials: [{ ...MATERIALS[0], title: 'Thin Birch v3' }, MATERIALS[1]] });
+    await extension.chrome.storage.local.set({
+      materials: [{ ...MATERIALS[0], title: 'Thin Birch v3' }, MATERIALS[1]],
+    });
     await settle();
     expect(page.dispatched('ADD_MATERIALS').length - before).toEqual(1);
   });
@@ -287,7 +390,10 @@ describe('page scripts', () => {
     const errors: unknown[] = [];
     const onError = (event: ErrorEvent) => errors.push(event.error);
     window.addEventListener('error', onError);
-    await extension.fromPopup({ type: 'selectMaterial', materialId: 'Custom:bbbbbbb' });
+    await extension.fromPopup({
+      type: 'selectMaterial',
+      materialId: 'Custom:bbbbbbb',
+    });
     await settle();
     window.removeEventListener('error', onError);
     expect(errors).toEqual([]);

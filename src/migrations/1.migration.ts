@@ -17,9 +17,11 @@ export default async function migrate(): Promise<boolean> {
   const localStorage = await getLocalStorage();
 
   const _materials = localStorage.materials!.map((material: GFMaterial) => {
-    if (!material.hasOwnProperty('nominal_thickness')
-        || material.nominal_thickness === null
-        || material.nominal_thickness === parseFloat((material.nominal_thickness as any))
+    if (
+      !material.hasOwnProperty('nominal_thickness') ||
+      material.nominal_thickness === null ||
+      material.nominal_thickness ===
+        parseFloat(material.nominal_thickness as any)
     ) {
       return material;
     }
@@ -30,22 +32,25 @@ export default async function migrate(): Promise<boolean> {
     };
   });
 
-  const _rawMaterials = localStorage.rawMaterials!.map((rawMaterial: PluginMaterial) => {
-    if (!rawMaterial.hasOwnProperty('thickness')
-        || rawMaterial.thickness === null
-        || rawMaterial.thickness === parseFloat(rawMaterial.thickness)
-    ) {
-      return rawMaterial;
-    }
-    upgraded = true;
-    return {
-      ...rawMaterial,
-      thickness: asFloat(rawMaterial.thickness),
-    };
-  });
+  const _rawMaterials = localStorage.rawMaterials!.map(
+    (rawMaterial: PluginMaterial) => {
+      if (
+        !rawMaterial.hasOwnProperty('thickness') ||
+        rawMaterial.thickness === null ||
+        rawMaterial.thickness === parseFloat(rawMaterial.thickness)
+      ) {
+        return rawMaterial;
+      }
+      upgraded = true;
+      return {
+        ...rawMaterial,
+        thickness: asFloat(rawMaterial.thickness),
+      };
+    },
+  );
 
   if (upgraded) {
-    console.log('migration \'#1\' applied');
+    console.log("migration '#1' applied");
     await storeGlowforgeMaterials(_materials);
     await storeRawMaterials(_rawMaterials);
 

@@ -58,13 +58,16 @@
    * Sends a message to content.js.
    */
   function postToPage(type, data = {}) {
-    window.postMessage({
-      channel: CHANNEL,
-      to: 'page',
-      type,
-      devMode: DEV_MODE,
-      ...data,
-    }, window.location.origin);
+    window.postMessage(
+      {
+        channel: CHANNEL,
+        to: 'page',
+        type,
+        devMode: DEV_MODE,
+        ...data,
+      },
+      window.location.origin,
+    );
   }
 
   /**
@@ -163,15 +166,15 @@
   window.addEventListener('message', (event) => {
     const message = event.data;
     if (
-      !isCurrent()
-      || event.source !== window
-      || !message
-      || message.channel !== CHANNEL
-      || message.to !== 'extension'
+      !isCurrent() ||
+      event.source !== window ||
+      !message ||
+      message.channel !== CHANNEL ||
+      message.to !== 'extension'
     ) {
       return;
     }
-    handlePageMessage(message).catch(error => log(error));
+    handlePageMessage(message).catch((error) => log(error));
   });
 
   /**
@@ -183,9 +186,9 @@
       return;
     }
     if (changes.syncRequestedAt) {
-      sendMaterials(true).catch(error => log(error));
+      sendMaterials(true).catch((error) => log(error));
     } else if (changes.materials) {
-      sendMaterials().catch(error => log(error));
+      sendMaterials().catch((error) => log(error));
     }
   });
 

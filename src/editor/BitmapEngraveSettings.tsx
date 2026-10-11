@@ -6,21 +6,25 @@ import type { PluginBitmapEngraveSetting } from '../material/materialPlugin';
 // Bitmap Methods
 export type AddBitmapEngrave = () => void;
 export type RemoveBitmapEngrave = (index: number) => void;
-export type UpdateBitmapEngrave =
-  <K extends keyof PluginBitmapEngraveSetting>(index: number,
-    prop: K, value: PluginBitmapEngraveSetting[K]) => void;
+export type UpdateBitmapEngrave = <K extends keyof PluginBitmapEngraveSetting>(
+  index: number,
+  prop: K,
+  value: PluginBitmapEngraveSetting[K],
+) => void;
 
 type BitmapEngraveSettingsProps = {
   addBitmapEngrave: AddBitmapEngrave;
   bitmaps: PluginBitmapEngraveSetting[];
-  propValidation?: {[key: string]: boolean | null};
+  propValidation?: { [key: string]: boolean | null };
   removeBitmapEngrave: RemoveBitmapEngrave;
   saveTemporaryState: () => void;
   updateBitmapEngrave: UpdateBitmapEngrave;
   validationHandler: (id: string, isValid: boolean | null) => void;
-}
+};
 
-export default function BitmapEngraveSettings(props: BitmapEngraveSettingsProps) {
+export default function BitmapEngraveSettings(
+  props: BitmapEngraveSettingsProps,
+) {
   const {
     addBitmapEngrave,
     bitmaps,
@@ -45,20 +49,18 @@ export default function BitmapEngraveSettings(props: BitmapEngraveSettingsProps)
           />
         </div>
       </div>
-      {
-        bitmaps.map((bitmap, index) => (
-          <BitmapEngraveSetting
-            bitmap={bitmap}
-            index={index}
-            key={bitmap.name}
-            propValidation={propValidation}
-            removeBitmapEngrave={removeBitmapEngrave}
-            saveTemporaryState={saveTemporaryState}
-            updateBitmapEngrave={updateBitmapEngrave}
-            validationHandler={validationHandler}
-          />
-        ))
-      }
+      {bitmaps.map((bitmap, index) => (
+        <BitmapEngraveSetting
+          bitmap={bitmap}
+          index={index}
+          key={bitmap.name}
+          propValidation={propValidation}
+          removeBitmapEngrave={removeBitmapEngrave}
+          saveTemporaryState={saveTemporaryState}
+          updateBitmapEngrave={updateBitmapEngrave}
+          validationHandler={validationHandler}
+        />
+      ))}
     </>
   );
 }

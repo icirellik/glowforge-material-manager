@@ -1,6 +1,11 @@
 import React from 'react';
 import type {
-  Connection, ForceSyncronize, ModeAdd, ModeBackup, Reconnect, ToggleQrAutoSelect,
+  Connection,
+  ForceSyncronize,
+  ModeAdd,
+  ModeBackup,
+  Reconnect,
+  ToggleQrAutoSelect,
 } from './App';
 import './MaterialHome.css';
 
@@ -16,12 +21,24 @@ interface MaterialHomeProps {
 }
 
 export default function MaterialHome(props: MaterialHomeProps) {
-  const {
-    connection, qrAutoSelect, rawSvg, reconnect, toggleQrAutoSelect,
-  } = props;
-  let svg = (<span>Download Raw SVG/Trace (Open a design in Glowforge for the link)</span>);
+  const { connection, qrAutoSelect, rawSvg, reconnect, toggleQrAutoSelect } =
+    props;
+  let svg = (
+    <span>
+      Download Raw SVG/Trace (Open a design in Glowforge for the link)
+    </span>
+  );
   if (rawSvg) {
-    svg = (<a className="materialHome__menuItem" href={rawSvg} target="_blank" rel="noopener noreferrer">Download Raw SVG/Trace</a>);
+    svg = (
+      <a
+        className="materialHome__menuItem"
+        href={rawSvg}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Download Raw SVG/Trace
+      </a>
+    );
   }
 
   return (
@@ -45,19 +62,51 @@ export default function MaterialHome(props: MaterialHomeProps) {
         </p>
         <h3>Actions</h3>
         <ul>
-          <li className="materialHome__menuItem" onClick={() => { props.setEditorModeAdd(); }}>New Material</li>
-          <li>{svg}</li>
-          <li className="materialHome__menuItem" onClick={() => { props.setEditorModeBackup(); }}>Manage Backups</li>
-          <li className="materialHome__menuItem" onClick={() => { props.forceSyncronize(); }}>Force Synchronize with GFUI</li>
-          {connection === 'disconnected'
-            ? <li className="materialHome__menuItem" onClick={() => { reconnect(); }}>Reconnect to this Glowforge tab</li>
-            : null}
           <li
             className="materialHome__menuItem"
-            onClick={() => { toggleQrAutoSelect(); }}
+            onClick={() => {
+              props.setEditorModeAdd();
+            }}
+          >
+            New Material
+          </li>
+          <li>{svg}</li>
+          <li
+            className="materialHome__menuItem"
+            onClick={() => {
+              props.setEditorModeBackup();
+            }}
+          >
+            Manage Backups
+          </li>
+          <li
+            className="materialHome__menuItem"
+            onClick={() => {
+              props.forceSyncronize();
+            }}
+          >
+            Force Synchronize with GFUI
+          </li>
+          {connection === 'disconnected' ? (
+            <li
+              className="materialHome__menuItem"
+              onClick={() => {
+                reconnect();
+              }}
+            >
+              Reconnect to this Glowforge tab
+            </li>
+          ) : null}
+          <li
+            className="materialHome__menuItem"
+            onClick={() => {
+              toggleQrAutoSelect();
+            }}
             title="QR auto-select reads Glowforge's lid camera images, which needs access to them."
           >
-            {qrAutoSelect ? 'Turn off QR auto-select' : 'Turn on QR auto-select'}
+            {qrAutoSelect
+              ? 'Turn off QR auto-select'
+              : 'Turn on QR auto-select'}
           </li>
         </ul>
       </div>

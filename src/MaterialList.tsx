@@ -1,27 +1,23 @@
 import React from 'react';
 import MaterialListItem from './MaterialListItem';
 import type { PluginMaterial } from './material/materialPlugin';
-import type {
-  ModeAdd,
-  ModeSelect,
-  SetMaterial,
-} from './App';
+import type { ModeAdd, ModeSelect, SetMaterial } from './App';
 import type { TempMaterial } from './lib/materialHelpers';
 import { createEmptyMaterial } from './lib/materialHelpers';
 import './MaterialList.css';
 import { IconClear } from './icons/IconClear';
 
 type MaterialListProps = {
-  materials: PluginMaterial[]
+  materials: PluginMaterial[];
   selectMaterial: ModeSelect;
   setEditorModeAdd: ModeAdd;
   setMaterial: SetMaterial;
   tempMaterial: TempMaterial;
-}
+};
 
 type MaterialListState = {
   filter?: string;
-}
+};
 
 interface MaterialListCreateFromSearchProps {
   name?: string;
@@ -30,7 +26,9 @@ interface MaterialListCreateFromSearchProps {
 
 const SCROLL_BAR_APPEARS = 13;
 
-function MaterialListCreateFromSearch(props: MaterialListCreateFromSearchProps) {
+function MaterialListCreateFromSearch(
+  props: MaterialListCreateFromSearchProps,
+) {
   const { name } = props;
   return (
     <p
@@ -50,9 +48,7 @@ function MaterialListCreateFromSearch(props: MaterialListCreateFromSearchProps) 
         props.setEditorModeAdd(material);
       }}
     >
-      Create "
-      <span>{name}</span>
-      "
+      Create "<span>{name}</span>"
     </p>
   );
 }
@@ -63,7 +59,10 @@ function MaterialListNoElements() {
   );
 }
 
-export default class MaterialList extends React.Component<MaterialListProps, MaterialListState> {
+export default class MaterialList extends React.Component<
+  MaterialListProps,
+  MaterialListState
+> {
   constructor(props: MaterialListProps) {
     super(props);
 
@@ -103,28 +102,33 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
     } = this.props;
     const { filter } = this.state;
 
-    const filteredMaterialElements = materials.sort((mat1, mat2) => {
-      const mat1Title = `${mat1.thickName} ${mat1.name}`;
-      const mat2Title = `${mat2.thickName} ${mat2.name}`;
+    const filteredMaterialElements = materials
+      .sort((mat1, mat2) => {
+        const mat1Title = `${mat1.thickName} ${mat1.name}`;
+        const mat2Title = `${mat2.thickName} ${mat2.name}`;
 
-      if (mat1Title < mat2Title) {
-        return -1;
-      }
-      if (mat1Title > mat2Title) {
-        return 1;
-      }
-      return 0;
-    }).filter((material) => {
-      const title = `${material.thickName} ${material.name}`.toLowerCase();
-      return !filter || title.includes(filter.toLowerCase());
-    });
+        if (mat1Title < mat2Title) {
+          return -1;
+        }
+        if (mat1Title > mat2Title) {
+          return 1;
+        }
+        return 0;
+      })
+      .filter((material) => {
+        const title = `${material.thickName} ${material.name}`.toLowerCase();
+        return !filter || title.includes(filter.toLowerCase());
+      });
 
     const hasScrollbar = filteredMaterialElements.length > SCROLL_BAR_APPEARS;
     const materialElements = filteredMaterialElements.map((material) => (
       <MaterialListItem
         key={`${material.thickName} ${material.name}`}
         material={material}
-        selected={`${material.thickName} ${material.name}` === `${tempMaterial.thickName} ${tempMaterial.name}`}
+        selected={
+          `${material.thickName} ${material.name}` ===
+          `${tempMaterial.thickName} ${tempMaterial.name}`
+        }
         selectMaterial={selectMaterial}
         setMaterial={setMaterial}
         styles={!hasScrollbar ? { maxWidth: '159px' } : undefined}
@@ -132,10 +136,14 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
     ));
 
     let materialList: JSX.Element | null = null;
-    if (filter
-        && materials.map((material) => `${material.thickName} ${material.name}`.toLowerCase())
-          .indexOf(filter) === -1
-        && materialElements.length > 0
+    if (
+      filter &&
+      materials
+        .map((material) =>
+          `${material.thickName} ${material.name}`.toLowerCase(),
+        )
+        .indexOf(filter) === -1 &&
+      materialElements.length > 0
     ) {
       materialList = (
         <>
@@ -178,9 +186,7 @@ export default class MaterialList extends React.Component<MaterialListProps, Mat
         />
       );
     } else {
-      materialList = (
-        <MaterialListNoElements />
-      );
+      materialList = <MaterialListNoElements />;
     }
 
     return (

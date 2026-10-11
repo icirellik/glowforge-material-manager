@@ -1,7 +1,5 @@
 export { readQrCode, readQrCodeFromImage } from './readQrCode';
-export type {
-  ImageOptions, Pixels, Point, QrCodeResult,
-} from './readQrCode';
+export type { ImageOptions, Pixels, Point, QrCodeResult } from './readQrCode';
 export { encodeQrCode } from './encodeQrCode';
 export type { EncodeOptions, ErrorCorrectionLevel } from './encodeQrCode';
 export { qrCodeToSvg } from './qrCodeToSvg';

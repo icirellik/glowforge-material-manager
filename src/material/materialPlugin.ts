@@ -18,7 +18,7 @@ export type PluginCutSetting = {
   passes: number;
   power: number;
   speed: number;
-}
+};
 
 export type PluginScoreSetting = {
   focalOffset: number | null;
@@ -26,7 +26,7 @@ export type PluginScoreSetting = {
   passes: number;
   power: number;
   speed: number;
-}
+};
 
 export type PluginVectorEngraveSetting = {
   focalOffset: number | null;
@@ -35,7 +35,7 @@ export type PluginVectorEngraveSetting = {
   power: number;
   scanGap: number;
   speed: number;
-}
+};
 
 export type PluginBitmapEngraveSetting = {
   power: number;
@@ -49,4 +49,4 @@ export type PluginBitmapEngraveSetting = {
   minimumGrayPercent: null;
   maximumGrayPercent: null;
   horizontalTiming: null;
-}
+};

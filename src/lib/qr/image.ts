@@ -42,7 +42,11 @@ const MAX_DECODE_SIZE = 1000;
  * factor pixels, which is faster for large images and smooths out sensor
  * noise. Luminance is weighted 77:150:29, which adds up to 256.
  */
-export function averageLuminance({ data, width: imageWidth }: Pixels, area: Region, factor: number) {
+export function averageLuminance(
+  { data, width: imageWidth }: Pixels,
+  area: Region,
+  factor: number,
+) {
   const width = Math.floor(area.width / factor);
   const height = Math.floor(area.height / factor);
   const luminance = new Uint8Array(width * height);
@@ -51,7 +55,8 @@ export function averageLuminance({ data, width: imageWidth }: Pixels, area: Regi
     for (let x = 0; x < width; x += 1) {
       let sum = 0;
       for (let dy = 0; dy < factor; dy += 1) {
-        let p = ((area.y + y * factor + dy) * imageWidth + area.x + x * factor) * 4;
+        let p =
+          ((area.y + y * factor + dy) * imageWidth + area.x + x * factor) * 4;
         for (let dx = 0; dx < factor; dx += 1, p += 4) {
           sum += data[p] * 77 + data[p + 1] * 150 + data[p + 2] * 29;
         }
@@ -66,9 +71,14 @@ export function averageLuminance({ data, width: imageWidth }: Pixels, area: Regi
  * The size a region is read at, in pixels.
  */
 export function decodeSize(region: Region): number {
-  const factor = Math.max(1, Math.ceil(Math.max(region.width, region.height) / MAX_DECODE_SIZE));
+  const factor = Math.max(
+    1,
+    Math.ceil(Math.max(region.width, region.height) / MAX_DECODE_SIZE),
+  );
   const largest = Math.max(region.width, region.height) / factor;
-  return largest * Math.min(MAX_UPSCALE, Math.max(1, MIN_DECODE_SIZE / largest));
+  return (
+    largest * Math.min(MAX_UPSCALE, Math.max(1, MIN_DECODE_SIZE / largest))
+  );
 }
 
 /**
@@ -76,9 +86,19 @@ export function decodeSize(region: Region): number {
  * covers a few pixels.
  */
 export function extractRegion(pixels: Pixels, region: Region): Grey {
-  const factor = Math.max(1, Math.ceil(Math.max(region.width, region.height) / MAX_DECODE_SIZE));
-  const { luminance, width: sourceWidth, height: sourceHeight } = averageLuminance(pixels, region, factor);
-  const scale = Math.min(MAX_UPSCALE, Math.max(1, MIN_DECODE_SIZE / Math.max(sourceWidth, sourceHeight)));
+  const factor = Math.max(
+    1,
+    Math.ceil(Math.max(region.width, region.height) / MAX_DECODE_SIZE),
+  );
+  const {
+    luminance,
+    width: sourceWidth,
+    height: sourceHeight,
+  } = averageLuminance(pixels, region, factor);
+  const scale = Math.min(
+    MAX_UPSCALE,
+    Math.max(1, MIN_DECODE_SIZE / Math.max(sourceWidth, sourceHeight)),
+  );
   const width = Math.round(sourceWidth * scale);
   const height = Math.round(sourceHeight * scale);
 
@@ -90,8 +110,10 @@ export function extractRegion(pixels: Pixels, region: Region): Grey {
   const total = luminance.length;
   let low = 0;
   let high = 255;
-  for (let sum = 0; low < 255 && sum + histogram[low] < total * 0.02; low += 1) sum += histogram[low];
-  for (let sum = 0; high > 0 && sum + histogram[high] < total * 0.02; high -= 1) sum += histogram[high];
+  for (let sum = 0; low < 255 && sum + histogram[low] < total * 0.02; low += 1)
+    sum += histogram[low];
+  for (let sum = 0; high > 0 && sum + histogram[high] < total * 0.02; high -= 1)
+    sum += histogram[high];
   const range = Math.max(1, high - low);
 
   // Clamped, as the stretch goes past black and white.
@@ -108,8 +130,10 @@ export function extractRegion(pixels: Pixels, region: Region): Grey {
       const x0 = Math.max(0, Math.floor(sourceX));
       const x1 = Math.min(sourceWidth - 1, x0 + 1);
       const fx = Math.max(0, sourceX - x0);
-      const value = (luminance[row0 + x0] * (1 - fx) + luminance[row0 + x1] * fx) * (1 - fy)
-        + (luminance[row1 + x0] * (1 - fx) + luminance[row1 + x1] * fx) * fy;
+      const value =
+        (luminance[row0 + x0] * (1 - fx) + luminance[row0 + x1] * fx) *
+          (1 - fy) +
+        (luminance[row1 + x0] * (1 - fx) + luminance[row1 + x1] * fx) * fy;
       data[y * width + x] = ((value - low) * 255) / range;
     }
   }
@@ -120,6 +144,9 @@ export function extractRegion(pixels: Pixels, region: Region): Grey {
     y: region.y + y * imageScale,
   });
   return {
-    data, width, height, toImage,
+    data,
+    width,
+    height,
+    toImage,
   };
 }

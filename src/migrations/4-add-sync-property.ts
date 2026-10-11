@@ -29,7 +29,7 @@ export async function migration4(): Promise<boolean> {
   }
 
   if (upgraded) {
-    console.log('migration \'#4\' applied');
+    console.log("migration '#4' applied");
 
     await storeRawMaterials(_rawMaterials);
 

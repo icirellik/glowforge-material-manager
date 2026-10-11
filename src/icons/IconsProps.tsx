@@ -7,4 +7,4 @@ export type IconProps = {
   text?: string;
   title?: string;
   width?: string;
-}
+};

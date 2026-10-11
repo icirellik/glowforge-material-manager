@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  storeTempMaterial,
-} from '../lib/chromeWrappers';
+import { storeTempMaterial } from '../lib/chromeWrappers';
 import type {
   AddSetting,
   EditorMode,
@@ -53,7 +51,7 @@ export default class MaterialEditor extends React.Component<MaterialEditorProps>
     for (const key of Object.keys(this.props)) {
       const val: any = (this.props as any)[key];
       if (key === 'editorMode') {
-        if (((prevProps as any)[key] !== val)) {
+        if ((prevProps as any)[key] !== val) {
           result = true;
           break;
         }

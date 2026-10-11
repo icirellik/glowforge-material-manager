@@ -1,10 +1,6 @@
 import React from 'react';
 import { IconMinus } from '../icons/IconMinus';
-import {
-  asFloat,
-  asInteger,
-  precisionRound,
-} from '../lib/utils';
+import { asFloat, asInteger, precisionRound } from '../lib/utils';
 import {
   toDisplayEngraveSpeed,
   toDisplayLinesPerInch,
@@ -12,14 +8,8 @@ import {
   toRealEngraveSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
-import {
-  PluginBitmapEngraveSetting,
-} from '../material/materialPlugin';
-import {
-  InputText,
-  InputNumber,
-  InputNumberWithCheckbox,
-} from './Input';
+import { PluginBitmapEngraveSetting } from '../material/materialPlugin';
+import { InputText, InputNumber, InputNumberWithCheckbox } from './Input';
 import type {
   RemoveBitmapEngrave,
   UpdateBitmapEngrave,
@@ -28,7 +18,7 @@ import type {
 interface BitmapEngraveSettingProps {
   bitmap: PluginBitmapEngraveSetting;
   index: number;
-  propValidation?: {[key: string]: boolean | null};
+  propValidation?: { [key: string]: boolean | null };
   removeBitmapEngrave: RemoveBitmapEngrave;
   saveTemporaryState: () => void;
   updateBitmapEngrave: UpdateBitmapEngrave;
@@ -45,13 +35,11 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
     updateBitmapEngrave,
     validationHandler,
   } = props;
-  const maxPower = (bitmap.power === 99.99 || bitmap.power === 100);
+  const maxPower = bitmap.power === 99.99 || bitmap.power === 100;
   return (
     <>
       <div className="form-sub-header">
-        <p>
-          {`Bitmap Engrave ${index + 1}`}
-        </p>
+        <p>{`Bitmap Engrave ${index + 1}`}</p>
         <IconMinus
           className="icon-button-add"
           click={() => {
@@ -65,7 +53,9 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
       <InputText
         label="Name *"
         onBlur={saveTemporaryState}
-        onChange={(event) => updateBitmapEngrave(index, 'name', event.target.value)}
+        onChange={(event) =>
+          updateBitmapEngrave(index, 'name', event.target.value)
+        }
         propValidation={propValidation}
         value={bitmap.name}
         validate={validationHandler}
@@ -76,7 +66,9 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
         min="100"
         onBlur={saveTemporaryState}
         onChange={(event) => {
-          const normalizedValue = toRealEngraveSpeed(asInteger(event.target.value));
+          const normalizedValue = toRealEngraveSpeed(
+            asInteger(event.target.value),
+          );
           updateBitmapEngrave(index, 'speed', normalizedValue);
         }}
         propValidation={propValidation}
@@ -96,7 +88,7 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
         }}
         onChecked={() => {
           const nextMaxPower = !maxPower;
-          updateBitmapEngrave(index, 'power', (nextMaxPower) ? 100 : 99);
+          updateBitmapEngrave(index, 'power', nextMaxPower ? 100 : 99);
         }}
         propValidation={propValidation}
         value={toDisplayPower(bitmap.power)}
@@ -117,26 +109,31 @@ export default function BitmapEngraveSetting(props: BitmapEngraveSettingProps) {
         label="Focal Offset (mm)"
         onBlur={saveTemporaryState}
         onChange={(event) => {
-          const normalizedValue = precisionRound(asFloat(event.target.value), 3);
+          const normalizedValue = precisionRound(
+            asFloat(event.target.value),
+            3,
+          );
           updateBitmapEngrave(index, 'focalOffset', normalizedValue);
         }}
         propValidation={propValidation}
         value={bitmap.focalOffset}
       />
       <InputNumber
-        help={'Scan Gap mapping to Glowforge UI \n '
-          + '1 = 1355 LPI \n '
-          + '2 = 675 LPI \n '
-          + '3 = 450 LPI \n '
-          + '4 = 340 LPI \n '
-          + '5 = 270 LPI \n '
-          + '6 = 225 LPI \n '
-          + '7 = 195 LPI \n '
-          + '8 = 170 LPI \n '
-          + '11 = 125 LPI \n '
-          + '18 = 75 LPI \n '
-          + '39 = 35 LPI \n '
-          + '136 = 10 LPI'}
+        help={
+          'Scan Gap mapping to Glowforge UI \n ' +
+          '1 = 1355 LPI \n ' +
+          '2 = 675 LPI \n ' +
+          '3 = 450 LPI \n ' +
+          '4 = 340 LPI \n ' +
+          '5 = 270 LPI \n ' +
+          '6 = 225 LPI \n ' +
+          '7 = 195 LPI \n ' +
+          '8 = 170 LPI \n ' +
+          '11 = 125 LPI \n ' +
+          '18 = 75 LPI \n ' +
+          '39 = 35 LPI \n ' +
+          '136 = 10 LPI'
+        }
         label={`Scan Gap (LPI ${toDisplayLinesPerInch(bitmap.scanGap)}) *`}
         onBlur={saveTemporaryState}
         onChange={(event) => {

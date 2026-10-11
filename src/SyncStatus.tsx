@@ -12,17 +12,15 @@ interface SyncStatusProps {
 
 const TITLES: Record<Connection, string> = {
   none: 'Status: Open Glowforge to synchronize',
-  disconnected: 'Status: Not connected to this Glowforge tab, click to reconnect',
+  disconnected:
+    'Status: Not connected to this Glowforge tab, click to reconnect',
   connected: 'Status: Synchronizing',
 };
 
-export const SyncStatus: FunctionComponent<SyncStatusProps> = (props: SyncStatusProps) => {
-  const {
-    connection,
-    forceSync,
-    reconnect,
-    synchronized,
-  } = props;
+export const SyncStatus: FunctionComponent<SyncStatusProps> = (
+  props: SyncStatusProps,
+) => {
+  const { connection, forceSync, reconnect, synchronized } = props;
   const connected = connection === 'connected';
   let className = 'Status Status-gray';
   if (connected) {
@@ -33,7 +31,11 @@ export const SyncStatus: FunctionComponent<SyncStatusProps> = (props: SyncStatus
       <IconStatus
         click={connection === 'disconnected' ? reconnect : forceSync}
         height="12px"
-        title={connected && synchronized ? 'Status: Synchronized' : TITLES[connection]}
+        title={
+          connected && synchronized
+            ? 'Status: Synchronized'
+            : TITLES[connection]
+        }
         width="12px"
       />
     </div>

@@ -4,14 +4,7 @@ import { DEFAULT_ICON_STYLES } from './IconsShared';
 import './Icons.css';
 
 export const IconOpen: FunctionComponent<IconProps> = (props: IconProps) => {
-  const {
-    className,
-    click,
-    fill,
-    height,
-    title,
-    width,
-  } = props;
+  const { className, click, fill, height, title, width } = props;
 
   return (
     <button

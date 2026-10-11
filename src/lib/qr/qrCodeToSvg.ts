@@ -15,9 +15,10 @@ export interface SvgOptions {
  * Draws a QR code as an SVG, with each row's runs of dark modules as filled
  * rectangles.
  */
-export function qrCodeToSvg({ size, data }: Modules, {
-  margin = 4, scale, dark = '#000000', light = '#ffffff',
-}: SvgOptions = {}): string {
+export function qrCodeToSvg(
+  { size, data }: Modules,
+  { margin = 4, scale, dark = '#000000', light = '#ffffff' }: SvgOptions = {},
+): string {
   const full = size + margin * 2;
   let path = '';
   for (let row = 0; row < size; row += 1) {
@@ -32,7 +33,11 @@ export function qrCodeToSvg({ size, data }: Modules, {
       }
     }
   }
-  const dimensions = scale ? ` width="${full * scale}" height="${full * scale}"` : '';
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${full} ${full}"${dimensions} shape-rendering="crispEdges">`
-    + `<path fill="${light}" d="M0 0h${full}v${full}H0z"/><path fill="${dark}" d="${path}"/></svg>`;
+  const dimensions = scale
+    ? ` width="${full * scale}" height="${full * scale}"`
+    : '';
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${full} ${full}"${dimensions} shape-rendering="crispEdges">` +
+    `<path fill="${light}" d="M0 0h${full}v${full}H0z"/><path fill="${dark}" d="${path}"/></svg>`
+  );
 }

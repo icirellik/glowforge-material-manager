@@ -1,12 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import {
-  getPlatform,
-} from './lib/chromeWrappers';
-import {
-  syncronizeMaterials,
-} from './material/material.sync';
+import { getPlatform } from './lib/chromeWrappers';
+import { syncronizeMaterials } from './material/material.sync';
 import './index.css';
 import { migration2 } from './migrations/2-backup-materials';
 import { migration3 } from './migrations/3-update-ids';
@@ -29,9 +25,7 @@ async function applyMigrations() {
   // chrome caches this data locally is it hasn't changed.
   await syncronizeMaterials();
 
-  ReactDOM.render(<App
-    platform={platform}
-  />, document.getElementById('root'));
+  ReactDOM.render(<App platform={platform} />, document.getElementById('root'));
 
   if (platform === 'mac') {
     setTimeout(() => {

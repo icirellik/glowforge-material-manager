@@ -23,33 +23,54 @@ export const FORMAT_FROM_LEVEL = [1, 0, 3, 2];
 
 // Error correction codewords in each block, by level and version.
 const EC_CODEWORDS_PER_BLOCK = [
-  [7, 10, 15, 20, 26, 18, 20, 24, 30, 18, 20, 24, 26, 30, 22, 24, 28, 30, 28, 28,
-    28, 28, 30, 30, 26, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30],
-  [10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22, 22, 24, 24, 28, 28, 26, 26, 26,
-    26, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28],
-  [13, 22, 18, 26, 18, 24, 18, 22, 20, 24, 28, 26, 24, 20, 30, 24, 28, 28, 26, 30,
-    28, 30, 30, 30, 30, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30],
-  [17, 28, 22, 16, 22, 28, 26, 26, 24, 28, 24, 28, 22, 24, 24, 30, 28, 28, 26, 28,
-    30, 24, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30],
+  [
+    7, 10, 15, 20, 26, 18, 20, 24, 30, 18, 20, 24, 26, 30, 22, 24, 28, 30, 28,
+    28, 28, 28, 30, 30, 26, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
+    30, 30,
+  ],
+  [
+    10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22, 22, 24, 24, 28, 28, 26, 26,
+    26, 26, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28,
+    28, 28,
+  ],
+  [
+    13, 22, 18, 26, 18, 24, 18, 22, 20, 24, 28, 26, 24, 20, 30, 24, 28, 28, 26,
+    30, 28, 30, 30, 30, 30, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
+    30, 30,
+  ],
+  [
+    17, 28, 22, 16, 22, 28, 26, 26, 24, 28, 24, 28, 22, 24, 24, 30, 28, 28, 26,
+    28, 30, 24, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
+    30, 30,
+  ],
 ];
 
 // The number of blocks, by level and version.
 const EC_BLOCKS = [
-  [1, 1, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 4, 6, 6, 6, 6, 7, 8,
-    8, 9, 9, 10, 12, 12, 12, 13, 14, 15, 16, 17, 18, 19, 19, 20, 21, 22, 24, 25],
-  [1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8, 9, 9, 10, 10, 11, 13, 14, 16,
-    17, 17, 18, 20, 21, 23, 25, 26, 28, 29, 31, 33, 35, 37, 38, 40, 43, 45, 47, 49],
-  [1, 1, 2, 2, 4, 4, 6, 6, 8, 8, 8, 10, 12, 16, 12, 17, 16, 18, 21, 20,
-    23, 23, 25, 27, 29, 34, 34, 35, 38, 40, 43, 45, 48, 51, 53, 56, 59, 62, 65, 68],
-  [1, 1, 2, 4, 4, 4, 5, 6, 8, 8, 11, 11, 16, 16, 18, 16, 19, 21, 25, 25,
-    25, 34, 30, 32, 35, 37, 40, 42, 45, 48, 51, 54, 57, 60, 63, 66, 70, 74, 77, 81],
+  [
+    1, 1, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 4, 6, 6, 6, 6, 7, 8, 8, 9, 9, 10, 12,
+    12, 12, 13, 14, 15, 16, 17, 18, 19, 19, 20, 21, 22, 24, 25,
+  ],
+  [
+    1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8, 9, 9, 10, 10, 11, 13, 14, 16, 17, 17,
+    18, 20, 21, 23, 25, 26, 28, 29, 31, 33, 35, 37, 38, 40, 43, 45, 47, 49,
+  ],
+  [
+    1, 1, 2, 2, 4, 4, 6, 6, 8, 8, 8, 10, 12, 16, 12, 17, 16, 18, 21, 20, 23, 23,
+    25, 27, 29, 34, 34, 35, 38, 40, 43, 45, 48, 51, 53, 56, 59, 62, 65, 68,
+  ],
+  [
+    1, 1, 2, 4, 4, 4, 5, 6, 8, 8, 11, 11, 16, 16, 18, 16, 19, 21, 25, 25, 25,
+    34, 30, 32, 35, 37, 40, 42, 45, 48, 51, 54, 57, 60, 63, 66, 70, 74, 77, 81,
+  ],
 ];
 
 // Every valid format information word, indexed by its 5 data bits: a BCH
 // code, masked so it is never all light.
 export const FORMAT_WORDS = Array.from({ length: 32 }, (_, data) => {
   let remainder = data;
-  for (let i = 0; i < 10; i += 1) remainder = (remainder << 1) ^ ((remainder >>> 9) * 0x537);
+  for (let i = 0; i < 10; i += 1)
+    remainder = (remainder << 1) ^ ((remainder >>> 9) * 0x537);
   return ((data << 10) | remainder) ^ 0x5412;
 });
 
@@ -57,7 +78,8 @@ export const FORMAT_WORDS = Array.from({ length: 32 }, (_, data) => {
 // and up have one.
 export const VERSION_WORDS = Array.from({ length: 41 }, (_, version) => {
   let remainder = version;
-  for (let i = 0; i < 12; i += 1) remainder = (remainder << 1) ^ ((remainder >>> 11) * 0x1f25);
+  for (let i = 0; i < 12; i += 1)
+    remainder = (remainder << 1) ^ ((remainder >>> 11) * 0x1f25);
   return (version << 12) | remainder;
 });
 
@@ -118,7 +140,8 @@ export function alignmentPositions(version: number): number[] {
   const count = Math.floor(version / 7) + 2;
   const last = 4 * version + 10;
   // Evenly spaced from the last one, on even positions, except version 32.
-  const step = version === 32 ? 26 : Math.ceil((last - 6) / (count - 1) / 2) * 2;
+  const step =
+    version === 32 ? 26 : Math.ceil((last - 6) / (count - 1) / 2) * 2;
   const positions = [6];
   for (let i = count - 2; i >= 0; i -= 1) positions.push(last - i * step);
   return positions;
@@ -133,7 +156,10 @@ export function alignmentCenters(version: number): [number, number][] {
   const centers: [number, number][] = [];
   for (const row of positions) {
     for (const column of positions) {
-      if (!(row === 6 && (column === 6 || column === last)) && !(row === last && column === 6)) {
+      if (
+        !(row === 6 && (column === 6 || column === last)) &&
+        !(row === last && column === 6)
+      ) {
         centers.push([row, column]);
       }
     }
@@ -244,7 +270,9 @@ export function blockLayout(version: number, level: number) {
     shortData: Math.floor(dataTotal / blockCount),
     shortBlocks: blockCount - (dataTotal % blockCount),
     // The most wrong codewords each block may correct.
-    maxErrors: Math.floor((ecPerBlock - (MISDECODE_PROTECTION[`${level}-${version}`] || 0)) / 2),
+    maxErrors: Math.floor(
+      (ecPerBlock - (MISDECODE_PROTECTION[`${level}-${version}`] || 0)) / 2,
+    ),
   };
 }
 
@@ -275,4 +303,5 @@ export function countBits(mode: number, version: number): number | undefined {
   return COUNT_BITS[mode]?.[sizeClass];
 }
 
-export const ALPHANUMERIC_CHARACTERS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+export const ALPHANUMERIC_CHARACTERS =
+  '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';

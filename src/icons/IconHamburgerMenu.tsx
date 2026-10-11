@@ -2,15 +2,10 @@ import React, { FunctionComponent } from 'react';
 import { DEFAULT_ICON_STYLES } from './IconsShared';
 import type { IconProps } from './IconsProps';
 
-export const IconHamburgerMenu: FunctionComponent<IconProps> = (props: IconProps) => {
-  const {
-    className,
-    click,
-    fill,
-    height,
-    title,
-    width,
-  } = props;
+export const IconHamburgerMenu: FunctionComponent<IconProps> = (
+  props: IconProps,
+) => {
+  const { className, click, fill, height, title, width } = props;
 
   return (
     <button

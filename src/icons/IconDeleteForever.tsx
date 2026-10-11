@@ -3,7 +3,9 @@ import type { IconProps } from './IconsProps';
 import { DEFAULT_ICON_STYLES } from './IconsShared';
 import './Icons.css';
 
-export const IconDeleteForever: FunctionComponent<IconProps> = (props: IconProps) => {
+export const IconDeleteForever: FunctionComponent<IconProps> = (
+  props: IconProps,
+) => {
   const {
     className,
     buttonClassName,

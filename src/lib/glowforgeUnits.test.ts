@@ -1,6 +1,4 @@
-import {
-  toRealPower, toRealCutSpeed, clamp,
-} from './glowforgeUnits';
+import { toRealPower, toRealCutSpeed, clamp } from './glowforgeUnits';
 
 describe('Glowforge Unit Helpers', () => {
   it('toRealPower', () => {

@@ -14,46 +14,30 @@
     "48": "icon48.png",
     "128": "icon128.png"
   },
-  "permissions": [
-    "scripting",
-    "storage",
-    "tabs"
-  ],
-  "host_permissions": [
-    "*://app.glowforge.com/*"
-  ],
-  "optional_host_permissions": [
-    "https://storage.googleapis.com/gf-app-imgl/*"
-  ],
+  "permissions": ["scripting", "storage", "tabs"],
+  "host_permissions": ["*://app.glowforge.com/*"],
+  "optional_host_permissions": ["https://storage.googleapis.com/gf-app-imgl/*"],
   "background": {
     "service_worker": "background.js",
     "type": "module"
   },
   "content_scripts": [
     {
-      "matches": [
-        "*://app.glowforge.com/*"
-      ],
-      "js": [ "bridge.js" ],
+      "matches": ["*://app.glowforge.com/*"],
+      "js": ["bridge.js"],
       "run_at": "document_start"
     },
     {
-      "matches": [
-        "*://app.glowforge.com/*"
-      ],
-      "js": [ "content.js" ],
+      "matches": ["*://app.glowforge.com/*"],
+      "js": ["content.js"],
       "run_at": "document_start",
       "world": "MAIN"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": [
-        "custom-material.png"
-      ],
-      "matches": [
-        "*://app.glowforge.com/*"
-      ]
+      "resources": ["custom-material.png"],
+      "matches": ["*://app.glowforge.com/*"]
     }
   ],
   "key": "AAAAB3NzaC1yc2EAAAADAQABAAABAQCqBjh/FC9CD5Y6I0SzrNqafNjf17F54lafObU3USUbdO3oNDNAnE0t+Db6wnO82s8yLTADXPa0tUBQLQH4v9zxj6+npyk53/FRvgbex7o8G3wGZMSHCt+zTCS5CxsGOczd8E6QxlLYcmuzz/JRqtFsgucVN9rk397SWHAUTVFcIMBX6kU/vQ9lAW2YgYlG7lo/M0JKNfeYykkVJurMH6qe6kdTRffbVMfsZ7DLdjmLgLK4ZP7hfp7zrAToDHedGMdm1UWbML/JSD4l7CO6T7LPvYq4gLnLyiOHwhO85oB0ukntbqJ4gQhCCOnueBluKb+cwcExajLcbCJ1FY2j9ujT",

@@ -1,11 +1,22 @@
 // @vitest-environment node
 import { decodeModules, readVersion } from './decodeModules';
 import {
-  alphanumericSegment, byteSegment, encodeQrCode, encodeSegments, writeBits,
+  alphanumericSegment,
+  byteSegment,
+  encodeQrCode,
+  encodeSegments,
+  writeBits,
 } from './encodeQrCode';
 import type { EncodeOptions, Segment } from './encodeQrCode';
 import {
-  ECI, FNC1_FIRST, FNC1_SECOND, FORMAT_WORDS, KANJI, STRUCTURED_APPEND, dataModuleOrder, formatPositions,
+  ECI,
+  FNC1_FIRST,
+  FNC1_SECOND,
+  FORMAT_WORDS,
+  KANJI,
+  STRUCTURED_APPEND,
+  dataModuleOrder,
+  formatPositions,
 } from './spec';
 import type { Modules } from './spec';
 
@@ -15,7 +26,10 @@ const LEVELS = ['L', 'M', 'Q', 'H'] as const;
  * Encodes the longest text that fits, so every block is full of data.
  */
 function encodeFull(options: EncodeOptions) {
-  const fill = (length: number) => Array.from({ length }, (_, i) => String.fromCharCode(33 + ((i * 7) % 94))).join('');
+  const fill = (length: number) =>
+    Array.from({ length }, (_, i) =>
+      String.fromCharCode(33 + ((i * 7) % 94)),
+    ).join('');
   let low = 1;
   let high = 3000;
   while (low < high) {
@@ -35,7 +49,10 @@ function encodeFull(options: EncodeOptions) {
  * Modules drawn as rows of # for dark and . for light.
  */
 function fromRows(rows: string[]): Modules {
-  return { size: rows.length, data: Uint8Array.from(rows.join(''), (module) => (module === '#' ? 1 : 0)) };
+  return {
+    size: rows.length,
+    data: Uint8Array.from(rows.join(''), (module) => (module === '#' ? 1 : 0)),
+  };
 }
 
 // Codes made by the qrcode package (1.4.4), in modes the encoder doesn't use:
@@ -91,7 +108,10 @@ const MIXED_CODE = fromRows([
 /**
  * Flips the modules at the given positions.
  */
-function damage({ size, data }: Modules, positions: [number, number][]): Modules {
+function damage(
+  { size, data }: Modules,
+  positions: [number, number][],
+): Modules {
   const copy = data.slice();
   for (const [row, column] of positions) copy[row * size + column] ^= 1;
   return { size, data: copy };
@@ -101,14 +121,27 @@ describe('decodeModules', () => {
   it('decodes every version, error correction level and mask', () => {
     for (let version = 1; version <= 40; version += 1) {
       for (let index = 0; index < LEVELS.length; index += 1) {
-        const { text, modules } = encodeFull({ version, level: LEVELS[index], mask: (version + index) % 8 });
-        expect(decodeModules(modules)?.text, `version ${version}, level ${LEVELS[index]}`).toEqual(text);
+        const { text, modules } = encodeFull({
+          version,
+          level: LEVELS[index],
+          mask: (version + index) % 8,
+        });
+        expect(
+          decodeModules(modules)?.text,
+          `version ${version}, level ${LEVELS[index]}`,
+        ).toEqual(text);
       }
     }
   });
 
   it('decodes every mode', () => {
-    for (const text of ['0123456789012', '01234567890123', 'HELLO WORLD $%*+-./:', 'ODD', 'Birch – 3mm, ø 🙂']) {
+    for (const text of [
+      '0123456789012',
+      '01234567890123',
+      'HELLO WORLD $%*+-./:',
+      'ODD',
+      'Birch – 3mm, ø 🙂',
+    ]) {
       expect(decodeModules(encodeQrCode(text))?.text).toEqual(text);
     }
     expect(decodeModules(KANJI_CODE)?.text).toEqual('漢字');
@@ -121,16 +154,26 @@ describe('decodeModules', () => {
     const { size } = modules;
     // Data modules near the bottom right, and one bit of each format copy.
     const damaged = damage(modules, [
-      [size - 1, size - 1], [size - 2, size - 3], [size - 5, size - 2], [size - 9, size - 1],
-      [8, 2], [size - 3, 8],
+      [size - 1, size - 1],
+      [size - 2, size - 3],
+      [size - 5, size - 2],
+      [size - 9, size - 1],
+      [8, 2],
+      [size - 3, 8],
     ]);
     expect(decodeModules(damaged)?.text).toEqual(settings);
   });
 
   it('decodes mirrored codes', () => {
     const { size, data } = encodeQrCode('Custom:abc1234');
-    const mirrored = data.map((_, index) => data[(index % size) * size + Math.floor(index / size)]);
-    expect(decodeModules({ size, data: mirrored })).toMatchObject({ text: 'Custom:abc1234', mirrored: true, version: 1 });
+    const mirrored = data.map(
+      (_, index) => data[(index % size) * size + Math.floor(index / size)],
+    );
+    expect(decodeModules({ size, data: mirrored })).toMatchObject({
+      text: 'Custom:abc1234',
+      mirrored: true,
+      version: 1,
+    });
     expect(decodeModules({ size, data })).toMatchObject({ mirrored: false });
   });
 
@@ -147,7 +190,9 @@ describe('decodeModules', () => {
       return seed & 1;
     });
     expect(decodeModules({ size: 25, data: random })).toBeNull();
-    expect(decodeModules({ size: 22, data: new Uint8Array(22 * 22) })).toBeNull();
+    expect(
+      decodeModules({ size: 22, data: new Uint8Array(22 * 22) }),
+    ).toBeNull();
   });
 });
 
@@ -164,7 +209,10 @@ function bitsOf(...fields: [number, number][]): number[] {
   return bits;
 }
 
-const eci = (...bytes: number[]): Segment => ({ mode: ECI, bits: bitsOf(...bytes.map((byte): [number, number] => [byte, 8])) });
+const eci = (...bytes: number[]): Segment => ({
+  mode: ECI,
+  bits: bitsOf(...bytes.map((byte): [number, number] => [byte, 8])),
+});
 const bytes = (...values: number[]) => byteSegment(Uint8Array.from(values));
 
 /**
@@ -190,7 +238,8 @@ function flip({ size, data }: Modules, indexes: number[]): Modules {
 
 describe('decodeModules, beyond the encoder', () => {
   it('uses ECI character sets', () => {
-    const decode = (...segments: Segment[]) => decodeModules(encodeRaw(segments))?.text;
+    const decode = (...segments: Segment[]) =>
+      decodeModules(encodeRaw(segments))?.text;
     const utf8 = Array.from(new TextEncoder().encode('é漢'));
     expect(decode(eci(26), bytes(...utf8))).toEqual('é漢');
     // ISO-8859-1 is 1:1 with the first 256 code points, unlike windows-1252.
@@ -204,7 +253,9 @@ describe('decodeModules, beyond the encoder', () => {
     expect(decode(eci(0x80, 26), bytes(...utf8))).toEqual('é漢');
     expect(decode(eci(0xc0, 0x00, 26), bytes(...utf8))).toEqual('é漢');
     // The character set can change part way through.
-    expect(decode(eci(3), bytes(0xe9), eci(26), bytes(0xc3, 0xa9))).toEqual('éé');
+    expect(decode(eci(3), bytes(0xe9), eci(26), bytes(0xc3, 0xa9))).toEqual(
+      'éé',
+    );
     // Without an ECI, bytes that aren't UTF-8 are ISO-8859-1.
     expect(decode(bytes(0xe9, 0x96))).toEqual('é\u0096');
     // An ECI cut short isn't readable.
@@ -213,34 +264,57 @@ describe('decodeModules, beyond the encoder', () => {
 
   it('decodes kanji from both Shift JIS ranges', () => {
     const codes = [0x8abf, 0x889f, 0xe040, 0xeaa4];
-    const expected = new TextDecoder('shift_jis').decode(Uint8Array.from(codes.flatMap((code) => [code >> 8, code & 0xff])));
+    const expected = new TextDecoder('shift_jis').decode(
+      Uint8Array.from(codes.flatMap((code) => [code >> 8, code & 0xff])),
+    );
     expect(expected).toEqual('漢亜漾熙');
     expect(decodeModules(encodeRaw([kanji(...codes)]))?.text).toEqual(expected);
   });
 
   it('reports structured append', () => {
-    const header: Segment = { mode: STRUCTURED_APPEND, bits: bitsOf([2, 4], [4, 4], [0x5a, 8]) };
-    expect(decodeModules(encodeRaw([header, bytes(0x70, 0x33)]))).toMatchObject({
-      text: 'p3',
-      structuredAppend: { index: 2, total: 5, parity: 0x5a },
-    });
+    const header: Segment = {
+      mode: STRUCTURED_APPEND,
+      bits: bitsOf([2, 4], [4, 4], [0x5a, 8]),
+    };
+    expect(decodeModules(encodeRaw([header, bytes(0x70, 0x33)]))).toMatchObject(
+      {
+        text: 'p3',
+        structuredAppend: { index: 2, total: 5, parity: 0x5a },
+      },
+    );
     expect(decodeModules(encodeQrCode('p3'))?.structuredAppend).toBeUndefined();
   });
 
   it('separates FNC1 fields with GS', () => {
-    const decode = (...segments: Segment[]) => decodeModules(encodeRaw(segments))?.text;
-    expect(decode({ mode: FNC1_FIRST, bits: [] }, alphanumericSegment('01%%A%B'))).toEqual('01%A\x1dB');
+    const decode = (...segments: Segment[]) =>
+      decodeModules(encodeRaw(segments))?.text;
+    expect(
+      decode({ mode: FNC1_FIRST, bits: [] }, alphanumericSegment('01%%A%B')),
+    ).toEqual('01%A\x1dB');
     // The application indicator isn't part of the text.
-    expect(decode({ mode: FNC1_SECOND, bits: bitsOf([37, 8]) }, alphanumericSegment('A%B'))).toEqual('A\x1dB');
+    expect(
+      decode(
+        { mode: FNC1_SECOND, bits: bitsOf([37, 8]) },
+        alphanumericSegment('A%B'),
+      ),
+    ).toEqual('A\x1dB');
     expect(decode(alphanumericSegment('01%%A%B'))).toEqual('01%%A%B');
   });
 
   it('uses whichever copy of the format information reads best', () => {
     const modules = encodeQrCode('Custom:abc1234', { level: 'M', mask: 3 });
     const [first, second] = formatPositions(modules.size);
-    expect(decodeModules(flip(modules, first.slice(0, 5)))?.text).toEqual('Custom:abc1234');
-    expect(decodeModules(flip(modules, second.slice(0, 5)))?.text).toEqual('Custom:abc1234');
-    expect(decodeModules(flip(modules, [...first.slice(0, 5), ...second.slice(0, 5)]))).toBeNull();
+    expect(decodeModules(flip(modules, first.slice(0, 5)))?.text).toEqual(
+      'Custom:abc1234',
+    );
+    expect(decodeModules(flip(modules, second.slice(0, 5)))?.text).toEqual(
+      'Custom:abc1234',
+    );
+    expect(
+      decodeModules(
+        flip(modules, [...first.slice(0, 5), ...second.slice(0, 5)]),
+      ),
+    ).toBeNull();
 
     // A first copy damaged into something closer to another format, with an
     // intact second copy, still reads as the second copy says.
@@ -251,7 +325,9 @@ describe('decodeModules, beyond the encoder', () => {
       return distance === 7;
     })!;
     const differing = first.filter((_, bit) => ((word ^ other) >> bit) & 1);
-    expect(decodeModules(flip(modules, differing.slice(0, 4)))?.text).toEqual('Custom:abc1234');
+    expect(decodeModules(flip(modules, differing.slice(0, 4)))?.text).toEqual(
+      'Custom:abc1234',
+    );
   });
 
   it('corrects no more errors than the standard allows', () => {
@@ -259,17 +335,26 @@ describe('decodeModules, beyond the encoder', () => {
     // corrections: version 1 L corrects 2 of its 7, version 1 M 4 of 10.
     const damageCodewords = (modules: Modules, count: number) => {
       const order = dataModuleOrder((modules.size - 17) / 4);
-      return flip(modules, Array.from({ length: count }, (_, codeword) => order[codeword * 8]));
+      return flip(
+        modules,
+        Array.from({ length: count }, (_, codeword) => order[codeword * 8]),
+      );
     };
     const low = encodeQrCode('Custom:abc1234', { level: 'L', version: 1 });
-    expect(decodeModules(damageCodewords(low, 2))?.text).toEqual('Custom:abc1234');
+    expect(decodeModules(damageCodewords(low, 2))?.text).toEqual(
+      'Custom:abc1234',
+    );
     expect(decodeModules(damageCodewords(low, 3))).toBeNull();
     const medium = encodeQrCode('Custom:abc1234', { level: 'M', version: 1 });
-    expect(decodeModules(damageCodewords(medium, 4))?.text).toEqual('Custom:abc1234');
+    expect(decodeModules(damageCodewords(medium, 4))?.text).toEqual(
+      'Custom:abc1234',
+    );
     expect(decodeModules(damageCodewords(medium, 5))).toBeNull();
     // Larger codes correct half their error correction codewords.
     const larger = encodeQrCode('Custom:abc1234', { level: 'M', version: 2 });
-    expect(decodeModules(damageCodewords(larger, 8))?.text).toEqual('Custom:abc1234');
+    expect(decodeModules(damageCodewords(larger, 8))?.text).toEqual(
+      'Custom:abc1234',
+    );
   });
 });
 

@@ -1,7 +1,22 @@
 import { correctErrors } from './reedSolomon';
 import {
-  ALPHANUMERIC, ALPHANUMERIC_CHARACTERS, BYTE, ECI, FNC1_FIRST, FNC1_SECOND, FORMAT_WORDS, LEVEL_FROM_FORMAT, MASKS,
-  NUMERIC, STRUCTURED_APPEND, VERSION_WORDS, blockLayout, countBits, dataModuleOrder, formatPositions, versionPositions,
+  ALPHANUMERIC,
+  ALPHANUMERIC_CHARACTERS,
+  BYTE,
+  ECI,
+  FNC1_FIRST,
+  FNC1_SECOND,
+  FORMAT_WORDS,
+  LEVEL_FROM_FORMAT,
+  MASKS,
+  NUMERIC,
+  STRUCTURED_APPEND,
+  VERSION_WORDS,
+  blockLayout,
+  countBits,
+  dataModuleOrder,
+  formatPositions,
+  versionPositions,
 } from './spec';
 import type { Modules } from './spec';
 
@@ -61,9 +76,12 @@ function closestWord(words: number[], read: number[], first = 0): number {
  * Reads the error correction level and mask, which are stored twice: around
  * the top left finder, and split between the other two.
  */
-function readFormat({ size, data }: Modules): { level: number, mask: number } | null {
-  const [first, second] = formatPositions(size).map(
-    (positions) => positions.reduce((word, position, i) => word | (data[position] << i), 0)
+function readFormat({
+  size,
+  data,
+}: Modules): { level: number; mask: number } | null {
+  const [first, second] = formatPositions(size).map((positions) =>
+    positions.reduce((word, position, i) => word | (data[position] << i), 0),
   );
 
   const format = closestWord(FORMAT_WORDS, [first, second]);
@@ -84,8 +102,8 @@ export function readVersion({ size, data }: Modules): number | null {
   if (size < 45) {
     return null;
   }
-  const [topRight, bottomLeft] = versionPositions(size).map(
-    (positions) => positions.reduce((word, position, i) => word | (data[position] << i), 0)
+  const [topRight, bottomLeft] = versionPositions(size).map((positions) =>
+    positions.reduce((word, position, i) => word | (data[position] << i), 0),
   );
   const version = closestWord(VERSION_WORDS, [topRight, bottomLeft], 7);
   return version < 0 ? null : version;
@@ -94,7 +112,11 @@ export function readVersion({ size, data }: Modules): number | null {
 /**
  * Reads the codewords, unmasked.
  */
-function readCodewords({ size, data }: Modules, version: number, mask: number): Uint8Array {
+function readCodewords(
+  { size, data }: Modules,
+  version: number,
+  mask: number,
+): Uint8Array {
   const order = dataModuleOrder(version);
   // Leftover modules are remainder bits.
   const codewords = new Uint8Array(Math.floor(order.length / 8));
@@ -102,7 +124,8 @@ function readCodewords({ size, data }: Modules, version: number, mask: number): 
   for (let bit = 0; bit < codewords.length * 8; bit += 1) {
     const index = order[bit];
     const column = index % size;
-    const value = data[index] ^ (isMasked((index - column) / size, column) ? 1 : 0);
+    const value =
+      data[index] ^ (isMasked((index - column) / size, column) ? 1 : 0);
     codewords[bit >> 3] |= value << (7 - (bit & 7));
   }
   return codewords;
@@ -114,13 +137,23 @@ function readCodewords({ size, data }: Modules, version: number, mask: number): 
  *
  * @returns The data codewords, or null if there are too many errors.
  */
-function correctCodewords(codewords: Uint8Array, version: number, level: number): Uint8Array | null {
+function correctCodewords(
+  codewords: Uint8Array,
+  version: number,
+  level: number,
+): Uint8Array | null {
   const {
-    ecPerBlock, blockCount, dataTotal, shortData, shortBlocks, maxErrors,
+    ecPerBlock,
+    blockCount,
+    dataTotal,
+    shortData,
+    shortBlocks,
+    maxErrors,
   } = blockLayout(version, level);
   const blocks = Array.from(
     { length: blockCount },
-    (_, index) => new Uint8Array(shortData + (index < shortBlocks ? 0 : 1) + ecPerBlock)
+    (_, index) =>
+      new Uint8Array(shortData + (index < shortBlocks ? 0 : 1) + ecPerBlock),
   );
 
   let next = 0;
@@ -201,7 +234,8 @@ const ECI_CHARSETS: Record<number, string> = {
 };
 
 // The upper half of code page 437, the character set of ECI 0 and 2.
-const CP437 = 'ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■\u00a0';
+const CP437 =
+  'ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■\u00a0';
 
 /**
  * Turns bytes into text. Without an ECI, most encoders, including ours, write
@@ -214,7 +248,11 @@ function decodeBytes(bytes: number[], charset: string | null): string {
     return bytes.map((byte) => String.fromCharCode(byte)).join('');
   }
   if (charset === 'cp437') {
-    return bytes.map((byte) => (byte < 0x80 ? String.fromCharCode(byte) : CP437[byte - 0x80])).join('');
+    return bytes
+      .map((byte) =>
+        byte < 0x80 ? String.fromCharCode(byte) : CP437[byte - 0x80],
+      )
+      .join('');
   }
   if (charset) {
     try {
@@ -224,7 +262,9 @@ function decodeBytes(bytes: number[], charset: string | null): string {
     }
   }
   try {
-    return new TextDecoder('utf-8', { fatal: true }).decode(Uint8Array.from(bytes));
+    return new TextDecoder('utf-8', { fatal: true }).decode(
+      Uint8Array.from(bytes),
+    );
   } catch {
     return decodeBytes(bytes, 'iso-8859-1');
   }
@@ -256,7 +296,10 @@ function readEci(reader: ReturnType<typeof bitReader>): number | null {
  *
  * @returns The text, or null if the data is malformed.
  */
-function readSegments(bytes: Uint8Array, version: number): Pick<DecodedQrCode, 'text' | 'structuredAppend'> | null {
+function readSegments(
+  bytes: Uint8Array,
+  version: number,
+): Pick<DecodedQrCode, 'text' | 'structuredAppend'> | null {
   const reader = bitReader(bytes);
   let structuredAppend: DecodedQrCode['structuredAppend'];
   // In GS1 and other FNC1 data, % in alphanumeric segments separates fields.
@@ -345,11 +388,16 @@ function readSegments(bytes: Uint8Array, version: number): Pick<DecodedQrCode, '
               return null;
             }
             segment += pair
-              ? ALPHANUMERIC_CHARACTERS[Math.floor(value / 45)] + ALPHANUMERIC_CHARACTERS[value % 45]
+              ? ALPHANUMERIC_CHARACTERS[Math.floor(value / 45)] +
+                ALPHANUMERIC_CHARACTERS[value % 45]
               : ALPHANUMERIC_CHARACTERS[value];
           }
           // A single % is the field separator, GS, and %% is a %.
-          text += fnc1 ? segment.replace(/%%|%/g, (match) => (match === '%%' ? '%' : '\x1d')) : segment;
+          text += fnc1
+            ? segment.replace(/%%|%/g, (match) =>
+                match === '%%' ? '%' : '\x1d',
+              )
+            : segment;
         } else {
           // Kanji are Shift JIS characters, compacted into 13 bits.
           if (reader.available() < count * 13) {
@@ -359,7 +407,8 @@ function readSegments(bytes: Uint8Array, version: number): Pick<DecodedQrCode, '
           for (let i = 0; i < count; i += 1) {
             const value = reader.read(13);
             const compacted = (Math.floor(value / 0xc0) << 8) | (value % 0xc0);
-            const character = compacted + (compacted < 0x1f00 ? 0x8140 : 0xc140);
+            const character =
+              compacted + (compacted < 0x1f00 ? 0x8140 : 0xc140);
             shiftJis.push(character >> 8, character & 0xff);
           }
           text += decodeBytes(shiftJis, 'shift_jis');
@@ -371,7 +420,10 @@ function readSegments(bytes: Uint8Array, version: number): Pick<DecodedQrCode, '
   return { text, structuredAppend };
 }
 
-function decode(modules: Modules, version: number): Pick<DecodedQrCode, 'text' | 'structuredAppend'> | null {
+function decode(
+  modules: Modules,
+  version: number,
+): Pick<DecodedQrCode, 'text' | 'structuredAppend'> | null {
   const format = readFormat(modules);
   if (!format) {
     return null;

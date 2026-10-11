@@ -15,7 +15,11 @@ export const LID_IMAGE_ORIGIN = 'https://storage.googleapis.com/gf-app-imgl/*';
 export function isLidImageUrl(url: string): boolean {
   try {
     const { protocol, host, pathname } = new URL(url);
-    return protocol === 'https:' && host === 'storage.googleapis.com' && pathname.startsWith('/gf-app-imgl/');
+    return (
+      protocol === 'https:' &&
+      host === 'storage.googleapis.com' &&
+      pathname.startsWith('/gf-app-imgl/')
+    );
   } catch {
     return false;
   }

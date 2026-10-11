@@ -7,11 +7,11 @@ import { asFloat } from '../lib/utils';
 type MaterialSettingsProps = {
   action: EditorMode;
   material: PluginMaterial;
-  propValidation?: {[key: string]: boolean | null};
+  propValidation?: { [key: string]: boolean | null };
   saveTemporaryState: () => void;
   updateMaterial: UpdateMaterial;
   validationHandler: (id: string, isValid: boolean | null) => void;
-}
+};
 
 export default function MaterialSettings(props: MaterialSettingsProps) {
   const {
@@ -48,7 +48,9 @@ export default function MaterialSettings(props: MaterialSettingsProps) {
       <InputNumber
         label="Thickness (mm) *"
         onBlur={saveTemporaryState}
-        onChange={(event) => updateMaterial('thickness', asFloat(event.target.value))}
+        onChange={(event) =>
+          updateMaterial('thickness', asFloat(event.target.value))
+        }
         propValidation={propValidation}
         value={material.thickness}
         validate={validationHandler}

@@ -18,7 +18,7 @@ export type TinyMaterial = {
   v: TinyVectorEngraveSetting[];
   // bitmaps
   b: TinyBitmapEngraveSetting[];
-}
+};
 
 export type TinyCutSetting = {
   // focalOffset
@@ -29,7 +29,7 @@ export type TinyCutSetting = {
   p: number;
   // speed
   s: number;
-}
+};
 
 export type TinyScoreSetting = {
   // focalOffset
@@ -42,7 +42,7 @@ export type TinyScoreSetting = {
   p: number;
   // speed
   s: number;
-}
+};
 
 export type TinyVectorEngraveSetting = {
   // focalOffset
@@ -57,7 +57,7 @@ export type TinyVectorEngraveSetting = {
   g: number;
   // speed
   s: number;
-}
+};
 
 export type TinyBitmapEngraveSetting = {
   // power
@@ -82,4 +82,4 @@ export type TinyBitmapEngraveSetting = {
   ap: null;
   // horizontalTiming
   t: null;
-}
+};

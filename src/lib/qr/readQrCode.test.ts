@@ -4,7 +4,11 @@ import * as canvasModule from 'canvas';
 import { Canvas, createCanvas, loadImage } from 'canvas';
 import fs from 'fs';
 import { encodeQrCode } from './encodeQrCode';
-import { findQrCodeRegions, readQrCode, readQrCodeFromImage } from './readQrCode';
+import {
+  findQrCodeRegions,
+  readQrCode,
+  readQrCodeFromImage,
+} from './readQrCode';
 import type { Pixels } from './readQrCode';
 import { stubImageDecoding } from './testing';
 
@@ -15,7 +19,10 @@ const LID_IMAGE = path.join(TEST_IMAGES, 'Custom:3f77f07.jpg');
  * Loads an image file as pixels, optionally mirrored or with the QR code
  * painted over.
  */
-async function loadPixels(file: string, { mirror = false, hideCode = false } = {}): Promise<Pixels> {
+async function loadPixels(
+  file: string,
+  { mirror = false, hideCode = false } = {},
+): Promise<Pixels> {
   const image = await loadImage(file);
   const canvas = createCanvas(image.width, image.height);
   const context = canvas.getContext('2d');
@@ -33,17 +40,23 @@ async function loadPixels(file: string, { mirror = false, hideCode = false } = {
 }
 
 function pixelsOf(canvas: Canvas): Pixels {
-  return canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+  return canvas
+    .getContext('2d')
+    .getImageData(0, 0, canvas.width, canvas.height);
 }
 
 /**
  * Draws a code with a margin of light modules around it.
  */
-function drawCode(text: string, {
-  module = 5, margin = 2, dark = '#000000', light = '#ffffff',
-} = {}): Canvas {
+function drawCode(
+  text: string,
+  { module = 5, margin = 2, dark = '#000000', light = '#ffffff' } = {},
+): Canvas {
   const { size, data } = encodeQrCode(text);
-  const canvas = createCanvas((size + margin * 2) * module, (size + margin * 2) * module);
+  const canvas = createCanvas(
+    (size + margin * 2) * module,
+    (size + margin * 2) * module,
+  );
   const context = canvas.getContext('2d');
   context.fillStyle = light;
   context.fillRect(0, 0, canvas.width, canvas.height);
@@ -51,7 +64,12 @@ function drawCode(text: string, {
   for (let row = 0; row < size; row += 1) {
     for (let column = 0; column < size; column += 1) {
       if (data[row * size + column]) {
-        context.fillRect((column + margin) * module, (row + margin) * module, module, module);
+        context.fillRect(
+          (column + margin) * module,
+          (row + margin) * module,
+          module,
+          module,
+        );
       }
     }
   }
@@ -61,7 +79,13 @@ function drawCode(text: string, {
 /**
  * Draws lines of dark specks, like text on a page.
  */
-function drawText(canvas: Canvas, left: number, top: number, width: number, lines: number) {
+function drawText(
+  canvas: Canvas,
+  left: number,
+  top: number,
+  width: number,
+  lines: number,
+) {
   const context = canvas.getContext('2d');
   context.fillStyle = '#222222';
   for (let line = 0; line < lines; line += 1) {
@@ -88,12 +112,21 @@ function tilt(code: Canvas, degrees: number, cameraDistance = 2): Canvas {
   const distance = width * cameraDistance;
   for (let y = 0; y < size; y += 1) {
     for (let x = 0; x < size; x += 1) {
-      const sourceY = ((y - size / 2) * distance) / (distance * Math.cos(angle) - (y - size / 2) * Math.sin(angle));
-      const sourceX = ((x - size / 2) * (sourceY * Math.sin(angle) + distance)) / distance;
+      const sourceY =
+        ((y - size / 2) * distance) /
+        (distance * Math.cos(angle) - (y - size / 2) * Math.sin(angle));
+      const sourceX =
+        ((x - size / 2) * (sourceY * Math.sin(angle) + distance)) / distance;
       const column = Math.round(sourceX + width / 2);
       const row = Math.round(sourceY + width / 2);
       if (column >= 0 && row >= 0 && column < width && row < width) {
-        target.data.set(source.data.subarray((row * width + column) * 4, (row * width + column) * 4 + 4), (y * size + x) * 4);
+        target.data.set(
+          source.data.subarray(
+            (row * width + column) * 4,
+            (row * width + column) * 4 + 4,
+          ),
+          (y * size + x) * 4,
+        );
       }
     }
   }
@@ -109,7 +142,8 @@ function blur(canvas: Canvas, radius: number) {
   const context = canvas.getContext('2d');
   const image = context.getImageData(0, 0, canvas.width, canvas.height);
   const { width, height, data } = image;
-  const at = (value: number, limit: number) => Math.min(limit - 1, Math.max(0, value));
+  const at = (value: number, limit: number) =>
+    Math.min(limit - 1, Math.max(0, value));
   const plane = new Float32Array(width * height);
   const pass = new Float32Array(width * height);
   for (let channel = 0; channel < 3; channel += 1) {
@@ -118,14 +152,16 @@ function blur(canvas: Canvas, radius: number) {
       for (let y = 0; y < height; y += 1) {
         for (let x = 0; x < width; x += 1) {
           let sum = 0;
-          for (let d = -radius; d <= radius; d += 1) sum += plane[y * width + at(x + d, width)];
+          for (let d = -radius; d <= radius; d += 1)
+            sum += plane[y * width + at(x + d, width)];
           pass[y * width + x] = sum / (2 * radius + 1);
         }
       }
       for (let y = 0; y < height; y += 1) {
         for (let x = 0; x < width; x += 1) {
           let sum = 0;
-          for (let d = -radius; d <= radius; d += 1) sum += pass[at(y + d, height) * width + x];
+          for (let d = -radius; d <= radius; d += 1)
+            sum += pass[at(y + d, height) * width + x];
           plane[y * width + x] = sum / (2 * radius + 1);
         }
       }
@@ -151,9 +187,10 @@ function emptyBed(): Canvas {
 /**
  * Draws a QR code onto a dark, lid camera sized bed with some bright debris.
  */
-function bedWithCode(text: string, {
-  module = 5, angle = 0, skew = 0, tilted = 0, inverted = false,
-} = {}): Pixels {
+function bedWithCode(
+  text: string,
+  { module = 5, angle = 0, skew = 0, tilted = 0, inverted = false } = {},
+): Pixels {
   const width = 2304;
   const height = 1382;
   const canvas = createCanvas(width, height);
@@ -171,7 +208,10 @@ function bedWithCode(text: string, {
   }
 
   // Codes engraved on dark material are light on dark.
-  let code = drawCode(text, { module, ...(inverted ? { dark: '#ffffff', light: '#000000' } : {}) });
+  let code = drawCode(text, {
+    module,
+    ...(inverted ? { dark: '#ffffff', light: '#000000' } : {}),
+  });
   if (tilted) {
     code = tilt(code, tilted);
   }
@@ -194,44 +234,77 @@ describe('readQrCode', () => {
   });
 
   it('reads a mirrored lid camera image', async () => {
-    expect(readQrCode(await loadPixels(LID_IMAGE, { mirror: true }))?.text).toEqual('Custom:3f77f07');
+    expect(
+      readQrCode(await loadPixels(LID_IMAGE, { mirror: true }))?.text,
+    ).toEqual('Custom:3f77f07');
   });
 
   it('finds nothing when there is no code', async () => {
-    expect(readQrCode(await loadPixels(LID_IMAGE, { hideCode: true }))).toBeNull();
+    expect(
+      readQrCode(await loadPixels(LID_IMAGE, { hideCode: true })),
+    ).toBeNull();
   });
 
   it('reads a plain QR code image', async () => {
-    expect(readQrCode(await loadPixels(path.join(TEST_IMAGES, 'frame.png')))?.text).toEqual('Yo!');
+    expect(
+      readQrCode(await loadPixels(path.join(TEST_IMAGES, 'frame.png')))?.text,
+    ).toEqual('Yo!');
   });
 
   it('reads small, rotated and skewed codes', () => {
-    expect(readQrCode(bedWithCode('Custom:abc1234', { module: 3 }))?.text).toEqual('Custom:abc1234');
-    expect(readQrCode(bedWithCode('Custom:abc1234', { angle: 30 }))?.text).toEqual('Custom:abc1234');
-    expect(readQrCode(bedWithCode('Custom:abc1234', { skew: 12 }))?.text).toEqual('Custom:abc1234');
+    expect(
+      readQrCode(bedWithCode('Custom:abc1234', { module: 3 }))?.text,
+    ).toEqual('Custom:abc1234');
+    expect(
+      readQrCode(bedWithCode('Custom:abc1234', { angle: 30 }))?.text,
+    ).toEqual('Custom:abc1234');
+    expect(
+      readQrCode(bedWithCode('Custom:abc1234', { skew: 12 }))?.text,
+    ).toEqual('Custom:abc1234');
   });
 
   it('reads tilted codes', () => {
-    expect(readQrCode(bedWithCode('Custom:abc1234', { module: 6, tilted: 35 }))?.text).toEqual('Custom:abc1234');
-    expect(readQrCode(bedWithCode('Custom:abc1234', { module: 7, tilted: 50, angle: 20 }))?.text).toEqual('Custom:abc1234');
+    expect(
+      readQrCode(bedWithCode('Custom:abc1234', { module: 6, tilted: 35 }))
+        ?.text,
+    ).toEqual('Custom:abc1234');
+    expect(
+      readQrCode(
+        bedWithCode('Custom:abc1234', { module: 7, tilted: 50, angle: 20 }),
+      )?.text,
+    ).toEqual('Custom:abc1234');
   });
 
   it('reads light on dark codes', () => {
-    expect(readQrCode(bedWithCode('Custom:abc1234', { module: 6, inverted: true }))?.text).toEqual('Custom:abc1234');
+    expect(
+      readQrCode(bedWithCode('Custom:abc1234', { module: 6, inverted: true }))
+        ?.text,
+    ).toEqual('Custom:abc1234');
   });
 
   it('reads codes that include the material settings', () => {
     const settings = `Custom:abc1234|${JSON.stringify({ n: 'Birch', t: 'Thin', c: { p: 100, s: 180 } })}`;
-    expect(readQrCode(bedWithCode(settings, { module: 4, angle: 15 }))?.text).toEqual(settings);
+    expect(
+      readQrCode(bedWithCode(settings, { module: 4, angle: 15 }))?.text,
+    ).toEqual(settings);
 
     // Long settings make large codes, which have alignment patterns and
     // version information.
     const long = `Custom:abc1234|${JSON.stringify({
       n: 'Baltic Birch Plywood – 3mm',
-      c: [{ p: 100, s: 180, n: 1 }, { p: 90, s: 160, n: 2 }],
-      e: [{ p: 60, s: 1000, l: 270 }, { p: 40, s: 1000, l: 340 }, { p: 80, s: 800, l: 195 }],
+      c: [
+        { p: 100, s: 180, n: 1 },
+        { p: 90, s: 160, n: 2 },
+      ],
+      e: [
+        { p: 60, s: 1000, l: 270 },
+        { p: 40, s: 1000, l: 340 },
+        { p: 80, s: 800, l: 195 },
+      ],
     })}`;
-    expect(readQrCode(bedWithCode(long, { module: 5, tilted: 30, angle: 10 }))?.text).toEqual(long);
+    expect(
+      readQrCode(bedWithCode(long, { module: 5, tilted: 30, angle: 10 }))?.text,
+    ).toEqual(long);
   });
 });
 
@@ -255,7 +328,11 @@ describe('readQrCode on other images', () => {
     drawText(canvas, 60, 60, 1480, 10);
     drawText(canvas, 60, 300, 600, 30);
     drawText(canvas, 1100, 300, 440, 30);
-    context.drawImage(drawCode(TEXT, { module: 6, light: '#f4f1ea' }), 700, 300);
+    context.drawImage(
+      drawCode(TEXT, { module: 6, light: '#f4f1ea' }),
+      700,
+      300,
+    );
     expect(readQrCode(pixelsOf(canvas))?.text).toEqual(TEXT);
   });
 
@@ -273,9 +350,24 @@ describe('readQrCode on other images', () => {
 
     const result = readQrCode(pixelsOf(canvas));
     expect(result).toMatchObject({ text: TEXT, version: 4, mirrored: false });
-    [[-495, -495], [495, -495], [495, 495], [-495, 495]].forEach(([x, y], index) => {
-      expect(Math.abs(result!.corners[index].x - (2000 + x * Math.cos(angle) - y * Math.sin(angle)))).toBeLessThan(2);
-      expect(Math.abs(result!.corners[index].y - (1500 + x * Math.sin(angle) + y * Math.cos(angle)))).toBeLessThan(2);
+    [
+      [-495, -495],
+      [495, -495],
+      [495, 495],
+      [-495, 495],
+    ].forEach(([x, y], index) => {
+      expect(
+        Math.abs(
+          result!.corners[index].x -
+            (2000 + x * Math.cos(angle) - y * Math.sin(angle)),
+        ),
+      ).toBeLessThan(2);
+      expect(
+        Math.abs(
+          result!.corners[index].y -
+            (1500 + x * Math.sin(angle) + y * Math.cos(angle)),
+        ),
+      ).toBeLessThan(2);
     });
   });
 
@@ -334,7 +426,12 @@ describe('readQrCode in hard places', () => {
       const left = 150 + (engraving % 6) * 340;
       const top = 150 + Math.floor(engraving / 6) * 420;
       for (let i = 0; i < 220; i += 1) {
-        context.fillRect(left + ((i * 97) % 230), top + ((i * 61) % 230), 4 + (i % 16), 4 + (i % 10));
+        context.fillRect(
+          left + ((i * 97) % 230),
+          top + ((i * 61) % 230),
+          4 + (i % 16),
+          4 + (i % 10),
+        );
       }
     }
     context.drawImage(drawCode(ID, { module: 4, light: MATERIAL }), 1000, 1060);
@@ -346,16 +443,30 @@ describe('readQrCode in hard places', () => {
     // to misread hundreds of modules across a code this size.
     const settings = `Custom:abc1234|${JSON.stringify({
       n: 'Baltic Birch Plywood – 3mm',
-      c: [{ p: 100, s: 180, n: 1 }, { p: 90, s: 160, n: 2 }],
-      e: [{ p: 60, s: 1000, l: 270 }, { p: 40, s: 1000, l: 340 }, { p: 80, s: 800, l: 195 }],
+      c: [
+        { p: 100, s: 180, n: 1 },
+        { p: 90, s: 160, n: 2 },
+      ],
+      e: [
+        { p: 60, s: 1000, l: 270 },
+        { p: 40, s: 1000, l: 340 },
+        { p: 80, s: 800, l: 195 },
+      ],
     })}`;
     const canvas = emptyBed();
     const context = canvas.getContext('2d');
     context.fillStyle = MATERIAL;
     context.fillRect(800, 60, 1400, 1300);
-    context.drawImage(tilt(drawCode(settings, { module: 6, light: MATERIAL }), 35, 10), 850, 80);
+    context.drawImage(
+      tilt(drawCode(settings, { module: 6, light: MATERIAL }), 35, 10),
+      850,
+      80,
+    );
     blur(canvas, 1);
-    expect(readQrCode(pixelsOf(canvas))).toMatchObject({ text: settings, version: 10 });
+    expect(readQrCode(pixelsOf(canvas))).toMatchObject({
+      text: settings,
+      version: 10,
+    });
   });
 
   it('stays fast with lots of finder-like squares', () => {
@@ -381,7 +492,9 @@ describe('readQrCode in hard places', () => {
     const bed = emptyBed();
     const sticker = drawCode(ID, { module: 3 });
     for (let i = 0; i < 160; i += 1) {
-      bed.getContext('2d').drawImage(sticker, 20 + (i % 16) * 140, 20 + Math.floor(i / 16) * 136);
+      bed
+        .getContext('2d')
+        .drawImage(sticker, 20 + (i % 16) * 140, 20 + Math.floor(i / 16) * 136);
     }
     expect(readQrCode(pixelsOf(bed))?.text).toEqual(ID);
   });
@@ -405,18 +518,27 @@ describe('readQrCodeFromImage', () => {
   });
   afterAll(() => restore());
 
-  const lidImage = () => new Blob([fs.readFileSync(LID_IMAGE)], { type: 'image/jpeg' });
+  const lidImage = () =>
+    new Blob([fs.readFileSync(LID_IMAGE)], { type: 'image/jpeg' });
 
   it('reads a code from an image file', async () => {
-    expect((await readQrCodeFromImage(lidImage()))?.text).toEqual('Custom:3f77f07');
+    expect((await readQrCodeFromImage(lidImage()))?.text).toEqual(
+      'Custom:3f77f07',
+    );
   });
 
   it('gives null for files that are not images', async () => {
-    expect(await readQrCodeFromImage(new Blob(['<html></html>'], { type: 'text/html' }))).toBeNull();
+    expect(
+      await readQrCodeFromImage(
+        new Blob(['<html></html>'], { type: 'text/html' }),
+      ),
+    ).toBeNull();
   });
 
   it('gives null for images larger than the limit', async () => {
     // The lid image is 2304 x 1382.
-    expect(await readQrCodeFromImage(lidImage(), { maxPixels: 2304 * 1382 - 1 })).toBeNull();
+    expect(
+      await readQrCodeFromImage(lidImage(), { maxPixels: 2304 * 1382 - 1 }),
+    ).toBeNull();
   });
 });

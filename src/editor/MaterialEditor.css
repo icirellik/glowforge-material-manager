@@ -2,7 +2,7 @@
   display: flex;
   font-size: 14px;
   margin: 0 0 15px 0;
-  color: #2C2E31;
+  color: #2c2e31;
 
   padding-right: 14px;
   margin-right: 14px;
@@ -60,7 +60,7 @@
 }
 
 .form-field .invalid {
-  border-color: #CF024E;
+  border-color: #cf024e;
 }
 
 .form-field-right {

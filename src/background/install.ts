@@ -9,7 +9,8 @@ export async function initializeStorage(): Promise<void> {
   // Older versions kept the last tab's machine and design and a flag for
   // changes here, the tabs now report their own.
   await chrome.storage.local.remove(['ui', 'shouldUpdate']);
-  const { materials }: StorageLocal = await chrome.storage.local.get('materials');
+  const { materials }: StorageLocal =
+    await chrome.storage.local.get('materials');
   if (materials) {
     await requestSync();
   } else {

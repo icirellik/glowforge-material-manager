@@ -20,7 +20,9 @@ interface BridgeMessage {
  *
  * lidImage - The lid camera image changed, reply with the sticker in it.
  */
-export async function handleBridgeMessage(request: BridgeMessage): Promise<LidImageCheck | null> {
+export async function handleBridgeMessage(
+  request: BridgeMessage,
+): Promise<LidImageCheck | null> {
   log(`message: ${request.type}`);
   if (request.type === 'lidImage' && typeof request.image === 'string') {
     return checkLidImage(request.image);

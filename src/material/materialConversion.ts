@@ -66,7 +66,9 @@ function toFullScore(score: TinyScoreSetting): PluginScoreSetting {
   };
 }
 
-function toTinyVectorEngrave(vectorEngrave: PluginVectorEngraveSetting): TinyVectorEngraveSetting {
+function toTinyVectorEngrave(
+  vectorEngrave: PluginVectorEngraveSetting,
+): TinyVectorEngraveSetting {
   return {
     n: vectorEngrave.name,
     p: vectorEngrave.power,
@@ -77,7 +79,9 @@ function toTinyVectorEngrave(vectorEngrave: PluginVectorEngraveSetting): TinyVec
   };
 }
 
-function toFullVectorEngrave(vectorEngrave: TinyVectorEngraveSetting): PluginVectorEngraveSetting {
+function toFullVectorEngrave(
+  vectorEngrave: TinyVectorEngraveSetting,
+): PluginVectorEngraveSetting {
   return {
     name: vectorEngrave.n,
     power: vectorEngrave.p,
@@ -88,7 +92,9 @@ function toFullVectorEngrave(vectorEngrave: TinyVectorEngraveSetting): PluginVec
   };
 }
 
-function toTinyBitmmapEngrave(bitmapEngrave: PluginBitmapEngraveSetting): TinyBitmapEngraveSetting {
+function toTinyBitmmapEngrave(
+  bitmapEngrave: PluginBitmapEngraveSetting,
+): TinyBitmapEngraveSetting {
   return {
     n: bitmapEngrave.name,
     p: bitmapEngrave.power,
@@ -104,7 +110,9 @@ function toTinyBitmmapEngrave(bitmapEngrave: PluginBitmapEngraveSetting): TinyBi
   };
 }
 
-function toFullBitmapEngrave(bitmapEngrave: TinyBitmapEngraveSetting): PluginBitmapEngraveSetting {
+function toFullBitmapEngrave(
+  bitmapEngrave: TinyBitmapEngraveSetting,
+): PluginBitmapEngraveSetting {
   return {
     name: bitmapEngrave.n,
     power: bitmapEngrave.p,

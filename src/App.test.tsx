@@ -34,9 +34,7 @@ describe('App', () => {
 
   it('renders without crashing', () => {
     const div = document.createElement('div');
-    ReactDOM.render(<App
-      platform="linux"
-    />, div);
+    ReactDOM.render(<App platform="linux" />, div);
     ReactDOM.unmountComponentAtNode(div);
   });
 });

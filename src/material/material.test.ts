@@ -1,8 +1,9 @@
+import { createMaterial } from './material';
 import {
-  createMaterial,
-} from './material';
-import {
-  createEmptyMaterial, createEmptyScore, createEmptyBitmapEngrave, createEmptyVectorEngrave,
+  createEmptyMaterial,
+  createEmptyScore,
+  createEmptyBitmapEngrave,
+  createEmptyVectorEngrave,
 } from '../lib/materialHelpers';
 
 describe('material', () => {
@@ -32,7 +33,9 @@ describe('material', () => {
       ...createEmptyMaterial(),
     };
 
-    expect(createMaterial(rawMaterial, 'Custom:Custom:ce00539').id).toEqual('Custom:ce00539');
+    expect(createMaterial(rawMaterial, 'Custom:Custom:ce00539').id).toEqual(
+      'Custom:ce00539',
+    );
     expect(createMaterial(rawMaterial, 'ce00539').id).toEqual('Custom:ce00539');
   });
 

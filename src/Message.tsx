@@ -8,7 +8,7 @@ type MessageProps = {
   clearMessage: ClearMessage;
   color?: string;
   message: string;
-}
+};
 
 interface MessageStyle {
   backgroundColor?: string;
@@ -30,7 +30,9 @@ export default function Message(props: MessageProps) {
         <span className="message-box__message">{props.message}</span>
         <div className="message-box__close">
           <IconClear
-            click={() => { props.clearMessage(); }}
+            click={() => {
+              props.clearMessage();
+            }}
             title="Dismiss"
           />
         </div>

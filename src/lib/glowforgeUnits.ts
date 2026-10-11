@@ -1,6 +1,4 @@
-import {
-  roundToNearest5,
-} from './roundToNearest5';
+import { roundToNearest5 } from './roundToNearest5';
 
 const MAX_MOTOR_SPEED = 8500;
 const MIN_UI_SPEED = 100;
@@ -23,7 +21,8 @@ const MIN_POWER = 1;
 export function clamp(value: number, min: number, max: number) {
   if (value > max) {
     return max;
-  } if (value < min) {
+  }
+  if (value < min) {
     return min;
   }
   return value;
@@ -36,7 +35,8 @@ export function clamp(value: number, min: number, max: number) {
 function getMaxVRSpeed(minSpeed: number, maxSpeed: number) {
   const speedDifference = maxSpeed - minSpeed;
   const uiSpeedRange = MAX_UI_SPEED - MIN_UI_SPEED;
-  const vrSpeed = speedDifference / MAX_MOTOR_SPEED * uiSpeedRange + MIN_UI_SPEED;
+  const vrSpeed =
+    (speedDifference / MAX_MOTOR_SPEED) * uiSpeedRange + MIN_UI_SPEED;
   return 100 * Math.round(vrSpeed / 100);
 }
 
@@ -45,7 +45,8 @@ function getMaxVRSpeed(minSpeed: number, maxSpeed: number) {
  */
 function toDisplaySpeed(rawSpeed: number, minSpeed: number, maxSpeed: number) {
   const maxVRSpeed = getMaxVRSpeed(minSpeed, maxSpeed) - MIN_UI_SPEED;
-  const speed = (rawSpeed - minSpeed) / (maxSpeed - minSpeed) * maxVRSpeed + MIN_UI_SPEED;
+  const speed =
+    ((rawSpeed - minSpeed) / (maxSpeed - minSpeed)) * maxVRSpeed + MIN_UI_SPEED;
   return Math.round(speed);
 }
 
@@ -53,7 +54,12 @@ function toDisplaySpeed(rawSpeed: number, minSpeed: number, maxSpeed: number) {
  * Converts a Glowforge UI speed to a Glowforge internal speed.
  */
 function toRealSpeed(displaySpeed: number, minSpeed: number, maxSpeed: number) {
-  return (displaySpeed - minSpeed) / (getMaxVRSpeed(minSpeed, maxSpeed) - MIN_UI_SPEED) * (maxSpeed - minSpeed) + minSpeed;
+  return (
+    ((displaySpeed - minSpeed) /
+      (getMaxVRSpeed(minSpeed, maxSpeed) - MIN_UI_SPEED)) *
+      (maxSpeed - minSpeed) +
+    minSpeed
+  );
 }
 
 // Engrave conversion settings.
@@ -76,11 +82,11 @@ export function toRealCutSpeed(displaySpeed: number) {
 
 // Power conversion settings.
 export function toDisplayPower(power: number) {
-  return Math.round(power / (MAX_POWER - MIN_POWER) * MAX_POWER);
+  return Math.round((power / (MAX_POWER - MIN_POWER)) * MAX_POWER);
 }
 
 export function toRealPower(displayPower: number) {
-  return displayPower / MAX_POWER * (MAX_POWER - 1);
+  return (displayPower / MAX_POWER) * (MAX_POWER - 1);
 }
 
 // Lines per inch.
@@ -100,5 +106,5 @@ export function toSteps(linesPerInch: number) {
 }
 
 export function toDisplayPowerWords(power: number) {
-  return (power === 100) ? 'Max' : toDisplayPower(power);
+  return power === 100 ? 'Max' : toDisplayPower(power);
 }

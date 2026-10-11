@@ -44,13 +44,20 @@ function blockSizeFor(width: number, height: number): number {
 /**
  * Marks the blocks that have strong contrast and many edges.
  */
-function findBusyBlocks(luminance: Uint8Array, width: number, height: number, blockSize: number) {
+function findBusyBlocks(
+  luminance: Uint8Array,
+  width: number,
+  height: number,
+  blockSize: number,
+) {
   const columns = Math.ceil(width / blockSize);
   const rows = Math.ceil(height / blockSize);
   const min = new Uint8Array(columns * rows).fill(255);
   const max = new Uint8Array(columns * rows);
   const edges = new Uint32Array(columns * rows);
-  const blockColumns = Int32Array.from({ length: width }, (_, x) => Math.floor(x / blockSize));
+  const blockColumns = Int32Array.from({ length: width }, (_, x) =>
+    Math.floor(x / blockSize),
+  );
 
   for (let y = 0; y < height; y += 1) {
     const rowOffset = y * width;
@@ -64,7 +71,10 @@ function findBusyBlocks(luminance: Uint8Array, width: number, height: number, bl
       if (value > max[block]) max[block] = value;
       const right = x + 2 < width ? luminance[i + 2] : value;
       const below = hasBelow ? luminance[i + 2 * width] : value;
-      if (Math.abs(right - value) > EDGE_THRESHOLD || Math.abs(below - value) > EDGE_THRESHOLD) {
+      if (
+        Math.abs(right - value) > EDGE_THRESHOLD ||
+        Math.abs(below - value) > EDGE_THRESHOLD
+      ) {
         edges[block] += 1;
         // The contrast includes the pixels that edges are found against,
         // which can be in the next block, so that blocks lined up with a
@@ -80,7 +90,10 @@ function findBusyBlocks(luminance: Uint8Array, width: number, height: number, bl
   const busy = new Uint8Array(columns * rows);
   const minEdges = blockSize * blockSize * MIN_EDGE_DENSITY;
   for (let block = 0; block < busy.length; block += 1) {
-    busy[block] = max[block] - min[block] >= MIN_BLOCK_CONTRAST && edges[block] >= minEdges ? 1 : 0;
+    busy[block] =
+      max[block] - min[block] >= MIN_BLOCK_CONTRAST && edges[block] >= minEdges
+        ? 1
+        : 0;
   }
   return { busy, columns, rows };
 }
@@ -99,7 +112,8 @@ function groupBlocks(busy: Uint8Array, columns: number, rows: number) {
           for (let dx = -1; dx <= 1; dx += 1) {
             const r = row + dy;
             const c = column + dx;
-            if (r >= 0 && r < rows && c >= 0 && c < columns) grown[r * columns + c] = 1;
+            if (r >= 0 && r < rows && c >= 0 && c < columns)
+              grown[r * columns + c] = 1;
           }
         }
       }
@@ -140,7 +154,11 @@ function groupBlocks(busy: Uint8Array, columns: number, rows: number) {
         }
       }
       groups.push({
-        left, top, right, bottom, busyCount,
+        left,
+        top,
+        right,
+        bottom,
+        busyCount,
       });
     }
   }
@@ -166,7 +184,10 @@ interface Window extends Blocks {
  * Plans the windows to read a group in: the whole group when it's compact, and
  * square tiles over it when it's long or large.
  */
-function windowsFor(group: Blocks & { busyCount: number }, countBusy: (blocks: Blocks) => number): Window[] {
+function windowsFor(
+  group: Blocks & { busyCount: number },
+  countBusy: (blocks: Blocks) => number,
+): Window[] {
   const width = group.right - group.left + 1;
   const height = group.bottom - group.top + 1;
   const aspect = Math.max(width / height, height / width);
@@ -179,7 +200,10 @@ function windowsFor(group: Blocks & { busyCount: number }, countBusy: (blocks: B
   if (aspect <= MAX_ASPECT + 1) {
     windows.push({ ...group, compact: false });
   }
-  const side = Math.min(TILE_BLOCKS, Math.max(MIN_TILE_BLOCKS, Math.min(width, height)));
+  const side = Math.min(
+    TILE_BLOCKS,
+    Math.max(MIN_TILE_BLOCKS, Math.min(width, height)),
+  );
   const step = Math.max(1, Math.round(side / 3));
   const starts = (from: number, length: number) => {
     const last = from + Math.max(0, length - side);
@@ -191,7 +215,10 @@ function windowsFor(group: Blocks & { busyCount: number }, countBusy: (blocks: B
   for (const top of starts(group.top, height)) {
     for (const left of starts(group.left, width)) {
       const tile = {
-        left, top, right: left + side - 1, bottom: top + side - 1,
+        left,
+        top,
+        right: left + side - 1,
+        bottom: top + side - 1,
       };
       const busyCount = countBusy(tile);
       if (busyCount >= MIN_REGION_BLOCKS) {
@@ -208,34 +235,56 @@ function windowsFor(group: Blocks & { busyCount: number }, countBusy: (blocks: B
 export function findRegions(pixels: Pixels): Region[] {
   const { width: fullWidth, height: fullHeight } = pixels;
   // Sensor noise would otherwise look like edges everywhere.
-  const factor = Math.max(1, Math.ceil(Math.max(fullWidth, fullHeight) / DETECTION_SIZE));
-  const { luminance, width, height } = averageLuminance(pixels, {
-    x: 0, y: 0, width: fullWidth, height: fullHeight,
-  }, factor);
+  const factor = Math.max(
+    1,
+    Math.ceil(Math.max(fullWidth, fullHeight) / DETECTION_SIZE),
+  );
+  const { luminance, width, height } = averageLuminance(
+    pixels,
+    {
+      x: 0,
+      y: 0,
+      width: fullWidth,
+      height: fullHeight,
+    },
+    factor,
+  );
 
   const blockSize = blockSizeFor(width, height);
-  const { busy, columns, rows } = findBusyBlocks(luminance, width, height, blockSize);
+  const { busy, columns, rows } = findBusyBlocks(
+    luminance,
+    width,
+    height,
+    blockSize,
+  );
 
   // Counts busy blocks in any window, from a table of running totals.
   const totals = new Uint32Array((columns + 1) * (rows + 1));
   for (let row = 0; row < rows; row += 1) {
     for (let column = 0, sum = 0; column < columns; column += 1) {
       sum += busy[row * columns + column];
-      totals[(row + 1) * (columns + 1) + column + 1] = totals[row * (columns + 1) + column + 1] + sum;
+      totals[(row + 1) * (columns + 1) + column + 1] =
+        totals[row * (columns + 1) + column + 1] + sum;
     }
   }
-  const countBusy = ({
-    left, top, right, bottom,
-  }: Blocks) => {
+  const countBusy = ({ left, top, right, bottom }: Blocks) => {
     const r = Math.min(right, columns - 1) + 1;
     const b = Math.min(bottom, rows - 1) + 1;
     const stride = columns + 1;
-    return totals[b * stride + r] - totals[top * stride + r] - totals[b * stride + left] + totals[top * stride + left];
+    return (
+      totals[b * stride + r] -
+      totals[top * stride + r] -
+      totals[b * stride + left] +
+      totals[top * stride + left]
+    );
   };
 
   const windows = groupBlocks(busy, columns, rows)
     .flatMap((group) => windowsFor(group, countBusy))
-    .sort((a, b) => Number(b.compact) - Number(a.compact) || b.busyCount - a.busyCount);
+    .sort(
+      (a, b) =>
+        Number(b.compact) - Number(a.compact) || b.busyCount - a.busyCount,
+    );
 
   const regions: Region[] = [];
   let pixelsLeft = MAX_DECODE_PIXELS;
@@ -247,8 +296,16 @@ export function findRegions(pixels: Pixels): Region[] {
     const region = {
       x,
       y,
-      width: Math.min(fullWidth, ((window.right + 1) * blockSize + margin) * factor) - x,
-      height: Math.min(fullHeight, ((window.bottom + 1) * blockSize + margin) * factor) - y,
+      width:
+        Math.min(
+          fullWidth,
+          ((window.right + 1) * blockSize + margin) * factor,
+        ) - x,
+      height:
+        Math.min(
+          fullHeight,
+          ((window.bottom + 1) * blockSize + margin) * factor,
+        ) - y,
     };
     const size = decodeSize(region);
     if (regions.length >= MAX_REGIONS || size * size > pixelsLeft) {

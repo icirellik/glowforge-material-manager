@@ -24,11 +24,16 @@ function signedArea(points: Point[]): number {
  */
 function convexHull(points: Point[]): Point[] {
   const sorted = [...points].sort((a, b) => a.x - b.x || a.y - b.y);
-  const cross = (o: Point, a: Point, b: Point) => (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+  const cross = (o: Point, a: Point, b: Point) =>
+    (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
   const half = (input: Point[]) => {
     const hull: Point[] = [];
     for (const point of input) {
-      while (hull.length >= 2 && cross(hull[hull.length - 2], hull[hull.length - 1], point) <= 0) hull.pop();
+      while (
+        hull.length >= 2 &&
+        cross(hull[hull.length - 2], hull[hull.length - 1], point) <= 0
+      )
+        hull.pop();
       hull.push(point);
     }
     hull.pop();
@@ -51,7 +56,8 @@ function largestQuadrilateral(hull: Point[]): Point[] | null {
     return null;
   }
 
-  const triangle = (a: Point, b: Point, c: Point) => Math.abs((b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y));
+  const triangle = (a: Point, b: Point, c: Point) =>
+    Math.abs((b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y));
   let best: Point[] | null = null;
   let bestArea = 0;
   for (let i = 0; i < n; i += 1) {
@@ -60,13 +66,19 @@ function largestQuadrilateral(hull: Point[]): Point[] | null {
       let leftArea = 0;
       for (let j = i + 1; j < k; j += 1) {
         const area = triangle(points[i], points[j], points[k]);
-        if (area > leftArea) { leftArea = area; left = j; }
+        if (area > leftArea) {
+          leftArea = area;
+          left = j;
+        }
       }
       let right = -1;
       let rightArea = 0;
       for (let l = k + 1; l < n + i; l += 1) {
         const area = triangle(points[k], points[l % n], points[i]);
-        if (area > rightArea) { rightArea = area; right = l % n; }
+        if (area > rightArea) {
+          rightArea = area;
+          right = l % n;
+        }
       }
       if (left >= 0 && right >= 0 && leftArea + rightArea > bestArea) {
         bestArea = leftArea + rightArea;
@@ -82,14 +94,18 @@ function largestQuadrilateral(hull: Point[]): Point[] | null {
  * its neighbourhood so uneven lighting doesn't matter. Inverted codes, like
  * ones engraved on dark material, are light on dark.
  */
-export function binarize({ data, width, height }: Grey, inverted: boolean): Uint8Array {
+export function binarize(
+  { data, width, height }: Grey,
+  inverted: boolean,
+): Uint8Array {
   const stride = width + 1;
   const integral = new Float64Array(stride * (height + 1));
   for (let y = 0; y < height; y += 1) {
     let rowSum = 0;
     for (let x = 0; x < width; x += 1) {
       rowSum += data[y * width + x];
-      integral[(y + 1) * stride + x + 1] = integral[y * stride + x + 1] + rowSum;
+      integral[(y + 1) * stride + x + 1] =
+        integral[y * stride + x + 1] + rowSum;
     }
   }
 
@@ -110,7 +126,11 @@ export function binarize({ data, width, height }: Grey, inverted: boolean): Uint
     for (let x = 0, i = y * width; x < width; x += 1, i += 1) {
       const left = lefts[x];
       const right = rights[x];
-      const sum = integral[bottom + right] - integral[top + right] - integral[bottom + left] + integral[top + left];
+      const sum =
+        integral[bottom + right] -
+        integral[top + right] -
+        integral[bottom + left] +
+        integral[top + left];
       const mean = sum / (rows * (right - left));
       const value = data[i];
       dark[i] = (inverted ? value > mean + 10 : value < mean - 10) ? 1 : 0;
@@ -217,7 +237,11 @@ export function toBinary(grey: Grey, inverted: boolean): Binary {
   const dark = binarize(grey, inverted);
   const { labels, components } = findComponents(dark, grey.width, grey.height);
   return {
-    dark, width: grey.width, height: grey.height, labels, components,
+    dark,
+    width: grey.width,
+    height: grey.height,
+    labels,
+    components,
   };
 }
 
@@ -225,7 +249,10 @@ export function toBinary(grey: Grey, inverted: boolean): Binary {
  * The centre of a group of pixels.
  */
 export function centroid(component: Component): Point {
-  return { x: component.sumX / component.count + 0.5, y: component.sumY / component.count + 0.5 };
+  return {
+    x: component.sumX / component.count + 0.5,
+    y: component.sumY / component.count + 0.5,
+  };
 }
 
 export interface Finder {
@@ -247,15 +274,19 @@ const MIDDLE_RATIO = 3 / 7;
  * Finds QR finder patterns: a dark ring around a solid dark centre, which the
  * QR standard always surrounds with light modules so they stand alone.
  */
-export function findFinders({
-  width, labels, components,
-}: Binary): Finder[] {
+export function findFinders({ width, labels, components }: Binary): Finder[] {
   const finders: Finder[] = [];
   for (const ring of components) {
     const ringWidth = ring.right - ring.left + 1;
     const ringHeight = ring.bottom - ring.top + 1;
     const fill = ring.count / (ringWidth * ringHeight);
-    if (ring.touchesEdge || ringWidth < 7 || ringHeight < 7 || fill < 0.2 || fill > 0.8) {
+    if (
+      ring.touchesEdge ||
+      ringWidth < 7 ||
+      ringHeight < 7 ||
+      fill < 0.2 ||
+      fill > 0.8
+    ) {
       continue;
     }
 
@@ -264,10 +295,17 @@ export function findFinders({
     const middleX = (ring.left + ring.right) / 2;
     const middleY = (ring.top + ring.bottom) / 2;
     const nudge = Math.max(1, Math.round(ringWidth / 14));
-    const nudges = [[0, 0], [-nudge, 0], [nudge, 0], [0, -nudge], [0, nudge]];
+    const nudges = [
+      [0, 0],
+      [-nudge, 0],
+      [nudge, 0],
+      [0, -nudge],
+      [0, nudge],
+    ];
     let middle: Component | undefined;
     for (const [dx, dy] of nudges) {
-      const label = labels[Math.round(middleY + dy) * width + Math.round(middleX + dx)];
+      const label =
+        labels[Math.round(middleY + dy) * width + Math.round(middleX + dx)];
       if (label && label !== ring.label) {
         middle = components[label - 1];
         break;
@@ -277,9 +315,13 @@ export function findFinders({
       continue;
     }
     const ratio = (middle.right - middle.left + 1) / ringWidth;
-    if (Math.abs((middle.left + middle.right) / 2 - middleX) > ringWidth * 0.15
-      || Math.abs((middle.top + middle.bottom) / 2 - middleY) > ringHeight * 0.15
-      || ratio < 0.2 || ratio > 0.65) {
+    if (
+      Math.abs((middle.left + middle.right) / 2 - middleX) > ringWidth * 0.15 ||
+      Math.abs((middle.top + middle.bottom) / 2 - middleY) >
+        ringHeight * 0.15 ||
+      ratio < 0.2 ||
+      ratio > 0.65
+    ) {
       continue;
     }
 
@@ -296,21 +338,32 @@ export function findFinders({
         }
       }
       if (left >= 0) {
-        outline.push({ x: left, y }, { x: right, y }, { x: left, y: y + 1 }, { x: right, y: y + 1 });
+        outline.push(
+          { x: left, y },
+          { x: right, y },
+          { x: left, y: y + 1 },
+          { x: right, y: y + 1 },
+        );
       }
     }
     const corners = largestQuadrilateral(convexHull(outline));
     if (corners) {
       let perimeter = 0;
       for (let i = 0; i < 4; i += 1) {
-        perimeter += Math.hypot(corners[(i + 1) % 4].x - corners[i].x, corners[(i + 1) % 4].y - corners[i].y);
+        perimeter += Math.hypot(
+          corners[(i + 1) % 4].x - corners[i].x,
+          corners[(i + 1) % 4].y - corners[i].y,
+        );
       }
       finders.push({
         center: centroid(middle),
         corners,
         // A finder is 7 modules wide.
         moduleSize: perimeter / 28,
-        irregularity: Math.abs(Math.log(ringWidth / ringHeight)) + Math.abs(fill - RING_FILL) + Math.abs(ratio - MIDDLE_RATIO),
+        irregularity:
+          Math.abs(Math.log(ringWidth / ringHeight)) +
+          Math.abs(fill - RING_FILL) +
+          Math.abs(ratio - MIDDLE_RATIO),
       });
     }
   }
@@ -334,8 +387,10 @@ const MAX_FINDER_SETS = 3;
  */
 function couldPair(a: Finder, b: Finder): boolean {
   const smaller = Math.min(a.moduleSize, b.moduleSize);
-  return Math.max(a.moduleSize, b.moduleSize) / smaller <= 2
-    && Math.hypot(a.center.x - b.center.x, a.center.y - b.center.y) >= smaller * 6;
+  return (
+    Math.max(a.moduleSize, b.moduleSize) / smaller <= 2 &&
+    Math.hypot(a.center.x - b.center.x, a.center.y - b.center.y) >= smaller * 6
+  );
 }
 
 /**
@@ -343,9 +398,12 @@ function couldPair(a: Finder, b: Finder): boolean {
  * square first, each as the top left, top right and bottom left of the code.
  */
 export function pickFinders(found: Finder[]): Finder[][] {
-  const finders = found.length > MAX_FINDER_CANDIDATES
-    ? [...found].sort((a, b) => a.irregularity - b.irregularity).slice(0, MAX_FINDER_CANDIDATES)
-    : found;
+  const finders =
+    found.length > MAX_FINDER_CANDIDATES
+      ? [...found]
+          .sort((a, b) => a.irregularity - b.irregularity)
+          .slice(0, MAX_FINDER_CANDIDATES)
+      : found;
   const count = finders.length;
   const pairs = new Uint8Array(count * count);
   for (let i = 0; i < count; i += 1) {
@@ -358,9 +416,12 @@ export function pickFinders(found: Finder[]): Finder[][] {
   }
 
   // The best sets so far, best first.
-  const best: { finders: Finder[], score: number }[] = [];
+  const best: { finders: Finder[]; score: number }[] = [];
   const consider = (set: Finder[], score: number) => {
-    if (best.length === MAX_FINDER_SETS && score >= best[best.length - 1].score) {
+    if (
+      best.length === MAX_FINDER_SETS &&
+      score >= best[best.length - 1].score
+    ) {
       return;
     }
     let index = best.length;
@@ -380,7 +441,9 @@ export function pickFinders(found: Finder[]): Finder[][] {
             // a set.
             for (let corner = 0; corner < 3; corner += 1) {
               const topLeft = triple[corner];
-              let [topRight, bottomLeft] = triple.filter((_, index) => index !== corner);
+              let [topRight, bottomLeft] = triple.filter(
+                (_, index) => index !== corner,
+              );
               const ux = topRight.center.x - topLeft.center.x;
               const uy = topRight.center.y - topLeft.center.y;
               const vx = bottomLeft.center.x - topLeft.center.x;
@@ -392,8 +455,12 @@ export function pickFinders(found: Finder[]): Finder[][] {
               // Finders are at least 14 modules apart, allowing for the module
               // size, which is an average of both directions, being off when
               // the code is tilted.
-              if (u >= topLeft.moduleSize * 7 && v >= topLeft.moduleSize * 7
-                && cosine < MAX_FINDER_COSINE && aspect < Math.log(MAX_FINDER_ASPECT)) {
+              if (
+                u >= topLeft.moduleSize * 7 &&
+                v >= topLeft.moduleSize * 7 &&
+                cosine < MAX_FINDER_COSINE &&
+                aspect < Math.log(MAX_FINDER_ASPECT)
+              ) {
                 // Clockwise on screen, like a code that isn't mirrored.
                 // Mirrored codes come out transposed, which the decoder undoes.
                 if (ux * vy - uy * vx < 0) {

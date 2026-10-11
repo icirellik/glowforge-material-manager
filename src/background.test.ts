@@ -4,13 +4,24 @@ import { initializeStorage } from './background/install';
 import { addContentScriptsToOpenTabs } from './lib/contentScripts';
 
 vi.mock('./background/lidImageQrCode', () => ({
-  checkLidImage: vi.fn(async () => ({ read: true, materialId: 'Custom:abc1234' })),
+  checkLidImage: vi.fn(async () => ({
+    read: true,
+    materialId: 'Custom:abc1234',
+  })),
 }));
-vi.mock('./background/install', () => ({ initializeStorage: vi.fn(async () => {}) }));
-vi.mock('./lib/contentScripts', () => ({ addContentScriptsToOpenTabs: vi.fn(async () => {}) }));
+vi.mock('./background/install', () => ({
+  initializeStorage: vi.fn(async () => {}),
+}));
+vi.mock('./lib/contentScripts', () => ({
+  addContentScriptsToOpenTabs: vi.fn(async () => {}),
+}));
 
 const listeners: Record<string, (...args: any[]) => any> = {};
-const event = (name: string) => ({ addListener: (listener: (...args: any[]) => any) => { listeners[name] = listener; } });
+const event = (name: string) => ({
+  addListener: (listener: (...args: any[]) => any) => {
+    listeners[name] = listener;
+  },
+});
 
 describe('background', () => {
   beforeAll(async () => {
@@ -33,16 +44,28 @@ describe('background', () => {
 
   it('checks lid images that the tabs send', async () => {
     const response = await new Promise((resolve) => {
-      expect(listeners.message({ target: 'background', type: 'lidImage', image: 'https://lid' }, {}, resolve)).toBe(true);
+      expect(
+        listeners.message(
+          { target: 'background', type: 'lidImage', image: 'https://lid' },
+          {},
+          resolve,
+        ),
+      ).toBe(true);
     });
     expect(checkLidImage).toHaveBeenCalledWith('https://lid');
     expect(response).toEqual({ read: true, materialId: 'Custom:abc1234' });
   });
 
   it('ignores other messages', async () => {
-    expect(listeners.message({ target: 'bridge', type: 'lidImage' }, {}, () => {})).toBe(false);
+    expect(
+      listeners.message({ target: 'bridge', type: 'lidImage' }, {}, () => {}),
+    ).toBe(false);
     const response = await new Promise((resolve) => {
-      listeners.message({ target: 'background', type: 'lidImage', image: 42 }, {}, resolve);
+      listeners.message(
+        { target: 'background', type: 'lidImage', image: 42 },
+        {},
+        resolve,
+      );
     });
     expect(response).toBeNull();
     expect(checkLidImage).not.toHaveBeenCalled();

@@ -3,15 +3,10 @@ import type { IconProps } from './IconsProps';
 import { DEFAULT_ICON_STYLES } from './IconsShared';
 import './Icons.css';
 
-export const IconSyncDisabled: FunctionComponent<IconProps> = (props: IconProps) => {
-  const {
-    className,
-    click,
-    fill,
-    height,
-    title,
-    width,
-  } = props;
+export const IconSyncDisabled: FunctionComponent<IconProps> = (
+  props: IconProps,
+) => {
+  const { className, click, fill, height, title, width } = props;
 
   return (
     <button

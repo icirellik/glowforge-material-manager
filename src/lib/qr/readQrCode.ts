@@ -3,11 +3,12 @@ import type { DecodedQrCode } from './decodeModules';
 import { findFinders, pickFinders, toBinary } from './finders';
 import type { Binary, Finder } from './finders';
 import { extractRegion } from './image';
-import type {
-  Grey, Pixels, Point, Region,
-} from './image';
+import type { Grey, Pixels, Point, Region } from './image';
 import {
-  estimateSize, mapFinderCorners, project, refineWithAlignment,
+  estimateSize,
+  mapFinderCorners,
+  project,
+  refineWithAlignment,
 } from './perspective';
 import { findRegions } from './regions';
 import { classifyModules, sampleModuleValues } from './sampleModules';
@@ -48,15 +49,24 @@ export interface ImageOptions {
 function readModules(grey: Grey, h: number[], size: number, inverted: boolean) {
   const values = sampleModuleValues(grey, h, size);
   const modules = classifyModules(values, size, inverted, false);
-  const decoded = decodeModules(modules) || decodeModules(classifyModules(values, size, inverted, true));
+  const decoded =
+    decodeModules(modules) ||
+    decodeModules(classifyModules(values, size, inverted, true));
   return { modules, decoded };
 }
 
 /**
  * Reads a code from the position of its finders.
  */
-function readCode(grey: Grey, binary: Binary, finders: Finder[], inverted: boolean): QrCodeResult | null {
-  const read = (size: number): { modules: Modules, result: QrCodeResult | null } => {
+function readCode(
+  grey: Grey,
+  binary: Binary,
+  finders: Finder[],
+  inverted: boolean,
+): QrCodeResult | null {
+  const read = (
+    size: number,
+  ): { modules: Modules; result: QrCodeResult | null } => {
     const fromCorners = mapFinderCorners(finders, size);
     const refined = refineWithAlignment(fromCorners, finders, size, binary);
     let first: Modules | null = null;
@@ -64,7 +74,12 @@ function readCode(grey: Grey, binary: Binary, finders: Finder[], inverted: boole
       const { modules, decoded } = readModules(grey, h, size, inverted);
       first = first || modules;
       if (decoded) {
-        const corners = [[0, 0], [size, 0], [size, size], [0, size]].map(([X, Y]) => grey.toImage(project(h, X, Y)));
+        const corners = [
+          [0, 0],
+          [size, 0],
+          [size, size],
+          [0, size],
+        ].map(([X, Y]) => grey.toImage(project(h, X, Y)));
         return { modules: first, result: { ...decoded, corners } };
       }
     }
@@ -138,7 +153,7 @@ export function readQrCode(pixels: Pixels): QrCodeResult | null {
  */
 export async function readQrCodeFromImage(
   source: ImageBitmapSource,
-  { maxPixels = 50000000 }: ImageOptions = {}
+  { maxPixels = 50000000 }: ImageOptions = {},
 ): Promise<QrCodeResult | null> {
   let bitmap: ImageBitmap;
   try {

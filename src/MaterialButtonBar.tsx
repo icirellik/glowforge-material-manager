@@ -41,14 +41,18 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
       return (
         <div className="materialButtons">
           <button
-            onClick={() => { props.addMaterial(); }}
+            onClick={() => {
+              props.addMaterial();
+            }}
             title="Save the new material"
             type="button"
           >
             Create
           </button>
           <button
-            onClick={() => { props.setEditorModeDefault(); }}
+            onClick={() => {
+              props.setEditorModeDefault();
+            }}
             title="Cancel"
             type="button"
           >
@@ -60,14 +64,18 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
       return (
         <div className="materialButtons">
           <button
-            onClick={() => { props.setEditorModeDefault(); }}
+            onClick={() => {
+              props.setEditorModeDefault();
+            }}
             title="Home"
             type="button"
           >
             Home
           </button>
           <button
-            onClick={async () => { props.createBackup(); }}
+            onClick={async () => {
+              props.createBackup();
+            }}
             title="Creates a new backup of all your materials."
             type="button"
           >
@@ -79,7 +87,9 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
       return (
         <div className="materialButtons">
           <button
-            onClick={() => { props.addMaterial(); }}
+            onClick={() => {
+              props.addMaterial();
+            }}
             title="Save the new material"
             type="button"
           >
@@ -104,7 +114,9 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
       return (
         <div className="materialButtons">
           <button
-            onClick={() => { props.editMaterial(props.title); }}
+            onClick={() => {
+              props.editMaterial(props.title);
+            }}
             title="Update the current material"
             type="button"
           >
@@ -129,28 +141,36 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
       return (
         <div className="materialButtons">
           <button
-            onClick={() => { props.setMaterial(props.title); }}
+            onClick={() => {
+              props.setMaterial(props.title);
+            }}
             title="Set the current material in the Glowforge UI"
             type="button"
           >
             Set
           </button>
           <button
-            onClick={() => { props.setEditorModeEdit(props.title); }}
+            onClick={() => {
+              props.setEditorModeEdit(props.title);
+            }}
             title="Edit the current material"
             type="button"
           >
             Edit
           </button>
           <button
-            onClick={() => { props.copyMaterial(props.title); }}
+            onClick={() => {
+              props.copyMaterial(props.title);
+            }}
             title="Duplicate the current material"
             type="button"
           >
             Duplicate
           </button>
           <button
-            onClick={() => { props.setEditorModeDefault(); }}
+            onClick={() => {
+              props.setEditorModeDefault();
+            }}
             title="Back to main menu"
             type="button"
           >
@@ -163,7 +183,9 @@ export default function MaterialButtonBar(props: MaterialButtonBarProps) {
       return (
         <div className="materialButtons">
           <button
-            onClick={() => { props.setEditorModeAdd(); }}
+            onClick={() => {
+              props.setEditorModeAdd();
+            }}
             title="Create new material"
             type="button"
           >

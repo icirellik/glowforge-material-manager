@@ -15,7 +15,7 @@ export async function migration2(): Promise<boolean> {
   }
 
   if (upgraded) {
-    console.log('migration \'#2\' applied');
+    console.log("migration '#2' applied");
   }
 
   return upgraded;

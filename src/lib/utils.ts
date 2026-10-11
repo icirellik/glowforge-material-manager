@@ -1,8 +1,5 @@
 import * as pako from 'pako';
-import {
-  toFullMaterial,
-  toTinyMaterial,
-} from '../material/materialConversion';
+import { toFullMaterial, toTinyMaterial } from '../material/materialConversion';
 import type { PluginMaterial } from '../material/materialPlugin';
 import { sha1 } from './crypto';
 
@@ -80,7 +77,10 @@ export async function hashMaterial(material: PluginMaterial) {
 /**
  * Checks to see if two objects are equivalant.
  */
-export function isEquivalentObject(obj1: { [key: string]: unknown }, obj2: { [key: string]: unknown }): boolean {
+export function isEquivalentObject(
+  obj1: { [key: string]: unknown },
+  obj2: { [key: string]: unknown },
+): boolean {
   // Create arrays of property names
   const obj1Props = Object.getOwnPropertyNames(obj1);
   const obj2Props = Object.getOwnPropertyNames(obj2);
