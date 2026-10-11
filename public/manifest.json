@@ -15,15 +15,16 @@
     "128": "icon128.png"
   },
   "permissions": [
-    "offscreen",
     "storage",
     "tabs"
   ],
   "host_permissions": [
-    "*://app.glowforge.com/*"
+    "*://app.glowforge.com/*",
+    "https://storage.googleapis.com/gf-app-imgl/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "content_scripts": [
     {

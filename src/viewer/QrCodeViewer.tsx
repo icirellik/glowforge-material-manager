@@ -1,7 +1,7 @@
 import React from 'react';
 import type { PluginMaterial } from '../material/materialPlugin';
 import { sha1 } from '../lib/crypto';
-import { qrcodeAsDataUri, qrcodeAsSvg } from '../lib/qrCode';
+import { encodeQrCode, qrCodeToSvg } from '../lib/qr';
 import { toTinyMaterial } from '../material/materialConversion';
 import './MaterialViewer.css';
 
@@ -13,7 +13,6 @@ interface QrCodeViewerState {
   title: string;
   materialIdImageUri: string;
   materialIdSvgData: string;
-  materialImageUri: string;
   materialSvgData: string;
 }
 
@@ -25,7 +24,6 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
       title: '',
       materialIdImageUri: '',
       materialIdSvgData: '',
-      materialImageUri: '',
       materialSvgData: '',
     };
   }
@@ -49,16 +47,16 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
     const materialId = `Custom:${id}`;
     const materialData = JSON.stringify(toTinyMaterial(material));
 
-    const materialIdImageUri = await qrcodeAsDataUri(materialId);
-    const materialIdSvgData = await qrcodeAsSvg(materialId);
-    const materialImageUri = await qrcodeAsDataUri(`${materialId}|${materialData}`);
-    const materialSvgData = await qrcodeAsSvg(`${materialId}|${materialData}`);
+    const materialIdCode = encodeQrCode(materialId);
+    // Shown 4 pixels to a module.
+    const materialIdImageUri = `data:image/svg+xml;base64,${window.btoa(qrCodeToSvg(materialIdCode, { scale: 4 }))}`;
+    const materialIdSvgData = qrCodeToSvg(materialIdCode);
+    const materialSvgData = qrCodeToSvg(encodeQrCode(`${materialId}|${materialData}`));
 
     this.setState({
       title,
       materialIdImageUri,
       materialIdSvgData,
-      materialImageUri,
       materialSvgData,
     });
   }
@@ -72,16 +70,16 @@ export default class QrCodeViewer extends React.Component<QrCodeViewerProps, QrC
     const materialId = `Custom:${id}`;
     const materialData = JSON.stringify(toTinyMaterial(material));
 
-    const materialIdImageUri = await qrcodeAsDataUri(materialId);
-    const materialIdSvgData = await qrcodeAsSvg(materialId);
-    const materialImageUri = await qrcodeAsDataUri(`${materialId}|${materialData}`);
-    const materialSvgData = await qrcodeAsSvg(`${materialId}|${materialData}`);
+    const materialIdCode = encodeQrCode(materialId);
+    // Shown 4 pixels to a module.
+    const materialIdImageUri = `data:image/svg+xml;base64,${window.btoa(qrCodeToSvg(materialIdCode, { scale: 4 }))}`;
+    const materialIdSvgData = qrCodeToSvg(materialIdCode);
+    const materialSvgData = qrCodeToSvg(encodeQrCode(`${materialId}|${materialData}`));
 
     this.setState({
       title,
       materialIdImageUri,
       materialIdSvgData,
-      materialImageUri,
       materialSvgData,
     });
   }

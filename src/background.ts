@@ -1,8 +1,16 @@
+import type { StorageLocal, UISettings } from './lib/chromeWrappers';
+import { readQrCodeFromImage } from './lib/qr';
+
+/**
+ * The extension's background service worker. It stores what the Glowforge tabs
+ * report and reads QR codes from the lid camera image.
+ */
+
 /**
  * Only log messages in development mode.
  */
 const PROD_MODE = ('update_url' in chrome.runtime.getManifest());
-function log(message) {
+function log(message: unknown) {
   if (!PROD_MODE) {
     // eslint-disable-next-line
     console.log(message);
@@ -12,14 +20,14 @@ function log(message) {
 /**
  * Helper function to store data in local storage.
  */
-function store(data) {
+function store(data: Partial<StorageLocal>) {
   return chrome.storage.local.set(data);
 }
 
 /**
  * Helper function to load all data from local storage.
  */
-function load() {
+function load(): Promise<StorageLocal> {
   return chrome.storage.local.get(null);
 }
 
@@ -29,8 +37,8 @@ function load() {
  * overwrite each other's changes.
  */
 function createSerialRunner() {
-  let previous = Promise.resolve();
-  return (task) => {
+  let previous: Promise<unknown> = Promise.resolve();
+  return <T>(task: () => Promise<T>): Promise<T> => {
     const result = previous.then(task);
     // The caller handles the error, the next task should still run.
     previous = result.catch(() => {});
@@ -43,12 +51,12 @@ const runUISettingsUpdate = createSerialRunner();
 /**
  * Stores new ui settings.
  */
-function storeUISettings(settings) {
+function storeUISettings(settings: Partial<UISettings>) {
   return runUISettingsUpdate(async () => {
     const results = await load();
     if (!results.ui) {
       await store({
-        ui: settings,
+        ui: settings as UISettings,
       });
       log('UI Settings Created');
     } else {
@@ -66,59 +74,38 @@ function storeUISettings(settings) {
 
 // QR Code
 // ===================================================================
-const OFFSCREEN_DOCUMENT_PATH = 'offscreen.html';
-let offscreenDocumentReady = null;
 
 // Matches both kinds of material QR code, `Custom:<id>` and
 // `Custom:<id>|<settings>`.
 const CUSTOM_MATERIAL_QR_CODE = /^(Custom:[0-9a-f]{7})(\|[\s\S]*)?$/;
 
-/**
- * Opens the offscreen document that decodes QR codes, unless it is already
- * open. Only one offscreen document may exist at a time.
- */
-function setupOffscreenDocument() {
-  if (!offscreenDocumentReady) {
-    offscreenDocumentReady = (async () => {
-      const contexts = await chrome.runtime.getContexts({
-        contextTypes: ['OFFSCREEN_DOCUMENT'],
-        documentUrls: [chrome.runtime.getURL(OFFSCREEN_DOCUMENT_PATH)],
-      });
-      if (contexts.length === 0) {
-        await chrome.offscreen.createDocument({
-          url: OFFSCREEN_DOCUMENT_PATH,
-          reasons: ['WORKERS'],
-          justification: 'Decode QR codes in the Glowforge lid camera image using canvas and a web worker.',
-        });
-      }
-    })().finally(() => {
-      offscreenDocumentReady = null;
-    });
-  }
-  return offscreenDocumentReady;
-}
+// Give up on slow lid image downloads.
+const LID_IMAGE_TIMEOUT_MS = 10000;
 
 /**
- * Decodes a QR code from an image in the offscreen document.
- *
- * @param {string} imageUrl The image url to scan.
+ * Downloads an image and reads a QR code from it.
  */
-async function decodeQrCode(imageUrl) {
-  await setupOffscreenDocument();
-  return chrome.runtime.sendMessage({
-    target: 'offscreen',
-    type: 'decodeQrCode',
-    imageUrl,
+async function readQrCodeFromUrl(imageUrl: string): Promise<string | null> {
+  const response = await fetch(imageUrl, {
+    credentials: 'omit',
+    signal: AbortSignal.timeout(LID_IMAGE_TIMEOUT_MS),
   });
+  if (!response.ok) {
+    log(`Could not load the lid image: ${response.status}`);
+    return null;
+  }
+
+  const code = await readQrCodeFromImage(await response.blob());
+  return code && code.text;
 }
 
 /**
  * Checks the lid camera image for a custom material QR code.
  *
- * @param {string} image The lid image url.
+ * @param image The lid image url.
  * @returns The id of the material to select, or null.
  */
-async function checkForQRCode(image) {
+async function checkForQRCode(image: string): Promise<string | null> {
   // Older versions of the GFUI used a path on app.glowforge.com, newer ones use
   // a full url.
   const imageUrl = new URL(image, 'https://app.glowforge.com');
@@ -126,7 +113,7 @@ async function checkForQRCode(image) {
     return null;
   }
 
-  const qrCodeData = await decodeQrCode(imageUrl.href);
+  const qrCodeData = await readQrCodeFromUrl(imageUrl.href);
   log('QR Code Results');
   log(qrCodeData);
 
@@ -146,9 +133,20 @@ async function checkForQRCode(image) {
 // Message Handlers
 // ===================================================================
 
+interface BridgeMessage {
+  target: 'background';
+  type: string;
+  serial?: unknown;
+  designId?: unknown;
+  image?: unknown;
+}
+
 // Machine serials and design ids come from the page, so only accept values
 // that look like ids.
 const IDENTIFIER = /^[A-Za-z0-9_-]{1,64}$/;
+function asIdentifier(value: unknown): string | null {
+  return typeof value === 'string' && IDENTIFIER.test(value) ? value : null;
+}
 
 /**
  * Forces the should update flag to be true, creates a one time refresh.
@@ -156,24 +154,6 @@ const IDENTIFIER = /^[A-Za-z0-9_-]{1,64}$/;
 function forceRefresh() {
   return store({
     shouldUpdate: true,
-  });
-}
-
-/**
- * Updates the currently selected machine.
- */
-function handleMachineSerial(message) {
-  return storeUISettings({
-    serial: IDENTIFIER.test(message.serial) ? message.serial : null,
-  });
-}
-
-/**
- * Updates the design that is open in the GFUI.
- */
-function handleDesignId(message) {
-  return storeUISettings({
-    loadedDesignId: IDENTIFIER.test(message.designId) ? message.designId : null,
   });
 }
 
@@ -186,12 +166,12 @@ function handleDesignId(message) {
  *
  * @returns The response, the material to select for `lidImage`.
  */
-async function handleBridgeMessage(request) {
+async function handleBridgeMessage(request: BridgeMessage): Promise<string | null> {
   log(`message: ${request.type}`);
   if (request.type === 'machineSerial') {
-    await handleMachineSerial(request);
+    await storeUISettings({ serial: asIdentifier(request.serial) });
   } else if (request.type === 'designId') {
-    await handleDesignId(request);
+    await storeUISettings({ loadedDesignId: asIdentifier(request.designId) });
   } else if (request.type === 'lidImage' && typeof request.image === 'string') {
     return checkForQRCode(request.image);
   }
@@ -205,7 +185,7 @@ async function handleBridgeMessage(request) {
  * once they finish.
  */
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.target !== 'background') {
+  if (!request || request.target !== 'background') {
     return false;
   }
 
