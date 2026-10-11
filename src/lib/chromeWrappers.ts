@@ -9,11 +9,6 @@ export type SynchronizedMaterials = {
   [key in SyncId]: SyncData;
 }
 
-export interface UISettings {
-  loadedDesignId: string | null;
-  serial: string | null;
-}
-
 export interface StorageLocal {
   // Stores material backups by version number before a major release occurs.
   backup?: { [key: string]: StorageLocal };
@@ -26,8 +21,6 @@ export interface StorageLocal {
   // A material that was saved due to the popup window being dismissed without
   // clicking the save button.
   tempMaterial?: TempMaterial | null;
-  // Different UI setttings that may or may not exist.
-  ui?: UISettings | null;
 }
 
 // Local Storage
@@ -219,36 +212,6 @@ export async function storeTempMaterial(material: PluginMaterial): Promise<Plugi
 }
 
 /**
- * Gets the status of the force update flag.
- */
-export async function getShouldUpdate(): Promise<boolean> {
-  return new Promise((resolve) => {
-    window.chrome.storage.local.get(null, (result: StorageLocal) => {
-      if (result && result.shouldUpdate) {
-        resolve(result.shouldUpdate);
-      } else {
-        resolve(false);
-      }
-    });
-  });
-}
-
-/**
- * Gets the UI Settings.
- */
-export async function getUISettings(): Promise<UISettings | null> {
-  return new Promise((resolve) => {
-    window.chrome.storage.local.get(null, (result: StorageLocal) => {
-      if (result && result.ui) {
-        resolve(result.ui);
-      } else {
-        resolve(null);
-      }
-    });
-  });
-}
-
-/**
  * Forces the glowforge application to synchronize with any material changes.
  */
 export async function forceSync(): Promise<boolean> {
@@ -355,6 +318,42 @@ async function getGlowforgeTab(): Promise<chrome.tabs.Tab | null> {
 
 export async function inGlowforgeTab(): Promise<boolean> {
   return !!(await getGlowforgeTab());
+}
+
+// What the extension's scripts in a Glowforge tab report.
+export interface TabStatus {
+  // The GFUI's store was found, so materials can be added.
+  ready: boolean;
+  // The tab has the latest custom materials.
+  synchronized: boolean;
+  // The selected machine.
+  serial: string | null;
+  // The open design.
+  designId: string | null;
+}
+
+/**
+ * Asks the active Glowforge tab for its status.
+ *
+ * @returns The status, or null if the active tab isn't a Glowforge tab or the
+ * extension's scripts aren't running in it.
+ */
+export async function getTabStatus(): Promise<TabStatus | null> {
+  const tab = await getGlowforgeTab();
+  if (!tab || tab.id === undefined) {
+    return null;
+  }
+
+  try {
+    const status = await window.chrome.tabs.sendMessage(tab.id, {
+      target: 'bridge',
+      type: 'status',
+    });
+    return status && typeof status === 'object' ? status : null;
+  } catch {
+    // The tab is still loading, or was discarded and hasn't reloaded.
+    return null;
+  }
 }
 
 /**

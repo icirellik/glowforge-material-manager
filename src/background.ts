@@ -1,9 +1,9 @@
-import type { StorageLocal, UISettings } from './lib/chromeWrappers';
+import type { StorageLocal } from './lib/chromeWrappers';
 import { readQrCodeFromImage } from './lib/qr';
 
 /**
- * The extension's background service worker. It stores what the Glowforge tabs
- * report and reads QR codes from the lid camera image.
+ * The extension's background service worker. It reads QR codes from the lid
+ * camera image and sets up the Glowforge tabs.
  */
 
 /**
@@ -29,47 +29,6 @@ function store(data: Partial<StorageLocal>) {
  */
 function load(): Promise<StorageLocal> {
   return chrome.storage.local.get(null);
-}
-
-/**
- * Creates a function that runs async tasks one at a time. Storage updates read,
- * modify and then write, so concurrent message handlers would otherwise
- * overwrite each other's changes.
- */
-function createSerialRunner() {
-  let previous: Promise<unknown> = Promise.resolve();
-  return <T>(task: () => Promise<T>): Promise<T> => {
-    const result = previous.then(task);
-    // The caller handles the error, the next task should still run.
-    previous = result.catch(() => {});
-    return result;
-  };
-}
-
-const runUISettingsUpdate = createSerialRunner();
-
-/**
- * Stores new ui settings.
- */
-function storeUISettings(settings: Partial<UISettings>) {
-  return runUISettingsUpdate(async () => {
-    const results = await load();
-    if (!results.ui) {
-      await store({
-        ui: settings as UISettings,
-      });
-      log('UI Settings Created');
-    } else {
-      const ui = {
-        ...results.ui,
-        ...settings,
-      };
-      await store({
-        ui,
-      });
-      log('UI Settings Updated');
-    }
-  });
 }
 
 // QR Code
@@ -136,16 +95,7 @@ async function checkForQRCode(image: string): Promise<string | null> {
 interface BridgeMessage {
   target: 'background';
   type: string;
-  serial?: unknown;
-  designId?: unknown;
   image?: unknown;
-}
-
-// Machine serials and design ids come from the page, so only accept values
-// that look like ids.
-const IDENTIFIER = /^[A-Za-z0-9_-]{1,64}$/;
-function asIdentifier(value: unknown): string | null {
-  return typeof value === 'string' && IDENTIFIER.test(value) ? value : null;
 }
 
 /**
@@ -160,19 +110,13 @@ function forceRefresh() {
 /**
  * Handles a message from bridge.js in a Glowforge tab.
  *
- * machineSerial - The selected machine changed.
- * designId - The open design changed.
  * lidImage - The lid camera image changed.
  *
  * @returns The response, the material to select for `lidImage`.
  */
 async function handleBridgeMessage(request: BridgeMessage): Promise<string | null> {
   log(`message: ${request.type}`);
-  if (request.type === 'machineSerial') {
-    await storeUISettings({ serial: asIdentifier(request.serial) });
-  } else if (request.type === 'designId') {
-    await storeUISettings({ loadedDesignId: asIdentifier(request.designId) });
-  } else if (request.type === 'lidImage' && typeof request.image === 'string') {
+  if (request.type === 'lidImage' && typeof request.image === 'string') {
     return checkForQRCode(request.image);
   }
   return null;
@@ -205,6 +149,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
  */
 async function initializeStorage() {
   log('verifying local storage.');
+  // Older versions stored the last tab's machine and design here, the popup
+  // now asks the tab.
+  await chrome.storage.local.remove('ui');
   const result = await load();
   if (result && result.materials) {
     log('local storage previously initialized.');
@@ -220,8 +167,35 @@ async function initializeStorage() {
   }
 }
 
+/**
+ * Adds the content scripts to the Glowforge tabs that are already open. Chrome
+ * only adds them to pages loaded after the extension is installed or updated,
+ * and the copies from before an update can no longer reach the extension.
+ */
+async function addScriptsToOpenTabs() {
+  const tabs = await chrome.tabs.query({ url: '*://app.glowforge.com/*' });
+  await Promise.all(tabs.map(async (tab) => {
+    // Discarded tabs reload, with the scripts, when they are opened.
+    if (tab.id === undefined || tab.discarded) {
+      return;
+    }
+    try {
+      // The bridge first, so that it hears content.js say it's ready.
+      await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['bridge.js'] });
+      await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['content.js'], world: 'MAIN' });
+    } catch (error) {
+      log(error);
+    }
+  }));
+}
+
 // The service worker starts and stops many times per browser session, so only
 // initialize when the extension is installed or updated and when the browser
 // starts.
-chrome.runtime.onInstalled.addListener(() => initializeStorage());
+chrome.runtime.onInstalled.addListener(async ({ reason }) => {
+  await initializeStorage();
+  if (reason === 'install' || reason === 'update') {
+    await addScriptsToOpenTabs();
+  }
+});
 chrome.runtime.onStartup.addListener(() => initializeStorage());

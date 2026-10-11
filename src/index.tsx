@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import {
   getPlatform,
-  inGlowforgeTab,
 } from './lib/chromeWrappers';
 import {
   syncronizeMaterials,
@@ -20,9 +19,6 @@ async function applyMigrations() {
 }
 
 (async () => {
-  // Verify the glowforge tab.
-  const glowforgeConnected = await inGlowforgeTab();
-
   // Get the platform we are on.
   const platform = await getPlatform();
 
@@ -34,7 +30,6 @@ async function applyMigrations() {
   await syncronizeMaterials();
 
   ReactDOM.render(<App
-    connected={glowforgeConnected}
     platform={platform}
   />, document.getElementById('root'));
 

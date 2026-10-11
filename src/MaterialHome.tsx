@@ -11,7 +11,7 @@ interface MaterialHomeProps {
 
 export default function MaterialHome(props: MaterialHomeProps) {
   const { rawSvg } = props;
-  let svg = (<span>Download Raw SVG/Trace (Refresh Page for link)</span>);
+  let svg = (<span>Download Raw SVG/Trace (Open a design in Glowforge for the link)</span>);
   if (rawSvg) {
     svg = (<a className="materialHome__menuItem" href={rawSvg} target="_blank" rel="noopener noreferrer">Download Raw SVG/Trace</a>);
   }

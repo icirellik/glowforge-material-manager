@@ -18,16 +18,16 @@ import {
   forceSync,
   getBytesInUse,
   getLocalStorage,
-  getShouldUpdate,
+  getTabStatus,
   reloadGlowForgeTab,
   storeGlowforgeMaterials,
   storeRawMaterials,
-  getUISettings,
   storeTempMaterial,
   sendMessage,
   getRawMaterials,
   getGlowforgeMaterials,
   StorageLocal,
+  TabStatus,
   getBackups,
   storeBackup,
 } from './lib/chromeWrappers';
@@ -111,7 +111,6 @@ export type CreateBackup = () => void;
 
 // App Props + State
 interface AppProps {
-  connected: boolean;
   platform: string;
 }
 
@@ -122,15 +121,18 @@ interface AppState {
   backups: {[key: string]: StorageLocal} | void;
   // The number of cloud bytes that are currently being used.
   cloudStorageBytesUsed: number;
+  // Is the active tab a Glowforge tab that the extension is running in.
+  connected: boolean;
   // The last time a cloud sync modified the local data.
   lastCloudSync: number | null;
   materials: GFMaterial[];
   message: IMessage | null;
   previousTitle: string | null;
   rawMaterials: PluginMaterial[];
+  // The active tab's trace and machine.
   rawSvg: string | null;
   serial: string | null;
-  // Is the plugin in sync wit the GFUI.
+  // Does the active tab have the latest materials.
   synchronized: boolean;
   tempMaterial: TempMaterial;
 }
@@ -158,6 +160,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       action: 'DISPLAY',
       backups: {},
       cloudStorageBytesUsed: 0,
+      connected: false,
       lastCloudSync: null,
       message: null,
       tempMaterial: {
@@ -168,7 +171,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       rawMaterials: [],
       rawSvg: null,
       serial: null,
-      synchronized: true,
+      synchronized: false,
     };
 
     // Modes
@@ -217,6 +220,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     // Check for any backuos.
     const backups = await getBackups();
 
+    // What the active tab reports.
+    const tab = tabState(await getTabStatus());
+
     if (localStorage.tempMaterial) {
       // Clear any old validations
       localStorage.tempMaterial.propValidation = {};
@@ -229,8 +235,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
           message: 'Material settings were automatically restored from a previous session.',
         },
         rawMaterials: localStorage.rawMaterials!,
-        synchronized: !localStorage.shouldUpdate,
         tempMaterial: localStorage.tempMaterial,
+        ...tab,
       });
     } else {
       this.setState({
@@ -238,7 +244,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         backups,
         materials: localStorage.materials!,
         rawMaterials: localStorage.rawMaterials!,
-        synchronized: !localStorage.shouldUpdate,
+        ...tab,
       });
     }
 
@@ -248,6 +254,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     setInterval(async () => {
       const {
         cloudStorageBytesUsed,
+        connected,
         rawSvg,
         serial,
         synchronized,
@@ -257,9 +264,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
       // Refresh the cloud storage in use
       const cloudStorageBytesUsedLocal = await getBytesInUse();
-
-      // Refresh the sync status.
-      const shouldUpdate = await getShouldUpdate();
 
       // Synchronize and materials.
       // TODO: should we run this on every loop.
@@ -289,28 +293,23 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         };
       }
 
-      const uiSettings = await getUISettings();
-      const rawSvgLocal = (uiSettings && uiSettings.loadedDesignId) ? `https://storage.googleapis.com/glowforge-files/designs/${uiSettings.loadedDesignId}/svgf/svgf_file.gzip.svg` : null;
-      const serialLocal = (uiSettings && uiSettings.serial) ? uiSettings.serial : null;
-
-      // Update thr state.
-      if (synchronized === shouldUpdate) {
-        stateUpdates = {
-          ...stateUpdates,
-          cloudStorageBytesUsed: cloudStorageBytesUsedLocal,
-          rawSvg: rawSvgLocal,
-          synchronized: !shouldUpdate,
-        };
-      } else if (
-        cloudStorageBytesUsedLocal !== cloudStorageBytesUsed
-        || rawSvgLocal !== rawSvg
-        || serialLocal !== serial
+      // Refresh what the active tab reports.
+      const tab = tabState(await getTabStatus());
+      if (
+        tab.connected !== connected
+        || tab.synchronized !== synchronized
+        || tab.rawSvg !== rawSvg
+        || tab.serial !== serial
       ) {
         stateUpdates = {
           ...stateUpdates,
+          ...tab,
+        };
+      }
+      if (cloudStorageBytesUsedLocal !== cloudStorageBytesUsed) {
+        stateUpdates = {
+          ...stateUpdates,
           cloudStorageBytesUsed: cloudStorageBytesUsedLocal,
-          rawSvg: rawSvgLocal,
-          serial: serialLocal,
         };
       }
 
@@ -769,6 +768,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       action,
       backups,
       cloudStorageBytesUsed,
+      connected,
       message,
       previousTitle,
       rawMaterials,
@@ -779,7 +779,6 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     } = this.state;
 
     const {
-      connected,
       platform,
     } = this.props;
 
@@ -881,6 +880,19 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 }
 
 export default App;
+
+/**
+ * What the popup shows for the active tab's status.
+ */
+function tabState(status: TabStatus | null) {
+  const connected = !!status && status.ready;
+  return {
+    connected,
+    synchronized: connected && status!.synchronized,
+    rawSvg: status && status.designId ? `https://storage.googleapis.com/glowforge-files/designs/${status.designId}/svgf/svgf_file.gzip.svg` : null,
+    serial: status ? status.serial : null,
+  };
+}
 
 function getMaterialTitle(material: PluginMaterial) {
   return `${material.thickName} ${material.name}`;
