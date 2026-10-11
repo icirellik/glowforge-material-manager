@@ -22,6 +22,9 @@ describe('App', () => {
       tabs: {
         query: (query: any, cb: any) => cb([]),
       },
+      permissions: {
+        contains: async () => false,
+      },
     };
   });
 

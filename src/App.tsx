@@ -18,7 +18,7 @@ import {
   forceSync,
   getBytesInUse,
   getLocalStorage,
-  getTabStatus,
+  getTabConnection,
   reloadGlowForgeTab,
   storeGlowforgeMaterials,
   storeRawMaterials,
@@ -27,7 +27,7 @@ import {
   getRawMaterials,
   getGlowforgeMaterials,
   StorageLocal,
-  TabStatus,
+  TabConnection,
   getBackups,
   storeBackup,
 } from './lib/chromeWrappers';
@@ -41,7 +41,11 @@ import { AppHeader } from './AppHeader';
 import { BackupViewer } from './BackupViewer';
 import { GFMaterial } from './material/materialGlowforge';
 import { PluginMaterial } from './material/materialPlugin';
-import { sha1 } from './lib/crypto';
+import { addContentScripts } from './lib/contentScripts';
+import {
+  hasLidImageAccess, removeLidImageAccess, requestLidImageAccess,
+} from './lib/lidImage';
+import { materialIdForTitle } from './material/materialId';
 import { syncronizeMaterials } from './material/material.sync';
 import './App.css';
 
@@ -87,6 +91,9 @@ interface IMessenger {
 }
 
 export type ForceSyncronize = () => Promise<void>;
+export type Reconnect = () => Promise<void>;
+export type ToggleQrAutoSelect = () => Promise<void>;
+export type Connection = TabConnection['state'];
 
 // Editor Modes
 export type EditorMode = 'BACKUP' | 'DISPLAY' | 'ADD' | 'EDIT' | 'DUPLICATE' | 'SELECTED';
@@ -121,8 +128,12 @@ interface AppState {
   backups: {[key: string]: StorageLocal} | void;
   // The number of cloud bytes that are currently being used.
   cloudStorageBytesUsed: number;
-  // Is the active tab a Glowforge tab that the extension is running in.
-  connected: boolean;
+  // Whether the active tab is a Glowforge tab, and the extension is running in
+  // it, and which tab it is.
+  connection: Connection;
+  tabId: number | null;
+  // Whether QR auto-select is on.
+  qrAutoSelect: boolean;
   // The last time a cloud sync modified the local data.
   lastCloudSync: number | null;
   materials: GFMaterial[];
@@ -160,7 +171,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       action: 'DISPLAY',
       backups: {},
       cloudStorageBytesUsed: 0,
-      connected: false,
+      connection: 'none',
+      tabId: null,
+      qrAutoSelect: false,
       lastCloudSync: null,
       message: null,
       tempMaterial: {
@@ -199,6 +212,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 
     // Synchronization
     this.forceSyncronize = this.forceSyncronize.bind(this);
+    this.reconnect = this.reconnect.bind(this);
+    this.setMaterial = this.setMaterial.bind(this);
+    this.toggleQrAutoSelect = this.toggleQrAutoSelect.bind(this);
     this.toggleCloundSync = this.toggleCloundSync.bind(this);
 
     // Validaton
@@ -221,7 +237,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     const backups = await getBackups();
 
     // What the active tab reports.
-    const tab = tabState(await getTabStatus());
+    const tab = tabState(await getTabConnection());
+    const qrAutoSelect = await hasLidImageAccess();
 
     if (localStorage.tempMaterial) {
       // Clear any old validations
@@ -236,6 +253,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         },
         rawMaterials: localStorage.rawMaterials!,
         tempMaterial: localStorage.tempMaterial,
+        qrAutoSelect,
         ...tab,
       });
     } else {
@@ -244,6 +262,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
         backups,
         materials: localStorage.materials!,
         rawMaterials: localStorage.rawMaterials!,
+        qrAutoSelect,
         ...tab,
       });
     }
@@ -254,7 +273,8 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     setInterval(async () => {
       const {
         cloudStorageBytesUsed,
-        connected,
+        connection,
+        tabId,
         rawSvg,
         serial,
         synchronized,
@@ -294,9 +314,10 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       }
 
       // Refresh what the active tab reports.
-      const tab = tabState(await getTabStatus());
+      const tab = tabState(await getTabConnection());
       if (
-        tab.connected !== connected
+        tab.connection !== connection
+        || tab.tabId !== tabId
         || tab.synchronized !== synchronized
         || tab.rawSvg !== rawSvg
         || tab.serial !== serial
@@ -412,11 +433,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       return;
     }
 
-    // Hash the title and take the first seven for the id.
     const { thickName, name } = tempMaterial;
     const title = `${thickName} ${name}`;
-    const hash = await sha1(title);
-    const id = hash.substring(0, 7);
+    const id = await materialIdForTitle(title);
 
     // Create the new material.
     const newMaterial = createMaterial(tempMaterial, id);
@@ -580,6 +599,50 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
     await forceSync();
     this.setState({
       synchronized: false,
+    });
+  }
+
+  // Glowforge Tab
+  // =================================================================
+
+  /**
+   * Adds the extension's scripts to the active Glowforge tab again, or
+   * reloads it if they can't be added.
+   */
+  async reconnect() {
+    const { tabId } = this.state;
+    if (tabId === null) {
+      return;
+    }
+    if (await addContentScripts(tabId)) {
+      this.displayMessage(defaultMessage('Reconnected to the Glowforge tab.'));
+    } else {
+      await reloadGlowForgeTab();
+    }
+  }
+
+  /**
+   * Sets the selected material in the GFUI.
+   */
+  async setMaterial(title: string) {
+    const sent = await sendMessage({
+      type: 'selectMaterial',
+      materialId: await materialIdForTitle(title),
+    });
+    if (!sent) {
+      this.displayMessage(errorMessage('Couldn\'t reach the Glowforge tab. Reconnect to it, or reload it.'));
+    }
+  }
+
+  /**
+   * Turns QR auto-select on or off. Turning it on asks for access to
+   * Glowforge's lid camera images, so this must run from a click.
+   */
+  async toggleQrAutoSelect() {
+    const { qrAutoSelect } = this.state;
+    const enabled = qrAutoSelect ? !(await removeLidImageAccess()) : await requestLidImageAccess();
+    this.setState({
+      qrAutoSelect: enabled,
     });
   }
 
@@ -768,9 +831,10 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       action,
       backups,
       cloudStorageBytesUsed,
-      connected,
+      connection,
       message,
       previousTitle,
+      qrAutoSelect,
       rawMaterials,
       rawSvg,
       serial,
@@ -788,8 +852,12 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       case 'DISPLAY':
         displayPanel = (
           <MaterialHome
+            connection={connection}
             forceSyncronize={this.forceSyncronize}
+            qrAutoSelect={qrAutoSelect}
             rawSvg={rawSvg}
+            reconnect={this.reconnect}
+            toggleQrAutoSelect={this.toggleQrAutoSelect}
             setEditorModeAdd={this.setEditorModeAdd}
             setEditorModeBackup={this.setEditorModeBackup}
           />
@@ -831,8 +899,9 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
       <div className="App">
         <AppHeader
           cloudStorageBytesUsed={cloudStorageBytesUsed}
-          connected={connected}
+          connection={connection}
           forceSyncronize={this.forceSyncronize}
+          reconnect={this.reconnect}
           serial={serial}
           synchronized={synchronized}
         />
@@ -842,7 +911,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
               materials={rawMaterials}
               selectMaterial={this.setEditorModeSelect}
               setEditorModeAdd={this.setEditorModeAdd}
-              setMaterial={setMaterial}
+              setMaterial={this.setMaterial}
               tempMaterial={tempMaterial}
             />
           </div>
@@ -859,7 +928,7 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
                 setEditorModeDefault={this.setEditorModeDefault}
                 setEditorModeEdit={this.setEditorModeEdit}
                 setEditorModeSelect={this.setEditorModeSelect}
-                setMaterial={setMaterial}
+                setMaterial={this.setMaterial}
                 title={`${tempMaterial.thickName} ${tempMaterial.name}`}
               />
             </div>
@@ -882,13 +951,15 @@ class App extends React.Component<AppProps, AppState> implements IEditorMode, IM
 export default App;
 
 /**
- * What the popup shows for the active tab's status.
+ * What the popup shows for the active tab.
  */
-function tabState(status: TabStatus | null) {
-  const connected = !!status && status.ready;
+function tabState(tab: TabConnection) {
+  const status = tab.state === 'connected' ? tab.status : null;
   return {
-    connected,
-    synchronized: connected && status!.synchronized,
+    connection: tab.state,
+    tabId: tab.state === 'none' ? null : tab.tabId,
+    // Until the page's store is found, it can't have the materials.
+    synchronized: !!status && status.ready && status.synchronized,
     rawSvg: status && status.designId ? `https://storage.googleapis.com/glowforge-files/designs/${status.designId}/svgf/svgf_file.gzip.svg` : null,
     serial: status ? status.serial : null,
   };
@@ -896,20 +967,4 @@ function tabState(status: TabStatus | null) {
 
 function getMaterialTitle(material: PluginMaterial) {
   return `${material.thickName} ${material.name}`;
-}
-
-/**
- * Sets the selected material in the GFUI.
- *
- * @param title
- */
-async function setMaterial(title: string) {
-  // Hash the title and take the first seven for the id.
-  const hash = await sha1(title);
-  const id = `Custom:${hash.substring(0, 7)}`;
-
-  await sendMessage({
-    type: 'selectMaterial',
-    materialId: id,
-  });
 }

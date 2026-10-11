@@ -62,16 +62,36 @@
   let materialsVersion = null;
 
   /**
-   * Checks whether any custom material is missing from the GFUI's material list.
+   * Reads a field of a material in the GFUI's list. They're Immutable maps.
    */
-  function isMissingMaterials(materialList) {
-    return materials.some(material => !materialList || !materialList.has(material.id));
+  function field(material, key) {
+    if (!material) {
+      return undefined;
+    }
+    return typeof material.get === 'function' ? material.get(key) : material[key];
+  }
+
+  // Each custom material as it was last added, so that unchanged ones aren't
+  // added again. Adding a material replaces it, which also unselects it.
+  const added = new Map();
+
+  // The ids of the custom materials that were still missing right after they
+  // were last added, because the GFUI dropped them. They aren't restored
+  // again, which could loop, until new materials arrive.
+  let droppedIds = new Set();
+
+  /**
+   * Finds the custom materials that are missing from the GFUI's material list.
+   */
+  function missingMaterials(materialList) {
+    return materials.filter(material => !materialList || !materialList.has(material.id));
   }
 
   /**
-   * Adds the custom materials to the GFUI. Adding replaces any material with the
-   * same id, so `force` adds them all again to pick up changes.
+   * Adds the custom materials that are missing from the GFUI or have changed.
+   * A selected material that's added again stays selected.
    *
+   * @param force Add every material again.
    * @returns Whether every custom material is now in the GFUI.
    */
   function addMaterials(force) {
@@ -81,14 +101,28 @@
     }
 
     const materialList = store.getState().getIn(['materials', 'materialList']);
-    if (materials.length > 0 && (force || isMissingMaterials(materialList))) {
-      log('adding custom materials');
+    const toAdd = materials.filter(material => force
+      || !materialList
+      || !materialList.has(material.id)
+      || added.get(material.id) !== JSON.stringify(material));
+    if (toAdd.length > 0) {
+      log(`adding ${toAdd.length} custom materials`);
+      const selected = toAdd.find(material => materialList && field(materialList.get(material.id), 'selected'));
       store.dispatch({
         type: 'ADD_MATERIALS',
-        materials,
+        materials: toAdd,
       });
+      toAdd.forEach(material => added.set(material.id, JSON.stringify(material)));
+      if (selected) {
+        store.dispatch({
+          type: 'SET_MATERIAL',
+          id: selected.id,
+        });
+      }
     }
-    return !isMissingMaterials(store.getState().getIn(['materials', 'materialList']));
+    const missing = missingMaterials(store.getState().getIn(['materials', 'materialList']));
+    droppedIds = new Set(missing.map(material => material.id));
+    return missing.length === 0;
   }
 
   /**
@@ -108,6 +142,10 @@
       log(`unknown material: ${materialId}`);
       return;
     }
+    // Selecting it again would override Glowforge's own material detection.
+    if (field(materialList.get(materialId), 'selected')) {
+      return;
+    }
 
     log('setting the selected material');
     store.dispatch({
@@ -117,11 +155,40 @@
   }
 
   /**
+   * Checks whether custom materials have gone missing from the GFUI's
+   * material list, other than ones it dropped.
+   */
+  function needsRestore(materialList) {
+    return missingMaterials(materialList).some(material => !droppedIds.has(material.id));
+  }
+
+  /**
+   * Re-adds the custom materials that have gone missing.
+   */
+  let restoreScheduled = false;
+  function restoreMaterials() {
+    restoreScheduled = false;
+    try {
+      const store = getStore();
+      // Adding them may have dropped some since this was scheduled.
+      if (!isCurrent() || !store || !needsRestore(store.getState().getIn(['materials', 'materialList']))) {
+        return;
+      }
+      log('restoring missing custom materials');
+      if (addMaterials(false)) {
+        postToExtension('materialsApplied', { version: materialsVersion });
+      }
+    } catch (e) {
+      // Don't send my errors to GlowForge.
+      log(`restore error: ${e}`);
+    }
+  }
+
+  /**
    * Re-adds the custom materials if they go missing from the GFUI's material
    * list. Only checks when the list changes.
    */
   let checkedMaterialList = null;
-  let restoreScheduled = false;
   function checkMaterials(state) {
     const materialList = state.getIn(['materials', 'materialList']);
     if (materialList === checkedMaterialList) {
@@ -129,16 +196,10 @@
     }
     checkedMaterialList = materialList;
 
-    if (!restoreScheduled && isMissingMaterials(materialList)) {
+    if (!restoreScheduled && needsRestore(materialList)) {
       restoreScheduled = true;
       // Don't dispatch from inside the store's own update.
-      setTimeout(() => {
-        restoreScheduled = false;
-        log('restoring missing custom materials');
-        if (addMaterials(false)) {
-          postToExtension('materialsApplied', { version: materialsVersion });
-        }
-      }, 0);
+      setTimeout(restoreMaterials, 0);
     }
   }
 
@@ -230,18 +291,23 @@
     }
 
     extensionDevMode = message.devMode === true;
-    if (message.type === 'hello') {
-      if (getStore()) {
-        postToExtension('ready');
+    try {
+      if (message.type === 'hello') {
+        if (getStore()) {
+          postToExtension('ready');
+        }
+      } else if (message.type === 'materials') {
+        materials = Array.isArray(message.materials) ? message.materials : [];
+        materialsVersion = message.version;
+        if (addMaterials(message.force === true)) {
+          postToExtension('materialsApplied', { version: materialsVersion });
+        }
+      } else if (message.type === 'selectMaterial') {
+        selectMaterial(message.materialId);
       }
-    } else if (message.type === 'materials') {
-      materials = Array.isArray(message.materials) ? message.materials : [];
-      materialsVersion = message.version;
-      if (addMaterials(true)) {
-        postToExtension('materialsApplied', { version: materialsVersion });
-      }
-    } else if (message.type === 'selectMaterial') {
-      selectMaterial(message.materialId);
+    } catch (e) {
+      // Don't send my errors to GlowForge.
+      log(`message error: ${e}`);
     }
   });
 

@@ -31,7 +31,6 @@ describe('Synchronization', () => {
   let testLocalData: StorageLocal = {
     materials: [],
     rawMaterials: [],
-    shouldUpdate: false,
   };
   let testSyncData: any = null;
 
@@ -82,7 +81,6 @@ describe('Synchronization', () => {
     testLocalData = {
       materials: [],
       rawMaterials: [],
-      shouldUpdate: false,
     };
     testSyncData = {};
   });

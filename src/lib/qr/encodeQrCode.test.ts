@@ -1,14 +1,18 @@
 // @vitest-environment node
-import { encodeQrCode } from './encodeQrCode';
+import {
+  byteSegment, encodeQrCode, encodeSegments, segmentText,
+} from './encodeQrCode';
 import type { EncodeOptions } from './encodeQrCode';
 import { decodeModules } from './decodeModules';
+import { ALPHANUMERIC, BYTE, NUMERIC } from './spec';
 import type { Modules } from './spec';
 
 const LEVELS = ['L', 'M', 'Q', 'H'] as const;
 
 // Fingerprints of the modules that the qrcode package (1.4.4) made for the
-// fullest text in every version, by level, with mask (version + level) % 8.
-// Matching them shows the encoder agrees with another implementation.
+// fullest text in every version, by level, with mask (version + level) % 8,
+// written as a single byte segment. Matching them shows the layout, error
+// correction and masking agree with another implementation.
 const FULL_CODES: Record<typeof LEVELS[number], string[]> = {
   L: [
     '07273721', '7acd9f47', '229734ab', 'c01370b5', '9bf23412', '2690107f', '7856eed3', '372952db',
@@ -51,8 +55,10 @@ function fingerprint({ data }: Modules): string {
 
 const fill = (length: number) => Array.from({ length }, (_, i) => String.fromCharCode(33 + ((i * 7) % 94))).join('');
 
+const asBytes = (text: string) => () => [byteSegment(new TextEncoder().encode(text))];
+
 /**
- * The longest text that fits.
+ * The longest text that fits as a single byte segment.
  */
 function fullestText(options: EncodeOptions): string {
   let low = 1;
@@ -60,7 +66,7 @@ function fullestText(options: EncodeOptions): string {
   while (low < high) {
     const middle = Math.ceil((low + high) / 2);
     try {
-      encodeQrCode(fill(middle), options);
+      encodeSegments(asBytes(fill(middle)), options);
       low = middle;
     } catch {
       high = middle - 1;
@@ -82,19 +88,23 @@ describe('encodeQrCode', () => {
       for (let index = 0; index < LEVELS.length; index += 1) {
         const level = LEVELS[index];
         const options = { version, level, mask: (version + index) % 8 };
-        const modules = encodeQrCode(fullestText(options), options);
+        const modules = encodeSegments(asBytes(fullestText(options)), options);
         expect(fingerprint(modules), `version ${version}, level ${level}`).toEqual(FULL_CODES[level][version - 1]);
       }
     }
   });
 
-  it('picks the same version and mask as the qrcode package', () => {
+  it('makes the same codes as the qrcode package', () => {
+    // Fingerprints of what the qrcode package (1.4.4) makes for the same text,
+    // with its own choice of segments, version and mask.
     const codes: [string, number, string][] = [
-      ['Custom:abc1234', 1, '333ebecd'],
+      ['Custom:abc1234', 1, '66c90903'],
+      ['Custom:3f77f07', 1, 'd21a59c9'],
       [settings, 4, '81c5f6d4'],
       [longSettings, 10, '09335bd3'],
       ['HELLO WORLD $%*+-./:', 1, '1f3a40d5'],
       ['01234567890123', 1, '303539f9'],
+      ['Order 12345678901234567890 shipped', 2, '0f6f31f3'],
       [fill(400), 15, '8382234d'],
       [fill(1200), 29, 'e172d8e1'],
     ];
@@ -102,8 +112,29 @@ describe('encodeQrCode', () => {
       const modules = encodeQrCode(text);
       expect(modules.size).toEqual(17 + 4 * version);
       expect(fingerprint(modules), text).toEqual(expected);
-      expect(decodeModules(modules)).toEqual(text);
+      expect(decodeModules(modules)?.text).toEqual(text);
     }
+  });
+
+  it('splits text into the segments that need the fewest bits', () => {
+    const modes = (text: string) => segmentText(text, 1).map(({ mode, count }) => [mode, count]);
+    // Four digits are cheaper as their own segment, two aren't.
+    expect(modes('Custom:abc1234')).toEqual([[BYTE, 10], [NUMERIC, 4]]);
+    expect(modes('Custom:abc12')).toEqual([[BYTE, 12]]);
+    expect(modes('ABC-123 abc')).toEqual([[ALPHANUMERIC, 8], [BYTE, 3]]);
+    // Counts are in bytes for byte segments.
+    expect(modes('Birch – 3mm')).toEqual([[BYTE, 13]]);
+    expect(modes('')).toEqual([]);
+  });
+
+  it('fits as much as the qrcode package', () => {
+    // Runs of digits in lowercase text. The qrcode package fits 3844
+    // characters of this at level L, far more than one byte segment holds.
+    const text = (length: number) => Array.from({ length }, (_, i) => (i % 40 < 24 ? String((i * 7) % 10) : 'abcdefgh'[i % 8])).join('');
+    const modules = encodeQrCode(text(3844), { level: 'L' });
+    expect(modules.size).toEqual(177);
+    expect(decodeModules(modules)?.text).toEqual(text(3844));
+    expect(() => encodeQrCode(text(3845), { level: 'L' })).toThrow('too long');
   });
 
   it('uses the most compact mode', () => {
@@ -112,7 +143,7 @@ describe('encodeQrCode', () => {
     for (const text of ['1'.repeat(41), 'A'.repeat(25), 'a'.repeat(17), '']) {
       const modules = encodeQrCode(text, { level: 'L' });
       expect(modules.size, text).toEqual(21);
-      expect(decodeModules(modules)).toEqual(text);
+      expect(decodeModules(modules)?.text).toEqual(text);
     }
     expect(encodeQrCode('1'.repeat(42), { level: 'L' }).size).toEqual(25);
   });

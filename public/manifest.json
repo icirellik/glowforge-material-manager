@@ -20,7 +20,9 @@
     "tabs"
   ],
   "host_permissions": [
-    "*://app.glowforge.com/*",
+    "*://app.glowforge.com/*"
+  ],
+  "optional_host_permissions": [
     "https://storage.googleapis.com/gf-app-imgl/*"
   ],
   "background": {
