@@ -148,12 +148,20 @@ that to happen on its own. To force a plugin to update:
 # Development
 
 This chrome extension is a basic React application with no frills, built with
-Vite. The project uses yarn as its package manager and the Node version in
+Vite. The project uses npm as its package manager and the Node version in
 `.nvmrc`, and as such the install and build process is as follows:
 
 ```sh
-$ yarn install
-$ yarn build
+$ npm install
+$ npm run build
+```
+
+Linting uses ESLint with the recommended `@eslint/js`, `typescript-eslint` and
+`eslint-plugin-react-hooks` configs, and formatting uses Prettier:
+
+```sh
+$ npm run lint
+$ npm run format
 ```
 
 Once you have a successful build of the extension you can manually load it into
@@ -169,7 +177,7 @@ materials that may be used.
 Create the package
 
 ```sh
-yarn build
+npm run build
 zip -r glowforge-material-manager-0.0.0.zip build/.
 ```
 
