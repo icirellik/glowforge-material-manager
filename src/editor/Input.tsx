@@ -10,7 +10,7 @@ interface InputProps {
   value: any;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
-  propValidation?: {[key: string]: boolean | null};
+  propValidation?: { [key: string]: boolean | null };
   // Is set then the field will be validated and this callback will be called.
   validate?: (id: string, isValid: boolean | null) => void;
 }
@@ -70,20 +70,15 @@ export class InputText extends React.Component<InputProps> {
   }
 
   render() {
-    const {
-      isDisabled,
-      label,
-      propValidation,
-      validate,
-      value,
-    } = this.props;
+    const { isDisabled, label, propValidation, validate, value } = this.props;
     let className: string | undefined;
     if (
-      validate && propValidation
-      && propValidation[this.id] !== null
-      && propValidation[this.id] !== undefined
+      validate &&
+      propValidation &&
+      propValidation[this.id] !== null &&
+      propValidation[this.id] !== undefined
     ) {
-      className = (!propValidation[this.id]) ? 'invalid' : undefined;
+      className = !propValidation[this.id] ? 'invalid' : undefined;
     }
     return (
       <div className="form-field">
@@ -144,7 +139,9 @@ export class InputNumber extends React.Component<InputNumberProps> {
       let isValid = !!value;
 
       if (min && max) {
-        isValid = asInteger(min) <= asInteger(value) && asInteger(max) >= asInteger(value);
+        isValid =
+          asInteger(min) <= asInteger(value) &&
+          asInteger(max) >= asInteger(value);
       } else if (min) {
         isValid = asInteger(min) <= asInteger(value);
       } else if (max) {
@@ -176,16 +173,24 @@ export class InputNumber extends React.Component<InputNumberProps> {
     } = this.props;
     let className: string | undefined;
     if (
-      validate && propValidation
-      && propValidation[this.id] !== null
-      && propValidation[this.id] !== undefined
+      validate &&
+      propValidation &&
+      propValidation[this.id] !== null &&
+      propValidation[this.id] !== undefined
     ) {
-      className = (!propValidation[this.id]) ? 'invalid' : undefined;
+      className = !propValidation[this.id] ? 'invalid' : undefined;
     }
 
     let helpIcon: React.ReactElement | null = null;
     if (help) {
-      helpIcon = (<IconHelp className="form-field__help" height="16" width="16" title={help} />);
+      helpIcon = (
+        <IconHelp
+          className="form-field__help"
+          height="16"
+          width="16"
+          title={help}
+        />
+      );
     }
     return (
       <div className="form-field">
@@ -258,7 +263,9 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
       let isValid = !!value;
 
       if (min && max) {
-        isValid = asInteger(min) <= asInteger(value) && asInteger(max) >= asInteger(value);
+        isValid =
+          asInteger(min) <= asInteger(value) &&
+          asInteger(max) >= asInteger(value);
       } else if (min) {
         isValid = asInteger(min) <= asInteger(value);
       } else if (max) {
@@ -290,11 +297,12 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
     } = this.props;
     let className: string | undefined;
     if (
-      validate && propValidation
-      && propValidation[this.id] !== null
-      && propValidation[this.id] !== undefined
+      validate &&
+      propValidation &&
+      propValidation[this.id] !== null &&
+      propValidation[this.id] !== undefined
     ) {
-      className = (!propValidation[this.id]) ? 'invalid' : undefined;
+      className = !propValidation[this.id] ? 'invalid' : undefined;
     }
     return (
       <div className="form-field">

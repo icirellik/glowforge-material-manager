@@ -45,7 +45,9 @@ describe('migration #4', () => {
       ['Synced', true],
       ['Not Synced', false],
     ]);
-    expect(vi.mocked(sendCloudMaterial).mock.calls.map(([m]: any) => m.name)).toEqual(['Legacy']);
+    expect(
+      vi.mocked(sendCloudMaterial).mock.calls.map(([m]: any) => m.name),
+    ).toEqual(['Legacy']);
   });
 
   it('does nothing once every material has the property', async () => {

@@ -14,11 +14,16 @@ describe('qrCodeToSvg', () => {
     const canvas = createCanvas(image.width, image.height);
     const context = canvas.getContext('2d');
     context.drawImage(image, 0, 0);
-    expect(readQrCode(context.getImageData(0, 0, image.width, image.height))?.text).toEqual('Custom:abc1234');
+    expect(
+      readQrCode(context.getImageData(0, 0, image.width, image.height))?.text,
+    ).toEqual('Custom:abc1234');
   });
 
   it('has no size of its own without a scale', () => {
-    const svg = qrCodeToSvg(encodeQrCode('Custom:abc1234'), { margin: 2, dark: '#123456' });
+    const svg = qrCodeToSvg(encodeQrCode('Custom:abc1234'), {
+      margin: 2,
+      dark: '#123456',
+    });
     expect(svg).toContain('viewBox="0 0 25 25" shape-rendering');
     expect(svg).toContain('fill="#123456"');
   });

@@ -49,7 +49,7 @@ export type GFMaterialSettings = {
   cut_setting: GFCutSetting;
   score_settings: GFScoreSetting[];
   vector_engrave_settings: GFEngraveSetting[];
-}
+};
 
 export type GFMaterialVariety = {
   //
@@ -62,7 +62,7 @@ export type GFMaterialVariety = {
   thumbnails: string[];
   //
   type_name: string;
-}
+};
 
 /**
  * Represents the result that settings will create when used on a material.
@@ -70,14 +70,14 @@ export type GFMaterialVariety = {
 export type GFOutcome = {
   name: string;
   dev_id: string;
-}
+};
 
 export type GFCutSetting = {
   power: number;
   speed: number;
   passes: number;
   focal_offset: number | null;
-}
+};
 
 export type GFScoreSetting = {
   power: number;
@@ -87,7 +87,7 @@ export type GFScoreSetting = {
   uses: null;
   display_color_mask: null;
   outcome: GFOutcome;
-}
+};
 
 export type GFEngraveSetting = {
   power: number;
@@ -98,7 +98,7 @@ export type GFEngraveSetting = {
   uses: null;
   display_color_mask: null;
   outcome: GFOutcome;
-}
+};
 
 export type GFBitmapEngraveSetting = {
   power: number;
@@ -114,4 +114,4 @@ export type GFBitmapEngraveSetting = {
   uses: null;
   display_color_mask: null;
   outcome: GFOutcome;
-}
+};

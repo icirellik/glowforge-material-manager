@@ -6,21 +6,25 @@ import { IconPlus } from '../icons/IconPlus';
 // Vector Methods
 export type AddVectorEngrave = () => void;
 export type RemoveVectorEngrave = (index: number) => void;
-export type UpdateVectorEngrave =
-  <K extends keyof PluginVectorEngraveSetting>(index: number,
-    prop: K, value: PluginVectorEngraveSetting[K]) => void;
+export type UpdateVectorEngrave = <K extends keyof PluginVectorEngraveSetting>(
+  index: number,
+  prop: K,
+  value: PluginVectorEngraveSetting[K],
+) => void;
 
 type VectorEngraveSettingsProps = {
   addVectorEngrave: AddVectorEngrave;
-  propValidation?: {[key: string]: boolean | null};
+  propValidation?: { [key: string]: boolean | null };
   removeVectorEngrave: RemoveVectorEngrave;
   saveTemporaryState: () => void;
   updateVectorEngrave: UpdateVectorEngrave;
   vectors: PluginVectorEngraveSetting[];
   validationHandler: (id: string, isValid: boolean | null) => void;
-}
+};
 
-export default function VectorEngraveSettings(props: VectorEngraveSettingsProps) {
+export default function VectorEngraveSettings(
+  props: VectorEngraveSettingsProps,
+) {
   const {
     addVectorEngrave,
     propValidation,
@@ -45,20 +49,18 @@ export default function VectorEngraveSettings(props: VectorEngraveSettingsProps)
           />
         </div>
       </div>
-      {
-        vectors.map((vector, index) => (
-          <VectorEngraveSetting
-            index={index}
-            key={vector.name}
-            propValidation={propValidation}
-            removeVectorEngrave={removeVectorEngrave}
-            saveTemporaryState={saveTemporaryState}
-            updateVectorEngrave={updateVectorEngrave}
-            validationHandler={validationHandler}
-            vector={vector}
-          />
-        ))
-      }
+      {vectors.map((vector, index) => (
+        <VectorEngraveSetting
+          index={index}
+          key={vector.name}
+          propValidation={propValidation}
+          removeVectorEngrave={removeVectorEngrave}
+          saveTemporaryState={saveTemporaryState}
+          updateVectorEngrave={updateVectorEngrave}
+          validationHandler={validationHandler}
+          vector={vector}
+        />
+      ))}
     </>
   );
 }

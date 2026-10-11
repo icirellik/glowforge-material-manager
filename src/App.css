@@ -61,21 +61,21 @@
   font-size: 14px;
 
   border: 0;
-  border-right: 1px solid #1C0B19;
+  border-right: 1px solid #1c0b19;
 }
 
 .buttonBar button:hover {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 .buttonBar button:focus {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 .buttonBar button:disabled {
-    opacity: 0.3;
+  opacity: 0.3;
 }
 
 .buttonBar button:not([disabled]):hover {
-  background-color: #0D1C1E;
+  background-color: #0d1c1e;
 }

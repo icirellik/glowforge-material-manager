@@ -16,9 +16,7 @@ const exampleStorage = {
             speed: 100,
           },
           description: 'Test One Settings',
-          environment: [
-            'production',
-          ],
+          environment: ['production'],
           score_settings: [],
           tube_type: 'basic',
           vector_engrave_settings: [],
@@ -33,9 +31,7 @@ const exampleStorage = {
             speed: 100,
           },
           description: 'Test One Settings',
-          environment: [
-            'production',
-          ],
+          environment: ['production'],
           score_settings: [],
           tube_type: 'pro',
           vector_engrave_settings: [],
@@ -68,9 +64,7 @@ const exampleStorage = {
             speed: 4000,
           },
           description: 'Test Two Settings',
-          environment: [
-            'production',
-          ],
+          environment: ['production'],
           score_settings: [],
           tube_type: 'basic',
           vector_engrave_settings: [],
@@ -85,9 +79,7 @@ const exampleStorage = {
             speed: 4000,
           },
           description: 'Test Two Settings',
-          environment: [
-            'production',
-          ],
+          environment: ['production'],
           score_settings: [],
           tube_type: 'pro',
           vector_engrave_settings: [],
@@ -160,9 +152,7 @@ const expected = {
             speed: 100,
           },
           description: 'Test One Settings',
-          environment: [
-            'production',
-          ],
+          environment: ['production'],
           score_settings: [],
           tube_type: 'basic',
           vector_engrave_settings: [],
@@ -177,9 +167,7 @@ const expected = {
             speed: 100,
           },
           description: 'Test One Settings',
-          environment: [
-            'production',
-          ],
+          environment: ['production'],
           score_settings: [],
           tube_type: 'pro',
           vector_engrave_settings: [],
@@ -212,9 +200,7 @@ const expected = {
             speed: 4000,
           },
           description: 'Test Two Settings',
-          environment: [
-            'production',
-          ],
+          environment: ['production'],
           score_settings: [],
           tube_type: 'basic',
           vector_engrave_settings: [],
@@ -229,9 +215,7 @@ const expected = {
             speed: 4000,
           },
           description: 'Test Two Settings',
-          environment: [
-            'production',
-          ],
+          environment: ['production'],
           score_settings: [],
           tube_type: 'pro',
           vector_engrave_settings: [],
@@ -293,7 +277,7 @@ describe('migration #3', () => {
   let id = 0;
 
   (<any>global).TextEncoder = class {
-    encode = () => { };
+    encode = () => {};
   };
 
   (<any>global).chrome = {

@@ -15,31 +15,29 @@ export type MaterialViewerProps = {
   toggleCloundSync: any;
   material: PluginMaterial;
   removeMaterial: RemoveMaterial;
-}
+};
 
 export default function MaterialViewer(props: MaterialViewerProps) {
-  const {
-    toggleCloundSync,
-    material,
-    removeMaterial,
-  } = props;
+  const { toggleCloundSync, material, removeMaterial } = props;
 
   const title = `${material.thickName} ${material.name}`;
-  const syncToggle = (material.sync)
-    ? (
-      <IconToggleOn
-        className="viewer__syncOn"
-        click={() => { toggleCloundSync(material); }}
-        title="Cloud Sync Enabled"
-      />
-    )
-    : (
-      <IconToggleOff
-        className="viewer__syncOff"
-        click={() => { toggleCloundSync(material); }}
-        title="Clound Sync Disabled"
-      />
-    );
+  const syncToggle = material.sync ? (
+    <IconToggleOn
+      className="viewer__syncOn"
+      click={() => {
+        toggleCloundSync(material);
+      }}
+      title="Cloud Sync Enabled"
+    />
+  ) : (
+    <IconToggleOff
+      className="viewer__syncOff"
+      click={() => {
+        toggleCloundSync(material);
+      }}
+      title="Clound Sync Disabled"
+    />
+  );
 
   return (
     <div className="viewer__column">

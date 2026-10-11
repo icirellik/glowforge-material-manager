@@ -11,13 +11,14 @@
  */
 (() => {
   /** @type {ExtendedWindow} */
-  const localWindow = (window);
+  const localWindow = window;
 
   const CHANNEL = 'glowforge-material-manager';
 
   const instance = {};
   localWindow.glowforgeMaterialManagerContent = instance;
-  const isCurrent = () => localWindow.glowforgeMaterialManagerContent === instance;
+  const isCurrent = () =>
+    localWindow.glowforgeMaterialManagerContent === instance;
 
   // The GFUI creates its store after this script runs.
   const STORE_POLL_MS = 250;
@@ -35,12 +36,15 @@
    * Sends a message to the extension through bridge.js.
    */
   function postToExtension(type, data = {}) {
-    window.postMessage({
-      channel: CHANNEL,
-      to: 'extension',
-      type,
-      ...data,
-    }, window.location.origin);
+    window.postMessage(
+      {
+        channel: CHANNEL,
+        to: 'extension',
+        type,
+        ...data,
+      },
+      window.location.origin,
+    );
   }
 
   /**
@@ -68,7 +72,9 @@
     if (!material) {
       return undefined;
     }
-    return typeof material.get === 'function' ? material.get(key) : material[key];
+    return typeof material.get === 'function'
+      ? material.get(key)
+      : material[key];
   }
 
   // Each custom material as it was last added, so that unchanged ones aren't
@@ -84,7 +90,9 @@
    * Finds the custom materials that are missing from the GFUI's material list.
    */
   function missingMaterials(materialList) {
-    return materials.filter(material => !materialList || !materialList.has(material.id));
+    return materials.filter(
+      (material) => !materialList || !materialList.has(material.id),
+    );
   }
 
   /**
@@ -101,18 +109,26 @@
     }
 
     const materialList = store.getState().getIn(['materials', 'materialList']);
-    const toAdd = materials.filter(material => force
-      || !materialList
-      || !materialList.has(material.id)
-      || added.get(material.id) !== JSON.stringify(material));
+    const toAdd = materials.filter(
+      (material) =>
+        force ||
+        !materialList ||
+        !materialList.has(material.id) ||
+        added.get(material.id) !== JSON.stringify(material),
+    );
     if (toAdd.length > 0) {
       log(`adding ${toAdd.length} custom materials`);
-      const selected = toAdd.find(material => materialList && field(materialList.get(material.id), 'selected'));
+      const selected = toAdd.find(
+        (material) =>
+          materialList && field(materialList.get(material.id), 'selected'),
+      );
       store.dispatch({
         type: 'ADD_MATERIALS',
         materials: toAdd,
       });
-      toAdd.forEach(material => added.set(material.id, JSON.stringify(material)));
+      toAdd.forEach((material) =>
+        added.set(material.id, JSON.stringify(material)),
+      );
       if (selected) {
         store.dispatch({
           type: 'SET_MATERIAL',
@@ -120,8 +136,10 @@
         });
       }
     }
-    const missing = missingMaterials(store.getState().getIn(['materials', 'materialList']));
-    droppedIds = new Set(missing.map(material => material.id));
+    const missing = missingMaterials(
+      store.getState().getIn(['materials', 'materialList']),
+    );
+    droppedIds = new Set(missing.map((material) => material.id));
     return missing.length === 0;
   }
 
@@ -159,7 +177,9 @@
    * material list, other than ones it dropped.
    */
   function needsRestore(materialList) {
-    return missingMaterials(materialList).some(material => !droppedIds.has(material.id));
+    return missingMaterials(materialList).some(
+      (material) => !droppedIds.has(material.id),
+    );
   }
 
   /**
@@ -171,7 +191,11 @@
     try {
       const store = getStore();
       // Adding them may have dropped some since this was scheduled.
-      if (!isCurrent() || !store || !needsRestore(store.getState().getIn(['materials', 'materialList']))) {
+      if (
+        !isCurrent() ||
+        !store ||
+        !needsRestore(store.getState().getIn(['materials', 'materialList']))
+      ) {
         return;
       }
       log('restoring missing custom materials');
@@ -223,8 +247,9 @@
     }
 
     // Older versions of the GFUI called this `preloadedLidImage`.
-    const lidImage = state.getIn(['machines', 'machineMap', serial, 'lidImage'])
-      || state.getIn(['machines', 'machineMap', serial, 'preloadedLidImage']);
+    const lidImage =
+      state.getIn(['machines', 'machineMap', serial, 'lidImage']) ||
+      state.getIn(['machines', 'machineMap', serial, 'preloadedLidImage']);
     if (typeof lidImage !== 'string') {
       return;
     }
@@ -281,11 +306,11 @@
   window.addEventListener('message', (event) => {
     const message = event.data;
     if (
-      !isCurrent()
-      || event.source !== window
-      || !message
-      || message.channel !== CHANNEL
-      || message.to !== 'page'
+      !isCurrent() ||
+      event.source !== window ||
+      !message ||
+      message.channel !== CHANNEL ||
+      message.to !== 'page'
     ) {
       return;
     }

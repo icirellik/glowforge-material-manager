@@ -1,4 +1,7 @@
-import { getLocalStorage, storeGlowforgeMaterials } from '../lib/chromeWrappers';
+import {
+  getLocalStorage,
+  storeGlowforgeMaterials,
+} from '../lib/chromeWrappers';
 import { sha1 } from '../lib/crypto';
 
 /**
@@ -30,7 +33,7 @@ export async function migration3(): Promise<boolean> {
   }
 
   if (upgraded) {
-    console.log('migration \'#3\' applied');
+    console.log("migration '#3' applied");
     await storeGlowforgeMaterials(_materials);
   }
 

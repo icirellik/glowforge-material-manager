@@ -106,15 +106,15 @@
 }
 
 .viewer__destructiveActions button:hover {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 .viewer__destructiveActions button:focus {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 .viewer__destructiveActions button:disabled {
-    opacity: 0.3;
+  opacity: 0.3;
 }
 
 .viewer__destructiveActions button:not([disabled]):hover {
@@ -135,13 +135,15 @@
   align-self: center;
 }
 
-.viewer__destructiveActions button:not([disabled]):hover .materialButtons__delete__icon {
+.viewer__destructiveActions
+  button:not([disabled]):hover
+  .materialButtons__delete__icon {
   background-color: rgb(201, 0, 0);
   color: white;
 }
 
 .viewer__syncOn {
-  color: #2541B2;
+  color: #2541b2;
   height: 30px !important;
   width: 30px !important;
 }

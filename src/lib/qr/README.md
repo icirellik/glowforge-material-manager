@@ -7,7 +7,10 @@ copied into another project as it is.
 
 ```ts
 import {
-  encodeQrCode, qrCodeToSvg, readQrCode, readQrCodeFromImage,
+  encodeQrCode,
+  qrCodeToSvg,
+  readQrCode,
+  readQrCodeFromImage,
 } from './lib/qr';
 
 // From ImageData, or anything shaped like it.

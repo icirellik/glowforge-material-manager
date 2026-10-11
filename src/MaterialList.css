@@ -92,7 +92,7 @@
 }
 
 .materialList__iconHover:hover {
-  color: #2541B2;
+  color: #2541b2;
 }
 
 .materialList__create,
@@ -101,6 +101,6 @@
 }
 
 .materialList__create span {
-  color: #2541B2;
+  color: #2541b2;
   cursor: pointer;
 }

@@ -14,7 +14,10 @@ export default defineConfig({
       },
       output: {
         // The manifest refers to the service worker by name.
-        entryFileNames: (chunk) => (chunk.name === 'background' ? 'background.js' : 'assets/[name]-[hash].js'),
+        entryFileNames: (chunk) =>
+          chunk.name === 'background'
+            ? 'background.js'
+            : 'assets/[name]-[hash].js',
       },
     },
     // Matches `minimum_chrome_version` in the manifest.

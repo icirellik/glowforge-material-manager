@@ -36,7 +36,11 @@ async function download(url: string): Promise<Blob | null> {
     });
     const type = response.headers.get('content-type') || '';
     const length = Number(response.headers.get('content-length') || 0);
-    if (!response.ok || !type.startsWith('image/') || length > MAX_LID_IMAGE_BYTES) {
+    if (
+      !response.ok ||
+      !type.startsWith('image/') ||
+      length > MAX_LID_IMAGE_BYTES
+    ) {
       log(`Not reading the lid image: ${response.status} ${type} ${length}`);
       return null;
     }
@@ -61,7 +65,9 @@ export async function checkLidImage(url: string): Promise<LidImageCheck> {
   if (!image) {
     return NOT_READ;
   }
-  const code = await readQrCodeFromImage(image, { maxPixels: MAX_LID_IMAGE_PIXELS });
+  const code = await readQrCodeFromImage(image, {
+    maxPixels: MAX_LID_IMAGE_PIXELS,
+  });
   log(`QR code: ${code ? code.text : 'none'}`);
   const material = code && parseMaterialQrCode(code.text);
   return { read: true, materialId: material ? material.id : null };

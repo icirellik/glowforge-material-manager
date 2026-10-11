@@ -1,12 +1,20 @@
 // @vitest-environment node
 import manifest from '../../public/manifest.json';
 import {
-  LID_IMAGE_ORIGIN, hasLidImageAccess, isLidImageUrl, removeLidImageAccess, requestLidImageAccess,
+  LID_IMAGE_ORIGIN,
+  hasLidImageAccess,
+  isLidImageUrl,
+  removeLidImageAccess,
+  requestLidImageAccess,
 } from './lidImage';
 
 describe('lid images', () => {
   it('only accepts Glowforge lid image URLs', () => {
-    expect(isLidImageUrl('https://storage.googleapis.com/gf-app-imgl/abc/lid.jpg?GoogleAccessId=x&Signature=y')).toBe(true);
+    expect(
+      isLidImageUrl(
+        'https://storage.googleapis.com/gf-app-imgl/abc/lid.jpg?GoogleAccessId=x&Signature=y',
+      ),
+    ).toBe(true);
     for (const url of [
       'http://storage.googleapis.com/gf-app-imgl/abc/lid.jpg',
       'https://storage.googleapis.com/other-bucket/lid.jpg',
@@ -19,7 +27,7 @@ describe('lid images', () => {
     }
   });
 
-  it('is an optional permission, so updates don\'t ask for it', () => {
+  it("is an optional permission, so updates don't ask for it", () => {
     expect(manifest.optional_host_permissions).toContain(LID_IMAGE_ORIGIN);
     expect(manifest.host_permissions).not.toContain(LID_IMAGE_ORIGIN);
   });
@@ -34,7 +42,11 @@ describe('lid images', () => {
     expect(await hasLidImageAccess()).toBe(true);
     expect(await requestLidImageAccess()).toBe(true);
     expect(await removeLidImageAccess()).toBe(true);
-    for (const call of [permissions.contains, permissions.request, permissions.remove]) {
+    for (const call of [
+      permissions.contains,
+      permissions.request,
+      permissions.remove,
+    ]) {
       expect(call).toHaveBeenCalledWith({ origins: [LID_IMAGE_ORIGIN] });
     }
     vi.unstubAllGlobals();

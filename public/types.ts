@@ -7,7 +7,7 @@ type ImmutableMap = {
 };
 
 export type Store = {
-  dispatch: (message: {[key: string]: unknown}) => void;
+  dispatch: (message: { [key: string]: unknown }) => void;
   getState(): ImmutableMap;
   // Redux returns a function that unsubscribes.
   subscribe: (listener: () => void) => (() => void) | void;

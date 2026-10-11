@@ -4,7 +4,10 @@ import type { TinyMaterial } from './materialTiny';
  * The text in a material's QR code: its id, or its id and its settings, which
  * a sticker can carry so that the material can be added from it.
  */
-export function materialQrCodeText(id: string, settings?: TinyMaterial): string {
+export function materialQrCodeText(
+  id: string,
+  settings?: TinyMaterial,
+): string {
   return settings ? `${id}|${JSON.stringify(settings)}` : id;
 }
 

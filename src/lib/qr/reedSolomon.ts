@@ -65,7 +65,10 @@ function generator(count: number): Uint8Array {
  * with the first codeword the highest power, shifted up by ecCount and
  * divided by the generator.
  */
-export function errorCorrectionCodewords(data: Uint8Array, ecCount: number): Uint8Array {
+export function errorCorrectionCodewords(
+  data: Uint8Array,
+  ecCount: number,
+): Uint8Array {
   const divisor = generator(ecCount);
   const remainder = new Uint8Array(ecCount);
   for (const value of data) {
@@ -73,7 +76,8 @@ export function errorCorrectionCodewords(data: Uint8Array, ecCount: number): Uin
     remainder.copyWithin(0, 1);
     remainder[ecCount - 1] = 0;
     if (factor) {
-      for (let i = 0; i < ecCount; i += 1) remainder[i] ^= multiply(divisor[i + 1], factor);
+      for (let i = 0; i < ecCount; i += 1)
+        remainder[i] ^= multiply(divisor[i + 1], factor);
     }
   }
   return remainder;
@@ -138,7 +142,11 @@ function errorLocator(syndrome: number[]): number[] {
  * error correction codewords.
  * @returns False when the block has more errors than that.
  */
-export function correctErrors(block: Uint8Array, ecCount: number, maxErrors = Math.floor(ecCount / 2)): boolean {
+export function correctErrors(
+  block: Uint8Array,
+  ecCount: number,
+  maxErrors = Math.floor(ecCount / 2),
+): boolean {
   const syndrome = syndromes(block, ecCount);
   if (syndrome.every((value) => value === 0)) {
     return true;
@@ -170,14 +178,19 @@ export function correctErrors(block: Uint8Array, ecCount: number, maxErrors = Ma
       evaluator[i] ^= multiply(syndrome[i - j], locator[j]);
     }
   }
-  const derivative = locator.slice(1).map((value, index) => (index % 2 === 0 ? value : 0));
+  const derivative = locator
+    .slice(1)
+    .map((value, index) => (index % 2 === 0 ? value : 0));
   for (const power of positions) {
     const inverse = EXP[(255 - power) % 255];
     const slope = evaluate(derivative, inverse);
     if (slope === 0) {
       return false;
     }
-    block[block.length - 1 - power] ^= multiply(EXP[power], divide(evaluate(evaluator, inverse), slope));
+    block[block.length - 1 - power] ^= multiply(
+      EXP[power],
+      divide(evaluate(evaluator, inverse), slope),
+    );
   }
 
   // Too many errors can look like a few different ones, so check the result.

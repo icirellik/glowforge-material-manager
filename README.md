@@ -113,19 +113,19 @@ For for informaton on Scan Gap please read the follow [guide](http://craftykitsu
 Below is achart with some scan gap settings for the Glowforge:
 
 | Scan Gap Settings | Glowforge UI LPI |
-|------------------------|----------------------|
-| 1 | 1355 |
-| 2  | 675 |
-| 3 | 450 |
-| 4 | 340 |
-| 5 | 270 |
-| 6 | 225 |
-| 7 | 195 |
-| 8 | 170 |
-| 9 | 150 |
-| 10 | 135 |
-| 12 | 115
-| 18 | 75 |
+| ----------------- | ---------------- |
+| 1                 | 1355             |
+| 2                 | 675              |
+| 3                 | 450              |
+| 4                 | 340              |
+| 5                 | 270              |
+| 6                 | 225              |
+| 7                 | 195              |
+| 8                 | 170              |
+| 9                 | 150              |
+| 10                | 135              |
+| 12                | 115              |
+| 18                | 75               |
 
 ## Proofgrade Materials
 
@@ -134,16 +134,16 @@ difficult to add this feature it just wansn't my main priority.
 
 Features to be added:
 
-* CSV export
+- CSV export
 
 # Force Update
 
 The extension will update automatically. However, it can take several hours for
 that to happen on its own. To force a plugin to update:
 
-* browse to chrome://extensions
-* toggle 'Developer mode'
-* click the 'Update extensions now' button
+- browse to chrome://extensions
+- toggle 'Developer mode'
+- click the 'Update extensions now' button
 
 # Development
 
@@ -184,19 +184,19 @@ zip -r glowforge-material-manager-0.0.0.zip build/.
 Set a material.
 
 ```node
-window.store.dispatch({ type: "SET_MATERIAL", id: 'Glowforge:35' });
+window.store.dispatch({ type: 'SET_MATERIAL', id: 'Glowforge:35' });
 ```
 
 Add a material
 
 ```node
-window.store.dispatch({ type: "ADD_MATERIAL", material: {} });
+window.store.dispatch({ type: 'ADD_MATERIAL', material: {} });
 ```
 
 Add materials
 
 ```node
-window.store.dispatch({ type: "ADD_MATERIALS", materials: [] });
+window.store.dispatch({ type: 'ADD_MATERIALS', materials: [] });
 ```
 
 If you want to force reset the local storage for the plugin, inspect the
@@ -230,18 +230,25 @@ const minUISpeed = 100;
 const maxUISpeed = 1000;
 
 function getMaxVRSpeed(minSpeed, maxSpeed) {
-    const speedDifference = maxSpeed - minSpeed;
-    const uiSpeedRange = maxUISpeed - minUISpeed
-    const vrSpeed = speedDifference / maxMotorSpeed * uiSpeedRange + minUISpeed;
-    return 100 * Math.round(vrSpeed / 100)
+  const speedDifference = maxSpeed - minSpeed;
+  const uiSpeedRange = maxUISpeed - minUISpeed;
+  const vrSpeed = (speedDifference / maxMotorSpeed) * uiSpeedRange + minUISpeed;
+  return 100 * Math.round(vrSpeed / 100);
 }
 function calculateDisplaySpeed(displaySpeed, minSpeed, maxSpeed) {
-    const maxVRSpeed = getMaxVRSpeed(minSpeed, maxSpeed) - minUISpeed;
-    const speed = (displaySpeed - minSpeed) / (maxSpeed - minSpeed) * maxVRSpeed + minUISpeed;
-    return Math.round(speed)
+  const maxVRSpeed = getMaxVRSpeed(minSpeed, maxSpeed) - minUISpeed;
+  const speed =
+    ((displaySpeed - minSpeed) / (maxSpeed - minSpeed)) * maxVRSpeed +
+    minUISpeed;
+  return Math.round(speed);
 }
 function getRealSpeed(displaySpeed, minSpeed, maxSpeed) {
-    return (displaySpeed - minSpeed) / (getMaxVRSpeed(minSpeed, maxSpeed) - minUISpeed) * (maxSpeed - minSpeed) + minSpeed
+  return (
+    ((displaySpeed - minSpeed) /
+      (getMaxVRSpeed(minSpeed, maxSpeed) - minUISpeed)) *
+      (maxSpeed - minSpeed) +
+    minSpeed
+  );
 }
 
 // Cuts and Scores
@@ -274,23 +281,23 @@ Scan Gap Settings:
 
 ```javascript
 const MILLIMETERS_IN_INCH = 25.4;
-const STEP_SIZE = .01875;
+const STEP_SIZE = 0.01875;
 const STANDARD_SCAN_GAP_INCHES = STEP_SIZE / MILLIMETERS_IN_INCH;
 
 function roundToNearest5(linesPerInch) {
-  return 5 * Math.round(linesPerInch / 5)
+  return 5 * Math.round(linesPerInch / 5);
 }
 
 function getDisplayLinesPerInch(scanGap) {
-  return roundToNearest5(1 / (scanGap * STANDARD_SCAN_GAP_INCHES))
+  return roundToNearest5(1 / (scanGap * STANDARD_SCAN_GAP_INCHES));
 }
 
 function getExactLinesPerInch(scanGap) {
-  return Math.round(1 / (scanGap * STANDARD_SCAN_GAP_INCHES))
+  return Math.round(1 / (scanGap * STANDARD_SCAN_GAP_INCHES));
 }
 
 function getSteps(linesPerInch) {
-  return Math.round(1 / linesPerInch / STANDARD_SCAN_GAP_INCHES)
+  return Math.round(1 / linesPerInch / STANDARD_SCAN_GAP_INCHES);
 }
 
 console.log(getExactLinesPerInch(1));

@@ -1,10 +1,6 @@
 import React from 'react';
 import { IconMinus } from '../icons/IconMinus';
-import {
-  asFloat,
-  asInteger,
-  precisionRound,
-} from '../lib/utils';
+import { asFloat, asInteger, precisionRound } from '../lib/utils';
 import {
   toDisplayEngraveSpeed,
   toDisplayLinesPerInch,
@@ -12,14 +8,8 @@ import {
   toRealEngraveSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
-import type {
-  PluginVectorEngraveSetting,
-} from '../material/materialPlugin';
-import {
-  InputText,
-  InputNumber,
-  InputNumberWithCheckbox,
-} from './Input';
+import type { PluginVectorEngraveSetting } from '../material/materialPlugin';
+import { InputText, InputNumber, InputNumberWithCheckbox } from './Input';
 import type {
   RemoveVectorEngrave,
   UpdateVectorEngrave,
@@ -27,7 +17,7 @@ import type {
 
 interface VectorEngraveSettingProps {
   index: number;
-  propValidation?: {[key: string]: boolean | null};
+  propValidation?: { [key: string]: boolean | null };
   removeVectorEngrave: RemoveVectorEngrave;
   saveTemporaryState: () => void;
   updateVectorEngrave: UpdateVectorEngrave;
@@ -45,13 +35,11 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
     vector,
     validationHandler,
   } = props;
-  const maxPower = (vector.power === 99.99 || vector.power === 100);
+  const maxPower = vector.power === 99.99 || vector.power === 100;
   return (
     <>
       <div className="form-sub-header">
-        <p>
-          {`Vector Engrave ${index + 1}`}
-        </p>
+        <p>{`Vector Engrave ${index + 1}`}</p>
         <IconMinus
           className="icon-button-add"
           click={() => {
@@ -65,7 +53,9 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
       <InputText
         label="Name *"
         onBlur={saveTemporaryState}
-        onChange={(event) => updateVectorEngrave(index, 'name', event.target.value)}
+        onChange={(event) =>
+          updateVectorEngrave(index, 'name', event.target.value)
+        }
         propValidation={propValidation}
         value={vector.name}
         validate={validationHandler}
@@ -76,7 +66,9 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
         min="100"
         onBlur={saveTemporaryState}
         onChange={(event) => {
-          const normalizedValue = toRealEngraveSpeed(asInteger(event.target.value));
+          const normalizedValue = toRealEngraveSpeed(
+            asInteger(event.target.value),
+          );
           updateVectorEngrave(index, 'speed', normalizedValue);
         }}
         propValidation={propValidation}
@@ -90,10 +82,16 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
         max="100"
         min="0"
         onBlur={saveTemporaryState}
-        onChange={(event) => updateVectorEngrave(index, 'power', toRealPower(asInteger(event.target.value)))}
+        onChange={(event) =>
+          updateVectorEngrave(
+            index,
+            'power',
+            toRealPower(asInteger(event.target.value)),
+          )
+        }
         onChecked={() => {
           const nextMaxPower = !maxPower;
-          updateVectorEngrave(index, 'power', (nextMaxPower) ? 100 : 99);
+          updateVectorEngrave(index, 'power', nextMaxPower ? 100 : 99);
         }}
         propValidation={propValidation}
         value={toDisplayPower(vector.power)}
@@ -114,26 +112,31 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
         label="Focal Offset (mm)"
         onBlur={saveTemporaryState}
         onChange={(event) => {
-          const normalizedValue = precisionRound(asFloat(event.target.value), 3);
+          const normalizedValue = precisionRound(
+            asFloat(event.target.value),
+            3,
+          );
           updateVectorEngrave(index, 'focalOffset', normalizedValue);
         }}
         propValidation={propValidation}
         value={vector.focalOffset}
       />
       <InputNumber
-        help={'Scan Gap mapping to Glowforge UI \n '
-          + '1 = 1355 LPI \n '
-          + '2 = 675 LPI \n '
-          + '3 = 450 LPI \n '
-          + '4 = 340 LPI \n '
-          + '5 = 270 LPI \n '
-          + '6 = 225 LPI \n '
-          + '7 = 195 LPI \n '
-          + '8 = 170 LPI \n '
-          + '11 = 125 LPI \n '
-          + '18 = 75 LPI \n '
-          + '39 = 35 LPI \n '
-          + '136 = 10 LPI'}
+        help={
+          'Scan Gap mapping to Glowforge UI \n ' +
+          '1 = 1355 LPI \n ' +
+          '2 = 675 LPI \n ' +
+          '3 = 450 LPI \n ' +
+          '4 = 340 LPI \n ' +
+          '5 = 270 LPI \n ' +
+          '6 = 225 LPI \n ' +
+          '7 = 195 LPI \n ' +
+          '8 = 170 LPI \n ' +
+          '11 = 125 LPI \n ' +
+          '18 = 75 LPI \n ' +
+          '39 = 35 LPI \n ' +
+          '136 = 10 LPI'
+        }
         label={`Scan Gap (LPI ${toDisplayLinesPerInch(vector.scanGap)}) *`}
         onBlur={saveTemporaryState}
         onChange={(event) => {

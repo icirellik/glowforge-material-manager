@@ -8,7 +8,7 @@ export type SyncData = string;
 
 export type SynchronizedMaterials = {
   [key in SyncId]: SyncData;
-}
+};
 
 export interface StorageLocal {
   // Stores material backups by version number before a major release occurs.
@@ -47,7 +47,9 @@ export async function getLocalStorage(): Promise<StorageLocal> {
 /**
  * Gets all the backups.
  */
-export async function getBackups(): Promise<{ [key: string]: StorageLocal } | void> {
+export async function getBackups(): Promise<{
+  [key: string]: StorageLocal;
+} | void> {
   return new Promise((resolve) => {
     window.chrome.storage.local.get(null, (result: StorageLocal) => {
       if (result && result.backup) {
@@ -64,7 +66,9 @@ export async function getBackups(): Promise<{ [key: string]: StorageLocal } | vo
  *
  * @param backupName
  */
-export async function getBackup(backupName: string): Promise<StorageLocal | void> {
+export async function getBackup(
+  backupName: string,
+): Promise<StorageLocal | void> {
   return new Promise((resolve) => {
     window.chrome.storage.local.get(null, (result: StorageLocal) => {
       if (result && result.backup && result.backup[backupName]) {
@@ -82,7 +86,10 @@ export async function getBackup(backupName: string): Promise<StorageLocal | void
  * @param backupName
  * @param backup
  */
-export async function storeBackup(backupName: string, backup: StorageLocal): Promise<boolean> {
+export async function storeBackup(
+  backupName: string,
+  backup: StorageLocal,
+): Promise<boolean> {
   return new Promise((resolve) => {
     window.chrome.storage.local.get(null, (results: StorageLocal) => {
       const previousBackups = results.backup;
@@ -93,11 +100,14 @@ export async function storeBackup(backupName: string, backup: StorageLocal): Pro
         [backupName]: backup,
       };
       console.log(backups);
-      window.chrome.storage.local.set({
-        backup: backups,
-      }, () => {
-        resolve(true);
-      });
+      window.chrome.storage.local.set(
+        {
+          backup: backups,
+        },
+        () => {
+          resolve(true);
+        },
+      );
     });
   });
 }
@@ -122,13 +132,18 @@ export async function getGlowforgeMaterials(): Promise<GFMaterial[]> {
  *
  * @param materials
  */
-export async function storeGlowforgeMaterials(materials: GFMaterial[]): Promise<GFMaterial[]> {
+export async function storeGlowforgeMaterials(
+  materials: GFMaterial[],
+): Promise<GFMaterial[]> {
   return new Promise((resolve) => {
-    window.chrome.storage.local.set({
-      materials,
-    }, () => {
-      resolve(materials);
-    });
+    window.chrome.storage.local.set(
+      {
+        materials,
+      },
+      () => {
+        resolve(materials);
+      },
+    );
   });
 }
 
@@ -153,13 +168,18 @@ export async function getRawMaterials(): Promise<PluginMaterial[]> {
  *
  * @param materials
  */
-export async function storeRawMaterials(materials: PluginMaterial[]): Promise<PluginMaterial[]> {
+export async function storeRawMaterials(
+  materials: PluginMaterial[],
+): Promise<PluginMaterial[]> {
   return new Promise((resolve) => {
-    window.chrome.storage.local.set({
-      rawMaterials: materials,
-    }, () => {
-      resolve(materials);
-    });
+    window.chrome.storage.local.set(
+      {
+        rawMaterials: materials,
+      },
+      () => {
+        resolve(materials);
+      },
+    );
   });
 }
 
@@ -168,11 +188,14 @@ export async function storeRawMaterials(materials: PluginMaterial[]): Promise<Pl
  */
 export async function clearTempMaterial(): Promise<boolean> {
   return new Promise((resolve) => {
-    window.chrome.storage.local.set({
-      tempMaterial: null,
-    }, () => {
-      resolve(true);
-    });
+    window.chrome.storage.local.set(
+      {
+        tempMaterial: null,
+      },
+      () => {
+        resolve(true);
+      },
+    );
   });
 }
 
@@ -198,13 +221,18 @@ export async function getTempMaterial(): Promise<PluginMaterial | object> {
  *
  * @param material
  */
-export async function storeTempMaterial(material: PluginMaterial): Promise<PluginMaterial> {
+export async function storeTempMaterial(
+  material: PluginMaterial,
+): Promise<PluginMaterial> {
   return new Promise((resolve) => {
-    window.chrome.storage.local.set({
-      tempMaterial: material,
-    }, () => {
-      resolve(material);
-    });
+    window.chrome.storage.local.set(
+      {
+        tempMaterial: material,
+      },
+      () => {
+        resolve(material);
+      },
+    );
   });
 }
 
@@ -264,16 +292,22 @@ export async function removeSynchronizedMaterial(hash: string) {
  * @param material Compressed material as a base64? encoded string.
  * @returns The hash that was stored.
  */
-export async function storeSynchronizedMaterial(hash: string, material: string): Promise<string> {
+export async function storeSynchronizedMaterial(
+  hash: string,
+  material: string,
+): Promise<string> {
   return new Promise((resolve) => {
-    window.chrome.storage.sync.set({
-      [hash]: material,
-    }, () => {
-      window.chrome.storage.sync.getBytesInUse(null, (bytesInUse) => {
-        console.log(`cloud bytes in use ${bytesInUse}`);
-        resolve(hash);
-      });
-    });
+    window.chrome.storage.sync.set(
+      {
+        [hash]: material,
+      },
+      () => {
+        window.chrome.storage.sync.getBytesInUse(null, (bytesInUse) => {
+          console.log(`cloud bytes in use ${bytesInUse}`);
+          resolve(hash);
+        });
+      },
+    );
   });
 }
 
@@ -294,16 +328,24 @@ export function getUrl(itemName: string): string {
  */
 async function getGlowforgeTab(): Promise<chrome.tabs.Tab | null> {
   return new Promise((resolve) => {
-    window.chrome.tabs.query({
-      active: true,
-      lastFocusedWindow: true,
-    }, (tabs) => {
-      if (!!tabs && !!tabs[0] && tabs[0].url && tabs[0].url.indexOf('app.glowforge.com') !== -1) {
-        resolve(tabs[0]);
-      } else {
-        resolve(null);
-      }
-    });
+    window.chrome.tabs.query(
+      {
+        active: true,
+        lastFocusedWindow: true,
+      },
+      (tabs) => {
+        if (
+          !!tabs &&
+          !!tabs[0] &&
+          tabs[0].url &&
+          tabs[0].url.indexOf('app.glowforge.com') !== -1
+        ) {
+          resolve(tabs[0]);
+        } else {
+          resolve(null);
+        }
+      },
+    );
   });
 }
 
@@ -327,8 +369,8 @@ export interface TabStatus {
 // without the extension's scripts running in it, or connected.
 export type TabConnection =
   | { state: 'none' }
-  | { state: 'disconnected', tabId: number }
-  | { state: 'connected', tabId: number, status: TabStatus };
+  | { state: 'disconnected'; tabId: number }
+  | { state: 'connected'; tabId: number; status: TabStatus };
 
 /**
  * Asks the active Glowforge tab for its status.

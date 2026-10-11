@@ -6,19 +6,21 @@ import type { PluginScoreSetting } from '../material/materialPlugin';
 // Score Methods
 export type AddScore = () => void;
 export type RemoveScore = (index: number) => void;
-export type UpdateScore =
-  <K extends keyof PluginScoreSetting>(index: number,
-    prop: K, value: PluginScoreSetting[K]) => void;
+export type UpdateScore = <K extends keyof PluginScoreSetting>(
+  index: number,
+  prop: K,
+  value: PluginScoreSetting[K],
+) => void;
 
 type ScoreSettingsProps = {
   addScore: AddScore;
-  propValidation?: {[key: string]: boolean | null};
+  propValidation?: { [key: string]: boolean | null };
   removeScore: RemoveScore;
   scores: PluginScoreSetting[];
   saveTemporaryState: () => void;
   updateScore: UpdateScore;
   validationHandler: (id: string, isValid: boolean | null) => void;
-}
+};
 
 export default function ScoreSettings(props: ScoreSettingsProps) {
   const {
@@ -45,20 +47,18 @@ export default function ScoreSettings(props: ScoreSettingsProps) {
           />
         </div>
       </div>
-      {
-        scores.map((score, index) => (
-          <ScoreSetting
-            index={index}
-            key={score.name}
-            propValidation={propValidation}
-            removeScore={removeScore}
-            saveTemporaryState={saveTemporaryState}
-            score={score}
-            updateScore={updateScore}
-            validationHandler={validationHandler}
-          />
-        ))
-      }
+      {scores.map((score, index) => (
+        <ScoreSetting
+          index={index}
+          key={score.name}
+          propValidation={propValidation}
+          removeScore={removeScore}
+          saveTemporaryState={saveTemporaryState}
+          score={score}
+          updateScore={updateScore}
+          validationHandler={validationHandler}
+        />
+      ))}
     </>
   );
 }

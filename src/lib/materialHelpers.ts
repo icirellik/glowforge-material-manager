@@ -7,7 +7,7 @@ import type {
 
 export interface TempMaterial extends PluginMaterial {
   propValidation: {
-    [key: string]: boolean | null,
+    [key: string]: boolean | null;
   };
 }
 
@@ -72,15 +72,15 @@ export function createEmptyBitmapEngrave(): PluginBitmapEngraveSetting {
  */
 
 export interface MultiSettings {
-  'bitmaps': PluginBitmapEngraveSetting;
-  'scores': PluginScoreSetting;
-  'vectors': PluginVectorEngraveSetting;
+  bitmaps: PluginBitmapEngraveSetting;
+  scores: PluginScoreSetting;
+  vectors: PluginVectorEngraveSetting;
 }
 
 export interface MultiSettingFunctions {
-  'bitmaps': typeof createEmptyBitmapEngrave;
-  'scores': typeof createEmptyScore;
-  'vectors': typeof createEmptyVectorEngrave;
+  bitmaps: typeof createEmptyBitmapEngrave;
+  scores: typeof createEmptyScore;
+  vectors: typeof createEmptyVectorEngrave;
 }
 
 export const MultiSettingFunctionsDefaults: MultiSettingFunctions = {

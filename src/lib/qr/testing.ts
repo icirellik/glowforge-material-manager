@@ -8,20 +8,33 @@ import type { Modules } from './spec';
 /**
  * Draws modules as a greyscale image, with a light margin.
  */
-export function greyOf({ size, data }: Modules, moduleSize: number, margin = 4): Grey {
+export function greyOf(
+  { size, data }: Modules,
+  moduleSize: number,
+  margin = 4,
+): Grey {
   const width = (size + margin * 2) * moduleSize;
   const grey = new Uint8ClampedArray(width * width).fill(255);
   for (let y = 0; y < width; y += 1) {
     for (let x = 0; x < width; x += 1) {
       const row = Math.floor(y / moduleSize) - margin;
       const column = Math.floor(x / moduleSize) - margin;
-      if (row >= 0 && column >= 0 && row < size && column < size && data[row * size + column]) {
+      if (
+        row >= 0 &&
+        column >= 0 &&
+        row < size &&
+        column < size &&
+        data[row * size + column]
+      ) {
         grey[y * width + x] = 0;
       }
     }
   }
   return {
-    data: grey, width, height: width, toImage: (point) => point,
+    data: grey,
+    width,
+    height: width,
+    toImage: (point) => point,
   };
 }
 
@@ -38,13 +51,22 @@ interface CanvasModule {
  *
  * @returns A function that removes them again.
  */
-export function stubImageDecoding({ createCanvas, loadImage }: CanvasModule): () => void {
+export function stubImageDecoding({
+  createCanvas,
+  loadImage,
+}: CanvasModule): () => void {
   const globals = globalThis as any;
-  const saved = { createImageBitmap: globals.createImageBitmap, OffscreenCanvas: globals.OffscreenCanvas };
+  const saved = {
+    createImageBitmap: globals.createImageBitmap,
+    OffscreenCanvas: globals.OffscreenCanvas,
+  };
   globals.createImageBitmap = async (blob: Blob) => {
     const image = await loadImage(Buffer.from(await blob.arrayBuffer()));
     return {
-      width: image.width, height: image.height, image, close: () => {},
+      width: image.width,
+      height: image.height,
+      image,
+      close: () => {},
     };
   };
   globals.OffscreenCanvas = class {
@@ -57,8 +79,10 @@ export function stubImageDecoding({ createCanvas, loadImage }: CanvasModule): ()
     getContext() {
       const context = this.canvas.getContext('2d');
       return {
-        drawImage: (bitmap: any, x: number, y: number) => context.drawImage(bitmap.image, x, y),
-        getImageData: (x: number, y: number, width: number, height: number) => context.getImageData(x, y, width, height),
+        drawImage: (bitmap: any, x: number, y: number) =>
+          context.drawImage(bitmap.image, x, y),
+        getImageData: (x: number, y: number, width: number, height: number) =>
+          context.getImageData(x, y, width, height),
       };
     }
   };

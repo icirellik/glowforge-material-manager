@@ -1,8 +1,25 @@
 import { errorCorrectionCodewords } from './reedSolomon';
 import {
-  ALPHANUMERIC, ALPHANUMERIC_CHARACTERS, BYTE, FORMAT_FROM_LEVEL, FORMAT_WORDS, H, L, M, MASKS, NUMERIC, Q,
-  VERSION_WORDS, alignmentCenters, blockLayout, countBits, dataModuleOrder, formatPositions, functionPatterns,
-  sizeOf, versionPositions,
+  ALPHANUMERIC,
+  ALPHANUMERIC_CHARACTERS,
+  BYTE,
+  FORMAT_FROM_LEVEL,
+  FORMAT_WORDS,
+  H,
+  L,
+  M,
+  MASKS,
+  NUMERIC,
+  Q,
+  VERSION_WORDS,
+  alignmentCenters,
+  blockLayout,
+  countBits,
+  dataModuleOrder,
+  formatPositions,
+  functionPatterns,
+  sizeOf,
+  versionPositions,
 } from './spec';
 import type { Modules } from './spec';
 
@@ -27,7 +44,10 @@ export interface EncodeOptions {
 }
 
 const LEVELS: Record<ErrorCorrectionLevel, number> = {
-  L, M, Q, H,
+  L,
+  M,
+  Q,
+  H,
 };
 
 // A run of data in one mode. Modes with a character count, like numeric and
@@ -58,7 +78,11 @@ export function alphanumericSegment(text: string): Segment {
   for (let i = 0; i < text.length; i += 2) {
     const first = ALPHANUMERIC_CHARACTERS.indexOf(text[i]);
     if (i + 1 < text.length) {
-      writeBits(bits, first * 45 + ALPHANUMERIC_CHARACTERS.indexOf(text[i + 1]), 11);
+      writeBits(
+        bits,
+        first * 45 + ALPHANUMERIC_CHARACTERS.indexOf(text[i + 1]),
+        11,
+      );
     } else {
       writeBits(bits, first, 6);
     }
@@ -110,7 +134,9 @@ export function segmentText(text: string, version: number): Segment[] {
     for (let index = 0; index < MODES.length; index += 1) {
       const fits = canEncode(MODES[index], character);
       written.push(fits ? MODES[index] : null);
-      next.push(fits ? costs[index] + characterCost(MODES[index], character) : Infinity);
+      next.push(
+        fits ? costs[index] + characterCost(MODES[index], character) : Infinity,
+      );
     }
     // Switching modes after this character ends its segment, which rounds up
     // to a whole bit, and starts a new one with a header.
@@ -139,10 +165,14 @@ export function segmentText(text: string, version: number): Segment[] {
   const segments: Segment[] = [];
   let start = 0;
   for (let i = 1; i <= characters.length; i += 1) {
-    if (i === characters.length || characterModes[i] !== characterModes[start]) {
+    if (
+      i === characters.length ||
+      characterModes[i] !== characterModes[start]
+    ) {
       const run = characters.slice(start, i).join('');
       if (characterModes[start] === NUMERIC) segments.push(numericSegment(run));
-      else if (characterModes[start] === ALPHANUMERIC) segments.push(alphanumericSegment(run));
+      else if (characterModes[start] === ALPHANUMERIC)
+        segments.push(alphanumericSegment(run));
       else segments.push(byteSegment(encoder.encode(run)));
       start = i;
     }
@@ -172,7 +202,11 @@ function segmentBits(segments: Segment[], version: number): number {
 /**
  * The data codewords: the segments, a terminator and padding.
  */
-function dataCodewords(segments: Segment[], version: number, level: number): Uint8Array {
+function dataCodewords(
+  segments: Segment[],
+  version: number,
+  level: number,
+): Uint8Array {
   const { dataTotal } = blockLayout(version, level);
   const bits: number[] = [];
   for (const { mode, count, bits: segmentData } of segments) {
@@ -185,7 +219,8 @@ function dataCodewords(segments: Segment[], version: number, level: number): Uin
   writeBits(bits, 0, (8 - (bits.length % 8)) % 8);
 
   const codewords = new Uint8Array(dataTotal);
-  for (let i = 0; i < bits.length; i += 1) codewords[i >> 3] |= bits[i] << (7 - (i & 7));
+  for (let i = 0; i < bits.length; i += 1)
+    codewords[i >> 3] |= bits[i] << (7 - (i & 7));
   // The rest alternates between two pad codewords.
   for (let i = bits.length / 8; i < dataTotal; i += 1) {
     codewords[i] = (i - bits.length / 8) % 2 === 0 ? 0xec : 0x11;
@@ -197,10 +232,15 @@ function dataCodewords(segments: Segment[], version: number, level: number): Uin
  * Splits the data into blocks, adds each block's error correction and
  * interleaves them.
  */
-function interleave(data: Uint8Array, version: number, level: number): Uint8Array {
-  const {
-    total, ecPerBlock, blockCount, shortData, shortBlocks,
-  } = blockLayout(version, level);
+function interleave(
+  data: Uint8Array,
+  version: number,
+  level: number,
+): Uint8Array {
+  const { total, ecPerBlock, blockCount, shortData, shortBlocks } = blockLayout(
+    version,
+    level,
+  );
   const blocks: Uint8Array[] = [];
   const ecBlocks: Uint8Array[] = [];
   let offset = 0;
@@ -238,11 +278,18 @@ function interleave(data: Uint8Array, version: number, level: number): Uint8Arra
 function drawFunctionPatterns(data: Uint8Array, version: number) {
   const size = sizeOf(version);
   // Squares of rings around a centre, by how far each ring is from it.
-  const square = (centerRow: number, centerColumn: number, radius: number, isDark: (ring: number) => boolean) => {
+  const square = (
+    centerRow: number,
+    centerColumn: number,
+    radius: number,
+    isDark: (ring: number) => boolean,
+  ) => {
     for (let row = -radius; row <= radius; row += 1) {
       for (let column = -radius; column <= radius; column += 1) {
         const ring = Math.max(Math.abs(row), Math.abs(column));
-        data[(centerRow + row) * size + centerColumn + column] = isDark(ring) ? 1 : 0;
+        data[(centerRow + row) * size + centerColumn + column] = isDark(ring)
+          ? 1
+          : 0;
       }
     }
   };
@@ -260,15 +307,24 @@ function drawFunctionPatterns(data: Uint8Array, version: number) {
   if (version >= 7) {
     const word = VERSION_WORDS[version];
     for (const positions of versionPositions(size)) {
-      positions.forEach((position, i) => { data[position] = (word >> i) & 1; });
+      positions.forEach((position, i) => {
+        data[position] = (word >> i) & 1;
+      });
     }
   }
 }
 
-function drawFormat(data: Uint8Array, size: number, level: number, mask: number) {
+function drawFormat(
+  data: Uint8Array,
+  size: number,
+  level: number,
+  mask: number,
+) {
   const word = FORMAT_WORDS[(FORMAT_FROM_LEVEL[level] << 3) | mask];
   for (const positions of formatPositions(size)) {
-    positions.forEach((position, i) => { data[position] = (word >> i) & 1; });
+    positions.forEach((position, i) => {
+      data[position] = (word >> i) & 1;
+    });
   }
 }
 
@@ -309,7 +365,11 @@ function penalty({ size, data }: Modules): number {
         }
         // Dark, light, three dark, light, dark, with four light on one side.
         windows[direction] = ((windows[direction] << 1) & 0x7ff) | module;
-        if (along >= 10 && (windows[direction] === 0x5d0 || windows[direction] === 0x05d)) points += 40;
+        if (
+          along >= 10 &&
+          (windows[direction] === 0x5d0 || windows[direction] === 0x05d)
+        )
+          points += 40;
       }
     }
     for (const run of runs) {
@@ -323,7 +383,11 @@ function penalty({ size, data }: Modules): number {
       const index = row * size + column;
       dark += data[index];
       if (row < size - 1 && column < size - 1) {
-        const block = data[index] + data[index + 1] + data[index + size] + data[index + size + 1];
+        const block =
+          data[index] +
+          data[index + 1] +
+          data[index + size] +
+          data[index + size + 1];
         if (block === 0 || block === 4) points += 3;
       }
     }
@@ -339,37 +403,56 @@ function penalty({ size, data }: Modules): number {
  */
 export function encodeSegments(
   segmentsFor: (version: number) => Segment[],
-  { level = 'M', version, mask }: EncodeOptions = {}
+  { level = 'M', version, mask }: EncodeOptions = {},
 ): Modules {
   const levelIndex = LEVELS[level];
   if (levelIndex === undefined) {
     throw new Error(`Unknown error correction level: ${level}`);
   }
-  if (version !== undefined && !(Number.isInteger(version) && version >= 1 && version <= 40)) {
+  if (
+    version !== undefined &&
+    !(Number.isInteger(version) && version >= 1 && version <= 40)
+  ) {
     throw new Error(`Versions are 1 to 40: ${version}`);
   }
-  if (mask !== undefined && !(Number.isInteger(mask) && mask >= 0 && mask <= 7)) {
+  if (
+    mask !== undefined &&
+    !(Number.isInteger(mask) && mask >= 0 && mask <= 7)
+  ) {
     throw new Error(`Masks are 0 to 7: ${mask}`);
   }
 
-  const versions = version ? [version] : Array.from({ length: 40 }, (_, index) => index + 1);
+  const versions = version
+    ? [version]
+    : Array.from({ length: 40 }, (_, index) => index + 1);
   let chosen = 0;
   let segments: Segment[] = [];
   for (const candidate of versions) {
     segments = segmentsFor(candidate);
-    if (segmentBits(segments, candidate) <= blockLayout(candidate, levelIndex).dataTotal * 8) {
+    if (
+      segmentBits(segments, candidate) <=
+      blockLayout(candidate, levelIndex).dataTotal * 8
+    ) {
       chosen = candidate;
       break;
     }
   }
   if (!chosen) {
-    throw new Error(version ? `The text doesn't fit in a version ${version} QR code` : 'The text is too long for a QR code');
+    throw new Error(
+      version
+        ? `The text doesn't fit in a version ${version} QR code`
+        : 'The text is too long for a QR code',
+    );
   }
 
   const size = sizeOf(chosen);
   const data = new Uint8Array(size * size);
   drawFunctionPatterns(data, chosen);
-  const codewords = interleave(dataCodewords(segments, chosen, levelIndex), chosen, levelIndex);
+  const codewords = interleave(
+    dataCodewords(segments, chosen, levelIndex),
+    chosen,
+    levelIndex,
+  );
   const order = dataModuleOrder(chosen);
   // Leftover modules are remainder bits, which stay light.
   for (let bit = 0; bit < codewords.length * 8; bit += 1) {
@@ -410,7 +493,10 @@ function sizeClass(version: number): number {
  *
  * @throws When the text doesn't fit, or the options aren't valid.
  */
-export function encodeQrCode(text: string, options: EncodeOptions = {}): Modules {
+export function encodeQrCode(
+  text: string,
+  options: EncodeOptions = {},
+): Modules {
   const bySizeClass = new Map<number, Segment[]>();
   return encodeSegments((version) => {
     const key = sizeClass(version);

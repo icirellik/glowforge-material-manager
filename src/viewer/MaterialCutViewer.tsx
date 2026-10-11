@@ -1,15 +1,12 @@
 import React from 'react';
-import {
-  toDisplayCutSpeed,
-  toDisplayPowerWords,
-} from '../lib/glowforgeUnits';
+import { toDisplayCutSpeed, toDisplayPowerWords } from '../lib/glowforgeUnits';
 import type { PluginMaterial } from '../material/materialPlugin';
 import { precisionRound } from '../lib/utils';
 import './MaterialViewer.css';
 
 export type MaterialCutViewerProps = {
   cut: PluginMaterial['cut'];
-}
+};
 
 export default function MaterialCutViewer(props: MaterialCutViewerProps) {
   const { cut } = props;

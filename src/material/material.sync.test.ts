@@ -2,10 +2,14 @@ import { syncronizeMaterials } from './material.sync';
 import { createEmptyMaterial } from '../lib/materialHelpers';
 import { hashTitle, decompress } from '../lib/utils';
 import {
-  createMaterial, removeCloudMaterial, sendCloudMaterial,
+  createMaterial,
+  removeCloudMaterial,
+  sendCloudMaterial,
 } from './material';
 import {
-  storeGlowforgeMaterials, storeRawMaterials, StorageLocal,
+  storeGlowforgeMaterials,
+  storeRawMaterials,
+  StorageLocal,
 } from '../lib/chromeWrappers';
 import { toFullMaterial } from './materialConversion';
 
@@ -195,7 +199,9 @@ describe('Synchronization', () => {
     expect(Object.keys(testSyncData).length).toEqual(1);
     expect(Object.keys(testSyncData)).toEqual([titleHash]);
     expect(testLocalData.rawMaterials!.length).toEqual(1);
-    expect(testLocalData.materials!.map((m) => m.id)).toEqual([`Custom:${titleHash.substring(0, 7)}`]);
+    expect(testLocalData.materials!.map((m) => m.id)).toEqual([
+      `Custom:${titleHash.substring(0, 7)}`,
+    ]);
   });
 
   it('1 Local, 1 Cloud, Same Ids, Same Data = Do Nothing', async () => {
@@ -251,7 +257,9 @@ describe('Synchronization', () => {
     expect(Object.keys(testSyncData).length).toEqual(1);
     expect(Object.keys(testSyncData)).toEqual([titleHash]);
     expect(testLocalData.rawMaterials!.length).toEqual(1);
-    expect(testLocalData.materials!.map((m) => m.id)).toEqual([`Custom:${titleHash.substring(0, 7)}`]);
+    expect(testLocalData.materials!.map((m) => m.id)).toEqual([
+      `Custom:${titleHash.substring(0, 7)}`,
+    ]);
   });
 
   it('1 Local, 1 Cloud, Same Ids, Different Data, Local Sync Disabled = No Change', async () => {
@@ -285,8 +293,12 @@ describe('Synchronization', () => {
     expect(Object.keys(testSyncData)).toEqual([titleHash]);
 
     // Verify local data.
-    const testLocalDataTitleHashesPromises = testLocalData.rawMaterials!.map(async (pluginMaterial) => hashTitle(pluginMaterial));
-    const testLocalDataTitleHashes = await Promise.all(testLocalDataTitleHashesPromises);
+    const testLocalDataTitleHashesPromises = testLocalData.rawMaterials!.map(
+      async (pluginMaterial) => hashTitle(pluginMaterial),
+    );
+    const testLocalDataTitleHashes = await Promise.all(
+      testLocalDataTitleHashesPromises,
+    );
     expect(testLocalData.rawMaterials!.length).toEqual(1);
     expect(testLocalDataTitleHashes).toEqual(['1']);
     expect(testLocalDataTitleHashes).toEqual(Object.keys(testSyncData));

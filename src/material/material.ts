@@ -7,10 +7,7 @@ import {
   storeRawMaterials,
   storeSynchronizedMaterial,
 } from '../lib/chromeWrappers';
-import {
-  compress,
-  hashTitle,
-} from '../lib/utils';
+import { compress, hashTitle } from '../lib/utils';
 import type {
   PluginBitmapEngraveSetting,
   PluginCutSetting,
@@ -38,7 +35,7 @@ import { toTinyMaterial } from './materialConversion';
 export async function removeMaterial(materialId: PluginMaterialId) {
   const materials = await getGlowforgeMaterials();
   const newMaterials = await storeGlowforgeMaterials(
-    materials.filter((material) => material.id !== materialId)
+    materials.filter((material) => material.id !== materialId),
   );
   return newMaterials;
 }
@@ -51,7 +48,7 @@ export async function removeMaterial(materialId: PluginMaterialId) {
 export async function removeMaterialTitle(title: string) {
   const materials = await getGlowforgeMaterials();
   const newMaterials = await storeGlowforgeMaterials(
-    materials.filter((material) => material.title !== title)
+    materials.filter((material) => material.title !== title),
   );
   return newMaterials;
 }
@@ -64,7 +61,9 @@ export async function removeMaterialTitle(title: string) {
 export async function removeRawMaterial(title: string) {
   const rawMaterials = await getRawMaterials();
   const newRawMaterials = await storeRawMaterials(
-    rawMaterials.filter((material) => `${material.thickName} ${material.name}` !== title)
+    rawMaterials.filter(
+      (material) => `${material.thickName} ${material.name}` !== title,
+    ),
   );
   return newRawMaterials;
 }
@@ -106,7 +105,10 @@ export function stripCustomPrefix(id: string): string {
 /**
  * Creates a new custom material.
  */
-export function createMaterial(material: PluginMaterial, id: number | string): GFMaterial {
+export function createMaterial(
+  material: PluginMaterial,
+  id: number | string,
+): GFMaterial {
   return {
     id: `Custom:${stripCustomPrefix(String(id))}`,
     title: `${material.thickName} ${material.name}`,
@@ -117,9 +119,7 @@ export function createMaterial(material: PluginMaterial, id: number | string): G
       name: `${material.thickName.toLowerCase().replace(/[ ]/g, '-')}-${material.name.toLowerCase().replace(/[ ]/g, '-')}`,
       common_name: `${material.thickName} ${material.name}`,
       type_name: material.name,
-      thumbnails: [
-        getUrl('custom-material.png'),
-      ],
+      thumbnails: [getUrl('custom-material.png')],
       display_options: null,
     },
     settings: [
@@ -132,18 +132,25 @@ export function createMaterial(material: PluginMaterial, id: number | string): G
 /**
  * Creates the settings for a given tube type.
  */
-function createSettings(material: PluginMaterial, tubeType: GFMaterialTubeType): GFMaterialSettings {
+function createSettings(
+  material: PluginMaterial,
+  tubeType: GFMaterialTubeType,
+): GFMaterialSettings {
   return {
     description: `${material.thickName} ${material.name} Settings`,
     active_date: '2017-04-06T00:00-07:00',
-    environment: [
-      'production',
-    ],
+    environment: ['production'],
     tube_type: tubeType,
     cut_setting: createCutSettings(material.cut),
-    score_settings: material.scores.map((score: any) => createScoreSettings(score)),
-    vector_engrave_settings: material.vectors.map((vector: any) => createVectorEngraveSettings(vector)),
-    bitmap_engrave_settings: material.bitmaps.map((bitmap: any) => createBitmapEngraveSettings(bitmap)),
+    score_settings: material.scores.map((score: any) =>
+      createScoreSettings(score),
+    ),
+    vector_engrave_settings: material.vectors.map((vector: any) =>
+      createVectorEngraveSettings(vector),
+    ),
+    bitmap_engrave_settings: material.bitmaps.map((bitmap: any) =>
+      createBitmapEngraveSettings(bitmap),
+    ),
   };
 }
 
@@ -180,7 +187,9 @@ function createScoreSettings(score: PluginScoreSetting): GFScoreSetting {
 /**
  * Creates a new set of vector engrave settings.
  */
-function createVectorEngraveSettings(vectorEngrave: PluginVectorEngraveSetting): GFEngraveSetting {
+function createVectorEngraveSettings(
+  vectorEngrave: PluginVectorEngraveSetting,
+): GFEngraveSetting {
   return {
     power: clamp(vectorEngrave.power, 0, 100),
     speed: clamp(vectorEngrave.speed, 100, 8500),
@@ -199,7 +208,9 @@ function createVectorEngraveSettings(vectorEngrave: PluginVectorEngraveSetting):
 /**
  * Creates a new set of bitmap engrave settings.
  */
-function createBitmapEngraveSettings(bitmapEngrave: PluginBitmapEngraveSetting): GFBitmapEngraveSetting {
+function createBitmapEngraveSettings(
+  bitmapEngrave: PluginBitmapEngraveSetting,
+): GFBitmapEngraveSetting {
   return {
     power: clamp(bitmapEngrave.power, 0, 100),
     speed: clamp(bitmapEngrave.speed, 100, 8500),

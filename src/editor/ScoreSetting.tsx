@@ -1,32 +1,19 @@
 import React from 'react';
 import { IconMinus } from '../icons/IconMinus';
-import {
-  asFloat,
-  asInteger,
-  precisionRound,
-} from '../lib/utils';
+import { asFloat, asInteger, precisionRound } from '../lib/utils';
 import {
   toDisplayCutSpeed,
   toDisplayPower,
   toRealCutSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
-import type {
-  PluginScoreSetting,
-} from '../material/materialPlugin';
-import {
-  InputText,
-  InputNumber,
-  InputNumberWithCheckbox,
-} from './Input';
-import type {
-  RemoveScore,
-  UpdateScore,
-} from './ScoreSettings';
+import type { PluginScoreSetting } from '../material/materialPlugin';
+import { InputText, InputNumber, InputNumberWithCheckbox } from './Input';
+import type { RemoveScore, UpdateScore } from './ScoreSettings';
 
 interface ScoreSettingProps {
   index: number;
-  propValidation?: {[key: string]: boolean | null};
+  propValidation?: { [key: string]: boolean | null };
   removeScore: RemoveScore;
   score: PluginScoreSetting;
   saveTemporaryState: () => void;
@@ -44,13 +31,11 @@ export default function ScoreSetting(props: ScoreSettingProps) {
     updateScore,
     validationHandler,
   } = props;
-  const maxPower = (score.power === 99.99 || score.power === 100);
+  const maxPower = score.power === 99.99 || score.power === 100;
   return (
     <>
       <div className="form-sub-header">
-        <p>
-          {`Score ${index + 1}`}
-        </p>
+        <p>{`Score ${index + 1}`}</p>
         <IconMinus
           className="icon-button-add"
           click={() => {
@@ -95,7 +80,7 @@ export default function ScoreSetting(props: ScoreSettingProps) {
         }}
         onChecked={() => {
           const nextMaxPower = !maxPower;
-          updateScore(index, 'power', (nextMaxPower) ? 100 : 99);
+          updateScore(index, 'power', nextMaxPower ? 100 : 99);
         }}
         propValidation={propValidation}
         value={toDisplayPower(score.power)}
@@ -116,7 +101,10 @@ export default function ScoreSetting(props: ScoreSettingProps) {
         label="Focal Offset (mm)"
         onBlur={saveTemporaryState}
         onChange={(event) => {
-          const normalizedValue = precisionRound(asFloat(event.target.value), 3);
+          const normalizedValue = precisionRound(
+            asFloat(event.target.value),
+            3,
+          );
           updateScore(index, 'focalOffset', normalizedValue);
         }}
         propValidation={propValidation}

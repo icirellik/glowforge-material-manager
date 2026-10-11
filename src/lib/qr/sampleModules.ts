@@ -9,7 +9,11 @@ import type { Modules } from './spec';
  * The brightness of every module, from 9 samples around its middle, away from
  * its blurry edges.
  */
-export function sampleModuleValues(grey: Grey, h: number[], size: number): Float64Array {
+export function sampleModuleValues(
+  grey: Grey,
+  h: number[],
+  size: number,
+): Float64Array {
   const values = new Float64Array(size * size);
   const offsets = [0.25, 0.5, 0.75];
   for (let row = 0; row < size; row += 1) {
@@ -20,8 +24,14 @@ export function sampleModuleValues(grey: Grey, h: number[], size: number): Float
           const X = column + dx;
           const Y = row + dy;
           const w = h[6] * X + h[7] * Y + 1;
-          const x = Math.min(grey.width - 1, Math.max(0, Math.floor((h[0] * X + h[1] * Y + h[2]) / w)));
-          const y = Math.min(grey.height - 1, Math.max(0, Math.floor((h[3] * X + h[4] * Y + h[5]) / w)));
+          const x = Math.min(
+            grey.width - 1,
+            Math.max(0, Math.floor((h[0] * X + h[1] * Y + h[2]) / w)),
+          );
+          const y = Math.min(
+            grey.height - 1,
+            Math.max(0, Math.floor((h[3] * X + h[4] * Y + h[5]) / w)),
+          );
           sum += grey.data[y * grey.width + x];
         }
       }
@@ -36,7 +46,10 @@ export function sampleModuleValues(grey: Grey, h: number[], size: number): Float
  */
 function globalThresholds(values: Float64Array): Float64Array {
   const sorted = values.slice().sort();
-  const threshold = (sorted[Math.floor(sorted.length * 0.1)] + sorted[Math.floor(sorted.length * 0.9)]) / 2;
+  const threshold =
+    (sorted[Math.floor(sorted.length * 0.1)] +
+      sorted[Math.floor(sorted.length * 0.9)]) /
+    2;
   return new Float64Array(values.length).fill(threshold);
 }
 
@@ -53,7 +66,8 @@ function localThresholds(values: Float64Array, size: number): Float64Array {
   for (let row = 0; row < size; row += 1) {
     for (let column = 0, sum = 0; column < size; column += 1) {
       sum += values[row * size + column];
-      totals[(row + 1) * stride + column + 1] = totals[row * stride + column + 1] + sum;
+      totals[(row + 1) * stride + column + 1] =
+        totals[row * stride + column + 1] + sum;
     }
   }
   const thresholds = new Float64Array(values.length);
@@ -63,8 +77,11 @@ function localThresholds(values: Float64Array, size: number): Float64Array {
     for (let column = 0; column < size; column += 1) {
       const left = Math.max(0, column - LOCAL_RADIUS);
       const right = Math.min(size, column + LOCAL_RADIUS + 1);
-      const sum = totals[bottom * stride + right] - totals[top * stride + right]
-        - totals[bottom * stride + left] + totals[top * stride + left];
+      const sum =
+        totals[bottom * stride + right] -
+        totals[top * stride + right] -
+        totals[bottom * stride + left] +
+        totals[top * stride + left];
       thresholds[row * size + column] = sum / ((bottom - top) * (right - left));
     }
   }
@@ -75,11 +92,20 @@ function localThresholds(values: Float64Array, size: number): Float64Array {
  * Splits sampled modules into dark and light, by one threshold for the whole
  * code or by each module's surroundings.
  */
-export function classifyModules(values: Float64Array, size: number, inverted: boolean, local: boolean): Modules {
-  const thresholds = local ? localThresholds(values, size) : globalThresholds(values);
+export function classifyModules(
+  values: Float64Array,
+  size: number,
+  inverted: boolean,
+  local: boolean,
+): Modules {
+  const thresholds = local
+    ? localThresholds(values, size)
+    : globalThresholds(values);
   const data = new Uint8Array(size * size);
   for (let i = 0; i < data.length; i += 1) {
-    data[i] = (inverted ? values[i] > thresholds[i] : values[i] < thresholds[i]) ? 1 : 0;
+    data[i] = (inverted ? values[i] > thresholds[i] : values[i] < thresholds[i])
+      ? 1
+      : 0;
   }
   return { size, data };
 }

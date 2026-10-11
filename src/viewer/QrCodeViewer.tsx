@@ -78,12 +78,13 @@ export default function QrCodeViewer({ material }: QrCodeViewerProps) {
             alt="qrcode"
           />
 
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'left',
-            marginTop: '20px',
-          }}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'left',
+              marginTop: '20px',
+            }}
           >
             <a
               download={`${title}.svg`}
@@ -103,7 +104,9 @@ export default function QrCodeViewer({ material }: QrCodeViewerProps) {
                 Download Material Id + Settings
               </a>
             ) : (
-              <span>The settings are too long for a QR code, use the Material Id.</span>
+              <span>
+                The settings are too long for a QR code, use the Material Id.
+              </span>
             )}
           </div>
         </>
