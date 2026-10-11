@@ -10,7 +10,7 @@ interface MaterialProps {
   selected: boolean;
   selectMaterial: ModeSelect;
   setMaterial: SetMaterial;
-  styles: any;
+  styles: React.CSSProperties | undefined;
 }
 
 export default function MaterialListItem(props: MaterialProps) {

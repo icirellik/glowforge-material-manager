@@ -12,7 +12,7 @@ export async function migration4(): Promise<boolean> {
   const _rawMaterials = [];
   const _upgradedMaterials = [];
   for (let i = 0; i < localStorage.rawMaterials!.length; i += 1) {
-    const rawMaterial: any = localStorage.rawMaterials![i];
+    const rawMaterial = localStorage.rawMaterials![i];
     // Only legacy materials are missing the property, `false` means the user
     // turned sync off.
     if (rawMaterial.sync === undefined) {

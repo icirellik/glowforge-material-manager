@@ -9,7 +9,7 @@ export type TinyMaterial = {
   // thickName
   t: string;
   // thickness
-  d: any;
+  d: number | null;
   // cut
   c: TinyCutSetting;
   // scores

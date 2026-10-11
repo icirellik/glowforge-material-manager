@@ -49,7 +49,7 @@ export async function syncronizeMaterials(remove = false): Promise<boolean> {
   // These are items that no longer exist in the cloud but still exist locally
   // that we may want to delete.
   const removableTitleHashes = currentTitleHashes.filter(
-    (titleHash) => !synchronizedMaterials.hasOwnProperty(titleHash),
+    (titleHash) => !Object.hasOwn(synchronizedMaterials, titleHash),
   );
   // console.log('Removable:');
   // console.log(removableTitleHashes);
@@ -63,7 +63,7 @@ export async function syncronizeMaterials(remove = false): Promise<boolean> {
 
   // These are items that are both in the cloud and are local.
   const sharedTitleHashes = currentTitleHashes.filter((titleHash) =>
-    synchronizedMaterials.hasOwnProperty(titleHash),
+    Object.hasOwn(synchronizedMaterials, titleHash),
   );
   // console.log('Shared:');
   // console.log(sharedTitleHashes);
@@ -121,7 +121,7 @@ export async function syncronizeMaterials(remove = false): Promise<boolean> {
 
     // If the remote data hash is different from the local hash update the local
     // material.
-    if (!dataHashToPluginMaterialMap.hasOwnProperty(pluginMaterialDataHash)) {
+    if (!Object.hasOwn(dataHashToPluginMaterialMap, pluginMaterialDataHash)) {
       // Remove
       const title = `${pluginMaterial.thickName} ${pluginMaterial.name}`;
       // console.log(`Updating '${title}'`);

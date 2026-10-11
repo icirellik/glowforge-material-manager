@@ -142,13 +142,11 @@ function createSettings(
     environment: ['production'],
     tube_type: tubeType,
     cut_setting: createCutSettings(material.cut),
-    score_settings: material.scores.map((score: any) =>
-      createScoreSettings(score),
-    ),
-    vector_engrave_settings: material.vectors.map((vector: any) =>
+    score_settings: material.scores.map((score) => createScoreSettings(score)),
+    vector_engrave_settings: material.vectors.map((vector) =>
       createVectorEngraveSettings(vector),
     ),
-    bitmap_engrave_settings: material.bitmaps.map((bitmap: any) =>
+    bitmap_engrave_settings: material.bitmaps.map((bitmap) =>
       createBitmapEngraveSettings(bitmap),
     ),
   };

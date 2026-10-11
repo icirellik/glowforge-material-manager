@@ -400,24 +400,18 @@ export async function getTabConnection(): Promise<TabConnection> {
  * Reloads the current GlowForge application tab.
  */
 export async function reloadGlowForgeTab(): Promise<void> {
-  return new Promise(async (resolve) => {
-    if (await inGlowforgeTab()) {
-      // tabId is optional as per the docs
-      window.chrome.tabs.reload(null as any, { bypassCache: true }, () => {
-        resolve();
-      });
-    } else {
-      resolve();
-    }
-  });
+  if (await inGlowforgeTab()) {
+    await reload();
+  }
 }
 
 /**
  * Reloads the current tab.
  */
 export async function reload(): Promise<void> {
-  return new Promise(async (resolve) => {
-    window.chrome.tabs.reload(null as any, { bypassCache: true }, () => {
+  return new Promise((resolve) => {
+    // tabId is optional as per the docs
+    window.chrome.tabs.reload(undefined, { bypassCache: true }, () => {
       resolve();
     });
   });

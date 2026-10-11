@@ -5,16 +5,21 @@ vi.mock('../material/material', () => ({
   sendCloudMaterial: vi.fn(async () => undefined),
 }));
 
-describe('migration #4', () => {
-  let testData: any = null;
+type StoredData = {
+  materials: unknown[];
+  rawMaterials: { name: string; sync?: boolean }[];
+};
 
-  (<any>global).chrome = {
+describe('migration #4', () => {
+  let testData: StoredData = { materials: [], rawMaterials: [] };
+
+  vi.stubGlobal('chrome', {
     storage: {
       local: {
-        get: (key: any, cb: any) => {
+        get: (key: unknown, cb: (items: StoredData) => void) => {
           cb(testData);
         },
-        set: (data: any, cb: any) => {
+        set: (data: Partial<StoredData>, cb: () => void) => {
           testData = {
             ...testData,
             ...data,
@@ -23,7 +28,7 @@ describe('migration #4', () => {
         },
       },
     },
-  };
+  });
 
   beforeEach(() => {
     vi.mocked(sendCloudMaterial).mockClear();
@@ -40,13 +45,13 @@ describe('migration #4', () => {
   it('turns sync on for legacy materials only', async () => {
     expect(await migration4()).toEqual(true);
 
-    expect(testData.rawMaterials.map((m: any) => [m.name, m.sync])).toEqual([
+    expect(testData.rawMaterials.map((m) => [m.name, m.sync])).toEqual([
       ['Legacy', true],
       ['Synced', true],
       ['Not Synced', false],
     ]);
     expect(
-      vi.mocked(sendCloudMaterial).mock.calls.map(([m]: any) => m.name),
+      vi.mocked(sendCloudMaterial).mock.calls.map(([m]) => m.name),
     ).toEqual(['Legacy']);
   });
 

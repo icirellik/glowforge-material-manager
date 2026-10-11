@@ -40,9 +40,23 @@ export function greyOf(
 
 // The parts of node-canvas that the stand-ins below use, passed in so that
 // this file doesn't depend on it.
+interface CanvasImage {
+  width: number;
+  height: number;
+}
+
+interface CanvasContext {
+  drawImage(image: CanvasImage, x: number, y: number): void;
+  getImageData(x: number, y: number, width: number, height: number): unknown;
+}
+
+interface Canvas {
+  getContext(type: '2d'): CanvasContext;
+}
+
 interface CanvasModule {
-  createCanvas: (width: number, height: number) => any;
-  loadImage: (source: Buffer) => Promise<any>;
+  createCanvas: (width: number, height: number) => Canvas;
+  loadImage: (source: Buffer) => Promise<CanvasImage>;
 }
 
 /**
@@ -55,38 +69,39 @@ export function stubImageDecoding({
   createCanvas,
   loadImage,
 }: CanvasModule): () => void {
-  const globals = globalThis as any;
   const saved = {
-    createImageBitmap: globals.createImageBitmap,
-    OffscreenCanvas: globals.OffscreenCanvas,
+    createImageBitmap: globalThis.createImageBitmap,
+    OffscreenCanvas: globalThis.OffscreenCanvas,
   };
-  globals.createImageBitmap = async (blob: Blob) => {
-    const image = await loadImage(Buffer.from(await blob.arrayBuffer()));
-    return {
-      width: image.width,
-      height: image.height,
-      image,
-      close: () => {},
-    };
-  };
-  globals.OffscreenCanvas = class {
-    private canvas: any;
-
-    constructor(width: number, height: number) {
-      this.canvas = createCanvas(width, height);
-    }
-
-    getContext() {
-      const context = this.canvas.getContext('2d');
+  Object.assign(globalThis, {
+    createImageBitmap: async (blob: Blob) => {
+      const image = await loadImage(Buffer.from(await blob.arrayBuffer()));
       return {
-        drawImage: (bitmap: any, x: number, y: number) =>
-          context.drawImage(bitmap.image, x, y),
-        getImageData: (x: number, y: number, width: number, height: number) =>
-          context.getImageData(x, y, width, height),
+        width: image.width,
+        height: image.height,
+        image,
+        close: () => {},
       };
-    }
-  };
+    },
+    OffscreenCanvas: class {
+      private canvas: Canvas;
+
+      constructor(width: number, height: number) {
+        this.canvas = createCanvas(width, height);
+      }
+
+      getContext() {
+        const context = this.canvas.getContext('2d');
+        return {
+          drawImage: (bitmap: { image: CanvasImage }, x: number, y: number) =>
+            context.drawImage(bitmap.image, x, y),
+          getImageData: (x: number, y: number, width: number, height: number) =>
+            context.getImageData(x, y, width, height),
+        };
+      }
+    },
+  });
   return () => {
-    Object.assign(globals, saved);
+    Object.assign(globalThis, saved);
   };
 }

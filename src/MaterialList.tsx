@@ -80,10 +80,10 @@ export default class MaterialList extends React.Component<
     });
   }
 
-  onFilterChange(event: React.ChangeEvent): void {
-    if ((event.target as any).value) {
+  onFilterChange(event: React.ChangeEvent<HTMLInputElement>): void {
+    if (event.target.value) {
       this.setState({
-        filter: (event.target as any).value,
+        filter: event.target.value,
       });
     } else {
       this.setState({
@@ -135,7 +135,7 @@ export default class MaterialList extends React.Component<
       />
     ));
 
-    let materialList: JSX.Element | null = null;
+    let materialList: JSX.Element;
     if (
       filter &&
       materials

@@ -36,22 +36,22 @@ describe('Synchronization', () => {
     materials: [],
     rawMaterials: [],
   };
-  let testSyncData: any = null;
+  let testSyncData: { [key: string]: string } = {};
 
-  (<any>window).chrome = {
+  vi.stubGlobal('chrome', {
     runtime: {
       getURL: (itemName: string) => itemName,
     },
     storage: {
       local: {
-        get: (key: keyof StorageLocal, cb: any) => {
+        get: (key: keyof StorageLocal, cb: (items: unknown) => void) => {
           if (key) {
             cb(testLocalData![key]);
             return;
           }
           cb(testLocalData);
         },
-        set: (data: any, cb: any) => {
+        set: (data: Partial<StorageLocal>, cb: () => void) => {
           testLocalData = {
             ...testLocalData,
             ...data,
@@ -60,26 +60,26 @@ describe('Synchronization', () => {
         },
       },
       sync: {
-        get: (key: string, cb: any) => {
+        get: (key: string, cb: (items: object) => void) => {
           cb(testSyncData);
         },
-        set: (data: any, cb: any) => {
+        set: (data: { [key: string]: string }, cb: () => void) => {
           testSyncData = {
             ...testSyncData,
             ...data,
           };
           cb();
         },
-        remove: (key: string, cb: any) => {
+        remove: (key: string, cb: () => void) => {
           delete testSyncData[key];
           cb();
         },
-        getBytesInUse: (key: null, cb: any) => {
+        getBytesInUse: (key: null, cb: (bytes: number) => void) => {
           cb(-1);
         },
       },
     },
-  };
+  });
 
   beforeEach(() => {
     testLocalData = {

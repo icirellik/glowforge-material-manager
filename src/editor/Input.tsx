@@ -7,7 +7,7 @@ interface InputProps {
   isDisabled?: boolean;
   help?: string;
   label: string;
-  value: any;
+  value: string | number | null;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
   propValidation?: { [key: string]: boolean | null };
@@ -34,7 +34,7 @@ export class InputText extends React.Component<InputProps> {
     this.id = uuid();
 
     if (props.validate && props.value) {
-      this.validate(props.value);
+      this.validate(String(props.value));
     } else if (props.validate) {
       props.validate(this.id, null);
     }
@@ -62,7 +62,7 @@ export class InputText extends React.Component<InputProps> {
     onChange(event);
   }
 
-  validate(value: any) {
+  validate(value: string) {
     const { validate } = this.props;
     if (validate) {
       validate(this.id, !!value);
@@ -89,7 +89,7 @@ export class InputText extends React.Component<InputProps> {
           onBlur={this.onBlur}
           onChange={this.onChange}
           type="text"
-          value={value}
+          value={value ?? undefined}
         />
       </div>
     );
@@ -105,7 +105,7 @@ export class InputNumber extends React.Component<InputNumberProps> {
     this.id = uuid();
 
     if (props.validate && props.value) {
-      this.validate(props.value);
+      this.validate(String(props.value));
     } else if (props.validate) {
       props.validate(this.id, null);
     }
@@ -133,7 +133,7 @@ export class InputNumber extends React.Component<InputNumberProps> {
     onChange(event);
   }
 
-  validate(value: any) {
+  validate(value: string) {
     const { max, min, validate } = this.props;
     if (validate) {
       let isValid = !!value;
@@ -206,7 +206,7 @@ export class InputNumber extends React.Component<InputNumberProps> {
           onBlur={this.onBlur}
           onChange={this.onChange}
           type="number"
-          value={value}
+          value={value ?? undefined}
         />
       </div>
     );
@@ -222,7 +222,7 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
     this.id = uuid();
 
     if (props.validate && props.value) {
-      this.validate(props.value);
+      this.validate(String(props.value));
     } else if (props.validate) {
       props.validate(this.id, null);
     }
@@ -257,7 +257,7 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
     onChecked(event);
   }
 
-  validate(value: any) {
+  validate(value: string) {
     const { max, min, validate } = this.props;
     if (validate) {
       let isValid = !!value;
@@ -325,7 +325,7 @@ export class InputNumberWithCheckbox extends React.Component<InputNumberWithChec
           onBlur={this.onBlur}
           onChange={this.onChange}
           type="number"
-          value={value}
+          value={value ?? undefined}
         />
       </div>
     );

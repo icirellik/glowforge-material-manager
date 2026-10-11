@@ -7,15 +7,15 @@ import {
 describe('chromeWrappers', () => {
   const dataCallback = vi.fn();
 
-  (<any>global).chrome = {
+  vi.stubGlobal('chrome', {
     storage: {
       local: {
-        get: (key: any, cb: any) => {
+        get: (key: unknown, cb: (items: unknown) => void) => {
           cb(dataCallback());
         },
       },
     },
-  };
+  });
 
   it('should fetch materials', async () => {
     const resp = {
@@ -35,22 +35,25 @@ describe('Glowforge tabs', () => {
     serial: 'SN-1',
     designId: 'abc123',
   };
-  const originalChrome = (<any>global).chrome;
+  const originalChrome = window.chrome;
 
   function activeTab(
     url: string,
-    sendTo: (...args: any[]) => Promise<unknown>,
+    sendTo: (...args: unknown[]) => Promise<unknown>,
   ) {
-    (<any>global).chrome = {
+    vi.stubGlobal('chrome', {
       tabs: {
-        query: (query: any, cb: any) => cb([{ id: 7, url }]),
+        query: (
+          query: unknown,
+          cb: (tabs: { id: number; url: string }[]) => void,
+        ) => cb([{ id: 7, url }]),
         sendMessage: sendTo,
       },
-    };
+    });
   }
 
   afterEach(() => {
-    (<any>global).chrome = originalChrome;
+    vi.stubGlobal('chrome', originalChrome);
   });
 
   it('asks the active Glowforge tab for its status', async () => {
