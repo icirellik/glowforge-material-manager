@@ -120,7 +120,8 @@ don't have to approve a new permission I may not need.
 - [ ] A downloaded sticker SVG imports into the Glowforge app and engraves
   as expected.
 - [ ] A few more real lid photos are in the tests: the sticker in different
-  places, different lighting.
+  places, different lighting. A dim one, which didn't read before, is in
+  #144.
 - [ ] Find whether real lid photos need heavily blurred codes tilted past
   35° to read, which loses the far finder today.
 
