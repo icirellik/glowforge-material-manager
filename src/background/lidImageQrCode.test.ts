@@ -7,7 +7,7 @@ import { checkLidImage } from './lidImageQrCode';
 
 const TEST_IMAGES = path.join(__dirname, '..', '..', 'test-images');
 const LID_URL =
-  'https://storage.googleapis.com/gf-app-imgl/abc/lid.jpg?Signature=x';
+  'https://storage.googleapis.com/gf-app-imgl/SN-1/1f1c65e8-0000-6000-8000-000000000000/corrected.jpg?GoogleAccessId=gfcore-user%40glowforge-production.iam.gserviceaccount.com&Expires=1791828074&Signature=x';
 
 function respond(
   body: Uint8Array<ArrayBuffer> | string,

@@ -246,10 +246,15 @@
       prevMachineSerial = serial;
     }
 
-    // Older versions of the GFUI called this `preloadedLidImage`.
-    const lidImage =
-      state.getIn(['machines', 'machineMap', serial, 'lidImage']) ||
-      state.getIn(['machines', 'machineMap', serial, 'preloadedLidImage']);
+    // A signed `storage.googleapis.com/gf-app-imgl/<serial>/<id>/corrected.jpg`
+    // URL. `preloadedLidImage` is the GFUI's own `corrected_bed_image` URL for
+    // the same image, which the extension can't download.
+    const lidImage = state.getIn([
+      'machines',
+      'machineMap',
+      serial,
+      'lidImage',
+    ]);
     if (typeof lidImage !== 'string') {
       return;
     }
