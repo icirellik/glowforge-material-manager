@@ -5,6 +5,7 @@ import type { Connection, ForceSyncronize, Reconnect } from './App';
 import './AppHeader.css';
 
 interface AppHeaderProps {
+  cloudItemsUsed: number;
   cloudStorageBytesUsed: number;
   connection: Connection;
   forceSyncronize: ForceSyncronize;
@@ -15,6 +16,7 @@ interface AppHeaderProps {
 
 export function AppHeader(props: AppHeaderProps) {
   const {
+    cloudItemsUsed,
     cloudStorageBytesUsed,
     connection,
     forceSyncronize,
@@ -38,7 +40,7 @@ export function AppHeader(props: AppHeaderProps) {
         />
       </div>
       <div className="header_subline">
-        {`Cloud Storage Used ${cloudStorageBytesUsed} / 102,400`}
+        {`Cloud Storage Used ${cloudStorageBytesUsed} / 102,400 bytes, ${cloudItemsUsed} / 512 materials`}
       </div>
     </header>
   );

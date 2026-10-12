@@ -5,15 +5,58 @@ import {
   storeGlowforgeMaterials,
   storeRawMaterials,
 } from '../lib/chromeWrappers';
+import type { SynchronizedMaterials } from '../lib/chromeWrappers';
 import {
   createMaterial,
   removeMaterialTitle,
   removeRawMaterial,
 } from './material';
-import { decompress, hashMaterial, hashTitle } from '../lib/utils';
+import { hashMaterial, hashTitle } from '../lib/utils';
 import { materialIdForTitle } from './materialId';
 import type { PluginMaterial } from './materialPlugin';
 import { toFullMaterial } from './materialConversion';
+import { decodeCloudMaterial } from './materialCloudFormat';
+import type { CloudDecodeResult } from './materialCloudFormat';
+import type { TinyMaterial } from './materialTiny';
+
+// The cloud values decoded in the last sync, by key. The popup syncs every
+// 750 ms, so only values that changed are decoded again.
+let decodedValues = new Map<
+  string,
+  { value: string; result: CloudDecodeResult }
+>();
+
+/**
+ * Decodes the cloud's materials by key. Values that a newer version wrote,
+ * or that are broken, are left out, with a warning the first time.
+ */
+function decodeCloudMaterials(
+  synchronizedMaterials: SynchronizedMaterials,
+): Map<string, TinyMaterial> {
+  const previous = decodedValues;
+  decodedValues = new Map();
+  const materials = new Map<string, TinyMaterial>();
+  for (const [key, value] of Object.entries(synchronizedMaterials)) {
+    // Newer versions might store something other than a string.
+    const text =
+      typeof value === 'string' ? value : (JSON.stringify(value) ?? '');
+    const cached = previous.get(key);
+    let result = cached?.value === text ? cached.result : undefined;
+    if (!result) {
+      result = decodeCloudMaterial(value);
+      if (result.status === 'unsupported') {
+        console.warn(`Skipped cloud material ${key}, from a newer version`);
+      } else if (result.status === 'invalid') {
+        console.warn(`Skipped cloud material ${key}: ${result.error}`);
+      }
+    }
+    decodedValues.set(key, { value: text, result });
+    if (result.status === 'ok') {
+      materials.set(key, result.material);
+    }
+  }
+  return materials;
+}
 
 /**
  * Handles cloud synchronization.
@@ -21,13 +64,11 @@ import { toFullMaterial } from './materialConversion';
  * @param remove If true enables destructive changes to occur from cloud sync.
  */
 export async function syncronizeMaterials(remove = false): Promise<boolean> {
-  // console.log(`Synchronizing Full remove=${remove}`);
   const synchronizedMaterials = await getSynchronizedMaterials();
+  const cloudMaterials = decodeCloudMaterials(synchronizedMaterials);
   const rawMaterials = await getRawMaterials();
 
-  // console.log(synchronizedMaterials);
   const currentTitleHashes: string[] = [];
-  const currentDataHashes: string[] = [];
   const titleHashToPluginMaterialMap: { [key: string]: PluginMaterial } = {};
   const dataHashToPluginMaterialMap: { [key: string]: PluginMaterial } = {};
   for (let i = 0; i < rawMaterials.length; i += 1) {
@@ -35,38 +76,26 @@ export async function syncronizeMaterials(remove = false): Promise<boolean> {
     const titleHash = await hashTitle(material);
     const dataHash = await hashMaterial(material);
     currentTitleHashes.push(titleHash);
-    currentDataHashes.push(dataHash);
     titleHashToPluginMaterialMap[titleHash] = material;
     dataHashToPluginMaterialMap[dataHash] = material;
   }
 
-  // console.log('Current:');
-  // console.log(currentTitleHashes);
-  // console.log(currentDataHashes);
-  // console.log(titleHashToPluginMaterialMap);
-  // console.log(dataHashToPluginMaterialMap);
-
   // These are items that no longer exist in the cloud but still exist locally
-  // that we may want to delete.
+  // that we may want to delete. A value this version can't read still counts
+  // as being in the cloud.
   const removableTitleHashes = currentTitleHashes.filter(
     (titleHash) => !Object.hasOwn(synchronizedMaterials, titleHash),
   );
-  // console.log('Removable:');
-  // console.log(removableTitleHashes);
 
   // These are items in the cloud that need to be added locally.
-  const newTitleHashes = Object.keys(synchronizedMaterials).filter(
+  const newTitleHashes = [...cloudMaterials.keys()].filter(
     (titleHash) => currentTitleHashes.indexOf(titleHash) === -1,
   );
-  // console.log('Added:');
-  // console.log(newTitleHashes);
 
   // These are items that are both in the cloud and are local.
   const sharedTitleHashes = currentTitleHashes.filter((titleHash) =>
-    Object.hasOwn(synchronizedMaterials, titleHash),
+    cloudMaterials.has(titleHash),
   );
-  // console.log('Shared:');
-  // console.log(sharedTitleHashes);
 
   // If there are hashes locally that are not in the cloud remove them. By
   // default syncronization does not make destructive actions so local removals
@@ -76,70 +105,62 @@ export async function syncronizeMaterials(remove = false): Promise<boolean> {
     const removablePluginMaterials = removableTitleHashes.map(
       (hash) => titleHashToPluginMaterialMap[hash],
     );
-    // console.log(removablePluginMaterials)
     for (let i = 0; i < removablePluginMaterials.length; i += 1) {
       const { thickName, name } = removablePluginMaterials[i];
       const title = `${thickName} ${name}`;
-      // console.log(`Removing ${title}`);
       await removeMaterialTitle(title);
       await removeRawMaterial(title);
       modified = true;
     }
   }
 
+  // New and changed materials are collected and stored together, so a new
+  // computer with hundreds of materials in the cloud writes them once.
+  const replacedTitles = new Set<string>();
+  const added: { pluginMaterial: PluginMaterial; id: string }[] = [];
+
   // Create new.
-  for (let i = 0; i < newTitleHashes.length; i += 1) {
-    const titleHash = newTitleHashes[i];
-    const binaryData = synchronizedMaterials[titleHash];
-    const pluginMaterial = toFullMaterial(decompress(binaryData));
-
-    const id = titleHash.substring(0, 7);
-    // console.log(`Adding '${pluginMaterial.thickName} ${pluginMaterial.name}'`);
-
-    const glowforgeMaterials = await getGlowforgeMaterials();
-    const pluginMaterials = await getRawMaterials();
-
-    const glowforgeMaterial = await createMaterial(pluginMaterial, id);
-    await storeGlowforgeMaterials([...glowforgeMaterials, glowforgeMaterial]);
-    await storeRawMaterials([...pluginMaterials, pluginMaterial]);
-    modified = true;
+  for (const titleHash of newTitleHashes) {
+    const pluginMaterial = toFullMaterial(cloudMaterials.get(titleHash)!);
+    added.push({ pluginMaterial, id: titleHash.substring(0, 7) });
   }
 
   // Check for modifications.
-  for (let i = 0; i < sharedTitleHashes.length; i += 1) {
-    const titleHash = sharedTitleHashes[i];
-    const binaryData = synchronizedMaterials[titleHash];
-    const pluginMaterial = toFullMaterial(decompress(binaryData));
+  for (const titleHash of sharedTitleHashes) {
+    const pluginMaterial = toFullMaterial(cloudMaterials.get(titleHash)!);
     const pluginMaterialDataHash = await hashMaterial(pluginMaterial);
-    // console.log(`Verifying ${titleHash} -> ${pluginMaterialDataHash}`);
 
     // If the local mateiral has sync disabled.
     if (!titleHashToPluginMaterialMap[titleHash].sync) {
-      // console.log('Not Updating: Local Sync Disabled');
       continue;
     }
 
     // If the remote data hash is different from the local hash update the local
     // material.
     if (!Object.hasOwn(dataHashToPluginMaterialMap, pluginMaterialDataHash)) {
-      // Remove
       const title = `${pluginMaterial.thickName} ${pluginMaterial.name}`;
-      // console.log(`Updating '${title}'`);
-      await removeMaterialTitle(title);
-      await removeRawMaterial(title);
-
-      const id = await materialIdForTitle(title);
-
-      // Replace
-      const glowforgeMaterials = await getGlowforgeMaterials();
-      const pluginMaterials = await getRawMaterials();
-
-      const glowforgeMaterial = await createMaterial(pluginMaterial, id);
-      await storeGlowforgeMaterials([...glowforgeMaterials, glowforgeMaterial]);
-      await storeRawMaterials([...pluginMaterials, pluginMaterial]);
-      modified = true;
+      replacedTitles.add(title);
+      added.push({ pluginMaterial, id: await materialIdForTitle(title) });
     }
   }
+
+  if (added.length > 0) {
+    const glowforgeMaterials = (await getGlowforgeMaterials()).filter(
+      (material) => !replacedTitles.has(material.title),
+    );
+    const pluginMaterials = (await getRawMaterials()).filter(
+      (material) =>
+        !replacedTitles.has(`${material.thickName} ${material.name}`),
+    );
+    for (const { pluginMaterial, id } of added) {
+      glowforgeMaterials.push(createMaterial(pluginMaterial, id));
+      pluginMaterials.push(pluginMaterial);
+    }
+    await storeGlowforgeMaterials(glowforgeMaterials);
+    await storeRawMaterials(pluginMaterials);
+    modified = true;
+  }
+
   console.log(`Synchronized remove=${remove} modified=${modified}`);
   return modified;
 }

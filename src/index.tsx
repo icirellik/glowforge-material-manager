@@ -7,11 +7,19 @@ import './index.css';
 import { migration2 } from './migrations/2-backup-materials';
 import { migration3 } from './migrations/3-update-ids';
 import { migration4 } from './migrations/4-add-sync-property';
+import { migration5 } from './migrations/5-cloud-format';
 
 async function applyMigrations() {
   await migration2();
   await migration3();
   await migration4();
+  // The cloud format can't stop the popup opening. It tries again next
+  // time.
+  try {
+    await migration5();
+  } catch (error) {
+    console.error("migration '#5' failed", error);
+  }
 }
 
 (async () => {

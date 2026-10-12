@@ -9,7 +9,7 @@ import {
   createMaterial,
   removeCloudMaterial,
   removeRawMaterial,
-  sendCloudMaterial,
+  replaceCloudMaterial,
   removeMaterialTitle,
   stripCustomPrefix,
 } from './material/material';
@@ -17,6 +17,7 @@ import {
   clearTempMaterial,
   forceSync,
   getBytesInUse,
+  getSynchronizedItemCount,
   getLocalStorage,
   getTabConnection,
   reloadGlowForgeTab,
@@ -145,6 +146,8 @@ interface AppState {
   backups: { [key: string]: StorageLocal } | void;
   // The number of cloud bytes that are currently being used.
   cloudStorageBytesUsed: number;
+  // The number of cloud items in use, one per material, of Chrome's 512.
+  cloudItemsUsed: number;
   // Whether the active tab is a Glowforge tab, and the extension is running in
   // it, and which tab it is.
   connection: Connection;
@@ -191,6 +194,7 @@ class App
       action: 'DISPLAY',
       backups: {},
       cloudStorageBytesUsed: 0,
+      cloudItemsUsed: 0,
       connection: 'none',
       tabId: null,
       qrAutoSelect: false,
@@ -247,8 +251,9 @@ class App
   private displayRef: React.RefObject<HTMLDivElement> = React.createRef();
 
   async componentDidMount() {
-    // Track the bytes used.
+    // Track the bytes and items used.
     const cloudStorageBytesUsed = await getBytesInUse();
+    const cloudItemsUsed = await getSynchronizedItemCount();
 
     // Get the initial state from local storage.
     const localStorage = await getLocalStorage();
@@ -266,6 +271,7 @@ class App
       this.setState({
         action: 'ADD',
         backups,
+        cloudItemsUsed,
         cloudStorageBytesUsed,
         materials: localStorage.materials!,
         message: {
@@ -279,6 +285,7 @@ class App
       });
     } else {
       this.setState({
+        cloudItemsUsed,
         cloudStorageBytesUsed,
         backups,
         materials: localStorage.materials!,
@@ -293,6 +300,7 @@ class App
      */
     setInterval(async () => {
       const {
+        cloudItemsUsed,
         cloudStorageBytesUsed,
         connection,
         tabId,
@@ -305,6 +313,7 @@ class App
 
       // Refresh the cloud storage in use
       const cloudStorageBytesUsedLocal = await getBytesInUse();
+      const cloudItemsUsedLocal = await getSynchronizedItemCount();
 
       // Synchronize and materials.
       // TODO: should we run this on every loop.
@@ -348,9 +357,13 @@ class App
           ...tab,
         };
       }
-      if (cloudStorageBytesUsedLocal !== cloudStorageBytesUsed) {
+      if (
+        cloudStorageBytesUsedLocal !== cloudStorageBytesUsed ||
+        cloudItemsUsedLocal !== cloudItemsUsed
+      ) {
         stateUpdates = {
           ...stateUpdates,
+          cloudItemsUsed: cloudItemsUsedLocal,
           cloudStorageBytesUsed: cloudStorageBytesUsedLocal,
         };
       }
@@ -491,12 +504,14 @@ class App
     await clearTempMaterial();
 
     // Send materials to the cloud
-    await sendCloudMaterial(tempMaterial);
+    const message = await this.changeCloud(() =>
+      replaceCloudMaterial(tempMaterial),
+    );
 
     // Update the application state.
     this.setState({
       materials: newMaterials,
-      message: null,
+      message,
       rawMaterials: newRawMaterials,
       synchronized: false,
     });
@@ -604,20 +619,20 @@ class App
       (rawMaterial) =>
         `${rawMaterial.thickName} ${rawMaterial.name}` === `${title}`,
     );
-    if (rawMaterial) {
-      await removeCloudMaterial(rawMaterial);
-    }
-    await sendCloudMaterial(tempMaterial);
+    const message = await this.changeCloud(() =>
+      replaceCloudMaterial(tempMaterial, rawMaterial),
+    );
 
     // Update the application state.
     this.setState({
       materials: newMaterials,
-      message: null,
+      message,
       rawMaterials: newRawMaterials,
       synchronized: false,
     });
 
-    this.setEditorModeSelect(title);
+    // Select it by its new title, in case it was renamed.
+    this.setEditorModeSelect(getMaterialTitle(tempMaterial));
   }
 
   async removeMaterial(title: string) {
@@ -748,15 +763,34 @@ class App
 
       await storeRawMaterials(pluginMaterials);
       await storeTempMaterial(updatedMaterial);
-      await sendCloudMaterial(updatedMaterial);
+      const message = await this.changeCloud(() =>
+        replaceCloudMaterial(updatedMaterial),
+      );
 
       // Update the application state.
       this.setState({
-        message: null,
+        message,
         rawMaterials: pluginMaterials,
         tempMaterial: updatedMaterial,
         synchronized: false,
       });
+    }
+  }
+
+  /**
+   * Changes a material's copy in the cloud. Gives the message to show when
+   * Chrome refuses, like when the cloud storage is full, and the material is
+   * only on this computer.
+   */
+  async changeCloud(change: () => Promise<unknown>): Promise<IMessage | null> {
+    try {
+      await change();
+      return null;
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      return errorMessage(
+        `Saved on this computer only, the cloud refused it: ${reason}`,
+      );
     }
   }
 
@@ -909,6 +943,7 @@ class App
     const {
       action,
       backups,
+      cloudItemsUsed,
       cloudStorageBytesUsed,
       connection,
       message,
@@ -971,6 +1006,7 @@ class App
     return (
       <div className="App">
         <AppHeader
+          cloudItemsUsed={cloudItemsUsed}
           cloudStorageBytesUsed={cloudStorageBytesUsed}
           connection={connection}
           forceSyncronize={this.forceSyncronize}
