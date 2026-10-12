@@ -1,6 +1,6 @@
 import { syncronizeMaterials } from './material.sync';
 import { createEmptyMaterial } from '../lib/materialHelpers';
-import { hashTitle, decompress } from '../lib/utils';
+import { hashTitle } from '../lib/utils';
 import {
   createMaterial,
   removeCloudMaterial,
@@ -12,6 +12,11 @@ import {
   StorageLocal,
 } from '../lib/chromeWrappers';
 import { toFullMaterial } from './materialConversion';
+import { decodeCloudMaterial } from './materialCloudFormat';
+import type { TinyMaterial } from './materialTiny';
+import { encodeCloudMaterial } from './materialCloudFormat';
+import { editorMaterials } from './testing/corpus';
+import * as pako from 'pako';
 
 vi.mock('../lib/crypto', async (importOriginal) => {
   const original = await importOriginal<typeof import('../lib/crypto')>();
@@ -37,6 +42,7 @@ describe('Synchronization', () => {
     rawMaterials: [],
   };
   let testSyncData: { [key: string]: string } = {};
+  let localWrites = 0;
 
   vi.stubGlobal('chrome', {
     runtime: {
@@ -52,6 +58,7 @@ describe('Synchronization', () => {
           cb(testLocalData);
         },
         set: (data: Partial<StorageLocal>, cb: () => void) => {
+          localWrites += 1;
           testLocalData = {
             ...testLocalData,
             ...data,
@@ -305,7 +312,64 @@ describe('Synchronization', () => {
 
     // Verify different property.
     expect(testLocalData.rawMaterials![0].thickness).toEqual(1);
-    const remoteMaterial = toFullMaterial(decompress(testSyncData['1']));
+    const decoded = decodeCloudMaterial(testSyncData['1']);
+    const remoteMaterial = toFullMaterial(
+      (decoded.status === 'ok' && decoded.material) as TinyMaterial,
+    );
     expect(remoteMaterial.thickness).toEqual(2);
+  });
+
+  describe('Formats', () => {
+    // Distinct titles, as the cloud has one material per title.
+    const tinies = editorMaterials(3).map((tiny, i) => ({
+      ...tiny,
+      n: `${tiny.n} ${i}`,
+    }));
+    const keyFor = (tiny: TinyMaterial) => hashTitle(toFullMaterial(tiny));
+
+    it('reads legacy and new values, and skips newer ones', async () => {
+      testSyncData = {
+        [await keyFor(tinies[0])]: pako.deflate(JSON.stringify(tinies[0]), {
+          to: 'string',
+        }),
+        [await keyFor(tinies[1])]: encodeCloudMaterial(tinies[1]),
+        newer: 'Zfrom a newer version',
+      };
+
+      expect(await syncronizeMaterials()).toBe(true);
+      expect(testLocalData.rawMaterials!.map((m) => m.name)).toEqual([
+        tinies[0].n,
+        tinies[1].n,
+      ]);
+      // Nothing left to change.
+      expect(await syncronizeMaterials()).toBe(false);
+    });
+
+    it('keeps a material whose cloud value is from a newer version', async () => {
+      const pluginMaterial = toFullMaterial(tinies[2]);
+      await storeGlowforgeMaterials([createMaterial(pluginMaterial, 1)]);
+      await storeRawMaterials([pluginMaterial]);
+      testSyncData = { [await hashTitle(pluginMaterial)]: 'Znewer' };
+
+      expect(await syncronizeMaterials(true)).toBe(false);
+      expect(testLocalData.rawMaterials).toEqual([pluginMaterial]);
+    });
+
+    it('adds every new cloud material in one write', async () => {
+      const many = editorMaterials(60).filter(
+        (tiny, i, all) =>
+          all.findIndex((other) => other.n === tiny.n && other.t === tiny.t) ===
+          i,
+      );
+      for (const tiny of many) {
+        testSyncData[await keyFor(tiny)] = encodeCloudMaterial(tiny);
+      }
+      localWrites = 0;
+
+      expect(await syncronizeMaterials()).toBe(true);
+      expect(testLocalData.rawMaterials).toHaveLength(many.length);
+      // The Glowforge materials and the raw materials.
+      expect(localWrites).toBe(2);
+    });
   });
 });

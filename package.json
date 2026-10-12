@@ -3,7 +3,6 @@
   "version": "0.4.10",
   "private": true,
   "dependencies": {
-    "pako": "1.0.6",
     "react": "16.8.6",
     "react-dom": "16.8.6",
     "uuid": "8.3.2"
@@ -13,6 +12,7 @@
     "build": "npm run type-check && vite build",
     "test": "vitest run",
     "test:watch": "vitest",
+    "bench": "vitest bench --run --reporter=verbose",
     "lint": "eslint src",
     "release-test": "npm run build && mkdir -p releases && cd build && sed -i '/\"key\"/d' manifest.json && sed -i 's/Glowforge Material Manager/Glowforge Material Manager Test/g' manifest.json && zip -r glowforge-material-manager-test.zip . && mv -f *.zip ../releases && cd ..",
     "release": "npm run build && mkdir -p releases && cd build && sed -i '/\"key\"/d' manifest.json && zip -r glowforge-material-manager.zip . && mv -f *.zip ../releases && cd ..",
@@ -34,6 +34,7 @@
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-react-hooks": "7.1.1",
     "jsdom": "30.1.2",
+    "pako": "1.0.6",
     "prettier": "3.9.10",
     "ts-node": "9.1.1",
     "typescript": "npm:@typescript/typescript6@6.0.2",

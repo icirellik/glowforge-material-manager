@@ -1,4 +1,3 @@
-import * as pako from 'pako';
 import { toFullMaterial, toTinyMaterial } from '../material/materialConversion';
 import type { PluginMaterial } from '../material/materialPlugin';
 import { sha1 } from './crypto';
@@ -32,24 +31,6 @@ export function asFloatWithPrecision(number: string, precision: number) {
     return null;
   }
   return Number.parseFloat(number).toPrecision(precision);
-}
-
-/**
- * Compresses JSON data.
- *
- * @param json The object to compress.
- */
-export function compress(json: object | Array<unknown>) {
-  return pako.deflate(JSON.stringify(json), { to: 'string' });
-}
-
-/**
- * Decompresses a compressed JSON buffer.
- *
- * @param binaryJson A compressed JSON buffer.
- */
-export function decompress(binaryJson: pako.Data) {
-  return JSON.parse(pako.inflate(binaryJson, { to: 'string' }));
 }
 
 /**

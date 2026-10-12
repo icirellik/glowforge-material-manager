@@ -259,8 +259,16 @@ export async function getBytesInUse(): Promise<number> {
 }
 
 /**
+ * The number of items in the cloud, one per material. Chrome allows 512, so
+ * that's the most materials that can sync, however small they are.
+ */
+export async function getSynchronizedItemCount(): Promise<number> {
+  return Object.keys(await getSynchronizedMaterials()).length;
+}
+
+/**
  * Returns a list of materials that have been synchronized by the hashed title
- * of the RawMaterial -> compressed RawMaterial data.
+ * of the RawMaterial -> the material as encodeCloudMaterial wrote it.
  */
 export async function getSynchronizedMaterials(): Promise<SynchronizedMaterials> {
   return new Promise((resolve) => {
@@ -287,27 +295,51 @@ export async function removeSynchronizedMaterial(hash: string) {
 }
 
 /**
+ * Stores a material in the cloud.
  *
  * @param hash The hashed title of the RawMaterial that is being stored.
- * @param material Compressed material as a base64? encoded string.
- * @returns The hash that was stored.
+ * @param material The material as encodeCloudMaterial writes it.
+ * @returns The hash that was stored. Rejects when Chrome refuses the write,
+ * like when the cloud storage is full.
  */
 export async function storeSynchronizedMaterial(
   hash: string,
   material: string,
 ): Promise<string> {
+  await storeSynchronizedValues({ [hash]: material });
+  return hash;
+}
+
+/**
+ * Gets some of the cloud's values. Keys it doesn't have are left out.
+ */
+export async function getSynchronizedValues(
+  keys: string[],
+): Promise<SynchronizedMaterials> {
   return new Promise((resolve) => {
-    window.chrome.storage.sync.set(
-      {
-        [hash]: material,
-      },
-      () => {
-        window.chrome.storage.sync.getBytesInUse(null, (bytesInUse) => {
-          console.log(`cloud bytes in use ${bytesInUse}`);
-          resolve(hash);
-        });
-      },
-    );
+    window.chrome.storage.sync.get(keys, (result: SynchronizedMaterials) => {
+      resolve(result ?? {});
+    });
+  });
+}
+
+/**
+ * Stores several cloud values in one write, which Chrome counts as one
+ * operation against its per minute and per hour limits. Rejects when Chrome
+ * refuses the write, and then nothing is stored.
+ */
+export async function storeSynchronizedValues(
+  items: SynchronizedMaterials,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    window.chrome.storage.sync.set(items, () => {
+      const error = window.chrome.runtime?.lastError;
+      if (error) {
+        reject(new Error(error.message));
+      } else {
+        resolve();
+      }
+    });
   });
 }
 
