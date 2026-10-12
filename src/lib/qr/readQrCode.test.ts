@@ -14,6 +14,8 @@ import { stubImageDecoding } from './testing';
 
 const TEST_IMAGES = path.join(__dirname, '..', '..', '..', 'test-images');
 const LID_IMAGE = path.join(TEST_IMAGES, 'Custom:3f77f07.jpg');
+// Taken with the lid lights low, so the sticker is dark grey on grey.
+const DIM_LID_IMAGE = path.join(TEST_IMAGES, 'Custom:e5e69fb.jpg');
 
 /**
  * Loads an image file as pixels, optionally mirrored or with the QR code
@@ -233,6 +235,18 @@ describe('readQrCode', () => {
     }
   });
 
+  it('reads the code from a dim lid camera image', async () => {
+    const code = readQrCode(await loadPixels(DIM_LID_IMAGE));
+    expect(code?.text).toEqual('Custom:e5e69fb');
+    // The sticker is near the top left of the sheet.
+    for (const corner of code!.corners) {
+      expect(corner.x).toBeGreaterThan(740);
+      expect(corner.x).toBeLessThan(910);
+      expect(corner.y).toBeGreaterThan(425);
+      expect(corner.y).toBeLessThan(595);
+    }
+  });
+
   it('reads a mirrored lid camera image', async () => {
     expect(
       readQrCode(await loadPixels(LID_IMAGE, { mirror: true }))?.text,
@@ -403,6 +417,23 @@ describe('readQrCode in hard places', () => {
     context.drawImage(drawCode(ID, { module: 7 }), 1200, 450);
     context.fillStyle = 'rgba(0, 0, 0, 0.62)';
     context.fillRect(0, 0, 1300, canvas.height);
+    expect(readQrCode(pixelsOf(canvas))?.text).toEqual(ID);
+  });
+
+  it('reads stickers in dim light', () => {
+    // A sheet over the whole bed, so only the sticker has any contrast, and
+    // that's about as much as in a dim lid camera image.
+    const canvas = emptyBed();
+    const context = canvas.getContext('2d');
+    context.fillStyle = MATERIAL;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(
+      drawCode(ID, { dark: 'rgb(90, 90, 85)', light: MATERIAL }),
+      1200,
+      450,
+    );
+    context.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    context.fillRect(0, 0, canvas.width, canvas.height);
     expect(readQrCode(pixelsOf(canvas))?.text).toEqual(ID);
   });
 
