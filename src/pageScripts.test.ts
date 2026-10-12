@@ -120,12 +120,24 @@ function fakeGlowforge() {
       materialList = catalog();
       notify();
     },
-    setLidImage: (url: string) => {
+    // Like the live GFUI, which also keeps its own URL for the image.
+    setLidImage: (url: string | null) => {
       machines = new FakeMap<unknown>([
         ['selectedMachineSerial', 'SN-1'],
         [
           'machineMap',
-          new FakeMap([['SN-1', new FakeMap([['lidImage', url]])]]),
+          new FakeMap([
+            [
+              'SN-1',
+              new FakeMap([
+                ['lidImage', url],
+                [
+                  'preloadedLidImage',
+                  '/api/users/machines/SN-1/corrected_bed_image?scale=1&bust=1',
+                ],
+              ]),
+            ],
+          ]),
         ],
       ]);
       notify();
@@ -149,11 +161,17 @@ function fakeExtension(items: Record<string, unknown>) {
   const changeListeners: ChangeListener[] = [];
   const messageListeners: MessageListener[] = [];
   const lidImageReplies: unknown[] = [];
+  const lidImages: unknown[] = [];
   const chrome = {
     runtime: {
       getManifest: () => ({ update_url: 'https://example.com' }),
-      sendMessage: async (message: { type: string }) =>
-        message.type === 'lidImage' ? lidImageReplies.shift() : undefined,
+      sendMessage: async (message: { type: string; image?: unknown }) => {
+        if (message.type !== 'lidImage') {
+          return undefined;
+        }
+        lidImages.push(message.image);
+        return lidImageReplies.shift();
+      },
       onMessage: {
         addListener: (listener: MessageListener) =>
           messageListeners.push(listener),
@@ -182,6 +200,8 @@ function fakeExtension(items: Record<string, unknown>) {
   return {
     chrome,
     replyToLidImage: (reply: unknown) => lidImageReplies.push(reply),
+    // The lid images the background was asked to check.
+    lidImages,
     // A message from the popup, to whichever copy of the bridge answers.
     fromPopup: (request: Record<string, unknown>) =>
       new Promise((resolve) => {
@@ -196,6 +216,11 @@ const MATERIALS = [
   { id: 'Custom:aaaaaaa', title: 'Thin Birch', nominal_thickness: 0.125 },
   { id: 'Custom:bbbbbbb', title: 'Thick Walnut', nominal_thickness: 0.25 },
 ];
+
+// Like the GFUI's lid images, a new id for each image and a new signature
+// whenever it's signed again.
+const lidImageUrl = (image: number, signature = image) =>
+  `https://storage.googleapis.com/gf-app-imgl/SN-1/${image}/corrected.jpg?GoogleAccessId=x&Expires=${signature}&Signature=${signature}`;
 
 const settle = () =>
   new Promise((resolve) => {
@@ -307,9 +332,7 @@ describe('page scripts', () => {
   it("selects a sticker's material when it appears, not in every image after", async () => {
     const lidImage = async (index: number, reply: unknown) => {
       extension.replyToLidImage(reply);
-      page.setLidImage(
-        `https://storage.googleapis.com/gf-app-imgl/${index}.jpg?sig=${index}`,
-      );
+      page.setLidImage(lidImageUrl(index));
       await settle();
     };
     await lidImage(1, { read: true, materialId: 'Custom:aaaaaaa' });
@@ -326,6 +349,19 @@ describe('page scripts', () => {
     await lidImage(4, { read: true, materialId: null });
     await lidImage(5, { read: true, materialId: 'Custom:aaaaaaa' });
     expect(page.selected()).toEqual(['Custom:aaaaaaa']);
+  });
+
+  it("checks each new lid image once, never the GFUI's own URL for it", async () => {
+    page.setLidImage(null);
+    await settle();
+    page.setLidImage(lidImageUrl(1));
+    await settle();
+    // Glowforge signs the same image again when the old URL expires.
+    page.setLidImage(lidImageUrl(1, 2));
+    await settle();
+    page.setLidImage(lidImageUrl(2));
+    await settle();
+    expect(extension.lidImages).toEqual([lidImageUrl(1), lidImageUrl(2)]);
   });
 
   it("reports a tab that doesn't have the latest materials", async () => {

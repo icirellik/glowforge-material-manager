@@ -12,7 +12,7 @@ describe('lid images', () => {
   it('only accepts Glowforge lid image URLs', () => {
     expect(
       isLidImageUrl(
-        'https://storage.googleapis.com/gf-app-imgl/abc/lid.jpg?GoogleAccessId=x&Signature=y',
+        'https://storage.googleapis.com/gf-app-imgl/SN-1/1f1c65e8-0000-6000-8000-000000000000/corrected.jpg?GoogleAccessId=gfcore-user%40glowforge-production.iam.gserviceaccount.com&Expires=1791828074&Signature=x',
       ),
     ).toBe(true);
     for (const url of [
@@ -21,6 +21,8 @@ describe('lid images', () => {
       'https://storage.googleapis.com.example.com/gf-app-imgl/lid.jpg',
       'https://example.com/gf-app-imgl/lid.jpg',
       '/gf-app-imgl/lid.jpg',
+      // The GFUI's own URL for the image, in `preloadedLidImage`.
+      '/api/users/machines/SN-1/corrected_bed_image?scale=1&focal_height=0&bust=1',
       'not a url',
     ]) {
       expect(isLidImageUrl(url), url).toBe(false);
