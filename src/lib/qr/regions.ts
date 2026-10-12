@@ -12,6 +12,11 @@ import type { Pixels, Region } from './image';
 const MIN_BLOCK_CONTRAST = 64;
 // The difference between pixels two apart that counts as an edge.
 const EDGE_THRESHOLD = 40;
+// Dim light, like a lid camera image with the lid lights low, scales every
+// pixel down, so both thresholds are for blocks whose surroundings are white.
+// They're lowered for darker surroundings, but by no more than this, so that
+// noise in the dark isn't taken for a code.
+const MAX_GAIN = 4;
 // The fraction of a block's pixels that must be edges.
 const MIN_EDGE_DENSITY = 0.08;
 // Codes span at least a few blocks each way, smaller areas are specks or
@@ -42,7 +47,55 @@ function blockSizeFor(width: number, height: number): number {
 }
 
 /**
- * Marks the blocks that have strong contrast and many edges.
+ * How much each block's contrast is scaled up, from the brightest pixel in it
+ * and the blocks around it, which in a code is its light modules or the
+ * material around it.
+ */
+function blockGains(
+  luminance: Uint8Array,
+  width: number,
+  height: number,
+  blockSize: number,
+  columns: number,
+  rows: number,
+  blockColumns: Int32Array,
+): Float32Array {
+  const brightest = new Uint8Array(columns * rows);
+  for (let y = 0; y < height; y += 1) {
+    const rowOffset = y * width;
+    const blockRow = Math.floor(y / blockSize) * columns;
+    for (let x = 0; x < width; x += 1) {
+      const block = blockRow + blockColumns[x];
+      const value = luminance[rowOffset + x];
+      if (value > brightest[block]) brightest[block] = value;
+    }
+  }
+
+  const gains = new Float32Array(columns * rows);
+  for (let row = 0; row < rows; row += 1) {
+    for (let column = 0; column < columns; column += 1) {
+      let white = 1;
+      for (let r = Math.max(0, row - 1); r <= row + 1 && r < rows; r += 1) {
+        for (
+          let c = Math.max(0, column - 1);
+          c <= column + 1 && c < columns;
+          c += 1
+        ) {
+          white = Math.max(white, brightest[r * columns + c]);
+        }
+      }
+      gains[row * columns + column] = Math.min(
+        MAX_GAIN,
+        Math.max(1, 255 / white),
+      );
+    }
+  }
+  return gains;
+}
+
+/**
+ * Marks the blocks that have strong contrast and many edges, for how bright
+ * they are.
  */
 function findBusyBlocks(
   luminance: Uint8Array,
@@ -58,6 +111,16 @@ function findBusyBlocks(
   const blockColumns = Int32Array.from({ length: width }, (_, x) =>
     Math.floor(x / blockSize),
   );
+  const gains = blockGains(
+    luminance,
+    width,
+    height,
+    blockSize,
+    columns,
+    rows,
+    blockColumns,
+  );
+  const edgeThresholds = gains.map((gain) => EDGE_THRESHOLD / gain);
 
   for (let y = 0; y < height; y += 1) {
     const rowOffset = y * width;
@@ -71,9 +134,10 @@ function findBusyBlocks(
       if (value > max[block]) max[block] = value;
       const right = x + 2 < width ? luminance[i + 2] : value;
       const below = hasBelow ? luminance[i + 2 * width] : value;
+      const edgeThreshold = edgeThresholds[block];
       if (
-        Math.abs(right - value) > EDGE_THRESHOLD ||
-        Math.abs(below - value) > EDGE_THRESHOLD
+        Math.abs(right - value) > edgeThreshold ||
+        Math.abs(below - value) > edgeThreshold
       ) {
         edges[block] += 1;
         // The contrast includes the pixels that edges are found against,
@@ -91,7 +155,8 @@ function findBusyBlocks(
   const minEdges = blockSize * blockSize * MIN_EDGE_DENSITY;
   for (let block = 0; block < busy.length; block += 1) {
     busy[block] =
-      max[block] - min[block] >= MIN_BLOCK_CONTRAST && edges[block] >= minEdges
+      (max[block] - min[block]) * gains[block] >= MIN_BLOCK_CONTRAST &&
+      edges[block] >= minEdges
         ? 1
         : 0;
   }

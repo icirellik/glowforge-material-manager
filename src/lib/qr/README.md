@@ -40,6 +40,8 @@ It reads codes that are:
   bed, including next to a sheet's edge, on a narrow offcut or among earlier
   engravings;
 - rotated, mirrored, light on dark, low contrast or noisy;
+- dim, like a lid camera image with the lid lights low, where a sticker is
+  dark grey on grey;
 - partly in a hard shadow;
 - tilted. Sharp codes read at 50°. Blur lowers that, as the far finder blurs
   away first: in the tests, a version 10 code with 6 pixel modules and about
@@ -48,7 +50,8 @@ It reads codes that are:
 The work per image is bounded: at most 16 regions and 6 million pixels are
 read, and at most 30 finder candidates per region are matched into sets.
 
-- `regions.ts`: finds the busy areas, and tiles long or large ones.
+- `regions.ts`: finds the busy areas, judging each by how bright its
+  surroundings are, and tiles long or large ones.
 - `image.ts`: greyscale copies of regions, resized so modules cover a few
   pixels.
 - `finders.ts`: splits a region into dark and light, finds finder patterns and
