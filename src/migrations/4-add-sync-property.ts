@@ -34,8 +34,13 @@ export async function migration4(): Promise<boolean> {
     await storeRawMaterials(_rawMaterials);
 
     // Storing replaces the cloud copy, so there's no need to remove it first.
+    // A material the cloud refuses, when it's full, stays on this computer.
     for (const _upgradedMaterial of _upgradedMaterials) {
-      await sendCloudMaterial(_upgradedMaterial);
+      try {
+        await sendCloudMaterial(_upgradedMaterial);
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 

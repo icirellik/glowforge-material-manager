@@ -80,6 +80,26 @@ can trust them.
 - [x] A Glowforge tab without the scripts can be reconnected from the popup,
   and Set says when it can't reach the tab (#139).
 
+### US-20 More materials fit in cloud sync
+
+**In review.**
+
+As a user with a lot of materials, I want them all to sync, so that every
+computer has them.
+
+- [x] Materials are stored in a smaller format, about a quarter of the size,
+  so up to 512 fit, Chrome's limit on items, instead of about 190.
+- [x] Materials already in the cloud are rewritten the first time the popup
+  opens, in one write, from the cloud's copies.
+- [x] Older formats keep working, and values from newer versions are skipped
+  instead of stopping sync.
+- [x] The popup shows the materials used of 512, and says when the cloud
+  refuses a material.
+- [x] pako is replaced by our own compression module.
+
+Notes: version 0.4.10 can't read the new format, and its popup stops
+opening until it updates.
+
 ## Partly done
 
 ### US-05 Stable material ids
@@ -96,7 +116,9 @@ printed QR stickers and saved designs keep working.
 
 ### US-06 Sync robustness
 
-**Partly done.** Migration 4 is fixed in #136.
+**Partly done.** Migration 4 is fixed in #136. Since US-20, a new computer
+stores all of the cloud's materials in one write, and a material the cloud
+refuses stays on this computer, with a message saying why.
 
 As a user, I want cloud sync to be safe with many materials, so that I never
 lose any.

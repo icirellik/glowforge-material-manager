@@ -7,7 +7,7 @@ import {
   storeRawMaterials,
   storeSynchronizedMaterial,
 } from '../lib/chromeWrappers';
-import { compress, hashTitle } from '../lib/utils';
+import { hashTitle } from '../lib/utils';
 import type {
   PluginBitmapEngraveSetting,
   PluginCutSetting,
@@ -27,6 +27,7 @@ import type {
 } from './materialGlowforge';
 import { clamp } from '../lib/glowforgeUnits';
 import { toTinyMaterial } from './materialConversion';
+import { encodeCloudMaterial } from './materialCloudFormat';
 
 /**
  *
@@ -69,7 +70,8 @@ export async function removeRawMaterial(title: string) {
 }
 
 /**
- * Stores a material in the cloud.
+ * Stores a material in the cloud. Rejects when Chrome refuses, like when the
+ * cloud storage is full.
  *
  * @param material The material to syncronize with the cloud.
  */
@@ -79,9 +81,46 @@ export async function sendCloudMaterial(material: PluginMaterial) {
   }
 
   const hash = await hashTitle(material);
-  const compressed = compress(toTinyMaterial(material));
+  const value = encodeCloudMaterial(toTinyMaterial(material));
 
-  await storeSynchronizedMaterial(hash, compressed);
+  await storeSynchronizedMaterial(hash, value);
+}
+
+/**
+ * Stores a material in the cloud in place of its previous version, if it had
+ * one. Rejects when Chrome refuses, like when the cloud storage is full.
+ *
+ * A renamed material's old copy is removed first, so a rename works when the
+ * cloud is full. When the new copy is refused, the copy under its title is
+ * removed too: sync prefers the cloud's copy, so an old one left there would
+ * undo the change. The material is then only on this computer until it's
+ * saved again, and other computers keep the copies they have.
+ *
+ * @param material The material as it is now.
+ * @param previous The material before the change, if it was saved before.
+ */
+export async function replaceCloudMaterial(
+  material: PluginMaterial,
+  previous?: PluginMaterial,
+) {
+  const hash = await hashTitle(material);
+  if (previous) {
+    const previousHash = await hashTitle(previous);
+    if (previousHash !== hash || !material.sync) {
+      await removeSynchronizedMaterial(previousHash);
+    }
+  }
+  if (!material.sync) {
+    return;
+  }
+
+  try {
+    const value = encodeCloudMaterial(toTinyMaterial(material));
+    await storeSynchronizedMaterial(hash, value);
+  } catch (error) {
+    await removeSynchronizedMaterial(hash);
+    throw error;
+  }
 }
 
 /**
