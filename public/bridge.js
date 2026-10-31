@@ -34,6 +34,9 @@
     synchronized: false,
     // The selected machine.
     serial: null,
+    // The selected machine's model and laser tube, like pro and pro.
+    model: null,
+    tubeType: null,
     // The selected machine's speed limits, as the page gave them. The popup
     // checks them.
     speeds: null,
@@ -148,6 +151,7 @@
    * ready - The page's store is available, send it the materials.
    * materialsApplied - Every custom material is in the GFUI.
    * machineSerial - The selected machine changed.
+   * machineModel - The selected machine's model or laser tube changed.
    * machineSpeeds - The selected machine's speed limits changed.
    * designId - The open design changed.
    * lidImage - The lid camera image changed, check it for a QR code.
@@ -160,6 +164,9 @@
       markSynchronized(message.version);
     } else if (message.type === 'machineSerial') {
       status.serial = asIdentifier(message.serial);
+    } else if (message.type === 'machineModel') {
+      status.model = asIdentifier(message.model);
+      status.tubeType = asIdentifier(message.tubeType);
     } else if (message.type === 'machineSpeeds') {
       status.speeds =
         typeof message.speeds === 'object' ? message.speeds : null;
