@@ -22,6 +22,7 @@ import {
   getTabConnection,
   reloadGlowForgeTab,
   storeGlowforgeMaterials,
+  storeMachineModel,
   storeRawMaterials,
   storeSpeedSpace,
   storeTempMaterial,
@@ -47,6 +48,8 @@ import { addContentScripts } from './lib/contentScripts';
 import { DEFAULT_SPEED_SPACE, parseSpeedSpace } from './lib/glowforgeUnits';
 import type { SpeedSpace } from './lib/glowforgeUnits';
 import { SpeedSpaceContext } from './lib/SpeedSpaceContext';
+import { parseMachineModel } from './lib/machineModel';
+import type { MachineModel } from './lib/machineModel';
 import {
   hasLidImageAccess,
   removeLidImageAccess,
@@ -167,6 +170,9 @@ interface AppState {
   // The active tab's trace and machine.
   rawSvg: string | null;
   serial: string | null;
+  // The model of the machine selected in the active tab, or the last one
+  // selected.
+  machineModel: MachineModel | null;
   // The speed limits that speeds are shown in: the machine selected in the
   // active tab, or the last one selected.
   speedSpace: SpeedSpace;
@@ -215,6 +221,7 @@ class App
       rawMaterials: [],
       rawSvg: null,
       serial: null,
+      machineModel: null,
       speedSpace: DEFAULT_SPEED_SPACE,
       synchronized: false,
     };
@@ -281,6 +288,12 @@ class App
       tabSpeeds ??
       parseSpeedSpace(localStorage.speedSpace) ??
       DEFAULT_SPEED_SPACE;
+    const tabModel = tabMachineModel(tabConnection);
+    if (tabModel) {
+      await storeMachineModel(tabModel);
+    }
+    const machineModel =
+      tabModel ?? parseMachineModel(localStorage.machineModel);
 
     if (localStorage.tempMaterial) {
       // Clear any old validations
@@ -298,6 +311,7 @@ class App
         rawMaterials: localStorage.rawMaterials!,
         tempMaterial: localStorage.tempMaterial,
         qrAutoSelect,
+        machineModel,
         speedSpace,
         ...tab,
       });
@@ -309,6 +323,7 @@ class App
         materials: localStorage.materials!,
         rawMaterials: localStorage.rawMaterials!,
         qrAutoSelect,
+        machineModel,
         speedSpace,
         ...tab,
       });
@@ -325,6 +340,7 @@ class App
         tabId,
         rawSvg,
         serial,
+        machineModel,
         speedSpace,
         synchronized,
         tempMaterial,
@@ -385,6 +401,14 @@ class App
       ) {
         await storeSpeedSpace(tabSpeeds);
         stateUpdates = { ...stateUpdates, speedSpace: tabSpeeds };
+      }
+      const tabModel = tabMachineModel(tabConnection);
+      if (
+        tabModel &&
+        JSON.stringify(tabModel) !== JSON.stringify(machineModel)
+      ) {
+        await storeMachineModel(tabModel);
+        stateUpdates = { ...stateUpdates, machineModel: tabModel };
       }
       if (
         cloudStorageBytesUsedLocal !== cloudStorageBytesUsed ||
@@ -981,6 +1005,7 @@ class App
       rawMaterials,
       rawSvg,
       serial,
+      machineModel,
       speedSpace,
       synchronized,
       tempMaterial,
@@ -1041,6 +1066,7 @@ class App
             cloudStorageBytesUsed={cloudStorageBytesUsed}
             connection={connection}
             forceSyncronize={this.forceSyncronize}
+            machineModel={machineModel}
             reconnect={this.reconnect}
             serial={serial}
             synchronized={synchronized}
@@ -1104,6 +1130,13 @@ function tabState(tab: TabConnection) {
         : null,
     serial: status ? status.serial : null,
   };
+}
+
+/**
+ * The model of the machine selected in the active tab, once it's known.
+ */
+function tabMachineModel(tab: TabConnection): MachineModel | null {
+  return tab.state === 'connected' ? parseMachineModel(tab.status) : null;
 }
 
 /**

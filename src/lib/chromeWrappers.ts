@@ -3,6 +3,7 @@ import { requestSync } from './sync';
 import type { PluginMaterial } from '../material/materialPlugin';
 import type { TempMaterial } from './materialHelpers';
 import type { SpeedSpace } from './glowforgeUnits';
+import type { MachineModel } from './machineModel';
 
 export type SyncId = string;
 export type SyncData = string;
@@ -18,6 +19,8 @@ export interface StorageLocal {
   materials?: GFMaterial[];
   // The raw material data that is used to generated Glowforge materials.
   rawMaterials?: PluginMaterial[];
+  // The model of the machine last selected in a Glowforge tab.
+  machineModel?: MachineModel;
   // The speed limits of the machine last selected in a Glowforge tab.
   speedSpace?: SpeedSpace;
   // When every Glowforge tab was last asked to add the materials again.
@@ -171,6 +174,18 @@ export async function getRawMaterials(): Promise<PluginMaterial[]> {
  *
  * @param materials
  */
+/**
+ * Remembers the model of the machine selected in a Glowforge tab, for when
+ * the popup is opened somewhere else.
+ */
+export async function storeMachineModel(
+  machineModel: MachineModel,
+): Promise<void> {
+  return new Promise((resolve) => {
+    window.chrome.storage.local.set({ machineModel }, () => resolve());
+  });
+}
+
 /**
  * Remembers the speed limits of the machine selected in a Glowforge tab, for
  * when the popup is opened somewhere else.
@@ -406,6 +421,9 @@ export interface TabStatus {
   synchronized: boolean;
   // The selected machine.
   serial: string | null;
+  // The selected machine's model and laser tube, like pro and pro.
+  model?: string | null;
+  tubeType?: string | null;
   // The selected machine's speed limits, as the page gave them.
   speeds?: unknown;
   // The open design.

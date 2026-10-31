@@ -17,6 +17,7 @@ describe('Speeds in the popup', () => {
   let local: { [key: string]: unknown } = {};
   let activeTab: { id: number; url: string } | null = null;
   let tabSpeeds: unknown = null;
+  let tabModel: { model: string; tubeType: string } | null = null;
   let container: HTMLDivElement;
 
   beforeEach(() => {
@@ -24,6 +25,7 @@ describe('Speeds in the popup', () => {
     local = {};
     activeTab = null;
     tabSpeeds = null;
+    tabModel = null;
     vi.stubGlobal('chrome', {
       runtime: { getURL: (name: string) => name },
       storage: {
@@ -46,6 +48,8 @@ describe('Speeds in the popup', () => {
           ready: true,
           synchronized: true,
           serial: 'SN-1',
+          model: tabModel?.model ?? null,
+          tubeType: tabModel?.tubeType ?? null,
           speeds: tabSpeeds,
           designId: null,
         }),
@@ -156,5 +160,41 @@ describe('Speeds in the popup', () => {
     expect(labels).toContain('Speed * (100 - 500)');
     expect(speeds).toEqual(['500', '300']);
     expect(local.speedSpace).toBeUndefined();
+  });
+
+  describe('the machine model', () => {
+    const badge = () => container.querySelector('.header__model');
+
+    it("shows the Glowforge tab's machine, and remembers it", async () => {
+      activeTab = { id: 1, url: 'https://app.glowforge.com/' };
+      tabModel = { model: 'pro', tubeType: 'pro' };
+      await openEditor();
+
+      expect(badge()!.textContent).toBe('Pro');
+      expect(badge()!.className).toBe('header__model header__model--pro');
+      expect(badge()!.getAttribute('title')).toBe(
+        'The selected machine is a Glowforge Pro, tube type pro.',
+      );
+      expect(local.machineModel).toEqual({ model: 'pro', tubeType: 'pro' });
+    });
+
+    it('shows the last machine on other tabs', async () => {
+      local.machineModel = { model: 'plus', tubeType: 'basic' };
+      await openEditor();
+
+      expect(badge()!.textContent).toBe('Plus');
+      expect(badge()!.className).toBe('header__model');
+      expect(badge()!.getAttribute('title')).toBe(
+        'The last machine selected is a Glowforge Plus, tube type basic.',
+      );
+    });
+
+    it('shows nothing before a machine is seen', async () => {
+      activeTab = { id: 1, url: 'https://app.glowforge.com/' };
+      await openEditor();
+
+      expect(badge()).toBeNull();
+      expect(local.machineModel).toBeUndefined();
+    });
   });
 });

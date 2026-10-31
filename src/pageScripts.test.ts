@@ -120,6 +120,13 @@ function fakeGlowforge() {
       materialList = catalog();
       notify();
     },
+    setMachineModel: (fields: [string, unknown][]) => {
+      machines = new FakeMap<unknown>([
+        ['selectedMachineSerial', 'SN-1'],
+        ['machineMap', new FakeMap([['SN-1', new FakeMap(fields)]])],
+      ]);
+      notify();
+    },
     // Immutable maps in the GFUI, with toJS, which keep their identity until
     // they change.
     setSpeedSpace: (space: object) => {
@@ -294,8 +301,37 @@ describe('page scripts', () => {
       ready: true,
       synchronized: true,
       serial: 'SN-1',
+      model: null,
+      tubeType: null,
       speeds: null,
       designId: null,
+    });
+  });
+
+  it("reports the selected machine's model once its details load", async () => {
+    page.setMachineModel([
+      ['model', 'pro'],
+      ['tubeType', 'pro'],
+    ]);
+    await settle();
+    expect(await extension.fromPopup({ type: 'status' })).toMatchObject({
+      model: 'pro',
+      tubeType: 'pro',
+    });
+
+    // Another machine, still loading.
+    page.setMachineModel([]);
+    await settle();
+    expect(await extension.fromPopup({ type: 'status' })).toMatchObject({
+      model: null,
+      tubeType: null,
+    });
+
+    page.setMachineModel([['model', 'basic']]);
+    await settle();
+    expect(await extension.fromPopup({ type: 'status' })).toMatchObject({
+      model: 'basic',
+      tubeType: null,
     });
   });
 

@@ -233,12 +233,14 @@
    */
   let prevMachineSerial = null;
   let prevSpeedSpace = null;
+  let prevMachineModel = null;
   let prevLidImagePath = null;
   function checkMachine(state) {
     const serial = state.getIn(['machines', 'selectedMachineSerial']);
     if (!serial) {
       prevMachineSerial = null;
       prevSpeedSpace = null;
+      prevMachineModel = null;
       return;
     }
 
@@ -246,6 +248,27 @@
       log('message - machineSerial');
       postToExtension('machineSerial', { serial });
       prevMachineSerial = serial;
+    }
+
+    // The machine's model and laser tube, like pro and pro, once the
+    // machine's details have loaded.
+    const model = state.getIn(['machines', 'machineMap', serial, 'model']);
+    const tubeType = state.getIn([
+      'machines',
+      'machineMap',
+      serial,
+      'tubeType',
+    ]);
+    const machineModel =
+      typeof model === 'string' ? `${model}/${tubeType}` : null;
+    if (machineModel !== prevMachineModel) {
+      log('message - machineModel');
+      postToExtension('machineModel', {
+        model: machineModel ? model : null,
+        tubeType:
+          machineModel && typeof tubeType === 'string' ? tubeType : null,
+      });
+      prevMachineModel = machineModel;
     }
 
     // The machine's speed limits, which set the speeds the GFUI shows. The
