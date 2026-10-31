@@ -130,7 +130,8 @@ lose any.
 
 ### US-12 Limits that match the machine
 
-**Partly done.** Speeds are in review in #145.
+**Partly done.** Speeds are in review in #145, and the machine's model in
+#146.
 
 As a Pro or Basic owner, I want the editor's limits to match my machine, so
 that I can use its full range.
@@ -140,9 +141,14 @@ that I can use its full range.
 - [x] The suspected difference between typed and applied cut and score
   speeds is found and fixed: the Pro checked shows a speed of 4000 as 517,
   which the editor showed as 500.
+- [x] The selected machine's model and tube type are tracked, and the
+  header shows the model, marked for a Pro.
 - [ ] Power ranges and the tube type come from the selected machine. Power
   already matches the app on Basic, Plus and Pro; machines the app marks as
   GFD show power in tenths, which isn't handled.
+- [ ] Custom materials work on diode machines. The app seems to keep only
+  the settings for a diode machine's own tube type, and custom materials
+  only have basic and pro settings.
 
 ## Backlog, in suggested order
 
