@@ -2,14 +2,12 @@
 import { packMaterial, unpackMaterial } from './materialPack';
 import {
   editorMaterials,
+  legacyCutSpeed,
+  legacyEngraveSpeed,
   proofgradeMaterials,
   unseenMaterials,
 } from './testing/corpus';
-import {
-  toRealCutSpeed,
-  toRealEngraveSpeed,
-  toRealPower,
-} from '../lib/glowforgeUnits';
+import { toRealPower } from '../lib/glowforgeUnits';
 import type { TinyMaterial } from './materialTiny';
 
 const hex = (bytes: Uint8Array | null) =>
@@ -71,10 +69,14 @@ describe('packMaterial', () => {
       if (![0x04, 0x05, 0x06].includes(tag)) expect(tag).toBe(0x09);
     }
     for (let display = 100; display <= 500; display += 1) {
-      expect(tagged(toRealCutSpeed(display)).length).toBeLessThanOrEqual(3);
+      expect(tagged(legacyCutSpeed(display)).length).toBeLessThanOrEqual(3);
     }
     for (let display = 100; display <= 1000; display += 1) {
-      expect(tagged(toRealEngraveSpeed(display)).length).toBeLessThanOrEqual(3);
+      expect(tagged(legacyEngraveSpeed(display)).length).toBeLessThanOrEqual(3);
+    }
+    // The editor now makes whole numbers, up to a Pro's 36500.
+    for (let speed = 100; speed <= 36500; speed += 1) {
+      expect(tagged(speed).length).toBeLessThanOrEqual(speed < 8192 ? 3 : 4);
     }
   });
 

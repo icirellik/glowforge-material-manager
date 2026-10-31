@@ -23,6 +23,7 @@ import {
   reloadGlowForgeTab,
   storeGlowforgeMaterials,
   storeRawMaterials,
+  storeSpeedSpace,
   storeTempMaterial,
   sendMessage,
   getRawMaterials,
@@ -43,6 +44,9 @@ import { BackupViewer } from './BackupViewer';
 import { GFMaterial } from './material/materialGlowforge';
 import { PluginMaterial } from './material/materialPlugin';
 import { addContentScripts } from './lib/contentScripts';
+import { DEFAULT_SPEED_SPACE, parseSpeedSpace } from './lib/glowforgeUnits';
+import type { SpeedSpace } from './lib/glowforgeUnits';
+import { SpeedSpaceContext } from './lib/SpeedSpaceContext';
 import {
   hasLidImageAccess,
   removeLidImageAccess,
@@ -163,6 +167,9 @@ interface AppState {
   // The active tab's trace and machine.
   rawSvg: string | null;
   serial: string | null;
+  // The speed limits that speeds are shown in: the machine selected in the
+  // active tab, or the last one selected.
+  speedSpace: SpeedSpace;
   // Does the active tab have the latest materials.
   synchronized: boolean;
   tempMaterial: TempMaterial;
@@ -208,6 +215,7 @@ class App
       rawMaterials: [],
       rawSvg: null,
       serial: null,
+      speedSpace: DEFAULT_SPEED_SPACE,
       synchronized: false,
     };
 
@@ -262,8 +270,17 @@ class App
     const backups = await getBackups();
 
     // What the active tab reports.
-    const tab = tabState(await getTabConnection());
+    const tabConnection = await getTabConnection();
+    const tab = tabState(tabConnection);
     const qrAutoSelect = await hasLidImageAccess();
+    const tabSpeeds = tabSpeedSpace(tabConnection);
+    if (tabSpeeds) {
+      await storeSpeedSpace(tabSpeeds);
+    }
+    const speedSpace =
+      tabSpeeds ??
+      parseSpeedSpace(localStorage.speedSpace) ??
+      DEFAULT_SPEED_SPACE;
 
     if (localStorage.tempMaterial) {
       // Clear any old validations
@@ -281,6 +298,7 @@ class App
         rawMaterials: localStorage.rawMaterials!,
         tempMaterial: localStorage.tempMaterial,
         qrAutoSelect,
+        speedSpace,
         ...tab,
       });
     } else {
@@ -291,6 +309,7 @@ class App
         materials: localStorage.materials!,
         rawMaterials: localStorage.rawMaterials!,
         qrAutoSelect,
+        speedSpace,
         ...tab,
       });
     }
@@ -306,6 +325,7 @@ class App
         tabId,
         rawSvg,
         serial,
+        speedSpace,
         synchronized,
         tempMaterial,
       } = this.state;
@@ -344,7 +364,8 @@ class App
       }
 
       // Refresh what the active tab reports.
-      const tab = tabState(await getTabConnection());
+      const tabConnection = await getTabConnection();
+      const tab = tabState(tabConnection);
       if (
         tab.connection !== connection ||
         tab.tabId !== tabId ||
@@ -356,6 +377,14 @@ class App
           ...stateUpdates,
           ...tab,
         };
+      }
+      const tabSpeeds = tabSpeedSpace(tabConnection);
+      if (
+        tabSpeeds &&
+        JSON.stringify(tabSpeeds) !== JSON.stringify(speedSpace)
+      ) {
+        await storeSpeedSpace(tabSpeeds);
+        stateUpdates = { ...stateUpdates, speedSpace: tabSpeeds };
       }
       if (
         cloudStorageBytesUsedLocal !== cloudStorageBytesUsed ||
@@ -952,6 +981,7 @@ class App
       rawMaterials,
       rawSvg,
       serial,
+      speedSpace,
       synchronized,
       tempMaterial,
     } = this.state;
@@ -1004,52 +1034,54 @@ class App
     }
 
     return (
-      <div className="App">
-        <AppHeader
-          cloudItemsUsed={cloudItemsUsed}
-          cloudStorageBytesUsed={cloudStorageBytesUsed}
-          connection={connection}
-          forceSyncronize={this.forceSyncronize}
-          reconnect={this.reconnect}
-          serial={serial}
-          synchronized={synchronized}
-        />
-        <div className={`columns ${platform === 'mac' ? 'osx' : ''}`}>
-          <div className="col-materials">
-            <MaterialList
-              materials={rawMaterials}
-              selectMaterial={this.setEditorModeSelect}
-              setEditorModeAdd={this.setEditorModeAdd}
-              setMaterial={this.setMaterial}
-              tempMaterial={tempMaterial}
-            />
-          </div>
-          <div className="column__right">
-            <div className="buttonBar">
-              <MaterialButtonBar
-                addMaterial={this.addMaterial}
-                copyMaterial={this.copyMaterial}
-                createBackup={this.createBackup}
-                editMaterial={this.editMaterial}
-                editorMode={action}
-                previousTitle={previousTitle}
+      <SpeedSpaceContext.Provider value={speedSpace}>
+        <div className="App">
+          <AppHeader
+            cloudItemsUsed={cloudItemsUsed}
+            cloudStorageBytesUsed={cloudStorageBytesUsed}
+            connection={connection}
+            forceSyncronize={this.forceSyncronize}
+            reconnect={this.reconnect}
+            serial={serial}
+            synchronized={synchronized}
+          />
+          <div className={`columns ${platform === 'mac' ? 'osx' : ''}`}>
+            <div className="col-materials">
+              <MaterialList
+                materials={rawMaterials}
+                selectMaterial={this.setEditorModeSelect}
                 setEditorModeAdd={this.setEditorModeAdd}
-                setEditorModeDefault={this.setEditorModeDefault}
-                setEditorModeEdit={this.setEditorModeEdit}
-                setEditorModeSelect={this.setEditorModeSelect}
                 setMaterial={this.setMaterial}
-                title={`${tempMaterial.thickName} ${tempMaterial.name}`}
+                tempMaterial={tempMaterial}
               />
             </div>
-            <div className="col-contents" ref={this.displayRef}>
-              <div className="col-contents-container">{displayPanel}</div>
+            <div className="column__right">
+              <div className="buttonBar">
+                <MaterialButtonBar
+                  addMaterial={this.addMaterial}
+                  copyMaterial={this.copyMaterial}
+                  createBackup={this.createBackup}
+                  editMaterial={this.editMaterial}
+                  editorMode={action}
+                  previousTitle={previousTitle}
+                  setEditorModeAdd={this.setEditorModeAdd}
+                  setEditorModeDefault={this.setEditorModeDefault}
+                  setEditorModeEdit={this.setEditorModeEdit}
+                  setEditorModeSelect={this.setEditorModeSelect}
+                  setMaterial={this.setMaterial}
+                  title={`${tempMaterial.thickName} ${tempMaterial.name}`}
+                />
+              </div>
+              <div className="col-contents" ref={this.displayRef}>
+                <div className="col-contents-container">{displayPanel}</div>
+              </div>
             </div>
           </div>
+          {message !== null ? (
+            <Message clearMessage={this.clearMessage} {...message} />
+          ) : null}
         </div>
-        {message !== null ? (
-          <Message clearMessage={this.clearMessage} {...message} />
-        ) : null}
-      </div>
+      </SpeedSpaceContext.Provider>
     );
   }
 }
@@ -1072,6 +1104,14 @@ function tabState(tab: TabConnection) {
         : null,
     serial: status ? status.serial : null,
   };
+}
+
+/**
+ * The speed limits of the machine selected in the active tab, if it gave
+ * valid ones.
+ */
+function tabSpeedSpace(tab: TabConnection): SpeedSpace | null {
+  return tab.state === 'connected' ? parseSpeedSpace(tab.status.speeds) : null;
 }
 
 function getMaterialTitle(material: PluginMaterial) {

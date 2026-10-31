@@ -2,6 +2,7 @@ import type { GFMaterial } from '../material/materialGlowforge';
 import { requestSync } from './sync';
 import type { PluginMaterial } from '../material/materialPlugin';
 import type { TempMaterial } from './materialHelpers';
+import type { SpeedSpace } from './glowforgeUnits';
 
 export type SyncId = string;
 export type SyncData = string;
@@ -17,6 +18,8 @@ export interface StorageLocal {
   materials?: GFMaterial[];
   // The raw material data that is used to generated Glowforge materials.
   rawMaterials?: PluginMaterial[];
+  // The speed limits of the machine last selected in a Glowforge tab.
+  speedSpace?: SpeedSpace;
   // When every Glowforge tab was last asked to add the materials again.
   syncRequestedAt?: number;
   // A material that was saved due to the popup window being dismissed without
@@ -168,6 +171,16 @@ export async function getRawMaterials(): Promise<PluginMaterial[]> {
  *
  * @param materials
  */
+/**
+ * Remembers the speed limits of the machine selected in a Glowforge tab, for
+ * when the popup is opened somewhere else.
+ */
+export async function storeSpeedSpace(speedSpace: SpeedSpace): Promise<void> {
+  return new Promise((resolve) => {
+    window.chrome.storage.local.set({ speedSpace }, () => resolve());
+  });
+}
+
 export async function storeRawMaterials(
   materials: PluginMaterial[],
 ): Promise<PluginMaterial[]> {
@@ -393,6 +406,8 @@ export interface TabStatus {
   synchronized: boolean;
   // The selected machine.
   serial: string | null;
+  // The selected machine's speed limits, as the page gave them.
+  speeds?: unknown;
   // The open design.
   designId: string | null;
 }

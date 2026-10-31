@@ -191,13 +191,19 @@ function createSettings(
   };
 }
 
+// Speeds are kept from going below the slowest a machine allows, but not
+// above a fastest, which depends on the machine: a Pro allows cuts up to
+// 30000. The GFUI takes material speeds above a machine's range, as some of
+// Glowforge's own materials have.
+const MINIMUM_SPEED = 100;
+
 /**
  * Creates a new set of cut settings.
  */
 function createCutSettings(cut: PluginCutSetting): GFCutSetting {
   return {
     power: clamp(cut.power, 0, 100),
-    speed: clamp(cut.speed, 100, 4000),
+    speed: Math.max(cut.speed, MINIMUM_SPEED),
     passes: cut.passes,
     focal_offset: cut.focalOffset,
   };
@@ -209,7 +215,7 @@ function createCutSettings(cut: PluginCutSetting): GFCutSetting {
 function createScoreSettings(score: PluginScoreSetting): GFScoreSetting {
   return {
     power: clamp(score.power, 0, 100),
-    speed: clamp(score.speed, 100, 4000),
+    speed: Math.max(score.speed, MINIMUM_SPEED),
     passes: score.passes,
     focal_offset: score.focalOffset,
     uses: null,
@@ -229,7 +235,7 @@ function createVectorEngraveSettings(
 ): GFEngraveSetting {
   return {
     power: clamp(vectorEngrave.power, 0, 100),
-    speed: clamp(vectorEngrave.speed, 100, 8500),
+    speed: Math.max(vectorEngrave.speed, MINIMUM_SPEED),
     passes: vectorEngrave.passes,
     focal_offset: vectorEngrave.focalOffset,
     scangap: vectorEngrave.scanGap,
@@ -250,7 +256,7 @@ function createBitmapEngraveSettings(
 ): GFBitmapEngraveSetting {
   return {
     power: clamp(bitmapEngrave.power, 0, 100),
-    speed: clamp(bitmapEngrave.speed, 100, 8500),
+    speed: Math.max(bitmapEngrave.speed, MINIMUM_SPEED),
     passes: bitmapEngrave.passes,
     focal_offset: bitmapEngrave.focalOffset,
     scangap: bitmapEngrave.scanGap,

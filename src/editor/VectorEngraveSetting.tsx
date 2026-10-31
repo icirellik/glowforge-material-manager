@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { IconMinus } from '../icons/IconMinus';
 import { asFloat, asInteger, precisionRound } from '../lib/utils';
 import {
-  toDisplayEngraveSpeed,
+  SpeedScale,
   toDisplayLinesPerInch,
   toDisplayPower,
-  toRealEngraveSpeed,
   toRealPower,
 } from '../lib/glowforgeUnits';
+import { SpeedSpaceContext } from '../lib/SpeedSpaceContext';
 import type { PluginVectorEngraveSetting } from '../material/materialPlugin';
 import { InputText, InputNumber, InputNumberWithCheckbox } from './Input';
 import type {
@@ -36,6 +36,7 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
     validationHandler,
   } = props;
   const maxPower = vector.power === 99.99 || vector.power === 100;
+  const speeds = new SpeedScale('vector', useContext(SpeedSpaceContext));
   return (
     <>
       <div className="form-sub-header">
@@ -61,18 +62,16 @@ export default function VectorEngraveSetting(props: VectorEngraveSettingProps) {
         validate={validationHandler}
       />
       <InputNumber
-        label="Speed * (100 - 1000)"
-        max="1000"
-        min="100"
+        label={`Speed * (${speeds.displayMinimum} - ${speeds.displayMaximum})`}
+        max={String(speeds.displayMaximum)}
+        min={String(speeds.displayMinimum)}
         onBlur={saveTemporaryState}
         onChange={(event) => {
-          const normalizedValue = toRealEngraveSpeed(
-            asInteger(event.target.value),
-          );
+          const normalizedValue = speeds.toReal(asInteger(event.target.value));
           updateVectorEngrave(index, 'speed', normalizedValue);
         }}
         propValidation={propValidation}
-        value={toDisplayEngraveSpeed(vector.speed)}
+        value={speeds.toDisplay(vector.speed)}
         validate={validationHandler}
       />
       <InputNumberWithCheckbox

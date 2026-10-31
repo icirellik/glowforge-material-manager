@@ -1,12 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { IconMinus } from '../icons/IconMinus';
 import { asFloat, asInteger, precisionRound } from '../lib/utils';
-import {
-  toDisplayCutSpeed,
-  toDisplayPower,
-  toRealCutSpeed,
-  toRealPower,
-} from '../lib/glowforgeUnits';
+import { SpeedScale, toDisplayPower, toRealPower } from '../lib/glowforgeUnits';
+import { SpeedSpaceContext } from '../lib/SpeedSpaceContext';
 import type { PluginScoreSetting } from '../material/materialPlugin';
 import { InputText, InputNumber, InputNumberWithCheckbox } from './Input';
 import type { RemoveScore, UpdateScore } from './ScoreSettings';
@@ -32,6 +28,7 @@ export default function ScoreSetting(props: ScoreSettingProps) {
     validationHandler,
   } = props;
   const maxPower = score.power === 99.99 || score.power === 100;
+  const speeds = new SpeedScale('score', useContext(SpeedSpaceContext));
   return (
     <>
       <div className="form-sub-header">
@@ -55,16 +52,16 @@ export default function ScoreSetting(props: ScoreSettingProps) {
         validate={validationHandler}
       />
       <InputNumber
-        label="Speed * (100 - 500)"
-        max="500"
-        min="100"
+        label={`Speed * (${speeds.displayMinimum} - ${speeds.displayMaximum})`}
+        max={String(speeds.displayMaximum)}
+        min={String(speeds.displayMinimum)}
         onBlur={saveTemporaryState}
         onChange={(event) => {
-          const normalizedValue = toRealCutSpeed(asInteger(event.target.value));
+          const normalizedValue = speeds.toReal(asInteger(event.target.value));
           updateScore(index, 'speed', normalizedValue);
         }}
         propValidation={propValidation}
-        value={toDisplayCutSpeed(score.speed)}
+        value={speeds.toDisplay(score.speed)}
         validate={validationHandler}
       />
       <InputNumberWithCheckbox

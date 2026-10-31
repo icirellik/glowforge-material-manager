@@ -120,6 +120,21 @@ function fakeGlowforge() {
       materialList = catalog();
       notify();
     },
+    // Immutable maps in the GFUI, with toJS, which keep their identity until
+    // they change.
+    setSpeedSpace: (space: object) => {
+      const printSettingsSpace = { toJS: () => structuredClone(space) };
+      machines = new FakeMap<unknown>([
+        ['selectedMachineSerial', 'SN-1'],
+        [
+          'machineMap',
+          new FakeMap([
+            ['SN-1', new FakeMap([['printSettingsSpace', printSettingsSpace]])],
+          ]),
+        ],
+      ]);
+      notify();
+    },
     // Like the live GFUI, which also keeps its own URL for the image.
     setLidImage: (url: string | null) => {
       machines = new FakeMap<unknown>([
@@ -279,7 +294,28 @@ describe('page scripts', () => {
       ready: true,
       synchronized: true,
       serial: 'SN-1',
+      speeds: null,
       designId: null,
+    });
+  });
+
+  it("reports the selected machine's speed limits", async () => {
+    const pro = {
+      cut: { speed_minimum: 100, speed_maximum: 30000 },
+      engrave: { speed_minimum: 100, speed_maximum: 36500 },
+      display: { speed_minimum: 100, scale: 0.10714285714285714, tick: 100 },
+    };
+    page.setSpeedSpace(pro);
+    await settle();
+    expect(await extension.fromPopup({ type: 'status' })).toMatchObject({
+      speeds: pro,
+    });
+
+    const slower = { ...pro, cut: { speed_minimum: 100, speed_maximum: 4000 } };
+    page.setSpeedSpace(slower);
+    await settle();
+    expect(await extension.fromPopup({ type: 'status' })).toMatchObject({
+      speeds: slower,
     });
   });
 

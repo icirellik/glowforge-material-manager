@@ -1,11 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { asFloat, asInteger, precisionRound } from '../lib/utils';
-import {
-  toDisplayCutSpeed,
-  toDisplayPower,
-  toRealCutSpeed,
-  toRealPower,
-} from '../lib/glowforgeUnits';
+import { SpeedScale, toDisplayPower, toRealPower } from '../lib/glowforgeUnits';
+import { SpeedSpaceContext } from '../lib/SpeedSpaceContext';
 import type { PluginCutSetting } from '../material/materialPlugin';
 import { InputNumber, InputNumberWithCheckbox } from './Input';
 
@@ -31,21 +27,22 @@ export default function CutSettings(props: CutSettingsProps) {
     validationHandler,
   } = props;
   const maxPower = cut.power === 99.99 || cut.power === 100;
+  const speeds = new SpeedScale('cut', useContext(SpeedSpaceContext));
   return (
     <>
       <div className="form-header">
         <p>Cut Settings</p>
       </div>
       <InputNumber
-        label="Speed * (100 - 500)"
-        max="500"
-        min="100"
+        label={`Speed * (${speeds.displayMinimum} - ${speeds.displayMaximum})`}
+        max={String(speeds.displayMaximum)}
+        min={String(speeds.displayMinimum)}
         onBlur={saveTemporaryState}
         onChange={(event) =>
-          updateCut('speed', toRealCutSpeed(asInteger(event.target.value)))
+          updateCut('speed', speeds.toReal(asInteger(event.target.value)))
         }
         propValidation={propValidation}
-        value={toDisplayCutSpeed(cut.speed)}
+        value={speeds.toDisplay(cut.speed)}
         validate={validationHandler}
       />
       <InputNumberWithCheckbox
