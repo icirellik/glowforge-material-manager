@@ -66,7 +66,7 @@ selected for me, like Proofgrade, so that I don't pick it by hand.
 
 ### US-04 The popup shows the active tab
 
-**In review** in #138, with a reconnect option in #139.
+**Done** in #138, with a reconnect option in #139.
 
 As a user with several Glowforge tabs, I want the popup's sync light,
 machine and trace download to describe the tab I'm looking at, so that I
@@ -82,7 +82,7 @@ can trust them.
 
 ### US-20 More materials fit in cloud sync
 
-**In review.**
+**Done** in #143.
 
 As a user with a lot of materials, I want them all to sync, so that every
 computer has them.
@@ -127,6 +127,22 @@ lose any.
 - [ ] Writes check Chrome's sync quotas first and report when they'd go
   over.
 - [ ] Deleting a material deletes it on other computers too.
+
+### US-12 Limits that match the machine
+
+**Partly done.** Speeds are in review in #145.
+
+As a Pro or Basic owner, I want the editor's limits to match my machine, so
+that I can use its full range.
+
+- [x] Speed ranges come from the machine selected in a Glowforge tab, or the
+  last one selected, and speeds show the numbers the Glowforge app shows.
+- [x] The suspected difference between typed and applied cut and score
+  speeds is found and fixed: the Pro checked shows a speed of 4000 as 517,
+  which the editor showed as 500.
+- [ ] Power ranges and the tube type come from the selected machine. Power
+  already matches the app on Basic, Plus and Pro; machines the app marks as
+  GFD show power in tenths, which isn't handled.
 
 ## Backlog, in suggested order
 
@@ -191,18 +207,6 @@ I only change what's different.
 
 - [ ] Any of the 113 Proofgrade records can be cloned.
 - [ ] Both tube types and all outcomes are included.
-
-### US-12 Limits that match the machine
-
-**Planned.**
-
-As a Pro or Basic owner, I want the editor's limits to match my machine, so
-that I can use its full range.
-
-- [ ] Power and speed ranges and the tube type come from the selected
-  machine instead of hard-coded values.
-- [ ] Check the suspected 3–4% difference between typed and applied cut and
-  score speeds against the live app.
 
 ### US-13 Save current job as a material
 

@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { MATERIAL_DICTIONARY_1 } from './materialDictionary';
 import { packMaterial } from './materialPack';
-import { toRealEngraveSpeed } from '../lib/glowforgeUnits';
+import { legacyEngraveSpeed } from './testing/corpus';
 import type { TinyMaterial } from './materialTiny';
 
 // The materials at the end of dictionary 1, packed.
@@ -17,7 +17,7 @@ const SAMPLE_MATERIALS: TinyMaterial[] = [
       {
         n: 'Photo',
         p: 74.25,
-        s: toRealEngraveSpeed(300),
+        s: legacyEngraveSpeed(300),
         a: 1,
         f: null,
         g: 2,
@@ -51,7 +51,7 @@ const SAMPLE_MATERIALS: TinyMaterial[] = [
       {
         n: 'SD Graphic',
         p: 100,
-        s: toRealEngraveSpeed(500),
+        s: legacyEngraveSpeed(500),
         a: 1,
         f: null,
         g: 5,
@@ -61,7 +61,7 @@ const SAMPLE_MATERIALS: TinyMaterial[] = [
       {
         n: 'HD Graphic',
         p: 33.66,
-        s: toRealEngraveSpeed(350),
+        s: legacyEngraveSpeed(350),
         a: 1,
         f: null,
         g: 3,

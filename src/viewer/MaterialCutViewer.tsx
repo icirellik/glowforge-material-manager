@@ -1,5 +1,6 @@
-import React from 'react';
-import { toDisplayCutSpeed, toDisplayPowerWords } from '../lib/glowforgeUnits';
+import React, { useContext } from 'react';
+import { SpeedScale, toDisplayPowerWords } from '../lib/glowforgeUnits';
+import { SpeedSpaceContext } from '../lib/SpeedSpaceContext';
 import type { PluginMaterial } from '../material/materialPlugin';
 import { precisionRound } from '../lib/utils';
 import './MaterialViewer.css';
@@ -10,6 +11,7 @@ export type MaterialCutViewerProps = {
 
 export default function MaterialCutViewer(props: MaterialCutViewerProps) {
   const { cut } = props;
+  const speeds = new SpeedScale('cut', useContext(SpeedSpaceContext));
   return (
     <>
       <div className="viewer__headerRow">
@@ -17,7 +19,7 @@ export default function MaterialCutViewer(props: MaterialCutViewerProps) {
       </div>
       <div className="viewer__row">
         <p className="viewer__label">Speed</p>
-        <p className="viewer__value">{toDisplayCutSpeed(cut.speed)}</p>
+        <p className="viewer__value">{speeds.toDisplay(cut.speed)}</p>
         <p className="viewer__glowforge">{precisionRound(cut.speed, 2)}</p>
       </div>
       <div className="viewer__row">

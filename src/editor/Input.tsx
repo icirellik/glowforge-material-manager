@@ -114,6 +114,15 @@ export class InputNumber extends React.Component<InputNumberProps> {
     this.onChange = this.onChange.bind(this);
   }
 
+  // Speed ranges follow the selected machine, so check the value again when
+  // the range changes.
+  componentDidUpdate(prevProps: InputNumberProps) {
+    const { max, min, validate, value } = this.props;
+    if (validate && value && (prevProps.min !== min || prevProps.max !== max)) {
+      this.validate(String(value));
+    }
+  }
+
   componentWillUnmount() {
     const { validate } = this.props;
     if (validate) {

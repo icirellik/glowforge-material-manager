@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
-  toDisplayEngraveSpeed,
+  SpeedScale,
   toDisplayLinesPerInch,
   toDisplayPowerWords,
 } from '../lib/glowforgeUnits';
+import { SpeedSpaceContext } from '../lib/SpeedSpaceContext';
 import type { PluginMaterial } from '../material/materialPlugin';
 import { precisionRound } from '../lib/utils';
 import './MaterialViewer.css';
@@ -16,6 +17,7 @@ export default function MaterialVectorEngravesViewer(
   props: MaterialVectorEngravesViewerProps,
 ) {
   const { vectors } = props;
+  const speeds = new SpeedScale('vector', useContext(SpeedSpaceContext));
   if (vectors.length === 0) {
     return null;
   }
@@ -36,9 +38,7 @@ export default function MaterialVectorEngravesViewer(
           </div>
           <div className="viewer__row">
             <p className="viewer__label">Speed</p>
-            <p className="viewer__value">
-              {toDisplayEngraveSpeed(vector.speed)}
-            </p>
+            <p className="viewer__value">{speeds.toDisplay(vector.speed)}</p>
             <p className="viewer__glowforge">
               {precisionRound(vector.speed, 2)}
             </p>

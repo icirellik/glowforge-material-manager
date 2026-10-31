@@ -232,11 +232,13 @@
    * camera image changes so it can be checked for a QR code.
    */
   let prevMachineSerial = null;
+  let prevSpeedSpace = null;
   let prevLidImagePath = null;
   function checkMachine(state) {
     const serial = state.getIn(['machines', 'selectedMachineSerial']);
     if (!serial) {
       prevMachineSerial = null;
+      prevSpeedSpace = null;
       return;
     }
 
@@ -244,6 +246,24 @@
       log('message - machineSerial');
       postToExtension('machineSerial', { serial });
       prevMachineSerial = serial;
+    }
+
+    // The machine's speed limits, which set the speeds the GFUI shows. The
+    // store keeps the same object until they change.
+    const speedSpace = state.getIn([
+      'machines',
+      'machineMap',
+      serial,
+      'printSettingsSpace',
+    ]);
+    if (
+      speedSpace &&
+      typeof speedSpace.toJS === 'function' &&
+      speedSpace !== prevSpeedSpace
+    ) {
+      log('message - machineSpeeds');
+      postToExtension('machineSpeeds', { speeds: speedSpace.toJS() });
+      prevSpeedSpace = speedSpace;
     }
 
     // A signed `storage.googleapis.com/gf-app-imgl/<serial>/<id>/corrected.jpg`

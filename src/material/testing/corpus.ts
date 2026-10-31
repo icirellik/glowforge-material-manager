@@ -3,18 +3,26 @@
  *
  * - proofgrade: Glowforge's own materials from data/materials.json, one per
  *   tube type. Larger than most custom materials, with whole numbers.
- * - editor: custom materials as the editor makes them, with values from the
- *   unit conversions, so floats like 2881.3333333333335.
+ * - editor: custom materials as the editor made them in 0.4.10, with values
+ *   from its unit conversions, so floats like 2881.3333333333335.
  * - unseen: the same, with names and thicknesses that aren't in the
  *   dictionary, to show what a user's own words cost.
  */
 import catalog from '../../../data/materials.json';
-import {
-  toRealCutSpeed,
-  toRealEngraveSpeed,
-  toRealPower,
-} from '../../lib/glowforgeUnits';
+import { toRealPower } from '../../lib/glowforgeUnits';
 import type { TinyMaterial } from '../materialTiny';
+
+/**
+ * Speeds as the editor made them in 0.4.10, before it followed the machine's
+ * speed ranges, which materials already stored have.
+ */
+export function legacyCutSpeed(display: number) {
+  return ((display - 100) / 400) * 3900 + 100;
+}
+
+export function legacyEngraveSpeed(display: number) {
+  return ((display - 100) / 900) * 8400 + 100;
+}
 
 interface CatalogSetting {
   power: number;
@@ -187,21 +195,21 @@ function editorStyle(names: typeof EDITOR_NAMES, seed: number, count: number) {
           : pick([1, 1.5, 3, 3.175, 3.3, 5.3, 6, 6.35, 12.7]),
       c: {
         p: power(),
-        s: toRealCutSpeed(between(100, 500)),
+        s: legacyCutSpeed(between(100, 500)),
         a: pick([1, 1, 1, 2, 3]),
         f: focalOffset(),
       },
       s: Array.from({ length: between(0, 2) }, () => ({
         n: pick(names.scores),
         p: toRealPower(between(1, 99)),
-        s: toRealCutSpeed(between(100, 500)),
+        s: legacyCutSpeed(between(100, 500)),
         a: 1,
         f: focalOffset(),
       })),
       v: Array.from({ length: between(0, 3) }, () => ({
         n: pick(names.engraves),
         p: power(),
-        s: toRealEngraveSpeed(between(100, 1000)),
+        s: legacyEngraveSpeed(between(100, 1000)),
         a: 1,
         f: focalOffset(),
         g: pick([1, 2, 3, 4, 5, 7, 10]),
@@ -209,7 +217,7 @@ function editorStyle(names: typeof EDITOR_NAMES, seed: number, count: number) {
       b: Array.from({ length: between(0, 3) }, () => ({
         n: pick(names.engraves),
         p: power(),
-        s: toRealEngraveSpeed(between(100, 1000)),
+        s: legacyEngraveSpeed(between(100, 1000)),
         a: 1,
         f: focalOffset(),
         g: pick([1, 2, 3, 4, 5, 7, 10]),

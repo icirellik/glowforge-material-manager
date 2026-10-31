@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
-  toDisplayEngraveSpeed,
+  SpeedScale,
   toDisplayLinesPerInch,
   toDisplayPowerWords,
 } from '../lib/glowforgeUnits';
+import { SpeedSpaceContext } from '../lib/SpeedSpaceContext';
 import type { PluginMaterial } from '../material/materialPlugin';
 import { precisionRound } from '../lib/utils';
 import './MaterialViewer.css';
@@ -16,6 +17,7 @@ export default function MaterialBitmapEngravesViewer(
   props: MaterialBitmapEngravesViewerProps,
 ) {
   const { bitmaps } = props;
+  const speeds = new SpeedScale('bitmap', useContext(SpeedSpaceContext));
   if (bitmaps.length === 0) {
     return null;
   }
@@ -36,9 +38,7 @@ export default function MaterialBitmapEngravesViewer(
           </div>
           <div className="viewer__row">
             <p className="viewer__label">Speed</p>
-            <p className="viewer__value">
-              {toDisplayEngraveSpeed(bitmap.speed)}
-            </p>
+            <p className="viewer__value">{speeds.toDisplay(bitmap.speed)}</p>
             <p className="viewer__glowforge">
               {precisionRound(bitmap.speed, 2)}
             </p>
